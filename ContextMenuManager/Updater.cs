@@ -10,10 +10,10 @@ namespace ContextMenuManager
 {
     sealed class Updater
     {
-        const string UpdateUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/Master/Update.ini";
-        const string GuidInfosDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/Master/ContextMenuManager/Properties/Resources/Texts/GuidInfosDic.ini";
-        const string ThirdRulesDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/Master/ContextMenuManager/Properties/Resources/Texts/ThirdRulesDic.xml";
-        const string ShellCommonDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/Master/ContextMenuManager/Properties/Resources/Texts/ShellCommonDic.xml";
+        const string UpdateUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Update.ini";
+        const string GuidInfosDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/GuidInfosDic.ini";
+        const string ThirdRulesDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/ThirdRulesDic.xml";
+        const string ShellCommonDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/ShellCommonDic.xml";
 
         public static void CheckUpdate()
         {
