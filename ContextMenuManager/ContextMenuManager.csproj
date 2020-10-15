@@ -1,0 +1,375 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EF7E60E9-3565-42BA-AFB3-7FE73A1B011C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ContextMenuManager</RootNamespace>
+    <AssemblyName>ContextMenuManager</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Properties\AppIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <Win32Resource>
+    </Win32Resource>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <StartupObject>ContextMenuManager.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BulePointLilac.Controls\MyToolTip.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\ResizbleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\MyToolBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Methods\IniFileHelper.cs" />
+    <Compile Include="BulePointLilac.Methods\IniReader.cs" />
+    <Compile Include="BulePointLilac.Methods\MessageBoxEx.cs" />
+    <Compile Include="BulePointLilac.Methods\RichTextBoxExtension.cs" />
+    <Compile Include="Controls\AddCommonButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SelectItemsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\IBtnMoveUpDownItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SubMenuModeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellStoreDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\IFoldGroupItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\IBtnOpenPathItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\IBtnDeleteItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiDeleteItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiCommandItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiFilePathItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiIconItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiTextItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiRegPathItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\IBtnShowMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\IChkVisibleItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiWebSearchItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\NewItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\NewItemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellCommonDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\AboutApp.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FileExtensionDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\GuidBlockedItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\GuidBlockedList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\NewOpenWithDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\NewSendToDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\NewShellDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\OpenWithList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\RegRuleItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\OpenWithItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ExplorerRestarter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SendToItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SendToList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellNewItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellNewList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ThirdRulesList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WinXItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WinXList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\IconDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\InputDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\MyCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\MyListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\MyMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\MySideBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\MyStatusBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellSubMenuDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Controls\PictureButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellExItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BulePointLilac.Methods\ControlExtension.cs" />
+    <Compile Include="BulePointLilac.Methods\HighDpi.cs" />
+    <Compile Include="BulePointLilac.Methods\RegistryEx.cs" />
+    <Compile Include="BulePointLilac.Methods\PropertiesDialog.cs" />
+    <Compile Include="BulePointLilac.Methods\RegTrustedInstaller.cs" />
+    <Compile Include="AppString.cs" />
+    <Compile Include="AppImage.cs" />
+    <Compile Include="BulePointLilac.Methods\EncodingType.cs" />
+    <Compile Include="GuidInfo.cs" />
+    <Compile Include="BulePointLilac.Methods\ImageExtension.cs" />
+    <Compile Include="BulePointLilac.Methods\ResourceIcon.cs" />
+    <Compile Include="BulePointLilac.Methods\ResourceString.cs" />
+    <Compile Include="BulePointLilac.Methods\ObjectPath.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Updater.cs" />
+    <None Include="App.config" />
+    <None Include="Properties\App.manifest" />
+    <None Include="Properties\Resources\Texts\AppLanguageDic.ini" />
+    <None Include="Properties\Resources\Texts\GuidInfosDic.ini" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6 %28x86 和 x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\AppIcon.ico" />
+    <Content Include="Properties\Resources\Texts\ShellCommonDic.xml" />
+    <Content Include="Properties\Resources\Images\About.png" />
+    <Content Include="Properties\Resources\Images\Add.png" />
+    <Content Include="Properties\Resources\Images\AddCommon.png" />
+    <Content Include="Properties\Resources\Images\AddExisting.png" />
+    <Content Include="Properties\Resources\Images\AddSeparator.png" />
+    <Content Include="Properties\Resources\Images\CustomType.png" />
+    <Content Include="Properties\Resources\Images\Delete.png" />
+    <Content Include="Properties\Resources\Images\Home.png" />
+    <Content Include="Properties\Resources\Images\MicrosoftStore.png" />
+    <Content Include="Properties\Resources\Images\NewItem.png" />
+    <Content Include="Properties\Resources\Images\Open.png" />
+    <Content Include="Properties\Resources\Images\SeparatorItem.png" />
+    <Content Include="Properties\Resources\Images\Setting.png" />
+    <Content Include="Properties\Resources\Images\Star.png" />
+    <Content Include="Properties\Resources\Images\SubItems.png" />
+    <Content Include="Properties\Resources\Images\TurnOff.png" />
+    <Content Include="Properties\Resources\Images\TurnOn.png" />
+    <Content Include="Properties\Resources\Images\Type.png" />
+    <Content Include="Properties\Resources\Images\Types.png" />
+    <Content Include="Properties\Resources\Images\Up.png" />
+    <Content Include="Properties\Resources\Images\Donate.png" />
+    <Content Include="Properties\Resources\Texts\ThirdRulesDic.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+</Project>

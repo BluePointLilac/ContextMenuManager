@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，常驻菜单时须添加属性Common，RegPath为程序相关注册表主路径;
+其相关菜单项目设置作为一个Item子元素，Item的Text为该Item项显示文本，Tip属性为鼠标悬浮在开关上时的提示信息，需要重启资源管理器生效则添加属性RestartExplorer;
+Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；ValueName为相关键名，On为启用键值，Off为禁用键值；
+每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；程序优先判定为On，即只要所有Rule不匹配Off键值就判定为On，键值类型不符时也判定为On;
+ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认值时可省略，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型-->
+<Data>
+  <Group Text="System" Common="">
+    <Item Text="目录背景 自定义文件夹" RestartExplorer="" Tip="禁用此项将会同时禁用文件系统&#x000A;对象属性面板中的自定义选项卡">
+      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeThisFolder" On="0" Off="1"/>
+      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeWebView" On="0" Off="1"/>
+      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeThisFolder" On="0" Off="1"/>
+      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeWebView" On="0" Off="1"/>
+    </Item>
+    <Item Text="此电脑 映射网络驱动器 断开网络驱动器的连接" RestartExplorer="">
+      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoNetConnectDisconnect" On="0" Off="1"/>
+      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoNetConnectDisconnect" On="0" Off="1"/>
+    </Item>
+    <Item Text="回收站 属性" RestartExplorer="">
+      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoPropertiesRecycleBin" On="0" Off="1"/>
+      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoPropertiesRecycleBin" On="0" Off="1"/>
+    </Item>
+    <Item Text="发送到 可移动磁盘" RestartExplorer="" Tip="仅当插入可移动磁盘时有作用,&#x000A;显示该可移动磁盘的所有分区">
+      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoDrivesInSendToMenu" On="0" Off="1"/>
+      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoDrivesInSendToMenu" On="0" Off="1"/>
+    </Item>
+    <Item Text="发送到 快速构建子菜单" Tip="禁用此项将加快主菜单弹出速度">
+      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" ValueName="DelaySendToMenuBuild" On="0" Off="1"/>
+      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" ValueName="DelaySendToMenuBuild" On="0" Off="1"/>
+    </Item>
+    <Item Text="在Microsoft Store中查找应用" Tip="仅适用于Win10 Microsoft Store">
+      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
+      <Rule RegPath="HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
+    </Item>
+  </Group>
+
+  <Group Text="Bandizip" Guid="5b69a6b4-393b-459c-8ebb-214237a9e7ac" RegPath="HKEY_CURRENT_USER\SOFTWARE\Bandizip">
+    <Item Text="禁用右键菜单">
+      <Rule ValueName="shell_DoNotUse" On="1" Off="0" ValueKind="REG_DWORD"/>
+    </Item>
+    <Item Text="层叠右键菜单">
+      <Rule ValueName="shell_ShowSubmenu" On="1" Off="0"/>
+    </Item>
+    <Item Text="自动解压">
+      <Rule ValueName="shell_ExtractAuto" On="1" Off="0"/>
+    </Item>
+    <Item Text="预览压缩文件">
+      <Rule ValueName="shell_Preview" On="1" Off="0"/>
+    </Item>
+    <Item Text="新建文件夹">
+      <Rule ValueName="shell_CreateNewFolder" On="1" Off="0"/>
+    </Item>
+    <Item Text="打开命令提示符">
+      <Rule ValueName="shell_OpenCmd" On="1" Off="0"/>
+    </Item>
+    <Item Text="隐藏Bandizip图标">
+      <Rule ValueName="shell_HideIcon" On="1" Off="0"/>
+    </Item>
+  </Group>
+
+  <Group Text="Honeyview" Guid="9b6d38f3-8ef4-48a5-ad30-ffffffffffff" RegPath="HKEY_CURRENT_USER\SOFTWARE\Honeyview">
+    <Item Text="启用右键菜单">
+      <Rule ValueName="shell_useShellMenu" On="1" Off="0"/>
+    </Item>
+    <Item Text="用蜂蜜浏览器转换图片">
+      <Rule ValueName="shell_transformDlg" On="1" Off="0"/>
+    </Item>
+    <Item Text="用蜂蜜浏览器浏览图片">
+      <Rule ValueName="shell_showWithHoneyview" On="1" Off="0"/>
+    </Item>
+    <Item Text="上下文菜单预览">
+      <Rule ValueName="shell_previewImage" On="1" Off="0"/>
+    </Item>
+    <Item Text="显示图片信息">
+      <Rule ValueName="shell_showImageInfo" On="1" Off="0"/>
+    </Item>
+    <Item Text="显示软件图标">
+      <Rule ValueName="shell_showIcon" On="1" Off="0"/>
+    </Item>
+  </Group>
+
+  <Group Text="WinRAR" Guid="b41db860-64e4-11d2-9906-e49fadc173ca" RegPath="HKEY_CURRENT_USER\SOFTWARE\WinRAR">
+    <Item Text="启用右键菜单">
+      <Rule RegPath="\Setup" ValueName="CascadedMenu" On="1" Off="0"/>
+    </Item>
+    <Item Text="层叠右键菜单">
+      <Rule RegPath="\Setup" ValueName="CascadedMenu" On="1" Off="0"/>
+    </Item>
+    <Item Text="显示图标">
+      <Rule RegPath="\Setup" ValueName="MenuIcons" On="1" Off="0"/>
+    </Item>
+    <Item Text="解压到 [文件夹名]">
+      <Rule RegPath="\MenuItems" ValueName="Extr" On="1" Off="0"/>
+    </Item>
+    <Item Text="解压到当前文件夹">
+      <Rule RegPath="\MenuItems" ValueName="ExtrHere" On="1" Off="0"/>
+    </Item>
+    <Item Text="解压每个压缩文件到单独文件夹">
+      <Rule RegPath="\MenuItems" ValueName="ExtrSep" On="1" Off="0"/>
+    </Item>
+    <Item Text="压缩并Email">
+      <Rule RegPath="\MenuItems" ValueName="EmailOpt" On="1" Off="0"/>
+    </Item>
+    <Item Text="压缩到 [文件名] 并Email">
+      <Rule RegPath="\MenuItems" ValueName="EmailArc" On="1" Off="0"/>
+    </Item>
+  </Group>
+
+  <Group Text="7-zip" Guid="23170f69-40c1-278a-1000-000100020000" RegPath="HKEY_CURRENT_USER\SOFTWARE\7-Zip">
+    <Item Text="层叠右键菜单">
+      <Rule RegPath="\Options" ValueName="CascadedMenu" On="1" Off="0"/>
+    </Item>
+    <Item Text="右键菜单显示图标">
+      <Rule RegPath="\Options" ValueName="MenuIcons" On="1" Off="0"/>
+    </Item>
+    <Item Text="排除重复的根文件夹">
+      <Rule RegPath="\Options" ValueName="ElimDupExtract" On="1" Off="0"/>
+    </Item>
+  </Group>
+
+  <Group Text="NVIDIA" Guid="3d1975af-48c6-4f8e-a182-be0e08fa86a9" RegPath="HKEY_CURRENT_USER\Software\NVIDIA Corporation">
+    <Item Text="显示桌面上下文菜单">
+      <Rule RegPath="\Global\NvCplApi\Policies" ValueName="ContextUIPolicy" On="1" Off="0"/>
+    </Item>
+    <Item Text="用图形处理器运行">
+      <Rule RegPath="\Global\CoProcManager" ValueName="ShowContextMenu" On="1" Off="0"/>
+    </Item>
+    <Item Text="显示托盘图标">
+      <Rule RegPath="\Global\CoProcManager" ValueName="ShowTrayIcon" On="1" Off="0"/>
+    </Item>
+  </Group>
+</Data>
