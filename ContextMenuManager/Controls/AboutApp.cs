@@ -184,7 +184,7 @@ namespace ContextMenuManager.Controls
 
     sealed class LanguagesBox : Panel
     {
-        const string OtherLanguagesUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/tree/Master/languages";
+        const string OtherLanguagesUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/tree/master/languages";
 
         public LanguagesBox()
         {
