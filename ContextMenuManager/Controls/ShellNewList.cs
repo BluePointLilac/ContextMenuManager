@@ -9,7 +9,7 @@ namespace ContextMenuManager.Controls
 {
     sealed class ShellNewList : MyList
     {
-        private static readonly string[] ValueNames = { "NullFile", "Data", "FileName", "Directory" };
+        private static readonly string[] ValueNames = { "NullFile", "Data", "FileName", "Directory", "Command" };
 
         public void LoadItems()
         {
