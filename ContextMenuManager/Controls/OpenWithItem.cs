@@ -64,7 +64,7 @@ namespace ContextMenuManager.Controls
             {
                 if(ObjectPath.ExtractFilePath(value) != ItemFilePath)
                 {
-                    MessageBoxEx.Show(AppString.MessageBox_CannotChangePath);
+                    MessageBoxEx.Show(AppString.MessageBox.CannotChangePath);
                 }
                 else Registry.SetValue(RegPath, "", value);
             }
@@ -80,7 +80,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        public string SearchText => $"{AppString.SideBar_OpenWith} {Text}";
+        public string SearchText => $"{AppString.SideBar.OpenWith} {Text}";
         public string ItemFilePath { get; private set; }
 
         public VisibleCheckBox ChkVisible { get; set; }
@@ -92,7 +92,7 @@ namespace ContextMenuManager.Controls
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
-        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu_Details);
+        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
 
         private void InitializeComponents()
         {

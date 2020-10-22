@@ -12,7 +12,7 @@ namespace ContextMenuManager.Controls
 
     sealed class ChangeCommandMenuItem : ToolStripMenuItem
     {
-        public ChangeCommandMenuItem(ITsiCommandItem item) : base(AppString.Menu_ChangeCommand)
+        public ChangeCommandMenuItem(ITsiCommandItem item) : base(AppString.Menu.ChangeCommand)
         {
             this.Click += (sender, e) =>
             {
@@ -23,12 +23,12 @@ namespace ContextMenuManager.Controls
 
         public static string ChangeCommand(string command)
         {
-            using(InputDialog dlg = new InputDialog { Text = command, Title = AppString.Menu_ChangeCommand })
+            using(InputDialog dlg = new InputDialog { Text = command, Title = AppString.Menu.ChangeCommand })
             {
                 if(dlg.ShowDialog() != DialogResult.OK) return null;
                 if(string.IsNullOrEmpty(dlg.Text))
                 {
-                    MessageBoxEx.Show(AppString.MessageBox_CommandCannotBeEmpty);
+                    MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
                     return ChangeCommand(command);
                 }
                 else return dlg.Text;

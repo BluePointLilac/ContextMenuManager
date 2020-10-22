@@ -36,13 +36,13 @@ namespace ContextMenuManager.Controls
 
             readonly RadioButton rdoSingle = new RadioButton
             {
-                Text = AppString.Text_Single,
+                Text = AppString.Text.Single,
                 AutoSize = true,
                 Checked = true
             };
             readonly RadioButton rdoMulti = new RadioButton
             {
-                Text = AppString.Text_Multi,
+                Text = AppString.Text.Multi,
                 AutoSize = true
             };
 
@@ -63,7 +63,7 @@ namespace ContextMenuManager.Controls
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
-                this.Text = AppString.Text_NewShellItem;
+                this.Text = AppString.Text.NewShellItem;
                 this.Controls.AddRange(new[] { rdoSingle, rdoMulti });
                 rdoSingle.Top = rdoMulti.Top = btnOk.Top;
                 rdoSingle.Left = lblCommand.Left;
@@ -81,7 +81,7 @@ namespace ContextMenuManager.Controls
                 {
                     if(string.IsNullOrWhiteSpace(txtText.Text))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox_TextCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                     }
                     else
                     {
@@ -95,7 +95,7 @@ namespace ContextMenuManager.Controls
             {
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
-                    dlg.Filter = $"{AppString.Programs}|*.exe;*.bat;*.cmd;*.pif;*.com";
+                    dlg.Filter = $"{AppString.Indirect.Programs}|*.exe;*.bat;*.cmd;*.pif;*.com";
                     if(dlg.ShowDialog() != DialogResult.OK) return;
                     ItemCommand = $"\"{dlg.FileName}\"";
                     ItemText = Path.GetFileNameWithoutExtension(dlg.FileName);

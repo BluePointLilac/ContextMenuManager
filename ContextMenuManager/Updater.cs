@@ -31,7 +31,7 @@ namespace ContextMenuManager
             if(version1.CompareTo(version2) > 0)
             {
                 string info = reader.GetValue("Update", "Info");
-                if(MessageBoxEx.Show($"{AppString.MessageBox_UpdateApp}{version1}\n{info}",
+                if(MessageBoxEx.Show($"{AppString.MessageBox.UpdateApp}{version1}\n{info}",
                     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
                     Process.Start(reader.GetValue("Update", "Url"));

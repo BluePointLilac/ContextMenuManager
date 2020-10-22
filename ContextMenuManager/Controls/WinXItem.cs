@@ -74,7 +74,7 @@ namespace ContextMenuManager.Controls
 
         private IWshRuntimeLibrary.IWshShortcut Shortcut;
         private Icon ItemIcon => ResourceIcon.GetIcon(IconLocation) ?? Icon.ExtractAssociatedIcon(Shortcut.TargetPath);
-        public string SearchText => $"{AppString.SideBar_WinX} {Text}";
+        public string SearchText => $"{AppString.SideBar.WinX} {Text}";
 
         public string ItemFilePath
         {
@@ -93,7 +93,7 @@ namespace ContextMenuManager.Controls
         public FilePropertiesMenuItem TsiFileProperties { get; set; }
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
-        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu_Details);
+        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
 
         private void InitializeComponents()
         {

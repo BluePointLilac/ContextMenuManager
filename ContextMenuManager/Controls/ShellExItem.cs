@@ -67,7 +67,7 @@ namespace ContextMenuManager.Controls
         private string BuckupPath => $@"{ShellExPath}\{(ItemVisible ? CmhParts[1] : CmhParts[0])}\{KeyName}";
         private bool IsOpenLnkItem => Guid.ToString() == LnkOpenGuid;
         private bool TryProtectOpenItem => IsOpenLnkItem && MessageBoxEx.Show
-            (AppString.MessageBox_PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
+            (AppString.MessageBox.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
 
         public bool ItemVisible
         {
@@ -90,8 +90,8 @@ namespace ContextMenuManager.Controls
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
-        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu_Details);
-        readonly ToolStripMenuItem TsiCopyGuid = new ToolStripMenuItem(AppString.Menu_CopyGuid);
+        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
+        readonly ToolStripMenuItem TsiCopyGuid = new ToolStripMenuItem(AppString.Menu.CopyGuid);
 
         private void InitializeComponents()
         {
@@ -116,7 +116,7 @@ namespace ContextMenuManager.Controls
         private void CopyGuid()
         {
             Clipboard.SetText(Guid.ToString());
-            MessageBoxEx.Show($"{AppString.MessageBox_CopiedToClipboard}:\n{Guid}",
+            MessageBoxEx.Show($"{AppString.MessageBox.CopiedToClipboard}:\n{Guid}",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

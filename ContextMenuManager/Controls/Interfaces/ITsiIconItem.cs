@@ -17,7 +17,7 @@ namespace ContextMenuManager.Controls
 
     sealed class ChangeIconMenuItem : ToolStripMenuItem
     {
-        public ChangeIconMenuItem(ITsiIconItem item) : base(AppString.Menu_ChangeIcon)
+        public ChangeIconMenuItem(ITsiIconItem item) : base(AppString.Menu.ChangeIcon)
         {
             this.Click += (sender, e) =>
             {

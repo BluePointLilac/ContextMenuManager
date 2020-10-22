@@ -15,7 +15,7 @@ namespace ContextMenuManager.Controls
 
     sealed class FileLocationMenuItem : ToolStripMenuItem
     {
-        public FileLocationMenuItem(ITsiFilePathItem item) : base(AppString.Menu_FileLocation)
+        public FileLocationMenuItem(ITsiFilePathItem item) : base(AppString.Menu.FileLocation)
         {
             bool FileExists() => File.Exists(item.ItemFilePath);
             bool DirExists() => Directory.Exists(item.ItemFilePath);
@@ -31,7 +31,7 @@ namespace ContextMenuManager.Controls
 
     sealed class FilePropertiesMenuItem : ToolStripMenuItem
     {
-        public FilePropertiesMenuItem(ITsiFilePathItem item) : base(AppString.Menu_FileProperties)
+        public FilePropertiesMenuItem(ITsiFilePathItem item) : base(AppString.Menu.FileProperties)
         {
             item.ContextMenuStrip.Opening += (sender, e)
                 => this.Visible = File.Exists(item.ItemFilePath) || Directory.Exists(item.ItemFilePath);

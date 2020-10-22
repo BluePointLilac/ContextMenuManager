@@ -13,8 +13,8 @@ namespace ContextMenuManager.Controls
             this.Visible = false;
             this.Dock = DockStyle.Bottom;
             this.Image = AppImage.Explorer;
-            this.Text = AppString.Text_RestartExplorer;
-            MyToolTip.SetToolTip(BtnRestart, AppString.Tip_RestartExplorer);
+            this.Text = AppString.Text.RestartExplorer;
+            MyToolTip.SetToolTip(BtnRestart, AppString.Tip.RestartExplorer);
             this.AddCtr(BtnRestart);
             this.CanMoveForm();
             BtnRestart.MouseDown += (sender, e) => { Explorer.ReStart(); this.Visible = false; };

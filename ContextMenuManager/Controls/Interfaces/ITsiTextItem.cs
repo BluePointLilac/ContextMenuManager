@@ -13,7 +13,7 @@ namespace ContextMenuManager.Controls
 
     sealed class ChangeTextMenuItem : ToolStripMenuItem
     {
-        public ChangeTextMenuItem(ITsiTextItem item) : base(AppString.Menu_ChangeText)
+        public ChangeTextMenuItem(ITsiTextItem item) : base(AppString.Menu.ChangeText)
         {
             this.Click += (sender, e) =>
             {
@@ -26,17 +26,17 @@ namespace ContextMenuManager.Controls
 
         public static string ChangeText(string text)
         {
-            using(InputDialog dlg = new InputDialog { Text = text, Title = AppString.Menu_ChangeText })
+            using(InputDialog dlg = new InputDialog { Text = text, Title = AppString.Menu.ChangeText })
             {
                 if(dlg.ShowDialog() != DialogResult.OK) return null;
                 if(dlg.Text.Length == 0)
                 {
-                    MessageBoxEx.Show(AppString.MessageBox_TextCannotBeEmpty);
+                    MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                     return ChangeText(text);
                 }
                 else if(ResourceString.GetDirectString(dlg.Text).Length == 0)
                 {
-                    MessageBoxEx.Show(AppString.MessageBox_StringParsingFailed);
+                    MessageBoxEx.Show(AppString.MessageBox.StringParsingFailed);
                     return ChangeText(text);
                 }
                 else return dlg.Text;

@@ -65,7 +65,7 @@ namespace ContextMenuManager.Controls
             {
                 this.AcceptButton = btnOk;
                 this.CancelButton = btnCancel;
-                this.Text = AppString.Text_SelectExtension;
+                this.Text = AppString.Text.SelectExtension;
                 this.Font = SystemFonts.MenuFont;
                 this.ShowIcon = this.ShowInTaskbar = false;
                 this.MaximizeBox = this.MinimizeBox = false;
@@ -82,7 +82,7 @@ namespace ContextMenuManager.Controls
                     }
                     else
                     {
-                        MessageBoxEx.Show(AppString.MessageBox_UnsupportedExtension);
+                        MessageBoxEx.Show(AppString.MessageBox.UnsupportedExtension);
                         cmbExtension.Focus();
                     }
                 };
@@ -98,13 +98,13 @@ namespace ContextMenuManager.Controls
             };
             readonly Button btnOk = new Button
             {
-                Text = AppString.Ok,
+                Text = AppString.Indirect.Ok,
                 AutoSize = true
             };
             readonly Button btnCancel = new Button
             {
                 DialogResult = DialogResult.Cancel,
-                Text = AppString.Cancel,
+                Text = AppString.Indirect.Cancel,
                 AutoSize = true
             };
 

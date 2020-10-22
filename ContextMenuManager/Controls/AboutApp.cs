@@ -24,7 +24,7 @@ namespace ContextMenuManager.Controls
         readonly Label lblInfo = new Label
         {
             Font = new Font(SystemFonts.MenuFont.FontFamily, 10F),
-            Text = AppString.Text_Donate,
+            Text = AppString.Text.Donate,
             AutoSize = true
         };
 
@@ -93,18 +93,18 @@ namespace ContextMenuManager.Controls
         }
 
         readonly TabPage[] pages = new TabPage[] {
-            new TabPage(AppString.Text_DictionaryDescription),
-            new TabPage(AppString.Text_LanguageDictionary),
-            new TabPage(AppString.Text_GuidInfosDictionary),
-            new TabPage(AppString.Text_ThridRulesDictionary),
-            new TabPage(AppString.Text_CommonItemsDictionary)
+            new TabPage(AppString.Text.DictionaryDescription),
+            new TabPage(AppString.Text.LanguageDictionary),
+            new TabPage(AppString.Text.GuidInfosDictionary),
+            new TabPage(AppString.Text.ThridRulesDictionary),
+            new TabPage(AppString.Text.CommonItemsDictionary)
         };
         readonly AboutAppBox[] boxs = new AboutAppBox[5];
         readonly ContextMenuStrip cms = new ContextMenuStrip();
         readonly ToolStripItem[] items = new ToolStripItem[] {
-            new ToolStripMenuItem(AppString.Edit),
+            new ToolStripMenuItem(AppString.Indirect.Edit),
             new ToolStripSeparator(),
-            new ToolStripMenuItem(AppString.Save)
+            new ToolStripMenuItem(AppString.Indirect.Save)
         };
 
         [DllImport("user32.dll")]
@@ -174,7 +174,7 @@ namespace ContextMenuManager.Controls
         {
             if(hadLoaded) return;
             hadLoaded = true;
-            boxs[0].Text = AppString.Text_Dictionaries;
+            boxs[0].Text = AppString.Text.Dictionaries;
             await Task.Run(() => boxs[1].BeginInvoke(new Action<string>(boxs[1].LoadIni), new[] { Properties.Resources.AppLanguageDic }));
             await Task.Run(() => boxs[2].BeginInvoke(new Action<string>(boxs[2].LoadIni), new[] { Properties.Resources.GuidInfosDic }));
             await Task.Run(() => boxs[3].BeginInvoke(new Action<string>(boxs[3].LoadXml), new[] { Properties.Resources.ThirdRulesDic }));
@@ -204,7 +204,7 @@ namespace ContextMenuManager.Controls
 
         readonly LinkLabel llbOtherLanguages = new LinkLabel
         {
-            Text = AppString.Text_OtherLanguages,
+            Text = AppString.Text.OtherLanguages,
             AutoSize = true
         };
 
@@ -236,7 +236,7 @@ namespace ContextMenuManager.Controls
             cmbLanguages.Items.Clear();
             cmbLanguages.Items.Add("(默认) 简体中文");
             cmbLanguages.SelectedIndex = 0;
-            string str = AppString.Text_Translators + Environment.NewLine;
+            string str = AppString.Text.Translators + Environment.NewLine;
             DirectoryInfo di = new DirectoryInfo(Program.LanguagesDir);
             if(di.Exists)
             {
@@ -265,7 +265,7 @@ namespace ContextMenuManager.Controls
             string path = "default";
             if(cmbLanguages.SelectedIndex > 0) path = iniPaths[cmbLanguages.SelectedIndex - 1];
             new IniFileHelper(Program.ConfigIniPath).SetValue("General", "Language", path);
-            MessageBoxEx.Show(AppString.MessageBox_RestartApp, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBoxEx.Show(AppString.MessageBox.RestartApp, MessageBoxButtons.OK, MessageBoxIcon.Information);
             Application.Restart();
         }
     }

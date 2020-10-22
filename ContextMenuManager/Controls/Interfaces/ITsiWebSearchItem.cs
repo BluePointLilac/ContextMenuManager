@@ -13,7 +13,7 @@ namespace ContextMenuManager.Controls
     {
         public static string EnginePath = "https://www.baidu.com/s?wd=";
 
-        public WebSearchMenuItem(ITsiWebSearchItem item) : base(AppString.Menu_WebSearch)
+        public WebSearchMenuItem(ITsiWebSearchItem item) : base(AppString.Menu.WebSearch)
         {
             this.Click += (sender, e) => WebSearch(item.SearchText);
         }

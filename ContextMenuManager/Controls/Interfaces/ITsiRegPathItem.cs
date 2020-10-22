@@ -14,7 +14,7 @@ namespace ContextMenuManager.Controls
     sealed class RegLocationMenuItem : ToolStripMenuItem
     {
 
-        public RegLocationMenuItem(ITsiRegPathItem item) : base(AppString.Menu_RegistryLocation)
+        public RegLocationMenuItem(ITsiRegPathItem item) : base(AppString.Menu.RegistryLocation)
         {
             this.Click += (sender, e) => ShowPath(item.RegPath, PathType.Registry);
             item.ContextMenuStrip.Opening += (sender, e) =>

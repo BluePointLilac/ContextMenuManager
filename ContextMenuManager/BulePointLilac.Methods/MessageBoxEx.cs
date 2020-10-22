@@ -8,7 +8,7 @@ namespace BulePointLilac.Methods
         public static DialogResult Show(string text, MessageBoxButtons buttons = MessageBoxButtons.OK,
             MessageBoxIcon icon = MessageBoxIcon.Warning, string caption = null)
         {
-            return MessageBox.Show(text, caption ?? AppString.General_AppName, buttons, icon);
+            return MessageBox.Show(text, caption ?? AppString.General.AppName, buttons, icon);
         }
     }
 }

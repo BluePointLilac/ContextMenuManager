@@ -89,7 +89,7 @@ namespace ContextMenuManager.Controls
 
             public ShellStoreForm()
             {
-                this.Text = AppString.Text_CheckReference;
+                this.Text = AppString.Text.CheckReference;
                 btnOk.Click += (sender, e) => GetSelectedItems();
                 LoadItems();
             }

@@ -8,9 +8,9 @@ namespace ContextMenuManager.Controls
         public NewItem()
         {
             this.Image = AppImage.NewItem;
-            this.Text = AppString.Text_NewItem;
+            this.Text = AppString.Text.NewItem;
             this.AddCtr(BtnAddNewItem);
-            MyToolTip.SetToolTip(BtnAddNewItem, AppString.Text_NewItem);
+            MyToolTip.SetToolTip(BtnAddNewItem, AppString.Text.NewItem);
             BtnAddNewItem.MouseDown += (sender, e) => NewItemAdd?.Invoke(null, null);
         }
         public event EventHandler NewItemAdd;

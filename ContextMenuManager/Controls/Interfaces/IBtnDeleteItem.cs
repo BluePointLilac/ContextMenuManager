@@ -17,7 +17,7 @@ namespace ContextMenuManager.Controls
             ((MyListItem)item).AddCtr(this);
             this.MouseDown += (sender, e) =>
             {
-                if(MessageBoxEx.Show(AppString.MessageBox_ConfirmDelete,
+                if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDelete,
                 MessageBoxButtons.YesNo) == DialogResult.Yes)
                     item.DeleteMe();
             };

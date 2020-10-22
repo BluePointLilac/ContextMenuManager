@@ -34,11 +34,11 @@ namespace ContextMenuManager.Controls
 
         private void AddNewItem()
         {
-            NewItem newItem = new NewItem { Text = AppString.Text_NewGuidBlockedItem };
+            NewItem newItem = new NewItem { Text = AppString.Text.NewGuidBlockedItem };
             this.AddItem(newItem);
             newItem.NewItemAdd += (sender, e) =>
             {
-                using(InputDialog dlg = new InputDialog { Title = AppString.Text_InputGuid })
+                using(InputDialog dlg = new InputDialog { Title = AppString.Text.InputGuid })
                 {
                     if(GuidInfo.TryGetGuid(Clipboard.GetText(), out Guid guid)) dlg.Text = guid.ToString();
                     if(dlg.ShowDialog() != DialogResult.OK) return;
@@ -52,14 +52,14 @@ namespace ContextMenuManager.Controls
                         {
                             if(((GuidBlockedItem)Controls[i]).Guid.Equals(guid))
                             {
-                                MessageBoxEx.Show(AppString.MessageBox_HasBeenAdded);
+                                MessageBoxEx.Show(AppString.MessageBox.HasBeenAdded);
                                 return;
                             }
                         }
                         this.InsertItem(new GuidBlockedItem(guid, guidPath), 1);
                         ExplorerRestarter.NeedRestart = true;
                     }
-                    else MessageBoxEx.Show(AppString.MessageBox_UnknownGuid);
+                    else MessageBoxEx.Show(AppString.MessageBox.UnknownGuid);
                 }
             };
         }

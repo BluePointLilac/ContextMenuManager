@@ -41,7 +41,7 @@ namespace ContextMenuManager.Controls
                 this.ScenePath = scenePath;
                 this.ShellPath = shellPath;
                 this.ShellExPath = shellExPath;
-                this.Text = AppString.Text_CheckCommon;
+                this.Text = AppString.Text.CheckCommon;
                 btnOk.Click += (sender, e) => GetSelectedItems();
                 LoadItems();
             }

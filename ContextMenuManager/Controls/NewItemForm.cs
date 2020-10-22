@@ -26,30 +26,30 @@ namespace ContextMenuManager.Controls
 
         protected readonly Label lblName = new Label
         {
-            Text = AppString.Text_ItemName,
+            Text = AppString.Text.ItemName,
             AutoSize = true
         };
         protected readonly Label lblCommand = new Label
         {
-            Text = AppString.Text_ItemCommand,
+            Text = AppString.Text.ItemCommand,
             AutoSize = true
         };
         protected readonly TextBox txtText = new TextBox();
         protected readonly TextBox txtCommand = new TextBox();
         protected readonly Button btnBrowse = new Button
         {
-            Text = AppString.Browse,
+            Text = AppString.Indirect.Browse,
             AutoSize = true
         };
         protected readonly Button btnOk = new Button
         {
-            Text = AppString.Ok,
+            Text = AppString.Indirect.Ok,
             AutoSize = true
         };
         protected readonly Button btnCancel = new Button
         {
             DialogResult = DialogResult.Cancel,
-            Text = AppString.Cancel,
+            Text = AppString.Indirect.Cancel,
             AutoSize = true
         };
 

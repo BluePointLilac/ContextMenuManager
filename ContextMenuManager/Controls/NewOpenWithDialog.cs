@@ -31,25 +31,25 @@ namespace ContextMenuManager.Controls
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
-                this.Text = AppString.Text_NewOpenWithItem;
+                this.Text = AppString.Text.NewOpenWithItem;
                 btnBrowse.Click += (sender, e) => BrowseFile();
                 btnOk.Click += (sender, e) =>
                 {
                     if(string.IsNullOrEmpty(ItemText))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox_TextCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
                     if(string.IsNullOrWhiteSpace(ItemCommand))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox_TextCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
                     FilePath = ObjectPath.ExtractFilePath(ItemCommand);
                     AppRegPath = $@"HKEY_CLASSES_ROOT\Applications\{Path.GetFileName(FilePath)}";
                     if(FilePath == null || RegistryEx.GetRegistryKey(AppRegPath) != null)
                     {
-                        MessageBoxEx.Show(AppString.MessageBox_UnsupportedFilename);
+                        MessageBoxEx.Show(AppString.MessageBox.UnsupportedFilename);
                         return;
                     }
                     AddNewItem();
@@ -61,7 +61,7 @@ namespace ContextMenuManager.Controls
             {
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
-                    dlg.Filter = $"{AppString.Programs}|*.exe";
+                    dlg.Filter = $"{AppString.Indirect.Programs}|*.exe";
                     if(dlg.ShowDialog() == DialogResult.OK)
                     {
                         ItemCommand = $"\"{dlg.FileName}\" \"%1\"";

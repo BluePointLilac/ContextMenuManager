@@ -81,8 +81,8 @@ namespace ContextMenuManager.Controls
                 {
                     this.AddItem(newItem);
                     newItem.AddCtrs(new[] { btnAddCommon, btnAddExisting, btnAddSeparator });
-                    MyToolTip.SetToolTip(btnAddExisting, AppString.Tip_AddExistingItems);
-                    MyToolTip.SetToolTip(btnAddSeparator, AppString.Tip_AddSeparator);
+                    MyToolTip.SetToolTip(btnAddExisting, AppString.Tip.AddExistingItems);
+                    MyToolTip.SetToolTip(btnAddSeparator, AppString.Tip.AddSeparator);
                     newItem.NewItemAdd += (sender, e) => AddNewItem();
                     btnAddCommon.MouseDown += (sender, e) => AddCommonItems();
                     btnAddExisting.MouseDown += (sender, e) => AddExistingItems();
@@ -187,7 +187,7 @@ namespace ContextMenuManager.Controls
                         if(item.GetType() == typeof(SubShellItem)) count++;
                     }
                     bool flag = count < 16;
-                    if(!flag) MessageBoxEx.Show(AppString.MessageBox_CannotAddNewItem);
+                    if(!flag) MessageBoxEx.Show(AppString.MessageBox.CannotAddNewItem);
                     return flag;
                 }
 
@@ -244,14 +244,14 @@ namespace ContextMenuManager.Controls
 
                     protected override bool IsSubItem => true;
 
-                    readonly ToolStripMenuItem TsiDeleteRef = new ToolStripMenuItem(AppString.Menu_DeleteReference);
+                    readonly ToolStripMenuItem TsiDeleteRef = new ToolStripMenuItem(AppString.Menu.DeleteReference);
                     public CommonMultiItemsList Owner { get; private set; }
                     public MoveButton BtnMoveUp { get; set; }
                     public MoveButton BtnMoveDown { get; set; }
 
                     private void DeleteReference()
                     {
-                        if(MessageBoxEx.Show(AppString.MessageBox_ConfirmDeleteReference,
+                        if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDeleteReference,
                             MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             RemoveItem(Owner, this);
@@ -260,7 +260,7 @@ namespace ContextMenuManager.Controls
 
                     public override void DeleteMe()
                     {
-                        if(MessageBoxEx.Show(AppString.MessageBox_ConfirmDeleteReferenced,
+                        if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDeleteReferenced,
                             MessageBoxButtons.YesNo) == DialogResult.Yes) base.DeleteMe();
                     }
                 }
@@ -270,14 +270,14 @@ namespace ContextMenuManager.Controls
                     public SeparatorItem(CommonMultiItemsList list)
                     {
                         this.Owner = list;
-                        this.Text = AppString.Text_Separator;
+                        this.Text = AppString.Text.Separator;
                         this.Image = AppImage.Separator;
                         BtnDelete = new DeleteButton(this);
                         BtnMoveDown = new MoveButton(this, false);
                         BtnMoveUp = new MoveButton(this, true);
                         BtnMoveUp.MouseDown += (sender, e) => MoveItem(this, Owner, true);
                         BtnMoveDown.MouseDown += (sender, e) => MoveItem(this, Owner, false);
-                        MyToolTip.SetToolTip(BtnDelete, AppString.Tip_Separator);
+                        MyToolTip.SetToolTip(BtnDelete, AppString.Tip.Separator);
                     }
 
                     public DeleteButton BtnDelete { get; set; }
@@ -298,14 +298,14 @@ namespace ContextMenuManager.Controls
                     public InvalidItem(CommonMultiItemsList list, string keyName)
                     {
                         this.Owner = list;
-                        this.Text = $"{AppString.Text_InvalidItem} {keyName}";
+                        this.Text = $"{AppString.Text.InvalidItem} {keyName}";
                         this.Image = AppImage.NotFound.ToTransparent();
                         BtnDelete = new DeleteButton(this);
                         BtnMoveDown = new MoveButton(this, false);
                         BtnMoveUp = new MoveButton(this, true);
                         BtnMoveUp.MouseDown += (sender, e) => MoveItem(this, Owner, true);
                         BtnMoveDown.MouseDown += (sender, e) => MoveItem(this, Owner, false);
-                        MyToolTip.SetToolTip(BtnDelete, AppString.Tip_InvalidItem);
+                        MyToolTip.SetToolTip(BtnDelete, AppString.Tip.InvalidItem);
                     }
 
                     public DeleteButton BtnDelete { get; set; }
@@ -395,7 +395,7 @@ namespace ContextMenuManager.Controls
                         if(item.GetType() == typeof(SubShellItem)) count++;
                     }
                     bool flag = count < 16;
-                    if(!flag) MessageBoxEx.Show(AppString.MessageBox_CannotAddNewItem);
+                    if(!flag) MessageBoxEx.Show(AppString.MessageBox.CannotAddNewItem);
                     return flag;
                 }
 
@@ -424,7 +424,7 @@ namespace ContextMenuManager.Controls
                         }
                     }
 
-                    readonly ToolStripMenuItem tsiShowSeparator = new ToolStripMenuItem(AppString.Menu_ShowSeparator);
+                    readonly ToolStripMenuItem tsiShowSeparator = new ToolStripMenuItem(AppString.Menu.ShowSeparator);
                 }
             }
         }

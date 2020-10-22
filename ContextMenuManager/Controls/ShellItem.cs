@@ -18,9 +18,9 @@ namespace ContextMenuManager.Controls
         /// <summary>Shell类型菜单特殊注册表项名默认名称</summary>
         private static readonly Dictionary<string, string> DefaultNames
             = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-            {"open", AppString.Open }, {"edit", AppString.Edit }, {"print", AppString.Print },
-            {"find", AppString.Find }, {"play", AppString.Play }, {"runas", AppString.Runas },
-            {"explore", AppString.Text_Explore },//"浏览" 未找到合适的本地化字符串资源
+            {"open", AppString.Indirect.Open }, {"edit", AppString.Indirect.Edit }, {"print", AppString.Indirect.Print },
+            {"find", AppString.Indirect.Find }, {"play", AppString.Indirect.Play }, {"runas", AppString.Indirect.Runas },
+            {"explore", AppString.Text.Explore },//"浏览" 未找到合适的本地化字符串资源
         };
 
         /// <summary>菜单项目在菜单中出现的位置</summary>
@@ -53,7 +53,7 @@ namespace ContextMenuManager.Controls
         private bool IsMultiItem => Registry.GetValue(RegPath, "SubCommands", null) != null;
         protected virtual bool IsSubItem => false;
         private bool IsOpenItem => KeyName.ToLower() == "open";
-        private bool TryProtectOpenItem => IsOpenItem && MessageBoxEx.Show(AppString.MessageBox_PromptIsOpenItem,
+        private bool TryProtectOpenItem => IsOpenItem && MessageBoxEx.Show(AppString.MessageBox.PromptIsOpenItem,
                 MessageBoxButtons.YesNo) != DialogResult.Yes;
 
         public string ItemFilePath => GuidInfo.GetFilePath(Guid) ?? ObjectPath.ExtractFilePath(ItemCommand);
@@ -178,7 +178,7 @@ namespace ContextMenuManager.Controls
             {
                 //MUIVerb长度不可超过80,超过80系统会隐藏该菜单项目
                 if(ResourceString.GetDirectString(value).Length >= 80)
-                    MessageBoxEx.Show(AppString.MessageBox_TextLengthCannotExceed80);
+                    MessageBoxEx.Show(AppString.MessageBox.TextLengthCannotExceed80);
                 else Registry.SetValue(RegPath, "MUIVerb", value);
             }
         }
@@ -266,17 +266,17 @@ namespace ContextMenuManager.Controls
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
 
-        protected readonly ToolStripMenuItem TsiOtherAttributes = new ToolStripMenuItem(AppString.Menu_OtherAttributes);
-        readonly ToolStripMenuItem TsiItemIcon = new ToolStripMenuItem(AppString.Menu_ItemIcon);
-        readonly ToolStripMenuItem TsiDeleteIcon = new ToolStripMenuItem(AppString.Menu_DeleteIcon);
-        readonly ToolStripMenuItem TsiPosition = new ToolStripMenuItem(AppString.Menu_ItemPosition);
-        readonly ToolStripMenuItem TsiDefault = new ToolStripMenuItem(AppString.Menu_SetDefault);
-        readonly ToolStripMenuItem TsiTop = new ToolStripMenuItem(AppString.Menu_SetTop);
-        readonly ToolStripMenuItem TsiBottom = new ToolStripMenuItem(AppString.Menu_SetBottom);
-        readonly ToolStripMenuItem TsiShift = new ToolStripMenuItem(AppString.Menu_OnlyWithShift);
-        readonly ToolStripMenuItem TsiExplorer = new ToolStripMenuItem(AppString.Menu_OnlyInExplorer);
-        readonly ToolStripMenuItem TsiNoWorkDir = new ToolStripMenuItem(AppString.Menu_NoWorkingDirectory);
-        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu_Details);
+        protected readonly ToolStripMenuItem TsiOtherAttributes = new ToolStripMenuItem(AppString.Menu.OtherAttributes);
+        readonly ToolStripMenuItem TsiItemIcon = new ToolStripMenuItem(AppString.Menu.ItemIcon);
+        readonly ToolStripMenuItem TsiDeleteIcon = new ToolStripMenuItem(AppString.Menu.DeleteIcon);
+        readonly ToolStripMenuItem TsiPosition = new ToolStripMenuItem(AppString.Menu.ItemPosition);
+        readonly ToolStripMenuItem TsiDefault = new ToolStripMenuItem(AppString.Menu.SetDefault);
+        readonly ToolStripMenuItem TsiTop = new ToolStripMenuItem(AppString.Menu.SetTop);
+        readonly ToolStripMenuItem TsiBottom = new ToolStripMenuItem(AppString.Menu.SetBottom);
+        readonly ToolStripMenuItem TsiShift = new ToolStripMenuItem(AppString.Menu.OnlyWithShift);
+        readonly ToolStripMenuItem TsiExplorer = new ToolStripMenuItem(AppString.Menu.OnlyInExplorer);
+        readonly ToolStripMenuItem TsiNoWorkDir = new ToolStripMenuItem(AppString.Menu.NoWorkingDirectory);
+        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
         readonly PictureButton BtnSubItems = new PictureButton(AppImage.SubItems);
 
         private void InitializeComponents()
@@ -313,7 +313,7 @@ namespace ContextMenuManager.Controls
             TsiNoWorkDir.Click += (sender, e) => this.NoWorkingDirectory = !TsiNoWorkDir.Checked;
             ContextMenuStrip.Opening += (sender, e) => RefreshMenuItem();
             BtnSubItems.MouseDown += (sender, e) => ShowSubItems();
-            MyToolTip.SetToolTip(BtnSubItems, AppString.Tip_EditSubItems);
+            MyToolTip.SetToolTip(BtnSubItems, AppString.Tip.EditSubItems);
             this.AddCtr(BtnSubItems);
         }
 
@@ -328,12 +328,12 @@ namespace ContextMenuManager.Controls
         {
             if(this.HasIcon)
             {
-                TsiChangeIcon.Text = AppString.Menu_ChangeIcon;
+                TsiChangeIcon.Text = AppString.Menu.ChangeIcon;
                 TsiDeleteIcon.Visible = true;
             }
             else
             {
-                TsiChangeIcon.Text = AppString.Menu_AddIcon;
+                TsiChangeIcon.Text = AppString.Menu.AddIcon;
                 TsiDeleteIcon.Visible = false;
             }
             TsiDeleteMe.Enabled = !IsOpenItem;
@@ -364,7 +364,7 @@ namespace ContextMenuManager.Controls
         {
             using(ShellSubMenuDialog dlg = new ShellSubMenuDialog())
             {
-                dlg.Text = AppString.Text_EditSubItems.Replace("%s", this.Text);
+                dlg.Text = AppString.Text.EditSubItems.Replace("%s", this.Text);
                 dlg.Icon = ResourceIcon.GetIcon(IconPath, IconIndex);
                 dlg.ShowDialog(this.RegPath);
             }

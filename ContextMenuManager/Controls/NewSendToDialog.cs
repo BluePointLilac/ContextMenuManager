@@ -27,20 +27,20 @@ namespace ContextMenuManager.Controls
 
             readonly RadioButton rdoFile = new RadioButton
             {
-                Text = AppString.SideBar_File,
+                Text = AppString.SideBar.File,
                 AutoSize = true,
                 Checked = true
             };
             readonly RadioButton rdoFolder = new RadioButton
             {
-                Text = AppString.SideBar_Folder,
+                Text = AppString.SideBar.Folder,
                 AutoSize = true
             };
 
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
-                this.Text = AppString.Text_NewSendToItem;
+                this.Text = AppString.Text.NewSendToItem;
                 this.Controls.AddRange(new[] { rdoFile, rdoFolder });
                 rdoFile.Top = rdoFolder.Top = btnOk.Top;
                 rdoFile.Left = lblCommand.Left;
@@ -56,17 +56,17 @@ namespace ContextMenuManager.Controls
                 {
                     if(string.IsNullOrWhiteSpace(ItemText))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox_TextCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
                     if(string.IsNullOrWhiteSpace(ItemCommand))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox_CommandCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
                         return;
                     }
                     if(ObjectPath.ExtractFilePath(ItemCommand) == null && !Directory.Exists(ItemCommand))
                     {
-                        MessageBoxEx.Show(AppString.FileOrFolderNotExists);
+                        MessageBoxEx.Show(AppString.Indirect.FileOrFolderNotExists);
                         return;
                     }
                     AddNewItem();
@@ -78,7 +78,7 @@ namespace ContextMenuManager.Controls
             {
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
-                    dlg.Filter = $"{AppString.Programs}|*.exe;*.bat;*.cmd;*.vbs;*.vbe;*.jse;*.wsf";
+                    dlg.Filter = $"{AppString.Indirect.Programs}|*.exe;*.bat;*.cmd;*.vbs;*.vbe;*.jse;*.wsf";
                     if(dlg.ShowDialog() == DialogResult.OK)
                     {
                         ItemCommand = dlg.FileName;

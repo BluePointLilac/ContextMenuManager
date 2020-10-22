@@ -128,9 +128,9 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.Text_CustomFolder,
+                Text = AppString.Text.CustomFolder,
                 Image = AppImage.CustomFolder,
-                Tip = AppString.Tip_CustomFolder,
+                Tip = AppString.Tip.CustomFolder,
                 RestartExplorer = true
             }
         };
@@ -143,7 +143,7 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = $"{AppString.MapNetworkDrive} && {AppString.DisconnectNetworkDrive}",
+                Text = $"{AppString.Indirect.MapNetworkDrive} && {AppString.Indirect.DisconnectNetworkDrive}",
                 Image = AppImage.NetworkDrive,
                 RestartExplorer = true
             }
@@ -157,7 +157,7 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.RecycleBinProperties,
+                Text = AppString.Indirect.RecycleBinProperties,
                 Image = AppImage.RecycleBinProperties,
                 RestartExplorer = true
             }
@@ -171,9 +171,9 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.RemovableDrive,
+                Text = AppString.Indirect.RemovableDrive,
                 Image = AppImage.Drive,
-                Tip = AppString.Tip_SendToDrive,
+                Tip = AppString.Tip.SendToDrive,
                 RestartExplorer = true
             }
         };
@@ -186,9 +186,9 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.Text_BuildSendtoMenu,
+                Text = AppString.Text.BuildSendtoMenu,
                 Image = AppImage.SendTo,
-                Tip = AppString.Tip_BuildSendtoMenu
+                Tip = AppString.Tip.BuildSendtoMenu
             }
         };
 
@@ -200,9 +200,9 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.Text_UseStoreOpenWith,
+                Text = AppString.Text.UseStoreOpenWith,
                 Image = AppImage.MicrosoftStore,
-                Tip = AppString.Tip_UseStoreOpenWith
+                Tip = AppString.Tip.UseStoreOpenWith
             }
         };
     }

@@ -11,11 +11,11 @@ namespace ContextMenuManager.Controls
 
     sealed class DeleteMeMenuItem : ToolStripMenuItem
     {
-        public DeleteMeMenuItem(ITsiDeleteItem item) : base(AppString.Menu_Delete)
+        public DeleteMeMenuItem(ITsiDeleteItem item) : base(AppString.Menu.Delete)
         {
             this.Click += (sender, e) =>
             {
-                if(MessageBoxEx.Show(AppString.MessageBox_ConfirmDeletePermanently,
+                if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDeletePermanently,
                     MessageBoxButtons.YesNo) == DialogResult.Yes)
                     item.DeleteMe();
             };

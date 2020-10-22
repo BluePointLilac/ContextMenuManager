@@ -6,7 +6,7 @@ namespace ContextMenuManager.Controls
     {
         public AddCommonButton() : base(AppImage.AddCommon)
         {
-            MyToolTip.SetToolTip(this, AppString.Tip_AddCommonItems);
+            MyToolTip.SetToolTip(this, AppString.Tip.AddCommonItems);
         }
     }
 }

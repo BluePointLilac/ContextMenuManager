@@ -7,7 +7,7 @@ namespace ContextMenuManager
     {
         public MainForm()
         {
-            this.Text = AppString.General_AppName;
+            this.Text = AppString.General.AppName;
             this.Controls.Add(new ExplorerRestarter());
             shellList.Owner = shellNewList.Owner = sendToList.Owner = openWithList.Owner
                 = winXList.Owner = guidBlockedList.Owner = thirdRuleList.Owner = MainBody;
@@ -20,10 +20,10 @@ namespace ContextMenuManager
         }
 
         readonly MyToolBarButton[] ToolBarButtons = new MyToolBarButton[] {
-            new MyToolBarButton(AppImage.Home, AppString.ToolBar_Home),//主页
-            new MyToolBarButton(AppImage.Type, AppString.ToolBar_Type),//文件类型
-            new MyToolBarButton(AppImage.Star, AppString.ToolBar_Rule),//其他规则
-            new MyToolBarButton(AppImage.About, AppString.ToolBar_About)//关于
+            new MyToolBarButton(AppImage.Home, AppString.ToolBar.Home),//主页
+            new MyToolBarButton(AppImage.Type, AppString.ToolBar.Type),//文件类型
+            new MyToolBarButton(AppImage.Star, AppString.ToolBar.Rule),//其他规则
+            new MyToolBarButton(AppImage.About, AppString.ToolBar.About)//关于
         };
         readonly ShellList shellList = new ShellList();
         readonly ShellNewList shellNewList = new ShellNewList();
@@ -34,98 +34,98 @@ namespace ContextMenuManager
         readonly ThirdRulesList thirdRuleList = new ThirdRulesList();
         readonly AboutAppBox aboutMeBox = new AboutAppBox
         {
-            Text = AppString.Text_AboutApp
+            Text = AppString.Text.AboutApp
         };
         readonly DonateBox donateBox = new DonateBox();
         readonly LanguagesBox languagesBox = new LanguagesBox();
         readonly DictionariesBox dictionariesBox = new DictionariesBox();
 
         static readonly string[] GeneralItems = {
-            AppString.SideBar_File,
-            AppString.SideBar_Folder,
-            AppString.SideBar_Directory,
-            AppString.SideBar_Background,
-            AppString.SideBar_Desktop,
-            AppString.SideBar_Drive,
-            AppString.SideBar_AllObjects,
-            AppString.SideBar_Computer,
-            AppString.SideBar_RecycleBin,
-            AppString.SideBar_Library,
+            AppString.SideBar.File,
+            AppString.SideBar.Folder,
+            AppString.SideBar.Directory,
+            AppString.SideBar.Background,
+            AppString.SideBar.Desktop,
+            AppString.SideBar.Drive,
+            AppString.SideBar.AllObjects,
+            AppString.SideBar.Computer,
+            AppString.SideBar.RecycleBin,
+            AppString.SideBar.Library,
             null,
-            AppString.SideBar_New,
-            AppString.SideBar_SendTo,
-            AppString.SideBar_OpenWith,
+            AppString.SideBar.New,
+            AppString.SideBar.SendTo,
+            AppString.SideBar.OpenWith,
             null,
-            AppString.SideBar_WinX
+            AppString.SideBar.WinX
         };
         static readonly string[] GeneralItemInfos = {
-            AppString.StatusBar_File,
-            AppString.StatusBar_Folder,
-            AppString.StatusBar_Directory,
-            AppString.StatusBar_Background,
-            AppString.StatusBar_Desktop,
-            AppString.StatusBar_Drive,
-            AppString.StatusBar_AllObjects,
-            AppString.StatusBar_Computer,
-            AppString.StatusBar_RecycleBin,
-            AppString.StatusBar_Library,
+            AppString.StatusBar.File,
+            AppString.StatusBar.Folder,
+            AppString.StatusBar.Directory,
+            AppString.StatusBar.Background,
+            AppString.StatusBar.Desktop,
+            AppString.StatusBar.Drive,
+            AppString.StatusBar.AllObjects,
+            AppString.StatusBar.Computer,
+            AppString.StatusBar.RecycleBin,
+            AppString.StatusBar.Library,
             null,
-            AppString.StatusBar_New,
-            AppString.StatusBar_SendTo,
-            AppString.StatusBar_OpenWith,
+            AppString.StatusBar.New,
+            AppString.StatusBar.SendTo,
+            AppString.StatusBar.OpenWith,
             null,
-            AppString.StatusBar_WinX
+            AppString.StatusBar.WinX
         };
 
         static readonly string[] TypeItems = {
-            AppString.SideBar_LnkFile,
-            AppString.SideBar_ExeFile,
+            AppString.SideBar.LnkFile,
+            AppString.SideBar.ExeFile,
             null,
-            AppString.SideBar_TextFile,
-            AppString.SideBar_ImageFile,
-            AppString.SideBar_VideoFile,
-            AppString.SideBar_AudioFile,
+            AppString.SideBar.TextFile,
+            AppString.SideBar.ImageFile,
+            AppString.SideBar.VideoFile,
+            AppString.SideBar.AudioFile,
             null,
-            AppString.SideBar_ImageDirectory,
-            AppString.SideBar_VideoDirectory,
-            AppString.SideBar_AudioDirectory,
+            AppString.SideBar.ImageDirectory,
+            AppString.SideBar.VideoDirectory,
+            AppString.SideBar.AudioDirectory,
             null,
-            AppString.SideBar_UnknownType,
+            AppString.SideBar.UnknownType,
             null,
-            AppString.SideBar_CustomType
+            AppString.SideBar.CustomType
         };
         static readonly string[] TypeItemInfos = {
-            AppString.StatusBar_LnkFile,
-            AppString.StatusBar_ExeFile,
+            AppString.StatusBar.LnkFile,
+            AppString.StatusBar.ExeFile,
             null,
-            AppString.StatusBar_TextFile,
-            AppString.StatusBar_ImageFile,
-            AppString.StatusBar_VideoFile,
-            AppString.StatusBar_AudioFile,
+            AppString.StatusBar.TextFile,
+            AppString.StatusBar.ImageFile,
+            AppString.StatusBar.VideoFile,
+            AppString.StatusBar.AudioFile,
             null,
-            AppString.StatusBar_ImageDirectory,
-            AppString.StatusBar_VideoDirectory,
-            AppString.StatusBar_AudioDirectory,
+            AppString.StatusBar.ImageDirectory,
+            AppString.StatusBar.VideoDirectory,
+            AppString.StatusBar.AudioDirectory,
             null,
-            AppString.StatusBar_UnknownType,
+            AppString.StatusBar.UnknownType,
             null,
-            AppString.StatusBar_CustomType
+            AppString.StatusBar.CustomType
         };
 
         static readonly string[] OtherRuleItems = {
-            AppString.SideBar_GuidBlocked,
-            AppString.SideBar_ThirdRules
+            AppString.SideBar.GuidBlocked,
+            AppString.SideBar.ThirdRules
         };
         static readonly string[] OtherRuleItemInfos = {
-            AppString.StatusBar_GuidBlocked,
-            AppString.StatusBar_ThirdRules
+            AppString.StatusBar.GuidBlocked,
+            AppString.StatusBar.ThirdRules
         };
 
         static readonly string[] AboutItems = {
-            AppString.SideBar_AboutApp,
-            AppString.SideBar_Dictionaries,
-            AppString.SideBar_AppLanguage,
-            AppString.SideBar_Donate
+            AppString.SideBar.AboutApp,
+            AppString.SideBar.Dictionaries,
+            AppString.SideBar.AppLanguage,
+            AppString.SideBar.Donate
         };
 
         private void HideAllParts()

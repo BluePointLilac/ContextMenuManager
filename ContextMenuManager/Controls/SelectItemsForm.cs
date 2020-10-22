@@ -30,14 +30,14 @@ namespace ContextMenuManager.Controls
         {
             Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
             DialogResult = DialogResult.OK,
-            Text = AppString.Ok,
+            Text = AppString.Indirect.Ok,
             AutoSize = true
         };
         protected Button btnCancel = new Button
         {
             Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
             DialogResult = DialogResult.Cancel,
-            Text = AppString.Cancel,
+            Text = AppString.Indirect.Cancel,
             AutoSize = true
         };
 

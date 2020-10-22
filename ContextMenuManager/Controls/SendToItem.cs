@@ -36,7 +36,7 @@ namespace ContextMenuManager.Controls
         private string FileName => Path.GetFileName(FilePath);
         private string FileExtension => Path.GetExtension(FilePath);
         private bool IsShortcut => FileExtension.ToLower() == ".lnk";
-        public string SearchText => $"{AppString.SideBar_SendTo} {Text}";
+        public string SearchText => $"{AppString.SideBar.SendTo} {Text}";
 
         public string ItemFilePath
         {
@@ -127,7 +127,7 @@ namespace ContextMenuManager.Controls
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
         readonly ToolStripSeparator TsiIconSeparator = new ToolStripSeparator();
-        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu_Details);
+        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
 
         private void InitializeComponents()
         {

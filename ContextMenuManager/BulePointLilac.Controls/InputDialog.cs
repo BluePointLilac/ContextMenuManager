@@ -9,7 +9,7 @@ namespace BulePointLilac.Controls
     public sealed class InputDialog : CommonDialog
     {
         /// <summary>输入对话框标题</summary>
-        public string Title { get; set; } = AppString.General_AppName;
+        public string Title { get; set; } = AppString.General.AppName;
         /// <summary>输入对话框文本框文本</summary>
         public string Text { get; set; }
 
@@ -54,14 +54,14 @@ namespace BulePointLilac.Controls
             {
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
                 DialogResult = DialogResult.OK,
-                Text = AppString.Ok,
+                Text = AppString.Indirect.Ok,
                 AutoSize = true
             };
             readonly Button BtnCancel = new Button
             {
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
                 DialogResult = DialogResult.Cancel,
-                Text = AppString.Cancel,
+                Text = AppString.Indirect.Cancel,
                 AutoSize = true
             };
 

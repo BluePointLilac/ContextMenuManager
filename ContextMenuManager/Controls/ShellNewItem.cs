@@ -31,7 +31,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        public string SearchText => $"{AppString.SideBar_New} {Text}";
+        public string SearchText => $"{AppString.SideBar.New} {Text}";
         private string Extension => RegPath.Split('\\')[1];
         private string SnKeyName => RegistryEx.GetKeyName(RegPath);
         private string BuckupPath => $@"{RegistryEx.GetParentPath(RegPath)}\{(ItemVisible ? SnParts[1] : SnParts[0])}";
@@ -159,8 +159,8 @@ namespace ContextMenuManager.Controls
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
-        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu_Details);
-        readonly ToolStripMenuItem TsiEditData = new ToolStripMenuItem(AppString.Menu_InitialData);
+        readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
+        readonly ToolStripMenuItem TsiEditData = new ToolStripMenuItem(AppString.Menu.InitialData);
 
         private void InitializeComponents()
         {
@@ -191,11 +191,11 @@ namespace ContextMenuManager.Controls
 
         private void EditInitialData()
         {
-            if(MessageBoxEx.Show(AppString.MessageBox_EditInitialData,
+            if(MessageBoxEx.Show(AppString.MessageBox.EditInitialData,
                 MessageBoxButtons.YesNo) != DialogResult.Yes) return;
             using(InputDialog dlg = new InputDialog
             {
-                Title = AppString.Menu_InitialData,
+                Title = AppString.Menu.InitialData,
                 Text = this.InitialData?.ToString()
             })
             {

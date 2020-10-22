@@ -8,7 +8,7 @@ namespace ContextMenuManager.Controls
     {
         public SubMenuModeForm()
         {
-            this.Text = AppString.General_AppName;
+            this.Text = AppString.General.AppName;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.StartPosition = FormStartPosition.CenterParent;
             this.ControlBox = this.ShowIcon = this.ShowInTaskbar = false;
@@ -31,7 +31,7 @@ namespace ContextMenuManager.Controls
         readonly Label lblInfo = new Label
         {
             AutoSize = true,
-            Text = AppString.Text_SelectSubMenuMode,
+            Text = AppString.Text.SelectSubMenuMode,
         };
 
         readonly Panel pnlTop = new Panel
