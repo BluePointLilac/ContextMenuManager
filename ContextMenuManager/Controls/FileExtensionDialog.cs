@@ -37,20 +37,13 @@ namespace ContextMenuManager.Controls
                 {
                     if(extKey == null) return null;
                     string defaultType = extKey.GetValue("")?.ToString();
+                    if(TypeNameExists(defaultType)) return defaultType;
                     using(var key = extKey.OpenSubKey("OpenWithProgids"))
                     {
-                        if(key == null)
-                        {
-                            if(TypeNameExists(defaultType)) return defaultType;
-                            else return null;
-                        }
+                        if(key == null) return null;
                         foreach(string valueName in key.GetValueNames())
                         {
-                            if(!includeUWP && key.GetValueKind(valueName) != Microsoft.Win32.RegistryValueKind.String)
-                            {
-                                if(TypeNameExists(defaultType)) return defaultType;
-                                continue;
-                            }
+                            if(!includeUWP && key.GetValueKind(valueName) != Microsoft.Win32.RegistryValueKind.String) continue;
                             if(TypeNameExists(valueName)) return valueName;
                         }
                     }
@@ -65,7 +58,7 @@ namespace ContextMenuManager.Controls
             {
                 this.AcceptButton = btnOk;
                 this.CancelButton = btnCancel;
-                this.Text = AppString.Text.SelectExtension;
+                this.Text = AppString.Dialog.SelectExtension;
                 this.Font = SystemFonts.MenuFont;
                 this.ShowIcon = this.ShowInTaskbar = false;
                 this.MaximizeBox = this.MinimizeBox = false;
@@ -98,13 +91,13 @@ namespace ContextMenuManager.Controls
             };
             readonly Button btnOk = new Button
             {
-                Text = AppString.Indirect.Ok,
+                Text = AppString.Dialog.Ok,
                 AutoSize = true
             };
             readonly Button btnCancel = new Button
             {
                 DialogResult = DialogResult.Cancel,
-                Text = AppString.Indirect.Cancel,
+                Text = AppString.Dialog.Cancel,
                 AutoSize = true
             };
 

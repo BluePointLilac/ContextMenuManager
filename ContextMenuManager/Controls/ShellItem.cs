@@ -18,9 +18,9 @@ namespace ContextMenuManager.Controls
         /// <summary>Shell类型菜单特殊注册表项名默认名称</summary>
         private static readonly Dictionary<string, string> DefaultNames
             = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-            {"open", AppString.Indirect.Open }, {"edit", AppString.Indirect.Edit }, {"print", AppString.Indirect.Print },
-            {"find", AppString.Indirect.Find }, {"play", AppString.Indirect.Play }, {"runas", AppString.Indirect.Runas },
-            {"explore", AppString.Text.Explore },//"浏览" 未找到合适的本地化字符串资源
+            {"open", AppString.Item.Open }, {"edit", AppString.Item.Edit }, {"print", AppString.Item.Print },
+            {"find", AppString.Item.Find }, {"play", AppString.Item.Play }, {"runas", AppString.Item.Runas },
+            {"explore", AppString.Item.Explore }
         };
 
         /// <summary>菜单项目在菜单中出现的位置</summary>
@@ -133,9 +133,13 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                if(Convert.ToInt32(Registry.GetValue(RegPath, "HideBasedOnVelocityId", null)) == 0x639bc8) return false;
+                if(Convert.ToInt32(Registry.GetValue(RegPath, "CommandFlags", 0)) % 16 >= 8) return false;
+                //HideBasedOnVelocityId键值不适用于Win7系统，且在新版Win10为0x639bc8，在低版本Win10中为0x6698a6
+                int value = Convert.ToInt32(Registry.GetValue(RegPath, "HideBasedOnVelocityId", 0));
+                if(value == 0x639bc8 || value == 0x6698a6) return false;
                 if(!IsSubItem)
                 {
+                    //LegacyDisable和ProgrammaticAccessOnly键值不适用于子菜单
                     if(Registry.GetValue(RegPath, "LegacyDisable", null) != null) return false;
                     if(Registry.GetValue(RegPath, "ProgrammaticAccessOnly", null) != null) return false;
                 }
@@ -145,6 +149,7 @@ namespace ContextMenuManager.Controls
             {
                 if(value)
                 {
+                    RegistryEx.DeleteValue(RegPath, "CommandFlags");
                     RegistryEx.DeleteValue(RegPath, "HideBasedOnVelocityId");
                     RegistryEx.DeleteValue(RegPath, "LegacyDisable");
                     RegistryEx.DeleteValue(RegPath, "ProgrammaticAccessOnly");
@@ -152,7 +157,7 @@ namespace ContextMenuManager.Controls
                 else
                 {
                     if(TryProtectOpenItem) return;
-                    Registry.SetValue(RegPath, "HideBasedOnVelocityId", 0x639bc8);
+                    Registry.SetValue(RegPath, "CommandFlags", 8);
                 }
             }
         }
@@ -364,7 +369,7 @@ namespace ContextMenuManager.Controls
         {
             using(ShellSubMenuDialog dlg = new ShellSubMenuDialog())
             {
-                dlg.Text = AppString.Text.EditSubItems.Replace("%s", this.Text);
+                dlg.Text = AppString.Item.EditSubItems.Replace("%s", this.Text);
                 dlg.Icon = ResourceIcon.GetIcon(IconPath, IconIndex);
                 dlg.ShowDialog(this.RegPath);
             }

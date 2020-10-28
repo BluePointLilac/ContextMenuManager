@@ -56,15 +56,15 @@ namespace ContextMenuManager
         ///<summary>管理员小盾牌</summary>
         public static readonly Image Shield = ResourceIcon.GetIcon("imageres.dll", 73).ToBitmap();
         ///<summary>资源管理器图标</summary>
-        public static readonly Image Explorer = ResourceIcon.GetIcon("imageres.dll", 203).ToBitmap();
+        public static readonly Image Explorer = ResourceIcon.GetIcon("explorer.exe", 0).ToBitmap();
         ///<summary>刷新图标</summary>
         public static readonly Image Refresh = ResourceIcon.GetIcon("shell32.dll", 238).ToBitmap();
         ///<summary>自定义文件夹图标</summary>
-        public static readonly Image CustomFolder = ResourceIcon.GetIcon("imageres.dll", 306).ToBitmap();
+        public static readonly Image CustomFolder = ResourceIcon.GetIcon("imageres.dll", 3).ToBitmap();
         ///<summary>网络驱动器图标</summary>
         public static readonly Image NetworkDrive = ResourceIcon.GetIcon("imageres.dll", 28).ToBitmap();
         ///<summary>回收站属性图标</summary>
-        public static readonly Image RecycleBinProperties = ResourceIcon.GetIcon("imageres.dll", -5350).ToBitmap();
+        public static readonly Image RecycleBinProperties = ResourceIcon.GetIcon("shell32.dll", -254).ToBitmap();
         ///<summary>磁盘图标</summary>
         public static readonly Image Drive = ResourceIcon.GetIcon("imageres.dll", 27).ToBitmap();
         ///<summary>发送到图标</summary>

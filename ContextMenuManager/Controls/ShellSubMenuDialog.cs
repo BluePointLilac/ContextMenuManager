@@ -193,7 +193,7 @@ namespace ContextMenuManager.Controls
 
                 private void WriteRegistry()
                 {
-                    SetValue(ParentPath, "SubCommands", string.Join(";", SubKeyNames));
+                    SetValue(ParentPath, "SubCommands", string.Join(";", SubKeyNames.ToArray()));
                 }
 
                 private static void MoveItem(MyListItem item, CommonMultiItemsList list, bool isUp)
@@ -270,7 +270,7 @@ namespace ContextMenuManager.Controls
                     public SeparatorItem(CommonMultiItemsList list)
                     {
                         this.Owner = list;
-                        this.Text = AppString.Text.Separator;
+                        this.Text = AppString.Item.Separator;
                         this.Image = AppImage.Separator;
                         BtnDelete = new DeleteButton(this);
                         BtnMoveDown = new MoveButton(this, false);
@@ -298,7 +298,7 @@ namespace ContextMenuManager.Controls
                     public InvalidItem(CommonMultiItemsList list, string keyName)
                     {
                         this.Owner = list;
-                        this.Text = $"{AppString.Text.InvalidItem} {keyName}";
+                        this.Text = $"{AppString.Item.InvalidItem} {keyName}";
                         this.Image = AppImage.NotFound.ToTransparent();
                         BtnDelete = new DeleteButton(this);
                         BtnMoveDown = new MoveButton(this, false);

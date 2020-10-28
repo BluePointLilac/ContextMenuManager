@@ -266,12 +266,12 @@ namespace ContextMenuManager.Controls
                 if(Extension == null)
                 {
                     this.Image = AppImage.CustomType;
-                    this.Text = AppString.Text.SelectExtension;
+                    this.Text = AppString.Dialog.SelectExtension;
                 }
                 else
                 {
                     this.Image = ResourceIcon.GetExtensionIcon(Extension)?.ToBitmap() ?? AppImage.NotFound;
-                    this.Text = $"{AppString.Text.CurrentExtension}{Extension}";
+                    this.Text = $"{AppString.Item.CurrentExtension}{Extension}";
                 }
             }
         }

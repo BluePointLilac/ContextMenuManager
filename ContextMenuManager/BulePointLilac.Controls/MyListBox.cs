@@ -117,6 +117,7 @@ namespace BulePointLilac.Controls
         {
             public int Compare(MyListItem x, MyListItem y)
             {
+                if(x.Equals(y)) return 0;
                 string[] strs = { x.Text, y.Text };
                 Array.Sort(strs);
                 if(strs[0] == x.Text) return -1;

@@ -36,13 +36,13 @@ namespace ContextMenuManager.Controls
 
             readonly RadioButton rdoSingle = new RadioButton
             {
-                Text = AppString.Text.Single,
+                Text = AppString.Dialog.SingleMenu,
                 AutoSize = true,
                 Checked = true
             };
             readonly RadioButton rdoMulti = new RadioButton
             {
-                Text = AppString.Text.Multi,
+                Text = AppString.Dialog.MultiMenu,
                 AutoSize = true
             };
 
@@ -63,7 +63,7 @@ namespace ContextMenuManager.Controls
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
-                this.Text = AppString.Text.NewShellItem;
+                this.Text = AppString.Dialog.NewShellItem;
                 this.Controls.AddRange(new[] { rdoSingle, rdoMulti });
                 rdoSingle.Top = rdoMulti.Top = btnOk.Top;
                 rdoSingle.Left = lblCommand.Left;
@@ -95,7 +95,7 @@ namespace ContextMenuManager.Controls
             {
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
-                    dlg.Filter = $"{AppString.Indirect.Programs}|*.exe;*.bat;*.cmd;*.pif;*.com";
+                    dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.pif;*.com";
                     if(dlg.ShowDialog() != DialogResult.OK) return;
                     ItemCommand = $"\"{dlg.FileName}\"";
                     ItemText = Path.GetFileNameWithoutExtension(dlg.FileName);

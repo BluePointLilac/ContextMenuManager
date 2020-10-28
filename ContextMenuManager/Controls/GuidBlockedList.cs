@@ -34,11 +34,11 @@ namespace ContextMenuManager.Controls
 
         private void AddNewItem()
         {
-            NewItem newItem = new NewItem { Text = AppString.Text.NewGuidBlockedItem };
+            NewItem newItem = new NewItem { Text = AppString.Item.AddGuidBlockedItem };
             this.AddItem(newItem);
             newItem.NewItemAdd += (sender, e) =>
             {
-                using(InputDialog dlg = new InputDialog { Title = AppString.Text.InputGuid })
+                using(InputDialog dlg = new InputDialog { Title = AppString.Dialog.InputGuid })
                 {
                     if(GuidInfo.TryGetGuid(Clipboard.GetText(), out Guid guid)) dlg.Text = guid.ToString();
                     if(dlg.ShowDialog() != DialogResult.OK) return;

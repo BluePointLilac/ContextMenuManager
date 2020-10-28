@@ -82,14 +82,15 @@ namespace ContextMenuManager.Controls
                 "Windows.StartScan", "Windows.statusbar", "Windows.Sync", "Windows.SystemProperties", "Windows.taskbarpin",
                 "Windows.ToggleRecycleConfirmations", "Windows.topviewrestoredefault", "Windows.Troubleshoot", "Windows.undo",
                 "Windows.UpdatePrinterDriver", "Windows.v2.Powershell", "Windows.View.OptionsGallery",
-                "Windows.ViewRemotePrinters", "Windows.zip", "Windows.Zip.Action"
+                "Windows.ViewRemotePrinters", "Windows.zip", "Windows.Zip.Action", "Windows.librarypane",
+                "Windows.ManageDefaultPrinters", "Windows.ShareHomegroupFullAccess", "Windows.ShareHomegroupReadAccess"
             };
 
             public List<string> SelectedItemNames { get; private set; } = new List<string>();
 
             public ShellStoreForm()
             {
-                this.Text = AppString.Text.CheckReference;
+                this.Text = AppString.Dialog.CheckReference;
                 btnOk.Click += (sender, e) => GetSelectedItems();
                 LoadItems();
             }

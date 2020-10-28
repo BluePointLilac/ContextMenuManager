@@ -54,14 +54,14 @@ namespace BulePointLilac.Controls
             {
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
                 DialogResult = DialogResult.OK,
-                Text = AppString.Indirect.Ok,
+                Text = AppString.Dialog.Ok,
                 AutoSize = true
             };
             readonly Button BtnCancel = new Button
             {
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
                 DialogResult = DialogResult.Cancel,
-                Text = AppString.Indirect.Cancel,
+                Text = AppString.Dialog.Cancel,
                 AutoSize = true
             };
 

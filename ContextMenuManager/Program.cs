@@ -60,12 +60,21 @@ namespace ContextMenuManager
         static Program()
         {
             Directory.CreateDirectory(AppDataConfigDir);
-            if(!DateTime.TryParse(ConfigReader.GetValue("General", "LastCheckUpdateTime"), out LastCheckUpdateTime))
+            try
+            {
+                string time = ConfigReader.GetValue("General", "LastCheckUpdateTime");
+                //二进制数据时间不会受系统时间格式影响
+                LastCheckUpdateTime = DateTime.FromBinary(Convert.ToInt64(time));
+            }
+            catch
+            {
                 LastCheckUpdateTime = DateTime.Today.AddMonths(-2);
+            }
             if(LastCheckUpdateTime.AddMonths(1).CompareTo(DateTime.Today) < 0)
             {
                 Updater.CheckUpdate();
-                new IniFileHelper(ConfigIniPath).SetValue("General", "LastCheckUpdateTime", DateTime.Today.ToShortDateString());
+                string time = DateTime.Today.ToBinary().ToString();
+                new IniFileHelper(ConfigIniPath).SetValue("General", "LastCheckUpdateTime", time);
             }
         }
     }

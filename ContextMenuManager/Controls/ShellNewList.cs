@@ -24,6 +24,7 @@ namespace ContextMenuManager.Controls
             using(RegistryKey root = Registry.ClassesRoot)
             {
                 extensions.AddRange(Array.FindAll(root.GetSubKeyNames(), keyName => keyName.StartsWith(".")));
+                if(Environment.OSVersion.Version.Major <= 6 && Environment.OSVersion.Version.Minor <= 1) extensions.Add("Briefcase");//Win7公文包
                 foreach(string extension in extensions)
                 {
                     string typeName = FileExtensionDialog.GetTypeName(extension, false);

@@ -40,7 +40,7 @@ namespace ContextMenuManager.Controls
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
-                this.Text = AppString.Text.NewSendToItem;
+                this.Text = AppString.Dialog.NewSendToItem;
                 this.Controls.AddRange(new[] { rdoFile, rdoFolder });
                 rdoFile.Top = rdoFolder.Top = btnOk.Top;
                 rdoFile.Left = lblCommand.Left;
@@ -66,7 +66,7 @@ namespace ContextMenuManager.Controls
                     }
                     if(ObjectPath.ExtractFilePath(ItemCommand) == null && !Directory.Exists(ItemCommand))
                     {
-                        MessageBoxEx.Show(AppString.Indirect.FileOrFolderNotExists);
+                        MessageBoxEx.Show(AppString.MessageBox.FileOrFolderNotExists);
                         return;
                     }
                     AddNewItem();
@@ -78,10 +78,10 @@ namespace ContextMenuManager.Controls
             {
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
-                    dlg.Filter = $"{AppString.Indirect.Programs}|*.exe;*.bat;*.cmd;*.vbs;*.vbe;*.jse;*.wsf";
+                    dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.vbs;*.vbe;*.jse;*.wsf";
                     if(dlg.ShowDialog() == DialogResult.OK)
                     {
-                        ItemCommand = dlg.FileName;
+                        ItemCommand = $"\"{dlg.FileName}\"";
                         ItemText = Path.GetFileNameWithoutExtension(dlg.FileName);
                     }
                 }
@@ -106,8 +106,15 @@ namespace ContextMenuManager.Controls
                 FilePath = ObjectPath.GetNewPathWithIndex(FilePath, ObjectPath.PathType.File);
 
                 IWshRuntimeLibrary.IWshShortcut shortcut = WshShell.CreateShortcut(FilePath);
-                shortcut.TargetPath = ItemCommand;
-                if(rdoFile.Checked) shortcut.WorkingDirectory = Path.GetDirectoryName(ItemCommand);
+                if(rdoFile.Checked)
+                {
+                    ItemCommand = Environment.ExpandEnvironmentVariables(ItemCommand);
+                    shortcut.TargetPath = ObjectPath.ExtractFilePath(ItemCommand, out string shortPath);
+                    string str = ItemCommand.Substring(ItemCommand.IndexOf(shortPath) + shortPath.Length);
+                    shortcut.Arguments = str.Substring(str.IndexOf(" ") + 1);
+                    shortcut.WorkingDirectory = Path.GetDirectoryName(shortcut.TargetPath);
+                }
+                else shortcut.TargetPath = ItemCommand;
                 shortcut.Save();
                 DesktopIniHelper.SetLocalizedFileName(FilePath, ItemText);
             }

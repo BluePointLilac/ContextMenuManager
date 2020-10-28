@@ -372,4 +372,7 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>Xcopy $(ProjectDir)\Properties\Resources\Texts\AppLanguageDic.ini $(SolutionDir)\languages\zh-CN.ini /y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

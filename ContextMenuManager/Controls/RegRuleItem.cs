@@ -128,7 +128,7 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.Text.CustomFolder,
+                Text = AppString.Item.CustomFolder,
                 Image = AppImage.CustomFolder,
                 Tip = AppString.Tip.CustomFolder,
                 RestartExplorer = true
@@ -143,7 +143,7 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = $"{AppString.Indirect.MapNetworkDrive} && {AppString.Indirect.DisconnectNetworkDrive}",
+                Text = $"{AppString.Item.MapNetworkDrive} && {AppString.Item.DisconnectNetworkDrive}",
                 Image = AppImage.NetworkDrive,
                 RestartExplorer = true
             }
@@ -157,7 +157,7 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.Indirect.RecycleBinProperties,
+                Text = AppString.Item.RecycleBinProperties,
                 Image = AppImage.RecycleBinProperties,
                 RestartExplorer = true
             }
@@ -171,7 +171,7 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.Indirect.RemovableDrive,
+                Text = AppString.Item.RemovableDrive,
                 Image = AppImage.Drive,
                 Tip = AppString.Tip.SendToDrive,
                 RestartExplorer = true
@@ -186,7 +186,7 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.Text.BuildSendtoMenu,
+                Text = AppString.Item.BuildSendtoMenu,
                 Image = AppImage.SendTo,
                 Tip = AppString.Tip.BuildSendtoMenu
             }
@@ -200,9 +200,8 @@ namespace ContextMenuManager.Controls
         },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.Text.UseStoreOpenWith,
-                Image = AppImage.MicrosoftStore,
-                Tip = AppString.Tip.UseStoreOpenWith
+                Text = AppString.Item.UseStoreOpenWith,
+                Image = AppImage.MicrosoftStore
             }
         };
     }

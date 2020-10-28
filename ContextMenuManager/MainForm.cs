@@ -34,7 +34,7 @@ namespace ContextMenuManager
         readonly ThirdRulesList thirdRuleList = new ThirdRulesList();
         readonly AboutAppBox aboutMeBox = new AboutAppBox
         {
-            Text = AppString.Text.AboutApp
+            Text = AppString.Other.AboutApp
         };
         readonly DonateBox donateBox = new DonateBox();
         readonly LanguagesBox languagesBox = new LanguagesBox();

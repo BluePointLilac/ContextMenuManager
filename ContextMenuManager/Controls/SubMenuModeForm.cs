@@ -31,7 +31,7 @@ namespace ContextMenuManager.Controls
         readonly Label lblInfo = new Label
         {
             AutoSize = true,
-            Text = AppString.Text.SelectSubMenuMode,
+            Text = AppString.Dialog.SelectSubMenuMode,
         };
 
         readonly Panel pnlTop = new Panel

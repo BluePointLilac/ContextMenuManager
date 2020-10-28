@@ -31,7 +31,7 @@ namespace ContextMenuManager.Controls
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
-                this.Text = AppString.Text.NewOpenWithItem;
+                this.Text = AppString.Dialog.NewOpenWithItem;
                 btnBrowse.Click += (sender, e) => BrowseFile();
                 btnOk.Click += (sender, e) =>
                 {
@@ -61,7 +61,7 @@ namespace ContextMenuManager.Controls
             {
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
-                    dlg.Filter = $"{AppString.Indirect.Programs}|*.exe";
+                    dlg.Filter = $"{AppString.Dialog.Program}|*.exe";
                     if(dlg.ShowDialog() == DialogResult.OK)
                     {
                         ItemCommand = $"\"{dlg.FileName}\" \"%1\"";

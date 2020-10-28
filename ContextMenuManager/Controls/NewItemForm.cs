@@ -24,32 +24,32 @@ namespace ContextMenuManager.Controls
         public string ItemText { get => txtText.Text; set => txtText.Text = value; }
         public string ItemCommand { get => txtCommand.Text; set => txtCommand.Text = value; }
 
-        protected readonly Label lblName = new Label
+        protected readonly Label lblText = new Label
         {
-            Text = AppString.Text.ItemName,
+            Text = AppString.Dialog.ItemText,
             AutoSize = true
         };
         protected readonly Label lblCommand = new Label
         {
-            Text = AppString.Text.ItemCommand,
+            Text = AppString.Dialog.ItemCommand,
             AutoSize = true
         };
         protected readonly TextBox txtText = new TextBox();
         protected readonly TextBox txtCommand = new TextBox();
         protected readonly Button btnBrowse = new Button
         {
-            Text = AppString.Indirect.Browse,
+            Text = AppString.Dialog.Browse,
             AutoSize = true
         };
         protected readonly Button btnOk = new Button
         {
-            Text = AppString.Indirect.Ok,
+            Text = AppString.Dialog.Ok,
             AutoSize = true
         };
         protected readonly Button btnCancel = new Button
         {
             DialogResult = DialogResult.Cancel,
-            Text = AppString.Indirect.Cancel,
+            Text = AppString.Dialog.Cancel,
             AutoSize = true
         };
 
@@ -57,15 +57,15 @@ namespace ContextMenuManager.Controls
 
         protected virtual void InitializeComponents()
         {
-            this.Controls.AddRange(new Control[] { lblName, lblCommand, txtText, txtCommand, btnBrowse, btnOk, btnCancel });
+            this.Controls.AddRange(new Control[] { lblText, lblCommand, txtText, txtCommand, btnBrowse, btnOk, btnCancel });
             int a = 20.DpiZoom();
             btnBrowse.Anchor = btnOk.Anchor = btnCancel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
-            txtText.Top = lblName.Top = lblName.Left = lblCommand.Left = a;
+            txtText.Top = lblText.Top = lblText.Left = lblCommand.Left = a;
             btnBrowse.Top = txtCommand.Top = lblCommand.Top = txtText.Bottom + a;
             btnOk.Top = btnCancel.Top = btnBrowse.Bottom + a;
             btnCancel.Left = btnBrowse.Left = this.ClientSize.Width - btnCancel.Width - a;
             btnOk.Left = btnCancel.Left - btnOk.Width - a;
-            int b = Math.Max(lblName.Width, lblCommand.Width) + btnBrowse.Width + 4 * a;
+            int b = Math.Max(lblText.Width, lblCommand.Width) + btnBrowse.Width + 4 * a;
             this.ClientSize = new Size(250.DpiZoom() + b, btnOk.Bottom + a);
             this.MinimumSize = this.Size;
             this.Resize += (sender, e) =>

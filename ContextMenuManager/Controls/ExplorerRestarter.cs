@@ -13,7 +13,7 @@ namespace ContextMenuManager.Controls
             this.Visible = false;
             this.Dock = DockStyle.Bottom;
             this.Image = AppImage.Explorer;
-            this.Text = AppString.Text.RestartExplorer;
+            this.Text = AppString.Other.RestartExplorer;
             MyToolTip.SetToolTip(BtnRestart, AppString.Tip.RestartExplorer);
             this.AddCtr(BtnRestart);
             this.CanMoveForm();
