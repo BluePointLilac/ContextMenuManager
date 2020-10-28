@@ -25,7 +25,7 @@ namespace ContextMenuManager
 
         private static void UpdateApp()
         {
-            IniReader reader = new IniReader(new StringBuilder(GetWebString(UpdateUrl)));
+            IniReader reader = new IniReader(new StringBuilder(GetWebString(UpdateUrl).Replace("\\n", "\n")));
             Version version1 = new Version(reader.GetValue("Update", "Version"));
             Version version2 = new Version(Application.ProductVersion);
             if(version1.CompareTo(version2) > 0)
