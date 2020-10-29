@@ -8,9 +8,11 @@
 * 对上述场景右键菜单自定义添加项目，自定义菜单命令
 
 ## 运行平台
-Win10--------------.Net Framework 4.6 (Win10自带)
-Win7---------------.Net Framework 3.5 (Win7自带)
-Win8、Win8.1--------未测试，理论上可直接使用Win7版
+|系统|框架|
+|:--:|:--:|
+|Win10|.Net Framework 4.6 (Win10自带)
+|Win7|.Net Framework 3.5 (Win7自带)
+|Win8、Win8.1|未测试，理论上可直接使用Win7版
 
 ## 运行截图
 * Win10<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Win10%20Screenshot.png)
