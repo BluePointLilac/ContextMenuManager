@@ -32,6 +32,10 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
     </Item>
+    <Item Text="Win10 开始屏幕程序右键菜单卸载" RestartExplorer="">
+      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="NoUninstallFromStart" On="0" Off="1"/>
+      <Rule RegPath="HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="NoUninstallFromStart" On="0" Off="1"/>
+    </Item>
   </Group>
 
   <Group Text="Bandizip" Guid="5b69a6b4-393b-459c-8ebb-214237a9e7ac" RegPath="HKEY_CURRENT_USER\SOFTWARE\Bandizip">
