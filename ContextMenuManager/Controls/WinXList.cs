@@ -1,5 +1,6 @@
 ﻿using BulePointLilac.Controls;
 using BulePointLilac.Methods;
+using ContextMenuManager.Controls.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;

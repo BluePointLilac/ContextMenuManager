@@ -1,7 +1,7 @@
 ﻿using BulePointLilac.Controls;
 using static BulePointLilac.Methods.ObjectPath;
 
-namespace ContextMenuManager.Controls
+namespace ContextMenuManager.Controls.Interfaces
 {
     interface IBtnOpenPathItem
     {

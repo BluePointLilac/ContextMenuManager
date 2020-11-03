@@ -79,6 +79,7 @@ namespace ContextMenuManager
 
         static readonly string[] TypeItems = {
             AppString.SideBar.LnkFile,
+            AppString.SideBar.UwpLnk,
             AppString.SideBar.ExeFile,
             null,
             AppString.SideBar.TextFile,
@@ -96,6 +97,7 @@ namespace ContextMenuManager
         };
         static readonly string[] TypeItemInfos = {
             AppString.StatusBar.LnkFile,
+            AppString.StatusBar.UwpLnk,
             AppString.StatusBar.ExeFile,
             null,
             AppString.StatusBar.TextFile,
@@ -126,6 +128,40 @@ namespace ContextMenuManager
             AppString.SideBar.Dictionaries,
             AppString.SideBar.AppLanguage,
             AppString.SideBar.Donate
+        };
+
+        static readonly ShellList.Scenes[] GeneralShellScenes =
+        {
+            ShellList.Scenes.File,
+            ShellList.Scenes.Folder,
+            ShellList.Scenes.Directory,
+            ShellList.Scenes.Background,
+            ShellList.Scenes.Desktop,
+            ShellList.Scenes.Drive,
+            ShellList.Scenes.AllObjects,
+            ShellList.Scenes.Computer,
+            ShellList.Scenes.RecycleBin,
+            ShellList.Scenes.Library
+        };
+
+        static readonly ShellList.Scenes?[] TypeShellScenes =
+        {
+            ShellList.Scenes.LnkFile,
+            ShellList.Scenes.UwpLnk,
+            ShellList.Scenes.ExeFile,
+            null,
+            ShellList.Scenes.TextFile,
+            ShellList.Scenes.ImageFile,
+            ShellList.Scenes.VideoFile,
+            ShellList.Scenes.AudioFile,
+            null,
+            ShellList.Scenes.ImageDirectory,
+            ShellList.Scenes.VideoDirectory,
+            ShellList.Scenes.AudioDirectory,
+            null,
+            ShellList.Scenes.UnknownType,
+            null,
+            ShellList.Scenes.CustomType
         };
 
         private void HideAllParts()
@@ -190,26 +226,6 @@ namespace ContextMenuManager
         {
             switch(SideBar.SelectIndex)
             {
-                case 0:
-                    shellList.Scene = ShellList.Scenes.File; break;
-                case 1:
-                    shellList.Scene = ShellList.Scenes.Folder; break;
-                case 2:
-                    shellList.Scene = ShellList.Scenes.Directory; break;
-                case 3:
-                    shellList.Scene = ShellList.Scenes.Background; break;
-                case 4:
-                    shellList.Scene = ShellList.Scenes.Desktop; break;
-                case 5:
-                    shellList.Scene = ShellList.Scenes.Drive; break;
-                case 6:
-                    shellList.Scene = ShellList.Scenes.AllObjects; break;
-                case 7:
-                    shellList.Scene = ShellList.Scenes.Computer; break;
-                case 8:
-                    shellList.Scene = ShellList.Scenes.RecycleBin; break;
-                case 9:
-                    shellList.Scene = ShellList.Scenes.Library; break;
                 case 11:
                     shellNewList.LoadItems(); shellNewList.Visible = true; break;
                 case 12:
@@ -218,37 +234,19 @@ namespace ContextMenuManager
                     openWithList.LoadItems(); openWithList.Visible = true; break;
                 case 15:
                     winXList.LoadItems(); winXList.Visible = true; break;
+                default:
+                    if(SideBar.SelectIndex <= 9)
+                    {
+                        shellList.Scene = GeneralShellScenes[SideBar.SelectIndex];
+                        shellList.Visible = true;
+                    }
+                    break;
             }
-            shellList.Visible = SideBar.SelectIndex <= 9;
         }
 
         private void SwitchTypeItem()
         {
-            switch(SideBar.SelectIndex)
-            {
-                case 0:
-                    shellList.Scene = ShellList.Scenes.LnkFile; break;
-                case 1:
-                    shellList.Scene = ShellList.Scenes.ExeFile; break;
-                case 3:
-                    shellList.Scene = ShellList.Scenes.Text; break;
-                case 4:
-                    shellList.Scene = ShellList.Scenes.Image; break;
-                case 5:
-                    shellList.Scene = ShellList.Scenes.Video; break;
-                case 6:
-                    shellList.Scene = ShellList.Scenes.Audio; break;
-                case 8:
-                    shellList.Scene = ShellList.Scenes.ImageDirectory; break;
-                case 9:
-                    shellList.Scene = ShellList.Scenes.VideoDirectory; break;
-                case 10:
-                    shellList.Scene = ShellList.Scenes.AudioDirectory; break;
-                case 12:
-                    shellList.Scene = ShellList.Scenes.Unknown; break;
-                case 14:
-                    shellList.Scene = ShellList.Scenes.CustomExtension; break;
-            }
+            shellList.Scene = (ShellList.Scenes)TypeShellScenes[SideBar.SelectIndex];
             shellList.Visible = true;
         }
 

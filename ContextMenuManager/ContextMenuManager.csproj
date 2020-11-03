@@ -132,6 +132,9 @@
     <Compile Include="Controls\Interfaces\IBtnMoveUpDownItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\SpecialItems\SkypeShareItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\SubMenuModeForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -3,7 +3,7 @@ using BulePointLilac.Methods;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ContextMenuManager.Controls
+namespace ContextMenuManager.Controls.Interfaces
 {
     interface ITsiIconItem
     {

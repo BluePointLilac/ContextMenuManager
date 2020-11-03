@@ -53,6 +53,7 @@ namespace ContextMenuManager
             public static string OpenWith => GetValue("OpenWith");
             public static string WinX => GetValue("WinX");
             public static string LnkFile => GetValue("LnkFile");
+            public static string UwpLnk => GetValue("UwpLnk");
             public static string ExeFile => GetValue("ExeFile");
             public static string TextFile => GetValue("TextFile");
             public static string ImageFile => GetValue("ImageFile");
@@ -90,6 +91,7 @@ namespace ContextMenuManager
             public static string OpenWith => GetValue("OpenWith");
             public static string WinX => GetValue("WinX");
             public static string LnkFile => GetValue("LnkFile");
+            public static string UwpLnk => GetValue("UwpLnk");
             public static string ExeFile => GetValue("ExeFile");
             public static string TextFile => GetValue("TextFile");
             public static string ImageFile => GetValue("ImageFile");

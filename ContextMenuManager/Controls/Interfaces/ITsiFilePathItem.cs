@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using static BulePointLilac.Methods.ObjectPath;
 
-namespace ContextMenuManager.Controls
+namespace ContextMenuManager.Controls.Interfaces
 {
     interface ITsiFilePathItem
     {

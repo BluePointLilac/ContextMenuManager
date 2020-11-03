@@ -1,6 +1,6 @@
 ﻿using BulePointLilac.Controls;
 
-namespace ContextMenuManager.Controls
+namespace ContextMenuManager.Controls.Interfaces
 {
     interface IBtnMoveUpDownItem
     {

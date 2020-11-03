@@ -1,7 +1,7 @@
 ﻿using BulePointLilac.Controls;
 using System.Windows.Forms;
 
-namespace ContextMenuManager.Controls
+namespace ContextMenuManager.Controls.Interfaces
 {
     interface IBtnShowMenuItem
     {

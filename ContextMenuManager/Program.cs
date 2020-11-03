@@ -33,9 +33,11 @@ namespace ContextMenuManager
                 DirectoryInfo di = new DirectoryInfo(LanguagesDir);
                 if(value.Equals(string.Empty) && di.Exists)
                 {
+                    string sysLanguageName = new CultureInfo(GetUserDefaultUILanguage()).Name;
                     foreach(FileInfo fi in di.GetFiles())
                     {
-                        if(Path.GetFileNameWithoutExtension(fi.Name).Equals(new CultureInfo(GetUserDefaultUILanguage()).Name, StringComparison.OrdinalIgnoreCase))
+                        string fileName = Path.GetFileNameWithoutExtension(fi.Name);
+                        if(fileName.Equals(sysLanguageName, StringComparison.OrdinalIgnoreCase))
                         {
                             value = fi.FullName; break;
                         }

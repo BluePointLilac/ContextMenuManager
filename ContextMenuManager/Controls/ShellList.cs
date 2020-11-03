@@ -25,6 +25,7 @@ namespace ContextMenuManager.Controls
         public const string MENUPATH_EXEFILE = @"HKEY_CLASSES_ROOT\exefile";//可执行文件
         public const string MENUPATH_SYSLNKFILE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\.lnk";
         public const string MENUPATH_SYSEXEFILE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\.exe";
+        public const string MENUPATH_UWPLNK = @"HKEY_CLASSES_ROOT\Launcher.ImmersiveApplication";
         public const string MENUPATH_UNKNOWN = @"HKEY_CLASSES_ROOT\Unknown";//未知格式
         public const string MENUPATH_TEXT = @"HKEY_CLASSES_ROOT\SystemFileAssociations\text";//通用文本文件
         public const string MENUPATH_IMAGE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\image";//通用图像文件
@@ -32,25 +33,21 @@ namespace ContextMenuManager.Controls
         public const string MENUPATH_AUDIO = @"HKEY_CLASSES_ROOT\SystemFileAssociations\audio";//通用音频文件
         public const string MENUPATH_DIRECTORY_IMAGE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\Directory.Image";//通用图像文件目录
         public const string MENUPATH_DIRECTORY_VIDEO = @"HKEY_CLASSES_ROOT\SystemFileAssociations\Directory.Video";//通用视频文件目录
-        public const string MENUPATH_DIRECTORY_AUDIO = @"HKEY_CLASSES_ROOT\SystemFileAssociations\Directory.Video";//通用音频文件目录
+        public const string MENUPATH_DIRECTORY_AUDIO = @"HKEY_CLASSES_ROOT\SystemFileAssociations\Directory.Audio";//通用音频文件目录
         public const string SYSFILEASSPATH = @"HKEY_CLASSES_ROOT\SystemFileAssociations";//系统扩展名注册表父项路径
 
         public enum Scenes
         {
-            File, Folder, Directory, Background, Desktop, Drive, AllObjects,
-            Computer, RecycleBin, Library, LnkFile, ExeFile, Text, Image, Video, Audio,
-            ImageDirectory, VideoDirectory, AudioDirectory, Unknown, CustomExtension
+            File, Folder, Directory, Background, Desktop, Drive, AllObjects, Computer, RecycleBin,
+            Library, LnkFile, UwpLnk, ExeFile, TextFile, ImageFile, VideoFile, AudioFile,
+            ImageDirectory, VideoDirectory, AudioDirectory, UnknownType, CustomType
         }
 
         private Scenes scene;
         public Scenes Scene
         {
             get => scene;
-            set
-            {
-                scene = value;
-                LoadItems();
-            }
+            set { scene = value; LoadItems(); }
         }
 
         private static string GetShellPath(string scenePath) => $@"{scenePath}\shell";
@@ -58,7 +55,7 @@ namespace ContextMenuManager.Controls
 
         public ShellList()
         {
-            TypeItem.ExtensionChanged += (sender, e) => this.Scene = Scenes.CustomExtension;
+            TypeItem.ExtensionChanged += (sender, e) => this.Scene = Scenes.CustomType;
         }
 
         private void LoadItems()
@@ -89,15 +86,17 @@ namespace ContextMenuManager.Controls
                     scenePath = MENUPATH_LIBRARY; break;
                 case Scenes.LnkFile:
                     scenePath = MENUPATH_LNKFILE; break;
+                case Scenes.UwpLnk:
+                    scenePath = MENUPATH_UWPLNK; break;
                 case Scenes.ExeFile:
                     scenePath = MENUPATH_EXEFILE; break;
-                case Scenes.Text:
+                case Scenes.TextFile:
                     scenePath = MENUPATH_TEXT; break;
-                case Scenes.Image:
+                case Scenes.ImageFile:
                     scenePath = MENUPATH_IMAGE; break;
-                case Scenes.Video:
+                case Scenes.VideoFile:
                     scenePath = MENUPATH_VIDEO; break;
-                case Scenes.Audio:
+                case Scenes.AudioFile:
                     scenePath = MENUPATH_AUDIO; break;
                 case Scenes.ImageDirectory:
                     scenePath = MENUPATH_DIRECTORY_IMAGE; break;
@@ -105,9 +104,9 @@ namespace ContextMenuManager.Controls
                     scenePath = MENUPATH_DIRECTORY_VIDEO; break;
                 case Scenes.AudioDirectory:
                     scenePath = MENUPATH_DIRECTORY_AUDIO; break;
-                case Scenes.Unknown:
+                case Scenes.UnknownType:
                     scenePath = MENUPATH_UNKNOWN; break;
-                case Scenes.CustomExtension:
+                case Scenes.CustomType:
                     scenePath = TypeItem.SysAssExtPath; break;
             }
             this.AddNewItem(scenePath);
@@ -115,6 +114,9 @@ namespace ContextMenuManager.Controls
 
             switch(scene)
             {
+                case Scenes.File:
+                    this.AddItem(new SpecialItems.SkypeShareItem());
+                    break;
                 case Scenes.Background:
                     this.AddItem(new RegRuleItem(RegRuleItem.CustomFolder) { MarginRight = RegRuleItem.SysMarginRignt });
                     break;
@@ -134,7 +136,7 @@ namespace ContextMenuManager.Controls
                 case Scenes.ExeFile:
                     this.AddItems(MENUPATH_SYSEXEFILE);
                     break;
-                case Scenes.CustomExtension:
+                case Scenes.CustomType:
                     this.InsertItem(new TypeItem(), 0);
                     this.AddItems(TypeItem.AssExtPath);
                     break;
@@ -143,7 +145,7 @@ namespace ContextMenuManager.Controls
 
         private void AddItems(string scenePath)
         {
-            if(this.Scene == Scenes.CustomExtension && TypeItem.Extension == null) return;
+            if(this.Scene == Scenes.CustomType && TypeItem.Extension == null) return;
             this.AddShellItems(GetShellPath(scenePath));
             this.AddShellExItems(GetShellExPath(scenePath));
         }
@@ -189,7 +191,7 @@ namespace ContextMenuManager.Controls
             AddCommonButton btnAddCommon = new AddCommonButton();
             newItem.AddCtr(btnAddCommon);
             this.AddItem(newItem);
-            if(this.Scene == Scenes.CustomExtension)
+            if(this.Scene == Scenes.CustomType)
             {
                 newItem.Visible = TypeItem.Extension != null;
                 TypeItem.ExtensionChanged += (sender, e) => newItem.Visible = TypeItem.Extension != null;

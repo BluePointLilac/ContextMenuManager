@@ -2,7 +2,7 @@
 using BulePointLilac.Methods;
 using System.Windows.Forms;
 
-namespace ContextMenuManager.Controls
+namespace ContextMenuManager.Controls.Interfaces
 {
     interface ITsiCommandItem
     {
