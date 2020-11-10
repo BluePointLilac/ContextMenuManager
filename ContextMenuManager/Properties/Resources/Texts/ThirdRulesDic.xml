@@ -28,7 +28,7 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" ValueName="DelaySendToMenuBuild" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" ValueName="DelaySendToMenuBuild" On="0" Off="1"/>
     </Item>
-    <Item Text="在Microsoft Store中查找应用" Tip="仅适用于Win10 Microsoft Store">
+    <Item Text="Win10 在Microsoft Store中查找应用">
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
     </Item>
@@ -131,6 +131,15 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item Text="显示托盘图标">
       <Rule RegPath="\Global\CoProcManager" ValueName="ShowTrayIcon" On="1" Off="0"/>
+    </Item>
+  </Group>
+
+  <Group Text="极光压缩" Guid="dd847e93-86df-4d75-a421-46d29228f6da" RegPath="HKEY_CURRENT_USER\SOFTWARE\PLZip">
+    <Item Text="层叠右键菜单">
+      <Rule RegPath="\Options" ValueName="CascadedMenu" On="1" Off="0"/>
+    </Item>
+    <Item Text="右键菜单显示图标">
+      <Rule RegPath="\Options" ValueName="MenuIcons" On="1" Off="0"/>
     </Item>
   </Group>
 </Data>
