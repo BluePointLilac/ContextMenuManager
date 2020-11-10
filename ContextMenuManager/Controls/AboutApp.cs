@@ -132,7 +132,7 @@ namespace ContextMenuManager.Controls
                         dlg.FileName = Program.ZH_CNINI;
                         break;
                     case 2:
-                        dlg.FileName = Program.GUIDINFOSINI;
+                        dlg.FileName = Program.GUIDINFOSDICINI;
                         break;
                     case 3:
                         dlg.FileName = Program.ThIRDRULESDICXML;
@@ -197,7 +197,7 @@ namespace ContextMenuManager.Controls
 
         readonly ComboBox cmbLanguages = new ComboBox
         {
-            Width = 200.DpiZoom(),
+            Width = 150.DpiZoom(),
             DropDownStyle = ComboBoxStyle.DropDownList
         };
 
