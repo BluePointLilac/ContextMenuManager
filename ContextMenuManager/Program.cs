@@ -9,29 +9,33 @@ namespace ContextMenuManager
 {
     static class Program
     {
-        public const string ZH_CNINI = "zh-cn.ini";
+        public const string ZH_CNINI = "zh-CN.ini";
         public const string CONFIGINI = "config.ini";
-        public const string GUIDINFOSINI = "GuidInfos.ini";
+        public const string GUIDINFOSDICINI = "GuidInfosDic.ini";
         public const string ThIRDRULESDICXML = "ThirdRulesDic.xml";
         public const string SHELLCOMMONDICXML = "ShellCommonDic.xml";
         public static readonly string ConfigDir = $@"{Application.StartupPath}\config";
         public static readonly string LanguagesDir = $@"{ConfigDir}\languages";
         public static readonly string AppDataConfigDir = $@"{Environment.ExpandEnvironmentVariables("%AppData%")}\ContextMenuManager\config";
         public static readonly string ConfigIniPath = $@"{AppDataConfigDir}\{CONFIGINI}";
-        public static readonly string GuidInfosDicPath = $@"{ConfigDir}\{GUIDINFOSINI}";
-        public static readonly string AppDataGuidInfosDicPath = $@"{AppDataConfigDir}\{GUIDINFOSINI}";
+        public static readonly string GuidInfosDicPath = $@"{ConfigDir}\{GUIDINFOSDICINI}";
+        public static readonly string AppDataGuidInfosDicPath = $@"{AppDataConfigDir}\{GUIDINFOSDICINI}";
         public static readonly string ThirdRulesDicPath = $@"{ConfigDir}\{ThIRDRULESDICXML}";
         public static readonly string AppDataThirdRulesDicPath = $@"{AppDataConfigDir}\{ThIRDRULESDICXML}";
         public static readonly string ShellCommonDicPath = $@"{ConfigDir}\{SHELLCOMMONDICXML}";
         public static readonly string AppDataShellCommonDicPath = $@"{AppDataConfigDir}\{SHELLCOMMONDICXML}";
         private static readonly IniReader ConfigReader = new IniReader(ConfigIniPath);
+        public static readonly DateTime LastCheckUpdateTime;
+
+        private static string languageFilePath = null;
         public static string LanguageFilePath
         {
             get
             {
-                string value = ConfigReader.GetValue("General", "Language");
+                if(languageFilePath != null) return languageFilePath;
+                languageFilePath = ConfigReader.GetValue("General", "Language");
                 DirectoryInfo di = new DirectoryInfo(LanguagesDir);
-                if(value.Equals(string.Empty) && di.Exists)
+                if(languageFilePath.Equals(string.Empty) && di.Exists)
                 {
                     string sysLanguageName = new CultureInfo(GetUserDefaultUILanguage()).Name;
                     foreach(FileInfo fi in di.GetFiles())
@@ -39,14 +43,17 @@ namespace ContextMenuManager
                         string fileName = Path.GetFileNameWithoutExtension(fi.Name);
                         if(fileName.Equals(sysLanguageName, StringComparison.OrdinalIgnoreCase))
                         {
-                            value = fi.FullName; break;
+                            languageFilePath = fi.FullName; break;
                         }
                     }
                 }
-                return value;
+                else if(!File.Exists(languageFilePath))
+                {
+                    languageFilePath = string.Empty;
+                }
+                return languageFilePath;
             }
         }
-        public static readonly DateTime LastCheckUpdateTime;
 
         [STAThread]
         static void Main()
@@ -70,12 +77,15 @@ namespace ContextMenuManager
             }
             catch
             {
+                //将上次检测更新时间推前到两个月前
                 LastCheckUpdateTime = DateTime.Today.AddMonths(-2);
             }
+            //如果上次检测更新时间为一个月以前就进行更新操作
             if(LastCheckUpdateTime.AddMonths(1).CompareTo(DateTime.Today) < 0)
             {
                 Updater.CheckUpdate();
                 string time = DateTime.Today.ToBinary().ToString();
+                IniFileHelper helper = new IniFileHelper(ConfigIniPath);
                 new IniFileHelper(ConfigIniPath).SetValue("General", "LastCheckUpdateTime", time);
             }
         }
