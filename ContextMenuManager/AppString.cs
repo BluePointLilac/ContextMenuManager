@@ -11,7 +11,7 @@ namespace ContextMenuManager
 
         private static string GetStringValue(string section, string key)
         {
-            string value = UserLanguage?.GetValue(section, key);
+            string value = UserLanguage.GetValue(section, key);
             if(string.IsNullOrEmpty(value)) value = DefaultLanguage.GetValue(section, key);
             return value.Replace("\\n", "\n");
         }
