@@ -1,5 +1,7 @@
 ﻿using BulePointLilac.Controls;
 using ContextMenuManager.Controls;
+using System;
+using System.Linq;
 
 namespace ContextMenuManager
 {
@@ -7,6 +9,7 @@ namespace ContextMenuManager
     {
         public MainForm()
         {
+            SetSideBarWidth();
             this.Text = AppString.General.AppName;
             this.Controls.Add(new ExplorerRestarter());
             shellList.Owner = shellNewList.Owner = sendToList.Owner = openWithList.Owner
@@ -280,6 +283,14 @@ namespace ContextMenuManager
                     donateBox.Visible = true;
                     return;
             }
+        }
+
+        private void SetSideBarWidth()
+        {
+            int maxWidth = 0;
+            string[] strs = GeneralItems.Concat(TypeItems).Concat(OtherRuleItems).Concat(AboutItems).ToArray();
+            Array.ForEach(strs, str => maxWidth = Math.Max(maxWidth, SideBar.GetItemWidth(str)));
+            SideBar.Width = maxWidth;
         }
     }
 }
