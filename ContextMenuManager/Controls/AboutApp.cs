@@ -216,8 +216,6 @@ namespace ContextMenuManager.Controls
 
         readonly List<string> iniPaths = new List<string>();
 
-        int selectIndex = 0;
-
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -234,38 +232,51 @@ namespace ContextMenuManager.Controls
         {
             cmbLanguages.Items.Clear();
             cmbLanguages.Items.Add("(默认) 简体中文");
-            cmbLanguages.SelectedIndex = 0;
+
             string str = AppString.Other.Translators + Environment.NewLine;
             DirectoryInfo di = new DirectoryInfo(Program.LanguagesDir);
             if(di.Exists)
             {
                 iniPaths.Clear();
                 FileInfo[] fis = di.GetFiles();
-                for(int i = 0; i < fis.Length; i++)
+                foreach(FileInfo fi in fis)
                 {
-                    FileInfo fi = fis[i];
-                    IniReader reader = new IniReader(fi.FullName);
-                    string name = reader.GetValue("General", "Language");
-                    string translator = reader.GetValue("General", "Translator");
-                    cmbLanguages.Items.Add(name);
-                    str += Environment.NewLine + name + "\t\t" + translator;
                     iniPaths.Add(fi.FullName);
-                    if(fi.FullName.Equals(Program.LanguageFilePath, StringComparison.OrdinalIgnoreCase))
-                        cmbLanguages.SelectedIndex = i + 1;
+                    IniReader reader = new IniReader(fi.FullName);
+                    string language = reader.GetValue("General", "Language");
+                    string translator = reader.GetValue("General", "Translator");
+                    str += Environment.NewLine + language + new string('\t', 5) + translator;
+                    cmbLanguages.Items.Add(language);
                 }
                 txtTranslators.Text = str;
+                cmbLanguages.SelectedIndex = GetSelectIndex();
             }
-            selectIndex = cmbLanguages.SelectedIndex;
         }
 
         private void ChangeLanguage()
         {
-            if(cmbLanguages.SelectedIndex == selectIndex) return;
             string path = "default";
+            int index = GetSelectIndex();
+            if(cmbLanguages.SelectedIndex == index) return;
             if(cmbLanguages.SelectedIndex > 0) path = iniPaths[cmbLanguages.SelectedIndex - 1];
-            new IniFileHelper(Program.ConfigIniPath).SetValue("General", "Language", path);
-            MessageBoxEx.Show(AppString.MessageBox.RestartApp, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            Application.Restart();
+            if(MessageBoxEx.Show(AppString.MessageBox.RestartApp, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                cmbLanguages.SelectedIndex = index;
+            }
+            else
+            {
+                new IniFileHelper(Program.ConfigIniPath).SetValue("General", "Language", path);
+                Application.Restart();
+            }
+        }
+
+        private int GetSelectIndex()
+        {
+            for(int i = 0; i < iniPaths.Count; i++)
+            {
+                if(iniPaths[i].Equals(Program.LanguageFilePath, StringComparison.OrdinalIgnoreCase)) return i + 1;
+            }
+            return 0;
         }
     }
 }
