@@ -35,7 +35,8 @@ namespace BulePointLilac.Methods
             {
                 string token = machine.GetNextToken(xmlStr, location, out XmlTokenType ttype);
                 Color color = machine.GetTokenColor(ttype);
-                box.AppendText(token, color);
+                bool isBold = ttype == XmlTokenType.DocTypeName || ttype == XmlTokenType.NodeName;
+                box.AppendText(token, color, isBold);
                 location += token.Length;
                 tokenTryCount++;
 
@@ -59,32 +60,33 @@ namespace BulePointLilac.Methods
                 string str = line.Trim();
                 if(str.StartsWith(";"))
                 {
-                    box.AppendText(str, Color.Green);
+                    box.AppendText(str, Color.SkyBlue);
                 }
                 else if(str.StartsWith("["))
                 {
                     if(str.Contains("]"))
                     {
                         int index = str.IndexOf(']');
-                        box.AppendText(str.Substring(0, index + 1), Color.Brown);
-                        box.AppendText(str.Substring(index + 1), Color.Gray);
+                        box.AppendText(str.Substring(0, index + 1), Color.DarkCyan, true);
+                        box.AppendText(str.Substring(index + 1), Color.SkyBlue);
                     }
-                    else box.AppendText(str, Color.Gray);
+                    else box.AppendText(str, Color.SkyBlue);
                 }
                 else if(str.Contains("="))
                 {
                     int index = str.IndexOf('=');
-                    box.AppendText(str.Substring(0, index), Color.Red);
-                    box.AppendText("=", Color.Black);
-                    box.AppendText(str.Substring(index + 1), Color.Blue);
+                    box.AppendText(str.Substring(0, index), Color.DodgerBlue);
+                    box.AppendText(str.Substring(index), Color.DimGray);
                 }
-                else box.AppendText(str, Color.Gray);
+                else box.AppendText(str, Color.SkyBlue);
                 box.AppendText(Environment.NewLine);
             });
         }
 
-        public static void AppendText(this RichTextBox box, string text, Color color)
+        public static void AppendText(this RichTextBox box, string text, Color color, bool isBold = false)
         {
+            FontStyle fontStyle = isBold ? FontStyle.Bold : FontStyle.Regular;
+            box.SelectionFont = new Font(box.Font, fontStyle);
             box.SelectionStart = box.TextLength;
             box.SelectionLength = 0;
             box.SelectionColor = color;
@@ -266,7 +268,7 @@ namespace BulePointLilac.Methods
                     case XmlTokenType.DoubleQuotationMarkEnd:
                     case XmlTokenType.SingleQuotationMarkStart:
                     case XmlTokenType.SingleQuotationMarkEnd:
-                        return Color.Black;
+                        return Color.DimGray;
                     case XmlTokenType.XmlDeclarationStart:
                     case XmlTokenType.XmlDeclarationEnd:
                     case XmlTokenType.NodeStart:
@@ -281,18 +283,18 @@ namespace BulePointLilac.Methods
                     case XmlTokenType.DocTypeEnd:
                     case XmlTokenType.DocTypeDefStart:
                     case XmlTokenType.DocTypeDefEnd:
-                        return Color.Blue;
+                        return Color.DimGray;
                     case XmlTokenType.CDataValue:
                     case XmlTokenType.DocTypeDefValue:
-                        return Color.Gray;
+                        return Color.SkyBlue;
                     case XmlTokenType.CommentValue:
-                        return Color.Green;
+                        return Color.SkyBlue;
                     case XmlTokenType.DocTypeName:
                     case XmlTokenType.NodeName:
-                        return Color.Brown;
+                        return Color.DarkCyan;
                     case XmlTokenType.AttributeName:
                     case XmlTokenType.DocTypeDeclaration:
-                        return Color.Red;
+                        return Color.DodgerBlue;
                     default:
                         return Color.Orange;
                 }
