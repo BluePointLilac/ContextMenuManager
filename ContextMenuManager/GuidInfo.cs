@@ -24,10 +24,9 @@ namespace ContextMenuManager
 
         private static IniReader AppDic;
         private static readonly IniReader UserDic = new IniReader(Program.GuidInfosDicPath);
-        private static readonly Dictionary<Guid, IconLocation> IconLocationDic = new Dictionary<Guid, IconLocation>();
+        public static readonly Dictionary<Guid, IconLocation> IconLocationDic = new Dictionary<Guid, IconLocation>();
         private static readonly Dictionary<Guid, string> FilePathDic = new Dictionary<Guid, string>();
-        private static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
-
+        public static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
         private static readonly Dictionary<Guid, Image> ItemImageDic = new Dictionary<Guid, Image>();
 
         public static bool TryGetGuid(string value, out Guid guid) => TryGetGuid(value, out guid, out _);
@@ -52,12 +51,13 @@ namespace ContextMenuManager
 
         private static bool TryGetValue(string section, string key, out string value)
         {
+            //用户自定义字典优先
+            if(UserDic != null && UserDic.TryGetValue(section, key, out value)) return true;
             if(!File.Exists(Program.AppDataGuidInfosDicPath))
                 File.WriteAllText(Program.AppDataGuidInfosDicPath, Properties.Resources.GuidInfosDic, Encoding.UTF8);
             if(AppDic == null)
                 AppDic = new IniReader(Program.AppDataGuidInfosDicPath);
             if(AppDic.TryGetValue(section, key, out value)) return true;
-            if(UserDic != null && UserDic.TryGetValue(section, key, out value)) return true;
             return false;
         }
 

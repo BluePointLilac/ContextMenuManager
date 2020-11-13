@@ -126,6 +126,9 @@
     <Compile Include="Controls\AddCommonButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\AddGuidDicDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\SelectItemsForm.cs">
       <SubType>Form</SubType>
     </Compile>

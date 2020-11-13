@@ -132,7 +132,10 @@ namespace ContextMenuManager
             public static string RegistryLocation => GetValue("RegistryLocation");
             public static string Delete => GetValue("Delete");
             public static string DeleteReference => GetValue("DeleteReference");
+            public static string HandleGuid => GetValue("HandleGuid");
             public static string CopyGuid => GetValue("CopyGuid");
+            public static string BlockGuid => GetValue("BlockGuid");
+            public static string AddGuidDic => GetValue("AddGuidDic");
             public static string InitialData => GetValue("InitialData");
             public static string Edit => GetValue("Edit");
             public static string Save => GetValue("Save");
@@ -176,9 +179,12 @@ namespace ContextMenuManager
             public static string NewOpenWithItem => GetValue("NewOpenWithItem");
             public static string ItemText => GetValue("ItemText");
             public static string ItemCommand => GetValue("ItemCommand");
+            public static string ItemName => GetValue("ItemName");
+            public static string ItemIcon => GetValue("ItemIcon");
             public static string SingleMenu => GetValue("SingleMenu");
             public static string MultiMenu => GetValue("MultiMenu");
             public static string InputGuid => GetValue("InputGuid");
+            public static string AddGuidDic => GetValue("AddGuidDic");
             public static string SelectExtension => GetValue("SelectExtension");
             public static string CheckReference => GetValue("CheckReference");
             public static string CheckCommon => GetValue("CheckCommon");
