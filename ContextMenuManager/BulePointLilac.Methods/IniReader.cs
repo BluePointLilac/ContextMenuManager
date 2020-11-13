@@ -30,7 +30,7 @@ namespace BulePointLilac.Methods
             ReadLines(lines);
         }
 
-        protected readonly Dictionary<string, Dictionary<string, string>> rootDic
+        public readonly Dictionary<string, Dictionary<string, string>> RootDic
             = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
 
         private void ReadLines(List<string> lines)
@@ -54,9 +54,9 @@ namespace BulePointLilac.Methods
                 int m = section.IndexOf(']') - 1;
                 if(m < 0) continue;
                 section = section.Substring(1, m);
-                if(rootDic.ContainsKey(section)) continue;
+                if(RootDic.ContainsKey(section)) continue;
                 var keyValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                rootDic.Add(section, keyValues);
+                RootDic.Add(section, keyValues);
 
                 for(int j = indexs[i] + 1; j < indexs[i + 1]; j++)
                 {
@@ -70,7 +70,7 @@ namespace BulePointLilac.Methods
 
         public string GetValue(string section, string key)
         {
-            if(rootDic.TryGetValue(section, out Dictionary<string, string> sectionDic))
+            if(RootDic.TryGetValue(section, out Dictionary<string, string> sectionDic))
                 if(sectionDic.TryGetValue(key, out string value))
                     return value;
             return string.Empty;

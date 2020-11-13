@@ -249,8 +249,8 @@ namespace ContextMenuManager.Controls
                     cmbLanguages.Items.Add(language);
                 }
                 txtTranslators.Text = str;
-                cmbLanguages.SelectedIndex = GetSelectIndex();
             }
+            cmbLanguages.SelectedIndex = GetSelectIndex();
         }
 
         private void ChangeLanguage()

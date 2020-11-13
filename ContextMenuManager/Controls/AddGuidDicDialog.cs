@@ -10,6 +10,7 @@ namespace ContextMenuManager.Controls
     {
         public Image ItemIcon { get; set; }
         public string ItemName { get; set; }
+        public bool IsDelete { get; private set; }
         public string ItemIconPath { get; set; }
         public int ItemIconIndex { get; set; }
         public string ItemIconLocation
@@ -39,6 +40,7 @@ namespace ContextMenuManager.Controls
                     this.ItemIconPath = frm.ItemIconPath;
                     this.ItemIconIndex = frm.ItemIconIndex;
                 }
+                this.IsDelete = frm.IsDelete;
                 return flag;
             }
         }
@@ -60,15 +62,17 @@ namespace ContextMenuManager.Controls
 
             public string ItemName
             {
-                get=> txtName.Text;
+                get => txtName.Text;
                 set => txtName.Text = value;
             }
-            public string ItemIconPath { get; set; }
-            public int ItemIconIndex { get; set; }
-            public Image ItemIcon {
+            public Image ItemIcon
+            {
                 get => picIcon.Image;
                 set => picIcon.Image = value;
             }
+            public string ItemIconPath { get; set; }
+            public int ItemIconIndex { get; set; }
+            public bool IsDelete { get; private set; }
 
             readonly TextBox txtName = new TextBox();
             readonly Label lblName = new Label
@@ -86,7 +90,7 @@ namespace ContextMenuManager.Controls
                 Size = SystemInformation.IconSize,
                 BackColor = Color.White
             };
-            readonly Button btnIcon = new Button
+            readonly Button btnBrowse = new Button
             {
                 Text = AppString.Dialog.Browse,
                 AutoSize = true
@@ -103,21 +107,32 @@ namespace ContextMenuManager.Controls
                 DialogResult = DialogResult.Cancel,
                 AutoSize = true
             };
+            readonly Button btnDelete = new Button
+            {
+                Text = AppString.Dialog.DeleteGuidDic,
+                DialogResult = DialogResult.Cancel,
+                AutoSize = true
+            };
 
             private void InitializeComponents()
             {
-                this.Controls.AddRange(new Control[] { lblName, txtName, lblIcon, picIcon, btnIcon, btnOk, btnCancel });
+                this.Controls.AddRange(new Control[] { lblName, txtName, lblIcon, picIcon, btnBrowse, btnDelete, btnOk, btnCancel });
                 int a = 20.DpiZoom();
-                lblName.Left = lblName.Top = lblIcon.Left = txtName.Top = a;
+                lblName.Left = lblName.Top = lblIcon.Left = btnDelete.Left = txtName.Top = a;
                 txtName.Left = lblName.Right + a;
-                lblIcon.Top = picIcon.Top = btnIcon.Top = lblName.Bottom + a;
-                btnOk.Left = picIcon.Left = lblIcon.Right + a;
-                btnOk.Top = btnCancel.Top = picIcon.Bottom + a;
-                btnIcon.Left = btnCancel.Left = btnOk.Right + a;
+                btnOk.Left = btnDelete.Right + a;
+                btnCancel.Left = btnOk.Right + a;
                 txtName.Width = btnCancel.Right - txtName.Left;
+                btnBrowse.Left = btnCancel.Right - btnBrowse.Width;
+                picIcon.Left = btnOk.Left + (btnOk.Width - picIcon.Width) / 2;
+                btnBrowse.Top = txtName.Bottom + a;
+                picIcon.Top = btnBrowse.Top + (btnBrowse.Height - picIcon.Height) / 2;
+                lblIcon.Top = btnBrowse.Top + (btnBrowse.Height - lblIcon.Height) / 2;
+                btnDelete.Top = btnOk.Top = btnCancel.Top = btnBrowse.Bottom + a;
                 this.ClientSize = new Size(btnCancel.Right + a, btnCancel.Bottom + a);
-
-                btnIcon.Click += (sender, e) => SelectIcon();
+                MyToolTip.SetToolTip(btnDelete, AppString.Tip.DeleteGuidDic);
+                btnBrowse.Click += (sender, e) => SelectIcon();
+                btnDelete.Click += (sender, e) => this.IsDelete = true;
             }
 
             private void SelectIcon()

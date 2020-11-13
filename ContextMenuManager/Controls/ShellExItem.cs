@@ -155,14 +155,26 @@ namespace ContextMenuManager.Controls
                 dlg.ItemIcon = this.Image;
                 dlg.ItemIconPath = this.IconLocation.IconPath;
                 dlg.ItemIconIndex = this.IconLocation.IconIndex;
-                if(dlg.ShowDialog() != DialogResult.OK) return;
-                Directory.CreateDirectory(Program.ConfigDir);
                 IniFileHelper helper = new IniFileHelper(Program.GuidInfosDicPath);
                 string section = this.Guid.ToString();
+                if(dlg.ShowDialog() != DialogResult.OK)
+                {
+                    if(dlg.IsDelete) {
+                        helper.DeleteSection(section);
+                        GuidInfo.ItemTextDic.Remove(this.Guid);
+                        GuidInfo.ItemImageDic.Remove(this.Guid);
+                        GuidInfo.IconLocationDic.Remove(this.Guid);
+                        GuidInfo.UserDic.RootDic.Remove(section);
+                        this.Text = this.ItemText;
+                        this.Image = GuidInfo.GetImage(Guid);
+                    }
+                    return;
+                }
+                Directory.CreateDirectory(Program.ConfigDir);
                 if(!string.IsNullOrWhiteSpace(dlg.ItemName))
                 {
                     helper.SetValue(section, "Text", dlg.ItemName);
-                    this.Text = dlg.ItemName;
+                    this.Text = ResourceString.GetDirectString(dlg.ItemName);
                     if(GuidInfo.ItemTextDic.ContainsKey(this.Guid))
                     {
                         GuidInfo.ItemTextDic[this.Guid] = this.Text;
@@ -185,6 +197,14 @@ namespace ContextMenuManager.Controls
                         GuidInfo.IconLocationDic.Add(this.Guid, location);
                     }
                     this.Image = dlg.ItemIcon;
+                    if(GuidInfo.ItemImageDic.ContainsKey(this.Guid))
+                    {
+                        GuidInfo.ItemImageDic[this.Guid] = this.Image;
+                    }
+                    else
+                    {
+                        GuidInfo.ItemImageDic.Add(this.Guid, this.Image);
+                    }
                 }
             }
         }

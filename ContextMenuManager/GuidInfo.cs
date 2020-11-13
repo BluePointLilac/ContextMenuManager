@@ -23,11 +23,11 @@ namespace ContextMenuManager
         }
 
         private static IniReader AppDic;
-        private static readonly IniReader UserDic = new IniReader(Program.GuidInfosDicPath);
+        public static readonly IniReader UserDic = new IniReader(Program.GuidInfosDicPath);
         public static readonly Dictionary<Guid, IconLocation> IconLocationDic = new Dictionary<Guid, IconLocation>();
         private static readonly Dictionary<Guid, string> FilePathDic = new Dictionary<Guid, string>();
         public static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
-        private static readonly Dictionary<Guid, Image> ItemImageDic = new Dictionary<Guid, Image>();
+        public static readonly Dictionary<Guid, Image> ItemImageDic = new Dictionary<Guid, Image>();
 
         public static bool TryGetGuid(string value, out Guid guid) => TryGetGuid(value, out guid, out _);
 

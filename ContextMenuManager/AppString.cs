@@ -185,6 +185,7 @@ namespace ContextMenuManager
             public static string MultiMenu => GetValue("MultiMenu");
             public static string InputGuid => GetValue("InputGuid");
             public static string AddGuidDic => GetValue("AddGuidDic");
+            public static string DeleteGuidDic => GetValue("DeleteGuidDic");
             public static string SelectExtension => GetValue("SelectExtension");
             public static string CheckReference => GetValue("CheckReference");
             public static string CheckCommon => GetValue("CheckCommon");
@@ -249,6 +250,7 @@ namespace ContextMenuManager
             public static string Separator => GetValue("Separator");
             public static string AddExistingItems => GetValue("AddExistingItems");
             public static string AddCommonItems => GetValue("AddCommonItems");
+            public static string DeleteGuidDic => GetValue("DeleteGuidDic");
         }
     }
 }
