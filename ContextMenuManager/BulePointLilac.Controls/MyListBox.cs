@@ -194,7 +194,7 @@ namespace BulePointLilac.Controls
         {
             SizeMode = PictureBoxSizeMode.AutoSize,
             Left = 20.DpiZoom(),
-            Enabled = false,
+            Enabled = false
         };
         private readonly FlowLayoutPanel flpControls = new FlowLayoutPanel
         {
