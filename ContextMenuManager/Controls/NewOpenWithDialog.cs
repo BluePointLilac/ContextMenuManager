@@ -40,7 +40,7 @@ namespace ContextMenuManager.Controls
                         MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
-                    if(string.IsNullOrWhiteSpace(ItemCommand))
+                    if(ItemCommand.IsNullOrWhiteSpace())
                     {
                         MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;

@@ -36,7 +36,14 @@ namespace BulePointLilac.Methods
         {
             string dirPath = GetParentPath(regPath);
             string keyName = GetKeyName(regPath);
-            GetRegistryKey(dirPath, true)?.DeleteSubKeyTree(keyName, throwOnMissingKey);
+            try
+            {
+                GetRegistryKey(dirPath, true)?.DeleteSubKeyTree(keyName);
+            }
+            catch(Exception)
+            {
+                if(throwOnMissingKey) throw;
+            }
         }
 
         /// <summary>获取指定注册表路径的根项RegistryKey和不包含根项部分的注册表路径</summary>
@@ -105,6 +112,12 @@ namespace BulePointLilac.Methods
                 using(RegistryKey dstSubKey = dstKey.CreateSubKey(name, true))
                     srcSubKey.CopyTo(dstSubKey);
             }
+        }
+
+        public static RegistryKey CreateSubKey(this RegistryKey key, string subKeyName, bool writable)
+        {
+            key.CreateSubKey(subKeyName).Close();
+            return key.OpenSubKey(subKeyName, writable);
         }
     }
 }

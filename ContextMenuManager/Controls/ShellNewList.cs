@@ -1,4 +1,5 @@
 ﻿using BulePointLilac.Controls;
+using BulePointLilac.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

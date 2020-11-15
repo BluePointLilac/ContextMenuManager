@@ -93,7 +93,7 @@ namespace ContextMenuManager.Controls
                 {
                     XmlElement szXE = (XmlElement)itemXE.SelectSingleNode("Value/REG_SZ");
                     string keyName = itemXE.GetAttribute("KeyName");
-                    if(string.IsNullOrWhiteSpace(keyName)) continue;
+                    if(keyName.IsNullOrWhiteSpace()) continue;
                     ShellCommonItem item = new ShellCommonItem
                     {
                         DefaultKeyName = keyName,
@@ -106,7 +106,7 @@ namespace ContextMenuManager.Controls
                         else if(szXE.HasAttribute("HasLUAShield")) item.Image = AppImage.Shield;
                     }
                     if(item.Image == null) item.Image = AppImage.NotFound;
-                    if(string.IsNullOrWhiteSpace(item.Text)) item.Text = item.DefaultKeyName;
+                    if(item.Text.IsNullOrWhiteSpace()) item.Text = item.DefaultKeyName;
                     item.SetTip(itemXE.GetAttribute("Tip"));
                     list.AddItem(item);
                 }
@@ -125,8 +125,8 @@ namespace ContextMenuManager.Controls
                         DefaultKeyName = itemXE.GetAttribute("KeyName"),
                         Guid = guid
                     };
-                    if(string.IsNullOrWhiteSpace(item.Text)) item.Text = GuidInfo.GetText(guid);
-                    if(string.IsNullOrWhiteSpace(item.DefaultKeyName)) item.DefaultKeyName = guid.ToString("B");
+                    if(item.Text.IsNullOrWhiteSpace()) item.Text = GuidInfo.GetText(guid);
+                    if(item.DefaultKeyName.IsNullOrWhiteSpace()) item.DefaultKeyName = guid.ToString("B");
                     item.SetTip(itemXE.GetAttribute("Tip"));
                     list.AddItem(item);
                 }
@@ -207,7 +207,7 @@ namespace ContextMenuManager.Controls
         {
             if(keyXE == null) return;
             string defaultValue = keyXE.GetAttribute("Default");
-            if(!string.IsNullOrWhiteSpace(defaultValue)) SetValue(regPath, "", defaultValue);
+            if(!defaultValue.IsNullOrWhiteSpace()) SetValue(regPath, "", defaultValue);
             WriteAttributesValue(keyXE.SelectSingleNode("Value"), regPath);
 
             XmlNode subKeyXN = keyXE.SelectSingleNode("SubKey");

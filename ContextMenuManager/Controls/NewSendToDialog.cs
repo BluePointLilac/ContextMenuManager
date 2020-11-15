@@ -22,7 +22,6 @@ namespace ContextMenuManager.Controls
 
         sealed class NewSendToItemForm : NewItemForm
         {
-            private static readonly IWshRuntimeLibrary.WshShell WshShell = new IWshRuntimeLibrary.WshShell();
             public string FilePath { get; set; }
 
             readonly RadioButton rdoFile = new RadioButton
@@ -54,12 +53,12 @@ namespace ContextMenuManager.Controls
 
                 btnOk.Click += (sender, e) =>
                 {
-                    if(string.IsNullOrWhiteSpace(ItemText))
+                    if(ItemText.IsNullOrWhiteSpace())
                     {
                         MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
-                    if(string.IsNullOrWhiteSpace(ItemCommand))
+                    if(ItemCommand.IsNullOrWhiteSpace())
                     {
                         MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
                         return;
@@ -105,7 +104,7 @@ namespace ContextMenuManager.Controls
                 FilePath = $@"{SendToList.SendToPath}\{ObjectPath.RemoveIllegalChars(ItemText)}.lnk";
                 FilePath = ObjectPath.GetNewPathWithIndex(FilePath, ObjectPath.PathType.File);
 
-                IWshRuntimeLibrary.IWshShortcut shortcut = WshShell.CreateShortcut(FilePath);
+                WshShortcut shortcut = new WshShortcut { FullName = FilePath };
                 if(rdoFile.Checked)
                 {
                     ItemCommand = Environment.ExpandEnvironmentVariables(ItemCommand);

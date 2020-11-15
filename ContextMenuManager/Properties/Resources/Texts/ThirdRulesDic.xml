@@ -28,7 +28,7 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" ValueName="DelaySendToMenuBuild" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" ValueName="DelaySendToMenuBuild" On="0" Off="1"/>
     </Item>
-    <Item Text="Win10 在Microsoft Store中查找应用">
+    <Item Text="Win10、Win8 在Microsoft Store中查找应用">
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
     </Item>

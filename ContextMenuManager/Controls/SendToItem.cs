@@ -10,9 +10,6 @@ namespace ContextMenuManager.Controls
 {
     sealed class SendToItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiTextItem, ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiDeleteItem
     {
-
-        private static readonly IWshRuntimeLibrary.WshShell WshShell = new IWshRuntimeLibrary.WshShell();
-
         public SendToItem(string filePath)
         {
             InitializeComponents();
@@ -26,14 +23,14 @@ namespace ContextMenuManager.Controls
             set
             {
                 filePath = value;
-                if(IsShortcut) this.Shortcut = WshShell.CreateShortcut(value);
+                if(IsShortcut) this.Shortcut.FullName = value;
                 this.Text = this.ItemText;
                 this.Image = this.ItemIcon.ToBitmap();
                 ChkVisible.Checked = this.ItemVisible;
             }
         }
 
-        private IWshRuntimeLibrary.IWshShortcut Shortcut;
+        private WshShortcut Shortcut = new WshShortcut();
         private string FileName => Path.GetFileName(FilePath);
         private string FileExtension => Path.GetExtension(FilePath);
         private bool IsShortcut => FileExtension.ToLower() == ".lnk";

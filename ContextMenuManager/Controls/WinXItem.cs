@@ -10,8 +10,6 @@ namespace ContextMenuManager.Controls
     sealed class WinXItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem,
         ITsiTextItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiDeleteItem, IFoldSubItem
     {
-        private static readonly IWshRuntimeLibrary.WshShell WshShell = new IWshRuntimeLibrary.WshShell();
-
         public WinXItem(string filePath, IFoldGroupItem group)
         {
             InitializeComponents();
@@ -26,7 +24,7 @@ namespace ContextMenuManager.Controls
             set
             {
                 filePath = value;
-                this.Shortcut = WshShell.CreateShortcut(value);
+                this.Shortcut.FullName = value;
                 this.Text = this.ItemText;
                 this.Image = this.ItemIcon.ToBitmap();
                 ChkVisible.Checked = this.ItemVisible;
@@ -73,7 +71,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        private IWshRuntimeLibrary.IWshShortcut Shortcut;
+        private WshShortcut Shortcut = new WshShortcut();
         private Icon ItemIcon => ResourceIcon.GetIcon(IconLocation) ?? Icon.ExtractAssociatedIcon(Shortcut.TargetPath);
         public string SearchText => $"{AppString.SideBar.WinX} {Text}";
 

@@ -43,7 +43,7 @@ namespace ContextMenuManager
         private static void UpdateText(string filePath, string url)
         {
             string contents = GetWebString(url);
-            if(!string.IsNullOrWhiteSpace(contents))
+            if(!contents.IsNullOrWhiteSpace())
                 File.WriteAllText(filePath, contents, Encoding.UTF8);
         }
 

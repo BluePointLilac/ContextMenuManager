@@ -27,9 +27,13 @@ namespace ContextMenuManager.Controls
 
         public void LoadItems()
         {
-            this.ClearItems();
-            DesktopIniReaders.Clear();
-            Array.ForEach(new DirectoryInfo(WinXPath).GetDirectories(), di => LoadSubDirItems(di));
+            Version ver = Environment.OSVersion.Version;
+            if((ver.Major == 10) || (ver.Major == 6 && ver.Minor >= 2))
+            {
+                this.ClearItems();
+                DesktopIniReaders.Clear();
+                Array.ForEach(new DirectoryInfo(WinXPath).GetDirectories(), di => LoadSubDirItems(di));
+            }
         }
 
         private void LoadSubDirItems(DirectoryInfo di)

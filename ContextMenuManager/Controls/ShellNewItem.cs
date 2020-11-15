@@ -71,7 +71,7 @@ namespace ContextMenuManager.Controls
                     if(filePath != null) return filePath;
 
                     value = key.OpenSubKey("CLSID")?.GetValue("")?.ToString();
-                    if(Guid.TryParse(value, out Guid guid))
+                    if(GuidEx.TryParse(value, out Guid guid))
                     {
                         filePath = GuidInfo.GetFilePath(guid);
                         if(filePath != null) return filePath;
@@ -133,7 +133,7 @@ namespace ContextMenuManager.Controls
                 string iconPath;
                 int iconIndex;
                 string value = IconLocation;
-                if(string.IsNullOrWhiteSpace(value)) value = DefaultTypeDefaultIcon;
+                if(value.IsNullOrWhiteSpace()) value = DefaultTypeDefaultIcon;
                 if(!string.IsNullOrEmpty(value)) icon = ResourceIcon.GetIcon(value, out iconPath, out iconIndex);
                 else icon = ResourceIcon.GetIcon(iconPath = ItemFilePath, iconIndex = 0);
                 if(icon == null) icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = 2);//图标资源不存在

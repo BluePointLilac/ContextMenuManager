@@ -10,7 +10,7 @@ namespace BulePointLilac.Methods
     {
         public IniReader(StringBuilder sb)
         {
-            if(string.IsNullOrWhiteSpace(sb.ToString())) return;
+            if(sb.ToString().IsNullOrWhiteSpace()) return;
             List<string> lines = sb.ToString().Split(new[] { "\r\n", "\n" },
                 StringSplitOptions.RemoveEmptyEntries).ToList();//拆分为行
             lines.ForEach(line => line.Trim());

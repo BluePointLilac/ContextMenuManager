@@ -149,7 +149,7 @@ namespace BulePointLilac.Methods
         /// <param name="regPath">要获取权限的注册表完整路径</param>
         public static void TakeRegKeyOwnerShip(string regPath)
         {
-            if(string.IsNullOrWhiteSpace(regPath)) return;
+            if(regPath.IsNullOrWhiteSpace()) return;
             RegistryKey key = null;
             WindowsIdentity id = null;
             //利用试错判断是否有写入权限
@@ -206,7 +206,7 @@ namespace BulePointLilac.Methods
                 }
                 catch(Exception) { }
             }
-            finally { key?.Dispose(); id?.Dispose(); }
+            finally { key?.Close(); id?.Dispose(); }
         }
 
         /// <summary>获取注册表项及其子项、递归子级子项权限</summary>
@@ -214,7 +214,7 @@ namespace BulePointLilac.Methods
         /// <param name="regPath">要获取权限的注册表完整路径</param>
         public static void TakeRegTreeOwnerShip(string regPath)
         {
-            if(string.IsNullOrWhiteSpace(regPath)) return;
+            if(regPath.IsNullOrWhiteSpace()) return;
             TakeRegKeyOwnerShip(regPath);
             using(RegistryKey key = RegistryEx.GetRegistryKey(regPath))
                 if(key != null)

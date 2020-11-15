@@ -7,6 +7,10 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager
 {
+    //完美兼容.Net Framework 3.5(Win7)、.Net Framework 4.5(Win8、Win8.1)、.Net Framework 4.6(Win10)
+    //避免用户未安装或不会安装系统未自带的.Net Framework版本，这样可以直接启动程序，不用担心框架问题，
+    //Win10和Win8、Win8.1可共用一个exe文件(.Net Framework 4.5)，Win7另用一个版本(.Net Framework 3.5)
+    //在编译前在Properties\应用程序\目标框架中修改为对应框架即可
     static class Program
     {
         public const string ZH_CNINI = "zh-CN.ini";

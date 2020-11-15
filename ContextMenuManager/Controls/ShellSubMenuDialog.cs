@@ -37,7 +37,7 @@ namespace ContextMenuManager.Controls
                 this.MinimumSize = this.Size = new Size(646, 389).DpiZoom();
                 LstSubItems = new MyListBox { Dock = DockStyle.Fill, Parent = this };
                 string value = GetValue(parentPath, "SubCommands", null)?.ToString();
-                if(string.IsNullOrWhiteSpace(value))
+                if(value.IsNullOrWhiteSpace())
                 {
                     using(var shellKey = RegistryEx.GetRegistryKey($@"{parentPath}\shell"))
                     {

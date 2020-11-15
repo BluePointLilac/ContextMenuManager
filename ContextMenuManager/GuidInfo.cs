@@ -34,7 +34,7 @@ namespace ContextMenuManager
         public static bool TryGetGuid(string value, out Guid guid, out string guidPath)
         {
             guidPath = null;
-            if(!Guid.TryParse(value, out guid)) return false;
+            if(!GuidEx.TryParse(value, out guid)) return false;
             foreach(string path in ClsidPaths)
             {
                 using(RegistryKey key = RegistryEx.GetRegistryKey($@"{path}\{guid:B}"))
@@ -100,7 +100,7 @@ namespace ContextMenuManager
                 {
                     itemText = GetAbsStr(guid, itemText, true);
                 }
-                if(string.IsNullOrWhiteSpace(itemText))
+                if(itemText.IsNullOrWhiteSpace())
                 {
                     foreach(string clsidPath in ClsidPaths)
                     {
@@ -112,7 +112,7 @@ namespace ContextMenuManager
                     }
                 }
                 itemText = ResourceString.GetDirectString(itemText);
-                if(string.IsNullOrWhiteSpace(itemText)) itemText = null;
+                if(itemText.IsNullOrWhiteSpace()) itemText = null;
                 ItemTextDic.Add(guid, itemText);
             }
             return itemText;

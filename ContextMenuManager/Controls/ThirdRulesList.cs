@@ -42,7 +42,7 @@ namespace ContextMenuManager.Controls
                     PathType = ObjectPath.PathType.Registry,
                     Image = GuidInfo.GetImage(guid),
                 };
-                if(string.IsNullOrWhiteSpace(groupItem.Text)) groupItem.Text = GuidInfo.GetText(guid);
+                if(groupItem.Text.IsNullOrWhiteSpace()) groupItem.Text = GuidInfo.GetText(guid);
                 this.AddItem(groupItem);
 
                 foreach(XmlElement itemXE in groupXE.ChildNodes)

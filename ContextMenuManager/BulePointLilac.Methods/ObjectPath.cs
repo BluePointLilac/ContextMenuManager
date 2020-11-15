@@ -57,7 +57,7 @@ namespace BulePointLilac.Methods
         public static string ExtractFilePath(string command, out string shortPath)
         {
             shortPath = null;
-            if(string.IsNullOrWhiteSpace(command)) return null;
+            if(command.IsNullOrWhiteSpace()) return null;
             command = Environment.ExpandEnvironmentVariables(command).Replace(@"\\", @"\");
             if(File.Exists(command)) {
                 shortPath = command;

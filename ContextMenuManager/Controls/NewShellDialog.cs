@@ -79,7 +79,7 @@ namespace ContextMenuManager.Controls
 
                 btnOk.Click += (sender, e) =>
                 {
-                    if(string.IsNullOrWhiteSpace(txtText.Text))
+                    if(txtText.Text.IsNullOrWhiteSpace())
                     {
                         MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                     }
@@ -127,7 +127,7 @@ namespace ContextMenuManager.Controls
                             key.SetValue("SubCommands", "");
                         else
                         {
-                            if(!string.IsNullOrWhiteSpace(ItemCommand))
+                            if(!ItemCommand.IsNullOrWhiteSpace())
                                 key.CreateSubKey("command", true).SetValue("", ItemCommand);
                         }
                     }

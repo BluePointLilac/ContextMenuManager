@@ -16,10 +16,11 @@ namespace ContextMenuManager.Controls
             this.LoadCommonItems();
             this.SortItemByText();
             this.AddNewItem();
+            Version ver = Environment.OSVersion.Version;
             RegRuleItem storeItem = new RegRuleItem(RegRuleItem.UseStoreOpenWith)
             {
                 MarginRight = RegRuleItem.SysMarginRignt,
-                Visible = Environment.OSVersion.Version.Major == 10
+                Visible = (ver.Major == 10) || (ver.Major == 6 && ver.Minor >= 2)
             };
             this.InsertItem(storeItem, 1);
         }

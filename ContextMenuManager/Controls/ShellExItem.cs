@@ -171,7 +171,7 @@ namespace ContextMenuManager.Controls
                     return;
                 }
                 Directory.CreateDirectory(Program.ConfigDir);
-                if(!string.IsNullOrWhiteSpace(dlg.ItemName))
+                if(!dlg.ItemName.IsNullOrWhiteSpace())
                 {
                     helper.SetValue(section, "Text", dlg.ItemName);
                     this.Text = ResourceString.GetDirectString(dlg.ItemName);

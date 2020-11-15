@@ -110,7 +110,7 @@ namespace BulePointLilac.Methods
         public static Icon GetIcon(string iconLocation, out string iconPath, out int iconIndex)
         {
             iconIndex = 0; iconPath = null;
-            if(string.IsNullOrWhiteSpace(iconLocation)) return null;
+            if(iconLocation.IsNullOrWhiteSpace()) return null;
             iconLocation = Environment.ExpandEnvironmentVariables(iconLocation).Replace("\"", "");
             int index = iconLocation.LastIndexOf(',');
             if(index == -1) iconPath = iconLocation;
@@ -133,7 +133,7 @@ namespace BulePointLilac.Methods
         public static Icon GetIcon(string iconPath, int iconIndex)
         {
             Icon icon = null;
-            if(string.IsNullOrWhiteSpace(iconPath)) return icon;
+            if(iconPath.IsNullOrWhiteSpace()) return icon;
             iconPath = Environment.ExpandEnvironmentVariables(iconPath).Replace("\"", "");
 
             if(Path.GetFileName(iconPath).ToLower() == "shell32.dll")
