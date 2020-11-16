@@ -28,11 +28,14 @@ namespace ContextMenuManager.Controls
         public void LoadItems()
         {
             Version ver = Environment.OSVersion.Version;
-            if((ver.Major == 10) || (ver.Major == 6 && ver.Minor >= 2))
+            bool isWin10= ver.Major == 10;
+            bool isWin8 = (ver.Major == 6) && (ver.Minor >= 2);
+            if(isWin10 || isWin8)
             {
                 this.ClearItems();
                 DesktopIniReaders.Clear();
                 Array.ForEach(new DirectoryInfo(WinXPath).GetDirectories(), di => LoadSubDirItems(di));
+                if(isWin10) this.AddItem(new RegRuleItem(RegRuleItem.WinXPowerShell) { MarginRight = RegRuleItem.SysMarginRignt });
             }
         }
 

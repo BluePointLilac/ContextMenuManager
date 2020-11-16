@@ -159,6 +159,7 @@ namespace ContextMenuManager
             public static string RemovableDrive => GetValue("RemovableDrive");
             public static string BuildSendtoMenu => GetValue("BuildSendtoMenu");
             public static string UseStoreOpenWith => GetValue("UseStoreOpenWith");
+            public static string WinXPowerShell => GetValue("WinXPowerShell");
             public static string NewItem => GetValue("NewItem");
             public static string AddGuidBlockedItem => GetValue("AddGuidBlockedItem");
             public static string CurrentExtension => GetValue("CurrentExtension");

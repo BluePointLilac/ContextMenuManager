@@ -112,6 +112,7 @@ namespace ContextMenuManager.Controls
 
         public IFoldGroupItem FoldGroupItem { get; set; }
 
+        const string CU_SMWCEA = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
         const string LM_SMWCPE = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer";
         const string CU_SMWCPE = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer";
         const string LM_SMWCE = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer";
@@ -126,7 +127,7 @@ namespace ContextMenuManager.Controls
                 new RegRule(LM_SMWCPE, "NoCustomizeWebView", 0, 1),
                 new RegRule(CU_SMWCPE, "NoCustomizeThisFolder", 0, 1),
                 new RegRule(CU_SMWCPE, "NoCustomizeWebView", 0, 1)
-        },
+            },
             ItemInfo = new ItemInfo
             {
                 Text = AppString.Item.CustomFolder,
@@ -141,7 +142,7 @@ namespace ContextMenuManager.Controls
             Rules = new[] {
                 new RegRule(LM_SMWCPE, "NoNetConnectDisconnect", 0, 1),
                 new RegRule(CU_SMWCPE, "NoNetConnectDisconnect", 0, 1)
-        },
+            },
             ItemInfo = new ItemInfo
             {
                 Text = $"{AppString.Item.MapNetworkDrive} && {AppString.Item.DisconnectNetworkDrive}",
@@ -155,7 +156,7 @@ namespace ContextMenuManager.Controls
             Rules = new[] {
                 new RegRule(LM_SMWCPE, "NoPropertiesRecycleBin", 0, 1),
                 new RegRule(CU_SMWCPE, "NoPropertiesRecycleBin", 0, 1)
-        },
+            },
             ItemInfo = new ItemInfo
             {
                 Text = AppString.Item.RecycleBinProperties,
@@ -169,7 +170,7 @@ namespace ContextMenuManager.Controls
             Rules = new[] {
                 new RegRule(LM_SMWCPE, "NoDrivesInSendToMenu", 0, 1),
                 new RegRule(CU_SMWCPE, "NoDrivesInSendToMenu", 0, 1)
-        },
+            },
             ItemInfo = new ItemInfo
             {
                 Text = AppString.Item.RemovableDrive,
@@ -184,7 +185,7 @@ namespace ContextMenuManager.Controls
             Rules = new[] {
                 new RegRule(LM_SMWCE, "DelaySendToMenuBuild", 0, 1),
                 new RegRule(CU_SMWCE, "DelaySendToMenuBuild", 0, 1)
-        },
+            },
             ItemInfo = new ItemInfo
             {
                 Text = AppString.Item.BuildSendtoMenu,
@@ -198,11 +199,25 @@ namespace ContextMenuManager.Controls
             Rules = new[] {
                 new RegRule(LM_SPMWE, "NoUseStoreOpenWith", 0, 1),
                 new RegRule(CU_SPMWE, "NoUseStoreOpenWith", 0, 1)
-        },
+            },
             ItemInfo = new ItemInfo
             {
                 Text = AppString.Item.UseStoreOpenWith,
                 Image = AppImage.MicrosoftStore
+            }
+        };
+
+        public static RuleAndInfo WinXPowerShell = new RuleAndInfo
+        {
+            Rules = new[]
+            {
+                new RegRule(CU_SMWCEA, "DontUsePowerShellOnWinX", 0, 1)
+            },
+            ItemInfo = new ItemInfo
+            {
+                Text = AppString.Item.WinXPowerShell,
+                Image = AppImage.Cmd,
+                RestartExplorer = true
             }
         };
     }

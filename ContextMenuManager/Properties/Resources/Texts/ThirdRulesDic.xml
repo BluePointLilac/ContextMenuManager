@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，常驻菜单时须添加属性Common，RegPath为程序相关注册表主路径;
+<!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，不设置Guid则为常驻菜单，RegPath为程序相关注册表主路径;
 其相关菜单项目设置作为一个Item子元素，Item的Text为该Item项显示文本，Tip属性为鼠标悬浮在开关上时的提示信息，需要重启资源管理器生效则添加属性RestartExplorer;
 Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；ValueName为相关键名，On为启用键值，Off为禁用键值；
 每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；程序优先判定为On，即只要所有Rule不匹配Off键值就判定为On，键值类型不符时也判定为On;
 ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认值时可省略，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型-->
 <Data>
-  <Group Text="System" Common="">
+  <Group Text="System">
     <Item Text="目录背景 自定义文件夹" RestartExplorer="" Tip="禁用此项将会同时禁用文件系统&#x000A;对象属性面板中的自定义选项卡">
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeThisFolder" On="0" Off="1"/>
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeWebView" On="0" Off="1"/>
@@ -35,6 +35,9 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <Item Text="Win10 开始屏幕程序右键菜单卸载" RestartExplorer="">
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="NoUninstallFromStart" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="NoUninstallFromStart" On="0" Off="1"/>
+    </Item>
+    <Item Text="Win10 WinX菜单命令提示符替换为PowerShell" RestartExplorer="">
+      <Rule RegPath="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" ValueName="DontUsePowerShellOnWinX" On="0" Off="1"/>
     </Item>
   </Group>
 

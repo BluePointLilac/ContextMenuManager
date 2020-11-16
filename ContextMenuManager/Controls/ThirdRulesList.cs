@@ -32,8 +32,8 @@ namespace ContextMenuManager.Controls
             }
             foreach(XmlElement groupXE in doc1.DocumentElement.ChildNodes)
             {
-                if(!GuidInfo.TryGetGuid(groupXE.GetAttribute("Guid"), out Guid guid)
-                    && !groupXE.HasAttribute("Common")) continue;
+                Guid guid = Guid.Empty;
+                if(groupXE.HasAttribute("Guid") && !GuidInfo.TryGetGuid(groupXE.GetAttribute("Guid"), out guid)) continue;
 
                 GroupPathItem groupItem = new GroupPathItem
                 {
