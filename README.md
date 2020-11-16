@@ -14,10 +14,7 @@
 * 程序支持国际化多语言显示，欢迎为此程序制作语言字典
 
 ## 运行截图
-* Win10<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Win10%20Screenshot.png)
-* Win8.1<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Win8.1%20Screenshot.png)
-* Win8<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Win8%20Screenshot.png)
-* Win7<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Win7%20Screenshot.png)
+* ![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Screenshot.png)
 
 ## 程序图标
 * 程序主图标来自 [Easyicon][1]<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/AppIcon.ico)
