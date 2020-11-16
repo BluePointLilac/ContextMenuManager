@@ -14,7 +14,7 @@
 * 程序支持国际化多语言显示，欢迎为此程序制作语言字典
 
 ## 运行截图
-* ![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Screenshot.png)
+![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Screenshot.png)
 
 ## 程序图标
 * 程序主图标来自 [Easyicon][1]<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/AppIcon.ico)
