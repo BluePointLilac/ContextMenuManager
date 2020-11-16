@@ -23,9 +23,9 @@ namespace ContextMenuManager.Controls
         public const string MENUPATH_LIBRARY_USER = @"HKEY_CLASSES_ROOT\UserLibraryFolder";//用户库
         public const string MENUPATH_LNKFILE = @"HKEY_CLASSES_ROOT\lnkfile";//快捷方式
         public const string MENUPATH_EXEFILE = @"HKEY_CLASSES_ROOT\exefile";//可执行文件
-        public const string MENUPATH_SYSLNKFILE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\.lnk";
-        public const string MENUPATH_SYSEXEFILE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\.exe";
-        public const string MENUPATH_UWPLNK = @"HKEY_CLASSES_ROOT\Launcher.ImmersiveApplication";
+        public const string MENUPATH_SYSLNKFILE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\.lnk";//快捷方式
+        public const string MENUPATH_SYSEXEFILE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\.exe";//可执行文件
+        public const string MENUPATH_UWPLNK = @"HKEY_CLASSES_ROOT\Launcher.ImmersiveApplication";//UWP快捷方式
         public const string MENUPATH_UNKNOWN = @"HKEY_CLASSES_ROOT\Unknown";//未知格式
         public const string MENUPATH_TEXT = @"HKEY_CLASSES_ROOT\SystemFileAssociations\text";//通用文本文件
         public const string MENUPATH_IMAGE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\image";//通用图像文件
