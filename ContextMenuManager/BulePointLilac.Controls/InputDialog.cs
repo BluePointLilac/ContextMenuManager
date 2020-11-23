@@ -40,7 +40,7 @@ namespace BulePointLilac.Controls
                 this.MinimumSize = this.Size = new Size(400, 150).DpiZoom();
                 this.MaximizeBox = MinimizeBox = ShowIcon = ShowInTaskbar = false;
                 this.Controls.AddRange(new Control[] { TxtInput, BtnOk, BtnCancel });
-                TxtInput.MouseWheel += ResizeFont;
+                TxtInput.CanResizeFont();
                 InitializeComponents();
             }
 
@@ -80,16 +80,6 @@ namespace BulePointLilac.Controls
                 BtnCancel.Left = this.ClientSize.Width - BtnCancel.Width - a;
                 BtnOk.Left = BtnCancel.Left - BtnOk.Width - a;
                 this.OnResize(null);
-            }
-
-            /// <summary>缩放文本框字体</summary>
-            private void ResizeFont(object sender, MouseEventArgs e)
-            {
-                if(ModifierKeys != Keys.Control) return;
-                float size = TxtInput.Font.Size;
-                if(size < 8F && e.Delta < 0) return;
-                if(size > 40F && e.Delta > 0) return;
-                TxtInput.Font = new Font(TxtInput.Font.FontFamily, size + (e.Delta > 0 ? 1 : -1));
             }
         }
     }
