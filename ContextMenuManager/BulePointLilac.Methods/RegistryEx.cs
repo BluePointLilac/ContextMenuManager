@@ -117,6 +117,7 @@ namespace BulePointLilac.Methods
         public static RegistryKey CreateSubKey(this RegistryKey key, string subKeyName, bool writable)
         {
             key.CreateSubKey(subKeyName).Close();
+            RegTrustedInstaller.TakeRegTreeOwnerShip($@"{key.Name}\{subKeyName}");
             return key.OpenSubKey(subKeyName, writable);
         }
     }
