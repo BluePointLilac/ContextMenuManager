@@ -1,9 +1,9 @@
 ﻿<?xml version='1.0' encoding='utf-8' ?>
 <!--此文件为常用右键菜单字典,
 Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型，
-，子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突-->
+子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突-->
 <Data>
-  <Group RegPath='HKEY_CLASSES_ROOT\*'>
+  <File>
     <Shell>
       <Item KeyName='CopyContent' Tip='不需打开文件直接复制文件文本内容&#x000A;非UTF-16 LE(或带BOM)编码会乱码'>
         <Value>
@@ -14,6 +14,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         </SubKey>
       </Item>
       <Item KeyName='TakeOwnerShip'>
+        <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
           <REG_SZ MUIVerb='获取所有者权限' HasLUAShield='' NoWorkingDirectory=''/>
         </Value>
@@ -25,6 +26,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         </SubKey>
       </Item>
       <Item KeyName='GetHash'>
+        <OSVersion Compare=">=">6.3</OSVersion>
         <Value>
           <REG_SZ MUIVerb='获取哈希值'/>
         </Value>
@@ -33,11 +35,15 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         </SubKey>
       </Item>
     </Shell>
-  </Group>
-
-  <Group RegPath='HKEY_CLASSES_ROOT\Directory'>
+  </File>
+  
+  <Folder>
+  </Folder>
+  
+  <Directory>
     <Shell>
       <Item KeyName="TakeOwnerShip">
+        <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
           <REG_SZ MUIVerb='获取所有者权限' HasLUAShield='' NoWorkingDirectory=''/>
         </Value>
@@ -50,22 +56,25 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         </SubKey>
       </Item>
     </Shell>
-  </Group>
+  </Directory>
 
-  <Group RegPath='HKEY_CLASSES_ROOT\Directory\Background'>
+  <Background>
     <Shell>
       <Item KeyName='Windows.ShowHiddenFiles'>
+        <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
           <REG_SZ MUIVerb='显示/隐藏 隐藏文件' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{f7300245-1f4b-41ba-8948-6fd392064494}'/>
         </Value>
       </Item>
-            <Item KeyName='Windows.ShowFileExtensions'>
+      <Item KeyName='Windows.ShowFileExtensions'>
+        <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
           <REG_SZ MUIVerb='显示/隐藏 文件扩展名' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{4ac6c205-2853-4bf5-b47c-919a42a48a16}'/>
         </Value>
       </Item>
       <!--清空回收站-->
       <Item KeyName='Windows.RecycleBin.Empty'>
+        <OSVersion Compare=">=">6.1</OSVersion>
         <Value>
           <REG_SZ MUIVerb='@shell32.dll,-10564' Icon='imageres.dll,-54' CommandStateHandler='{c9298eef-69dd-4cdd-b153-bdbc38486781}'/>
         </Value>
@@ -89,29 +98,28 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <ShellEx>
       <Item Text='窗口转换程序' Icon='imageres.dll,0' KeyName='Flip3D' Guid='{3080f90e-d7ad-11d9-bd98-0000947b0257}'/>
     </ShellEx>
-  </Group>
+  </Background>
 
-  <Group RegPath='HKEY_CLASSES_ROOT\DesktopBackground'>
+  <Desktop>
     <Shell>
-      <!--打开此电脑-->
       <Item KeyName='OpenThisPC'>
         <Value>
-          <REG_SZ MUIVerb='@windows.storage.dll,-9216' Icon='imageres.dll,-109'/>
+          <REG_SZ MUIVerb='打开此电脑' Icon='imageres.dll,-109'/>
         </Value>
         <SubKey>
           <Command Default='explorer.exe /e,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}'/>
         </SubKey>
       </Item>
-      <!--打开控制面板-->
       <Item KeyName='OpenControlPanel'>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-4161' Icon='imageres.dll,-27'/>
+          <REG_SZ MUIVerb='打开控制面板' Icon='imageres.dll,-27'/>
         </Value>
         <SubKey>
           <Command Default='rundll32.exe shell32.dll,Control_RunDLL'/>
         </SubKey>
       </Item>
       <Item KeyName='RestartExplorer'>
+        <OSVersion Compare=">=">6.1</OSVersion>
         <Value>
           <REG_SZ MUIVerb='重启资源管理器' Icon='explorer.exe,0'/>
         </Value>
@@ -127,7 +135,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <Command Default='regedit.exe -m'/>
         </SubKey>
       </Item>
-      <Item KeyName='SnipToClipboard' Tip='仅适用于Win10操作系统&#x000A;截屏后可直接Ctrl+V粘贴图片&#x000A;适用位置:Word、QQ、PS等&#x000A;快捷键:Win+Shift+S'>
+      <Item KeyName='SnipToClipboard' Tip='截屏后可直接Ctrl+V粘贴图片&#x000A;适用位置:Word、QQ、PS等&#x000A;快捷键:Win+Shift+S'>
+        <OSVersion Compare=">=">10.0</OSVersion>
         <Value>
           <REG_SZ MUIVerb='截屏到剪贴板' Icon='snippingTool.exe,0'/>
         </Value>
@@ -135,10 +144,19 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <Command Default='explorer ms-screenclip:'/>
         </SubKey>
       </Item>
+      <Item KeyName='SlideToShutDown'>
+        <!--OSVersion Compare=">=">10.0</OSVersion-->
+        <Value>
+          <REG_SZ MUIVerb='滑动关机' Icon='shell32.dll,-28'/>
+        </Value>
+        <SubKey>
+          <Command Default='SlideToShutDown.exe'/>
+        </SubKey>
+      </Item>
     </Shell>
-  </Group>
+  </Desktop>
 
-  <Group RegPath='HKEY_CLASSES_ROOT\Drive'>
+  <Drive>
     <Shell>
       <!--优化驱动器-->
       <Item KeyName='OptimizeDrives'>
@@ -157,18 +175,20 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         </Value>
       </Item>
     </Shell>
-  </Group>
+  </Drive>
 
-  <Group RegPath='HKEY_CLASSES_ROOT\AllFilesystemObjects'>
+  <AllObjects>
     <Shell>
       <!--永久删除-->
       <Item KeyName='Windows.PermanentDelete' Tip='不能用于删除lnk快捷方式文件,&#x000A;或通过快捷方式删除其目标对象'>
+        <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
           <REG_SZ MUIVerb='@shell32.dll,-37394' Icon='shell32.dll,-240' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{E9571AB2-AD92-4ec6-8924-4E5AD33790F5}'/>
         </Value>
       </Item>
       <!--复制路径-->
       <Item KeyName='Windows.CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示'>
+        <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
           <REG_SZ MUIVerb='@shell32.dll,-30329' Icon='imageres.dll,-5302' CommandStateHandler='{3B1599F9-E00A-4BBF-AD3E-B3F99FA87779}' CanonicalName='{707C7BC6-685A-4A4D-A275-3966A5A3EFAA}' CommandStateSync='' VerbHandler='{f3d06e7c-1e45-4a26-847e-f9fcdee59be0}' VerbName='copyaspath' Description='@shell32.dll,-30336'/>
           <REG_DWORD InvokeCommandOnSelection='1'/>
@@ -181,5 +201,11 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <!--移动到文件夹-->
       <Item Text='@shell32.dll,-30305' Icon='imageres.dll,-5303' KeyName='MoveTo' Guid='{c2fbb631-2971-11d1-a18c-00c04fd75d13}'/>
     </ShellEx>
-  </Group>
+  </AllObjects>
+  
+  <Computer>
+  </Computer>
+  
+  <RecycleBin>
+  </RecycleBin>
 </Data>
