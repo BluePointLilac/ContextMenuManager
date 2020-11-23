@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using BulePointLilac.Methods;
+using System.Windows.Forms;
 
 namespace BulePointLilac.Controls
 {
@@ -6,6 +7,7 @@ namespace BulePointLilac.Controls
     {
         public static void SetToolTip(Control ctr, string tip)
         {
+            if(tip.IsNullOrWhiteSpace()) return;
             ToolTip toolTip = new ToolTip();
             toolTip.SetToolTip(ctr, tip);
             ctr.Disposed += (sender, e) => toolTip.Dispose();
