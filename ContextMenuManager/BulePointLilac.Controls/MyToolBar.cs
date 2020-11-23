@@ -74,15 +74,15 @@ namespace BulePointLilac.Controls
             this.Image = image;
             this.Text = text;
             MyToolTip.SetToolTip(this, text);
-            ThroughControl(picImage);
-            ThroughControl(lblText);
+            lblText.SetEnabled(false);
         }
 
         readonly PictureBox picImage = new PictureBox
         {
             SizeMode = PictureBoxSizeMode.StretchImage,
             Size = new Size(40, 40).DpiZoom(),
-            BackColor = Color.Transparent
+            BackColor = Color.Transparent,
+            Enabled = false
         };
 
         readonly Label lblText = new Label
@@ -92,6 +92,8 @@ namespace BulePointLilac.Controls
             BackColor = Color.Transparent,
             ForeColor = Color.White
         };
+
+        private static Label LblText = new Label();
 
         public Image Image
         {
@@ -107,18 +109,6 @@ namespace BulePointLilac.Controls
         {
             get => BackColor.A / 255;
             set => BackColor = Color.FromArgb((int)(value * 255), Color.White);
-        }
-
-        private void ThroughControl(Control ctr)
-        {
-            MouseEventArgs getAbsArgs(MouseEventArgs e)
-            {
-                return new MouseEventArgs(e.Button, e.Clicks, ctr.Left + e.X, ctr.Top + e.Y, e.Delta);
-            }
-            ctr.MouseDown += (sender, e) => this.OnMouseDown(getAbsArgs(e));
-            ctr.MouseMove += (sender, e) => this.OnMouseMove(getAbsArgs(e));
-            ctr.MouseEnter += (sender, e) => this.OnMouseEnter(e);
-            MyToolTip.SetToolTip(ctr, this.Text);
         }
     }
 }
