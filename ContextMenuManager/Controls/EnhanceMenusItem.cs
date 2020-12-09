@@ -41,19 +41,23 @@ namespace ContextMenuManager.Controls
             XmlNode szXN = valueXN.SelectSingleNode("REG_SZ");
             XmlNode dwordXN = valueXN.SelectSingleNode("REG_DWORD");
             XmlNode expand_szXN = valueXN.SelectSingleNode("REG_EXPAND_SZ");
-            if(szXN != null)
-                foreach(XmlAttribute a in szXN.Attributes)
-                    Registry.SetValue(regPath, a.Name, a.Value, RegistryValueKind.String);
-            if(expand_szXN != null)
-                foreach(XmlAttribute a in expand_szXN.Attributes)
-                    Registry.SetValue(regPath, a.Name, a.Value, RegistryValueKind.ExpandString);
-            if(dwordXN != null)
-                foreach(XmlAttribute a in dwordXN.Attributes)
-                {
-                    int value = a.Value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
-                        ? Convert.ToInt32(a.Value, 16) : Convert.ToInt32(a.Value);
-                    Registry.SetValue(regPath, a.Name, value, RegistryValueKind.DWord);
-                }
+            using(RegistryKey key = RegistryEx.GetRegistryKey(regPath, true, true))
+            {
+                if(szXN != null)
+                    foreach(XmlAttribute a in szXN.Attributes)
+                        key.SetValue(a.Name, a.Value, RegistryValueKind.String);
+                if(expand_szXN != null)
+                    foreach(XmlAttribute a in expand_szXN.Attributes)
+                        key.SetValue(a.Name, a.Value, RegistryValueKind.ExpandString);
+                if(dwordXN != null)
+                    foreach(XmlAttribute a in dwordXN.Attributes)
+                    {
+                        int value = a.Value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+                            ? Convert.ToInt32(a.Value, 16) : Convert.ToInt32(a.Value);
+                        key.SetValue(a.Name, value, RegistryValueKind.DWord);
+                    }
+
+            }
         }
 
         private static void WriteSubKeysValue(XmlElement keyXE, string regPath)

@@ -119,6 +119,8 @@ namespace ContextMenuManager.Controls
                 case Scenes.CustomType:
                     scenePath = TypeItem.SysAssExtPath; break;
                 case Scenes.CommandStore:
+                    //Vista系统没有这一项
+                    if(WindowsOsVersion.IsEqualVista) return;
                     this.AddNewItem(RegistryEx.GetParentPath(ShellItem.CommandStorePath));
                     this.LoadCommandStoreItems();
                     return;

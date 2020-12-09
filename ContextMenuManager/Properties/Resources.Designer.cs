@@ -101,10 +101,11 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找类似 ;此文件为ContextMenuManager程序的显示文本字典, 字典内换行符使用\n转义
+        ///   查找类似 ;此文件为ContextMenuManager程序的显示文本字典
         ///;如果你想要帮助作者为此程序添加其他语言字典, 可以修改此文本并保存在.\config\languages文件夹内, 
         ///;比如美国英语字典保存为en-US.ini, 并给[General]\Language赋值 en-US English
         ///;可以在Github或Gitee上Fork该项目并提交申请给我，或者直接发送文件到邮箱1617859183@qq.com
+        ///;翻译说明：暂时不翻译的值保留为空即可，字典内赋值换行请使用\n进行转义
         ///
         ///[General]
         ///Language = zh-CN 简体中文
@@ -124,9 +125,7 @@ namespace ContextMenuManager.Properties {
         ///Directory = 目录
         ///Background = 目录背景
         ///Desktop = 桌面背景
-        ///Drive = 磁盘分区
-        ///AllObjects = 所有对象
-        ///C [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///Drive = 磁盘 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string AppLanguageDic {
             get {
@@ -172,11 +171,12 @@ namespace ContextMenuManager.Properties {
         ///&lt;Data&gt;
         ///  &lt;File&gt;
         ///    &lt;Shell&gt;
-        ///      &lt;Item KeyName=&apos;CopyContent&apos; Tip=&apos;不需打开文件直接复制文件文本内容&amp;#x000A;非UTF-16 LE(或带BOM)编码会乱码&apos;&gt;
+        ///      &lt;Item KeyName=&apos;CopyAsPath&apos; Tip=&apos;系统原生菜单项需按住Shift显示,&amp;#x000A;此项可以直接显示&apos;&gt;
         ///        &lt;Value&gt;
-        ///          &lt;REG_SZ MUIVerb=&apos;复制内容到剪切板&apos; Icon=&apos;DxpTaskSync.dll,-52&apos;/&gt;
+        ///          &lt;REG_SZ MUIVerb=&apos;复制文件路径&apos; Icon=&apos;imageres.dll,-5302&apos;/&gt;
         ///        &lt;/Value&gt;
-        ///        &lt;Sub [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        &lt;SubKey&gt;
+        ///           [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string EnhanceMenusDic {
             get {

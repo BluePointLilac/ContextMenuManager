@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ContextMenuManager</RootNamespace>
     <AssemblyName>ContextMenuManager</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -377,8 +377,13 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy $(ProjectDir)\Properties\Resources\Texts\AppLanguageDic.ini $(SolutionDir)\languages\zh-CN.ini /y
-mkdir $(TargetDir)\config\languages
+    <PostBuildEvent>mkdir $(TargetDir)\Config\languages
+mkdir $(TargetDir)\Config\Dictionaries\Web
+cd $(ProjectDir)\Properties\Resources\Texts
+xcopy AppLanguageDic.ini $(SolutionDir)\languages\zh-CN.ini /y
+xcopy EnhanceMenusDic.xml $(TargetDir)\Config\Dictionaries\Web /y
+xcopy ThirdRulesDic.xml $(TargetDir)\Config\Dictionaries\Web /y
+xcopy GuidInfosDic.ini $(TargetDir)\Config\Dictionaries\Web /y
 xcopy $(SolutionDir)\languages $(TargetDir)\config\languages /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

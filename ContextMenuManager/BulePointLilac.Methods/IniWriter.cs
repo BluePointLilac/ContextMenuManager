@@ -129,7 +129,7 @@ namespace BulePointLilac.Methods
             else
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
-                File.WriteAllLines(FilePath, lines, Encoding);
+                File.WriteAllLines(FilePath, lines.ToArray(), Encoding);
             }
         }
 

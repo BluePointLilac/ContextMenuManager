@@ -26,14 +26,13 @@ namespace ContextMenuManager.Controls.Interfaces
                     dlg.FileName = item.Text;
                     dlg.InitialDirectory = dirPath;
                     dlg.Filter = $"{AppString.Dialog.RegistryFile}|*.reg";
-                    if(dlg.ShowDialog() != DialogResult.OK)
-                    {
-                        if(Directory.GetFiles(dirPath).Length == 0 && Directory.GetDirectories(dirPath).Length == 0)
-                            Directory.Delete(dirPath);
-                    }
-                    else
+                    if(dlg.ShowDialog() == DialogResult.OK)
                     {
                         RegistryEx.Export(item.RegPath, dlg.FileName);
+                    }
+                    if(Directory.GetFiles(dirPath).Length == 0 && Directory.GetDirectories(dirPath).Length == 0)
+                    {
+                        Directory.Delete(dirPath);
                     }
                 }
             };
