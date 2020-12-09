@@ -5,6 +5,14 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
 <Data>
   <File>
     <Shell>
+      <Item KeyName='CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示'>
+        <Value>
+          <REG_SZ MUIVerb='复制文件路径' Icon='imageres.dll,-5302'/>
+        </Value>
+        <SubKey>
+          <Command Default='mshta vbscript:clipboarddata.setdata("text","%1")(close)'/>
+        </SubKey>
+      </Item>
       <Item KeyName='CopyContent' Tip='不需打开文件直接复制文件文本内容&#x000A;非UTF-16 LE(或带BOM)编码会乱码'>
         <Value>
           <REG_SZ MUIVerb='复制内容到剪切板' Icon='DxpTaskSync.dll,-52'/>
@@ -37,6 +45,19 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     </Shell>
   </File>
 
+  <Folder>
+    <Shell>
+      <Item KeyName='CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示'>
+        <Value>
+          <REG_SZ MUIVerb='复制文件夹路径' Icon='imageres.dll,-5302'/>
+        </Value>
+        <SubKey>
+          <Command Default='mshta vbscript:clipboarddata.setdata("text","%1")(close)'/>
+        </SubKey>
+      </Item>
+    </Shell>
+  </Folder>
+
   <Directory>
     <Shell>
       <Item KeyName="TakeOwnerShip">
@@ -57,6 +78,13 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
 
   <Background>
     <Shell>
+      <Item KeyName='Windows.NewFolder'>
+        <OSVersion Compare=">=">6.1</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='@shell32.dll,-31236' Icon='shell32.dll,-319' Position='top' CommandStateSync='' CommandStateHandler='{3756e7f5-e514-4776-a32b-eb24bc1efe7a}' CanonicalName='{E44616AD-6DF1-4B94-85A4-E465AE8A19DB}'/>
+          <REG_DWORD ImpliedSelectionModel='4' InvokeCommandOnSelection='0'/>
+        </Value>
+      </Item>
       <!--清空回收站-->
       <Item KeyName='Windows.RecycleBin.Empty'>
         <OSVersion Compare=">=">6.1</OSVersion>
@@ -130,6 +158,15 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         </Value>
         <SubKey>
           <Command Default='regedit.exe -m'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='SnippingTool'>
+        <OSVersion Compare=">=">6.1</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='截图工具' Icon='snippingTool.exe,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='snippingTool.exe'/>
         </SubKey>
       </Item>
       <Item KeyName='SnipToClipboard' Tip='截屏后可直接Ctrl+V粘贴图片&#x000A;适用位置:Word、QQ、PS等&#x000A;快捷键:Win+Shift+S'>
