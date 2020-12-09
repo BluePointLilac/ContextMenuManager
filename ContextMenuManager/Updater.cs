@@ -35,12 +35,12 @@ namespace ContextMenuManager
 
         private static bool UpdateApp()
         {
-            IniReader reader = new IniReader(new StringBuilder(GetWebString(UpdateUrl).Replace("\\n", "\n")));
+            IniReader reader = new IniReader(new StringBuilder(GetWebString(UpdateUrl)));
             Version version1 = new Version(reader.GetValue("Update", "Version"));
             Version version2 = new Version(Application.ProductVersion);
             if(version1.CompareTo(version2) > 0)
             {
-                string info = reader.GetValue("Update", "Info");
+                string info = reader.GetValue("Update", "Info").Replace("\\n", "\n");
                 if(MessageBoxEx.Show($"{AppString.MessageBox.UpdateApp}{version1}\n{info}",
                     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
