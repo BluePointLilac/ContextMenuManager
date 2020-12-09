@@ -7,21 +7,14 @@
 * 对上述场景右键菜单项目进行修改名称、修改图标、导航注册表位置、导航文件位置、永久删除等操作
 * 对上述场景右键菜单自定义添加项目，自定义菜单命令
 
-## 运行平台
-|系统|框架|
-|:------:|:------:|
-|Win10|.Net Framework 4.6 (Win10自带)
-|Win7|.Net Framework 3.5 (Win7自带)
-|Win8、Win8.1|未测试，理论上可直接使用Win7版
-
-## 运行截图
-* Win10<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Win10%20Screenshot.png)
-* Win7<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Win7%20Screenshot.png)
-
 ## 兼容性能
-* 适用于64位和32位操作系统
+* 适用于Win7、8、8.1、10、Vista
+* 适用于 x64、x32 CPU 操作系统
 * 适用于高分屏，最佳显示缩放比为150%
 * 程序支持国际化多语言显示，欢迎为此程序制作语言字典
+
+## 运行截图
+![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Screenshot.png)
 
 ## 程序图标
 * 程序主图标来自 [Easyicon][1]<br>![](https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/AppIcon.ico)
@@ -52,3 +45,9 @@
   [5]: https://gitee.com/BluePointLilac/ContextMenuManager/releases
   [6]: http://www.pcmoe.net/
   [7]: https://space.bilibili.com/34492771
+
+
+
+添加 / 隐藏翻译源、语种切换、鼠标悬浮取词开关和显示翻译文本开关在这里。不再提示
+
+请输入需要翻译的文本。
