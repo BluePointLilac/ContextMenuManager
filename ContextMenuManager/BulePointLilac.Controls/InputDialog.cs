@@ -20,9 +20,9 @@ namespace BulePointLilac.Controls
         {
             using(InputBox frm = new InputBox { Text = Title, Size = LastSize })
             {
-                frm.TxtInput.Text = this.Text;
+                frm.InputedText = this.Text;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
-                this.Text = flag ? frm.TxtInput.Text : null;
+                this.Text = flag ? frm.InputedText : null;
                 LastSize = frm.Size;
                 return flag;
             }
@@ -32,32 +32,38 @@ namespace BulePointLilac.Controls
         {
             public InputBox()
             {
-                this.AcceptButton = BtnOk;
-                this.CancelButton = BtnCancel;
+                this.AcceptButton = btnOk;
+                this.CancelButton = btnCancel;
                 this.Font = SystemFonts.MessageBoxFont;
                 this.SizeGripStyle = SizeGripStyle.Hide;
                 this.StartPosition = FormStartPosition.CenterParent;
                 this.MinimumSize = this.Size = new Size(400, 150).DpiZoom();
                 this.MaximizeBox = MinimizeBox = ShowIcon = ShowInTaskbar = false;
-                this.Controls.AddRange(new Control[] { TxtInput, BtnOk, BtnCancel });
-                TxtInput.CanResizeFont();
+                this.Controls.AddRange(new Control[] { txtInput, btnOk, btnCancel });
+                txtInput.CanResizeFont();
                 InitializeComponents();
             }
 
-            public readonly TextBox TxtInput = new TextBox
+            public string InputedText
+            {
+                get => txtInput.Text;
+                set => txtInput.Text = value;
+            }
+
+            readonly TextBox txtInput = new TextBox
             {
                 Font = new Font(SystemFonts.MenuFont.FontFamily, 11F),
                 ScrollBars = ScrollBars.Vertical,
                 Multiline = true
             };
-            readonly Button BtnOk = new Button
+            readonly Button btnOk = new Button
             {
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
                 DialogResult = DialogResult.OK,
                 Text = AppString.Dialog.Ok,
                 AutoSize = true
             };
-            readonly Button BtnCancel = new Button
+            readonly Button btnCancel = new Button
             {
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
                 DialogResult = DialogResult.Cancel,
@@ -68,17 +74,17 @@ namespace BulePointLilac.Controls
             protected override void OnResize(EventArgs e)
             {
                 base.OnResize(e);
-                TxtInput.Width = BtnCancel.Right - TxtInput.Left;
-                TxtInput.Height = BtnCancel.Top - 2 * TxtInput.Top;
+                txtInput.Width = btnCancel.Right - txtInput.Left;
+                txtInput.Height = btnCancel.Top - 2 * txtInput.Top;
             }
 
             private void InitializeComponents()
             {
                 int a = 20.DpiZoom();
-                TxtInput.Location = new Point(a, a);
-                BtnCancel.Top = BtnOk.Top = this.ClientSize.Height - BtnOk.Height - a;
-                BtnCancel.Left = this.ClientSize.Width - BtnCancel.Width - a;
-                BtnOk.Left = BtnCancel.Left - BtnOk.Width - a;
+                txtInput.Location = new Point(a, a);
+                btnCancel.Top = btnOk.Top = this.ClientSize.Height - btnOk.Height - a;
+                btnCancel.Left = this.ClientSize.Width - btnCancel.Width - a;
+                btnOk.Left = btnCancel.Left - btnOk.Width - a;
                 this.OnResize(null);
             }
         }

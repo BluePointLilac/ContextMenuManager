@@ -18,9 +18,7 @@ namespace ContextMenuManager.Controls.Interfaces
             this.Click += (sender, e) =>
             {
                 string name = ChangeText(item.Text);
-                if(name == null) return;
-                item.ItemText = name;
-                item.Text = ResourceString.GetDirectString(item.ItemText);
+                if(name != null) item.ItemText = name;
             };
         }
 

@@ -13,106 +13,109 @@ namespace ContextMenuManager.Controls
     {
         public void LoadItems()
         {
-            this.ClearItems();
-            XmlDocument doc = ReadXml();
-            foreach(XmlNode xn in doc.DocumentElement.ChildNodes)
+            try
             {
-                string path = null;
-                string text = null;
-                Image image = null;
-                switch(xn.Name)
+                foreach(XmlNode xn in ReadXml().DocumentElement.ChildNodes)
                 {
-                    case "File":
-                        path = ShellList.MENUPATH_FILE;
-                        text = AppString.SideBar.File;
-                        image = AppImage.File;
-                        break;
-                    case "Folder":
-                        path = ShellList.MENUPATH_FOLDER;
-                        text = AppString.SideBar.Folder;
-                        image = AppImage.Folder;
-                        break;
-                    case "Directory":
-                        path = ShellList.MENUPATH_FOLDER;
-                        text = AppString.SideBar.Directory;
-                        image = AppImage.Directory;
-                        break;
-                    case "Background":
-                        path = ShellList.MENUPATH_BACKGROUND;
-                        text = AppString.SideBar.Background;
-                        image = AppImage.Background;
-                        break;
-                    case "Desktop":
-                        path = ShellList.MENUPATH_DESKTOP;
-                        //Vista没有桌面右键菜单的独立注册表项
-                        if(WindowsOsVersion.IsEqualVista) path = ShellList.MENUPATH_BACKGROUND;
-                        text = AppString.SideBar.Desktop;
-                        image = AppImage.Desktop;
-                        break;
-                    case "Drive":
-                        path = ShellList.MENUPATH_DRIVE;
-                        text = AppString.SideBar.Drive;
-                        image = AppImage.Drive;
-                        break;
-                    case "AllObjects":
-                        path = ShellList.MENUPATH_ALLOBJECTS;
-                        text = AppString.SideBar.AllObjects;
-                        image = AppImage.AllObjects;
-                        break;
-                    case "Computer":
-                        path = ShellList.MENUPATH_COMPUTER;
-                        text = AppString.SideBar.Computer;
-                        image = AppImage.Computer;
-                        break;
-                    case "RecycleBin":
-                        path = ShellList.MENUPATH_RECYCLEBIN;
-                        text = AppString.SideBar.RecycleBin;
-                        image = AppImage.RecycleBin;
-                        break;
-                    default:
-                        XmlElement xe = (XmlElement)xn;
-                        path = xe.GetAttribute("RegPath");
-                        text = ResourceString.GetDirectString(xe.GetAttribute("Text"));
-                        image = ResourceIcon.GetIcon(xe.GetAttribute("Icon"))?.ToBitmap() ?? AppImage.NotFound;
-                        break;
+                    string path = null;
+                    string text = null;
+                    Image image = null;
+                    switch(xn.Name)
+                    {
+                        case "File":
+                            path = ShellList.MENUPATH_FILE;
+                            text = AppString.SideBar.File;
+                            image = AppImage.File;
+                            break;
+                        case "Folder":
+                            path = ShellList.MENUPATH_FOLDER;
+                            text = AppString.SideBar.Folder;
+                            image = AppImage.Folder;
+                            break;
+                        case "Directory":
+                            path = ShellList.MENUPATH_FOLDER;
+                            text = AppString.SideBar.Directory;
+                            image = AppImage.Directory;
+                            break;
+                        case "Background":
+                            path = ShellList.MENUPATH_BACKGROUND;
+                            text = AppString.SideBar.Background;
+                            image = AppImage.Background;
+                            break;
+                        case "Desktop":
+                            path = ShellList.MENUPATH_DESKTOP;
+                            //Vista没有桌面右键菜单的独立注册表项
+                            if(WindowsOsVersion.IsEqualVista) path = ShellList.MENUPATH_BACKGROUND;
+                            text = AppString.SideBar.Desktop;
+                            image = AppImage.Desktop;
+                            break;
+                        case "Drive":
+                            path = ShellList.MENUPATH_DRIVE;
+                            text = AppString.SideBar.Drive;
+                            image = AppImage.Drive;
+                            break;
+                        case "AllObjects":
+                            path = ShellList.MENUPATH_ALLOBJECTS;
+                            text = AppString.SideBar.AllObjects;
+                            image = AppImage.AllObjects;
+                            break;
+                        case "Computer":
+                            path = ShellList.MENUPATH_COMPUTER;
+                            text = AppString.SideBar.Computer;
+                            image = AppImage.Computer;
+                            break;
+                        case "RecycleBin":
+                            path = ShellList.MENUPATH_RECYCLEBIN;
+                            text = AppString.SideBar.RecycleBin;
+                            image = AppImage.RecycleBin;
+                            break;
+                        default:
+                            XmlElement xe = (XmlElement)xn;
+                            path = xe.GetAttribute("RegPath");
+                            text = ResourceString.GetDirectString(xe.GetAttribute("Text"));
+                            image = ResourceIcon.GetIcon(xe.GetAttribute("Icon"))?.ToBitmap() ?? AppImage.NotFound;
+                            break;
+                    }
+                    if(string.IsNullOrEmpty(path) || string.IsNullOrEmpty(text)) continue;
+                    GroupPathItem groupItem = new GroupPathItem(path, ObjectPath.PathType.Registry)
+                    {
+                        Image = image,
+                        Text = text,
+                    };
+                    this.AddItem(groupItem);
+                    XmlElement shellXE = (XmlElement)xn.SelectSingleNode("Shell");
+                    XmlElement shellExXE = (XmlElement)xn.SelectSingleNode("ShellEx");
+                    if(shellXE != null) LoadShellItems(shellXE, groupItem);
+                    if(shellExXE != null) LoadShellExItems(shellExXE, groupItem);
+                    groupItem.IsFold = true;
                 }
-                if(string.IsNullOrEmpty(path) || string.IsNullOrEmpty(text)) continue;
-                GroupPathItem groupItem = new GroupPathItem
-                {
-                    PathType = ObjectPath.PathType.Registry,
-                    TargetPath = path,
-                    Image = image,
-                    Text = text,
-                };
-                this.AddItem(groupItem);
-                XmlElement shellXE = (XmlElement)xn.SelectSingleNode("Shell");
-                XmlElement shellExXE = (XmlElement)xn.SelectSingleNode("ShellEx");
-                if(shellXE != null) LoadShellItems(shellXE, groupItem);
-                if(shellExXE != null) LoadShellExItems(shellExXE, groupItem);
-                groupItem.IsFold = true;
             }
-
+            catch { }
         }
 
         private XmlDocument ReadXml()
         {
             XmlDocument doc1 = new XmlDocument();
-            //如果没有网络下载的，则将程序内置的写入
-            if(!File.Exists(Program.AppDataEnhanceMenusDicPath))
+            try
             {
-                File.WriteAllText(Program.AppDataEnhanceMenusDicPath, Properties.Resources.EnhanceMenusDic, Encoding.UTF8);
-            }
-            doc1.Load(Program.AppDataEnhanceMenusDicPath);
-            if(File.Exists(Program.EnhanceMenusDicPath))
-            {
-                XmlDocument doc2 = new XmlDocument();
-                doc2.Load(Program.EnhanceMenusDicPath);
-                foreach(XmlNode xn in doc2.DocumentElement.ChildNodes)
+                //如果没有网络下载的，则将程序内置的写入
+                if(!File.Exists(AppConfig.WebEnhanceMenusDic))
                 {
-                    XmlNode node = doc1.ImportNode(xn, true);
-                    doc1.DocumentElement.AppendChild(node);
+                    File.WriteAllText(AppConfig.WebEnhanceMenusDic, Properties.Resources.EnhanceMenusDic, Encoding.UTF8);
+                }
+                doc1.Load(AppConfig.WebEnhanceMenusDic);
+                if(File.Exists(AppConfig.UserEnhanceMenusDic))
+                {
+                    XmlDocument doc2 = new XmlDocument();
+                    doc2.Load(AppConfig.UserEnhanceMenusDic);
+                    foreach(XmlNode xn in doc2.DocumentElement.ChildNodes)
+                    {
+                        XmlNode node = doc1.ImportNode(xn, true);
+                        doc1.DocumentElement.AppendChild(node);
+                    }
                 }
             }
+            catch { }
             return doc1;
         }
 

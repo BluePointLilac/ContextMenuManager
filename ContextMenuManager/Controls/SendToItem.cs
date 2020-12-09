@@ -8,7 +8,8 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class SendToItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiTextItem, ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiDeleteItem
+    sealed class SendToItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiTextItem,
+        ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiDeleteItem
     {
         public SendToItem(string filePath)
         {
@@ -66,14 +67,16 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                string name = SendToList.GetMenuName(FileName);
+                string name = SendToList.DesktopIniReader.GetValue("LocalizedFileNames", FileName);
+                name = ResourceString.GetDirectString(name);
                 if(name == string.Empty) name = Path.GetFileNameWithoutExtension(FilePath);
                 if(name == string.Empty) name = FileExtension;
                 return name;
             }
             set
             {
-                DesktopIniHelper.SetLocalizedFileName(FilePath, value);
+                SendToList.DesktopIniWriter.SetValue("LocalizedFileNames", FileName, value);
+                this.Text = ResourceString.GetDirectString(value);
                 ExplorerRestarter.NeedRestart = true;
             }
         }
@@ -82,16 +85,12 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                Icon icon = null;
-                if(IsShortcut)
+                Icon icon = ResourceIcon.GetIcon(IconLocation, out string iconPath, out int iconIndex);
+                IconPath = iconPath; IconIndex = iconIndex;
+                if(icon == null && IsShortcut)
                 {
-                    icon = ResourceIcon.GetIcon(IconLocation, out string iconPath, out int iconIndex);
-                    IconPath = iconPath; IconIndex = iconIndex;
-                    if(icon == null)
-                    {
-                        if(File.Exists(Shortcut.TargetPath)) icon = Icon.ExtractAssociatedIcon(Shortcut.TargetPath);
-                        else if(Directory.Exists(Shortcut.TargetPath)) icon = ResourceIcon.GetFolderIcon(Shortcut.TargetPath);
-                    }
+                    if(File.Exists(Shortcut.TargetPath)) icon = Icon.ExtractAssociatedIcon(Shortcut.TargetPath);
+                    else if(Directory.Exists(Shortcut.TargetPath)) icon = ResourceIcon.GetFolderIcon(Shortcut.TargetPath);
                 }
                 icon = icon ?? ResourceIcon.GetExtensionIcon(FileExtension);
                 return icon;
@@ -102,14 +101,51 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                string location = Shortcut.IconLocation;
-                if(location.StartsWith(",")) location = $"{Shortcut.TargetPath}{location}";
+                string location = null;
+                if(IsShortcut)
+                {
+                    location = Shortcut.IconLocation;
+                    if(location.StartsWith(",")) location = $"{Shortcut.TargetPath}{location}";
+                }
+                else
+                {
+                    using(RegistryKey root = Registry.ClassesRoot)
+                    using(RegistryKey extensionKey = root.OpenSubKey(FileExtension))
+                    {
+                        string guidPath = extensionKey.GetValue("")?.ToString();
+                        if(guidPath != null)
+                        {
+                            using(RegistryKey guidKey = root.OpenSubKey($@"{guidPath}\DefaultIcon"))
+                            {
+                                location = guidKey.GetValue("")?.ToString();
+                            }
+                        }
+                    }
+                }
                 return location;
             }
             set
             {
-                Shortcut.IconLocation = value;
-                Shortcut.Save();
+                if(IsShortcut)
+                {
+                    Shortcut.IconLocation = value;
+                    Shortcut.Save();
+                }
+                else
+                {
+                    using(RegistryKey root = Registry.ClassesRoot)
+                    using(RegistryKey extensionKey = root.OpenSubKey(FileExtension))
+                    {
+                        string guidPath = extensionKey.GetValue("")?.ToString();
+                        if(guidPath != null)
+                        {
+                            string regPath = $@"{root.Name}\{guidPath}\DefaultIcon";
+                            RegTrustedInstaller.TakeRegTreeOwnerShip(regPath);
+                            Registry.SetValue(regPath, "", value);
+                            ExplorerRestarter.NeedRestart = true;
+                        }
+                    }
+                }
             }
         }
 
@@ -124,8 +160,8 @@ namespace ContextMenuManager.Controls
         public FilePropertiesMenuItem TsiFileProperties { get; set; }
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
-        readonly ToolStripSeparator TsiIconSeparator = new ToolStripSeparator();
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
+        readonly ToolStripMenuItem TsiChangeCommand = new ToolStripMenuItem(AppString.Menu.ChangeCommand);
 
         private void InitializeComponents()
         {
@@ -138,19 +174,35 @@ namespace ContextMenuManager.Controls
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiDeleteMe = new DeleteMeMenuItem(this);
 
-            ContextMenuStrip.Opening += (sender, e) => TsiChangeIcon.Visible = TsiIconSeparator.Visible = IsShortcut;
-
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] { TsiChangeText, new ToolStripSeparator(),
-                TsiChangeIcon, TsiIconSeparator, TsiDetails, new ToolStripSeparator(), TsiDeleteMe });
+                TsiChangeIcon, new ToolStripSeparator(), TsiDetails, new ToolStripSeparator(), TsiDeleteMe });
 
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
-                TsiFileProperties, TsiFileLocation });
+                TsiChangeCommand, TsiFileProperties, TsiFileLocation });
+
+            ContextMenuStrip.Opening += (sender, e) => TsiChangeCommand.Visible = IsShortcut;
+
+            TsiChangeCommand.Click += (sender, e) => ChangeCommand();
+
+        }
+
+        private void ChangeCommand()
+        {
+            using(CommandDialog dlg = new CommandDialog())
+            {
+                dlg.Command = Shortcut.TargetPath;
+                dlg.Arguments = Shortcut.Arguments;
+                if(dlg.ShowDialog() != DialogResult.OK) return;
+                Shortcut.TargetPath = dlg.Command;
+                Shortcut.Arguments = dlg.Arguments;
+                Shortcut.Save();
+            }
         }
 
         public void DeleteMe()
         {
             File.Delete(this.FilePath);
-            DesktopIniHelper.DeleteLocalizedFileName(FilePath);
+            SendToList.DesktopIniWriter.DeleteKey("LocalizedFileNames", FileName);
             this.Dispose();
         }
     }

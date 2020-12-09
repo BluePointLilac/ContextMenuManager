@@ -87,8 +87,7 @@ namespace ContextMenuManager.Controls
             };
             readonly PictureBox picIcon = new PictureBox
             {
-                Size = SystemInformation.IconSize,
-                BackColor = Color.White
+                Size = SystemInformation.IconSize
             };
             readonly Button btnBrowse = new Button
             {
@@ -140,6 +139,7 @@ namespace ContextMenuManager.Controls
                 using(IconDialog dlg = new IconDialog())
                 {
                     dlg.IconPath = this.ItemIconPath;
+                    dlg.IconIndex = this.ItemIconIndex;
                     if(dlg.ShowDialog() != DialogResult.OK) return;
                     ItemIconPath = dlg.IconPath;
                     ItemIconIndex = dlg.IconIndex;

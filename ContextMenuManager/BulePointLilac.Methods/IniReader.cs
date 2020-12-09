@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BulePointLilac.Methods
 {
-    public class IniReader
+    public sealed class IniReader
     {
         public IniReader(StringBuilder sb)
         {
@@ -22,11 +22,13 @@ namespace BulePointLilac.Methods
             if(!File.Exists(filePath)) return;
             List<string> lines = new List<string>();
             using(StreamReader reader = new StreamReader(filePath, EncodingType.GetType(filePath)))
+            {
                 while(!reader.EndOfStream)
                 {
                     string line = reader.ReadLine().Trim();
                     if(line != string.Empty) lines.Add(line);
                 }
+            }
             ReadLines(lines);
         }
 
@@ -36,7 +38,7 @@ namespace BulePointLilac.Methods
         private void ReadLines(List<string> lines)
         {
             lines.RemoveAll(
-                line => line.StartsWith(";")//移除注释
+                line => line.StartsWith(";") || line.StartsWith("#")//移除注释
                 || (!line.StartsWith("[") && !line.Contains("=")));//移除非section行且非key行
 
             if(lines.Count == 0) return;

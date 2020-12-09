@@ -1,6 +1,7 @@
 ﻿using BulePointLilac.Controls;
 using BulePointLilac.Methods;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -8,28 +9,12 @@ namespace ContextMenuManager.Controls
 {
     sealed class SendToList : MyList
     {
-        public static string SendToPath => Environment.ExpandEnvironmentVariables(@"%AppData%\Microsoft\Windows\SendTo");
-        private static string DesktopIniPath => $@"{SendToPath}\desktop.ini";
-
+        public static readonly string SendToPath = Environment.ExpandEnvironmentVariables(@"%AppData%\Microsoft\Windows\SendTo");
+        public static readonly string DesktopIniPath = $@"{SendToPath}\desktop.ini";
+        public static IniWriter DesktopIniWriter = new IniWriter(DesktopIniPath);
         public static IniReader DesktopIniReader;
 
-        public static string GetMenuName(string fileName)
-        {
-            string name = DesktopIniReader.GetValue("LocalizedFileNames", fileName);
-            return ResourceString.GetDirectString(name);
-        }
-
         public void LoadItems()
-        {
-            this.ClearItems();
-            this.LoadCommonItems();
-            this.SortItemByText();
-            this.AddNewItem();
-            this.AddItem(new RegRuleItem(RegRuleItem.SendToDrive) { MarginRight = RegRuleItem.SysMarginRignt });
-            this.AddItem(new RegRuleItem(RegRuleItem.DeferBuildSendTo) { MarginRight = RegRuleItem.SysMarginRignt });
-        }
-
-        private void LoadCommonItems()
         {
             DesktopIniReader = new IniReader(DesktopIniPath);
             Array.ForEach(new DirectoryInfo(SendToPath).GetFiles(), fi =>
@@ -37,13 +22,18 @@ namespace ContextMenuManager.Controls
                 if(fi.Name.ToLower() != "desktop.ini")
                     this.AddItem(new SendToItem(fi.FullName));
             });
+            this.SortItemByText();
+            this.AddNewItem();
+            this.AddDirItem();
+            this.AddItem(new RegRuleItem(RegRuleItem.SendToDrive) { MarginRight = RegRuleItem.SysMarginRignt });
+            this.AddItem(new RegRuleItem(RegRuleItem.DeferBuildSendTo) { MarginRight = RegRuleItem.SysMarginRignt });
         }
 
         private void AddNewItem()
         {
             NewItem newItem = new NewItem();
             this.InsertItem(newItem, 0);
-            newItem.NewItemAdd += (sender, e) =>
+            newItem.AddNewItem += (sender, e) =>
             {
                 using(NewSendToDialog dlg = new NewSendToDialog())
                 {
@@ -51,6 +41,21 @@ namespace ContextMenuManager.Controls
                         this.InsertItem(new SendToItem(dlg.FilePath), 2);
                 }
             };
+        }
+
+        private void AddDirItem()
+        {
+            MyListItem item = new MyListItem
+            {
+                Text = Path.GetFileNameWithoutExtension(SendToPath),
+                Image = ResourceIcon.GetFolderIcon(SendToPath).ToBitmap()
+            };
+            PictureButton btnPath = new PictureButton(AppImage.Open);
+            MyToolTip.SetToolTip(btnPath, AppString.Menu.FileLocation);
+            btnPath.MouseDown += (sender, e) => Process.Start(SendToPath);
+            item.AddCtr(btnPath);
+            item.SetNoClickEvent();
+            this.InsertItem(item, 1);
         }
     }
 }

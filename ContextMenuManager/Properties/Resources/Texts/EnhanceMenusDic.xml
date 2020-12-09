@@ -36,10 +36,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       </Item>
     </Shell>
   </File>
-  
-  <Folder>
-  </Folder>
-  
+
   <Directory>
     <Shell>
       <Item KeyName="TakeOwnerShip">
@@ -60,18 +57,6 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
 
   <Background>
     <Shell>
-      <Item KeyName='Windows.ShowHiddenFiles'>
-        <OSVersion Compare=">=">6.2</OSVersion>
-        <Value>
-          <REG_SZ MUIVerb='显示/隐藏 隐藏文件' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{f7300245-1f4b-41ba-8948-6fd392064494}'/>
-        </Value>
-      </Item>
-      <Item KeyName='Windows.ShowFileExtensions'>
-        <OSVersion Compare=">=">6.2</OSVersion>
-        <Value>
-          <REG_SZ MUIVerb='显示/隐藏 文件扩展名' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{4ac6c205-2853-4bf5-b47c-919a42a48a16}'/>
-        </Value>
-      </Item>
       <!--清空回收站-->
       <Item KeyName='Windows.RecycleBin.Empty'>
         <OSVersion Compare=">=">6.1</OSVersion>
@@ -85,6 +70,18 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
             </Value>
           </Command>
         </SubKey>
+      </Item>
+      <Item KeyName='Windows.ShowHiddenFiles'>
+        <OSVersion Compare=">=">6.2</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='显示/隐藏 隐藏文件' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{f7300245-1f4b-41ba-8948-6fd392064494}'/>
+        </Value>
+      </Item>
+      <Item KeyName='Windows.ShowFileExtensions'>
+        <OSVersion Compare=">=">6.2</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='显示/隐藏 文件扩展名' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{4ac6c205-2853-4bf5-b47c-919a42a48a16}'/>
+        </Value>
       </Item>
       <Item KeyName='RunasCmd'>
         <Value>
@@ -121,7 +118,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='RestartExplorer'>
         <OSVersion Compare=">=">6.1</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='重启资源管理器' Icon='explorer.exe,0'/>
+          <REG_SZ MUIVerb='重启资源管理器' Icon='shell32.dll,238'/>
         </Value>
         <SubKey>
           <Command Default='tskill explorer'/>
@@ -145,7 +142,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         </SubKey>
       </Item>
       <Item KeyName='SlideToShutDown'>
-        <!--OSVersion Compare=">=">10.0</OSVersion-->
+        <OSVersion Compare=">=">6.3</OSVersion>
         <Value>
           <REG_SZ MUIVerb='滑动关机' Icon='shell32.dll,-28'/>
         </Value>
@@ -202,10 +199,4 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item Text='@shell32.dll,-30305' Icon='imageres.dll,-5303' KeyName='MoveTo' Guid='{c2fbb631-2971-11d1-a18c-00c04fd75d13}'/>
     </ShellEx>
   </AllObjects>
-  
-  <Computer>
-  </Computer>
-  
-  <RecycleBin>
-  </RecycleBin>
 </Data>

@@ -32,6 +32,7 @@ namespace ContextMenuManager.Controls
         public EnhanceShellItem()
         {
             ChkVisible = new VisibleCheckBox(this);
+            this.SetNoClickEvent();
         }
 
         private static void WriteAttributesValue(XmlNode valueXN, string regPath)

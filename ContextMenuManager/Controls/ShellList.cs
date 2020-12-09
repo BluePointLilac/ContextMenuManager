@@ -3,6 +3,7 @@ using BulePointLilac.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
@@ -40,7 +41,7 @@ namespace ContextMenuManager.Controls
         {
             File, Folder, Directory, Background, Desktop, Drive, AllObjects, Computer, RecycleBin,
             Library, LnkFile, UwpLnk, ExeFile, TextFile, ImageFile, VideoFile, AudioFile,
-            ImageDirectory, VideoDirectory, AudioDirectory, UnknownType, CustomType
+            ImageDirectory, VideoDirectory, AudioDirectory, UnknownType, CustomType, CommandStore
         }
 
         private Scenes scene;
@@ -55,12 +56,15 @@ namespace ContextMenuManager.Controls
 
         public ShellList()
         {
-            TypeItem.ExtensionChanged += (sender, e) => this.Scene = Scenes.CustomType;
+            TypeItem.ExtensionChanged += (sender, e) =>
+            {
+                this.ClearItems();
+                this.Scene = Scenes.CustomType;
+            };
         }
 
         private void LoadItems()
         {
-            this.ClearItems();
             string scenePath = null;
             switch(Scene)
             {
@@ -73,6 +77,8 @@ namespace ContextMenuManager.Controls
                 case Scenes.Background:
                     scenePath = MENUPATH_BACKGROUND; break;
                 case Scenes.Desktop:
+                    //Vista系统没有这一项
+                    if(WindowsOsVersion.IsEqualVista) return;
                     scenePath = MENUPATH_DESKTOP; break;
                 case Scenes.Drive:
                     scenePath = MENUPATH_DRIVE; break;
@@ -83,10 +89,14 @@ namespace ContextMenuManager.Controls
                 case Scenes.RecycleBin:
                     scenePath = MENUPATH_RECYCLEBIN; break;
                 case Scenes.Library:
+                    //Vista系统没有这一项
+                    if(WindowsOsVersion.IsEqualVista) return;
                     scenePath = MENUPATH_LIBRARY; break;
                 case Scenes.LnkFile:
                     scenePath = MENUPATH_LNKFILE; break;
                 case Scenes.UwpLnk:
+                    //Win8之前没有Uwp
+                    if(WindowsOsVersion.IsBefore8) return;
                     scenePath = MENUPATH_UWPLNK; break;
                 case Scenes.ExeFile:
                     scenePath = MENUPATH_EXEFILE; break;
@@ -108,9 +118,13 @@ namespace ContextMenuManager.Controls
                     scenePath = MENUPATH_UNKNOWN; break;
                 case Scenes.CustomType:
                     scenePath = TypeItem.SysAssExtPath; break;
+                case Scenes.CommandStore:
+                    this.AddNewItem(RegistryEx.GetParentPath(ShellItem.CommandStorePath));
+                    this.LoadCommandStoreItems();
+                    return;
             }
             this.AddNewItem(scenePath);
-            this.AddItems(scenePath);
+            this.LoadItems(scenePath);
 
             switch(scene)
             {
@@ -127,30 +141,30 @@ namespace ContextMenuManager.Controls
                     this.AddItem(new RegRuleItem(RegRuleItem.RecycleBinProperties) { MarginRight = RegRuleItem.SysMarginRignt });
                     break;
                 case Scenes.Library:
-                    this.AddItems(MENUPATH_LIBRARY_BACKGROUND);
-                    this.AddItems(MENUPATH_LIBRARY_USER);
+                    this.LoadItems(MENUPATH_LIBRARY_BACKGROUND);
+                    this.LoadItems(MENUPATH_LIBRARY_USER);
                     break;
                 case Scenes.LnkFile:
-                    this.AddItems(MENUPATH_SYSLNKFILE);
+                    this.LoadItems(MENUPATH_SYSLNKFILE);
                     break;
                 case Scenes.ExeFile:
-                    this.AddItems(MENUPATH_SYSEXEFILE);
+                    this.LoadItems(MENUPATH_SYSEXEFILE);
                     break;
                 case Scenes.CustomType:
                     this.InsertItem(new TypeItem(), 0);
-                    this.AddItems(TypeItem.AssExtPath);
+                    this.LoadItems(TypeItem.AssExtPath);
                     break;
             }
         }
 
-        private void AddItems(string scenePath)
+        private void LoadItems(string scenePath)
         {
             if(this.Scene == Scenes.CustomType && TypeItem.Extension == null) return;
-            this.AddShellItems(GetShellPath(scenePath));
-            this.AddShellExItems(GetShellExPath(scenePath));
+            this.LoadShellItems(GetShellPath(scenePath));
+            this.LoadShellExItems(GetShellExPath(scenePath));
         }
 
-        private void AddShellItems(string shellPath)
+        private void LoadShellItems(string shellPath)
         {
             using(RegistryKey shellKey = RegistryEx.GetRegistryKey(shellPath))
             {
@@ -163,9 +177,9 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        private void AddShellExItems(string shellExPath)
+        private void LoadShellExItems(string shellExPath)
         {
-            List<Guid> guids = new List<Guid> { Guid.Empty };
+            List<string> names = new List<string>();
             using(RegistryKey shellExKey = RegistryEx.GetRegistryKey(shellExPath))
             {
                 if(shellExKey == null) return;
@@ -173,11 +187,11 @@ namespace ContextMenuManager.Controls
                 Dictionary<string, Guid> dic = ShellExItem.GetPathAndGuids(shellExPath);
                 foreach(string path in dic.Keys)
                 {
-                    Guid guid = dic[path];
-                    if(!guids.Contains(guid))
+                    string keyName = RegistryEx.GetKeyName(path);
+                    if(!names.Contains(keyName))
                     {
-                        this.AddItem(new ShellExItem(guid, path));
-                        guids.Add(guid);
+                        this.AddItem(new ShellExItem(dic[path], path));
+                        names.Add(keyName);
                     }
                 }
             }
@@ -186,17 +200,14 @@ namespace ContextMenuManager.Controls
         private void AddNewItem(string scenePath)
         {
             string shellPath = GetShellPath(scenePath);
-            string shellExPath = GetShellExPath(scenePath);
             NewItem newItem = new NewItem();
-            AddCommonButton btnAddCommon = new AddCommonButton();
-            newItem.AddCtr(btnAddCommon);
             this.AddItem(newItem);
             if(this.Scene == Scenes.CustomType)
             {
                 newItem.Visible = TypeItem.Extension != null;
                 TypeItem.ExtensionChanged += (sender, e) => newItem.Visible = TypeItem.Extension != null;
             }
-            newItem.NewItemAdd += (sender, e) =>
+            newItem.AddNewItem += (sender, e) =>
             {
                 using(NewShellDialog dlg = new NewShellDialog
                 {
@@ -208,25 +219,18 @@ namespace ContextMenuManager.Controls
                         this.InsertItem(new ShellItem(dlg.NewItemRegPath), GetItemIndex(newItem) + 1);
                 }
             };
-            btnAddCommon.MouseDown += (sender, e) =>
+        }
+
+        private void LoadCommandStoreItems()
+        {
+            using(var shellKey = RegistryEx.GetRegistryKey(ShellItem.CommandStorePath))
             {
-                using(ShellCommonDialog dlg = new ShellCommonDialog
-                {
-                    ScenePath = scenePath,
-                    ShellPath = shellPath,
-                    ShellExPath = shellExPath
-                })
-                {
-                    if(dlg.ShowDialog() == DialogResult.OK)
+                Array.ForEach(Array.FindAll(shellKey.GetSubKeyNames(), itemName =>
+                    !ShellItem.SysStoreItemNames.Contains(itemName, StringComparer.OrdinalIgnoreCase)), itemName =>
                     {
-                        foreach(string path in dlg.SelectedShellExPathAndGuids.Keys)
-                        {
-                            this.InsertItem(new ShellExItem(dlg.SelectedShellExPathAndGuids[path], path), 1);
-                        }
-                        dlg.SelectedShellPaths.ForEach(path => this.InsertItem(new ShellItem(path), 1));
-                    }
-                }
-            };
+                        this.AddItem(new ShellItem($@"{ShellItem.CommandStorePath}\{itemName}"));
+                    });
+            }
         }
 
         sealed class TypeItem : MyListItem
@@ -253,6 +257,7 @@ namespace ContextMenuManager.Controls
             {
                 GetImageAndText();
                 this.AddCtr(BtnType);
+                this.SetNoClickEvent();
                 BtnType.MouseDown += (sender, e) =>
                 {
                     using(FileExtensionDialog dlg = new FileExtensionDialog())

@@ -4,19 +4,24 @@ using ContextMenuManager.Controls.Interfaces;
 using Microsoft.Win32;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class ShellNewItem : MyListItem, IChkVisibleItem, ITsiTextItem, IBtnShowMenuItem,
-        ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiDeleteItem
+    sealed class ShellNewItem : MyListItem, IChkVisibleItem, ITsiTextItem, IBtnShowMenuItem, IBtnMoveUpDownItem,
+         ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem
     {
         public static readonly string[] SnParts = { "ShellNew", "-ShellNew" };
+        public static readonly string[] UnableSortExtensions = { ".library-ms", ".lnk", "Folder" };
+        private static readonly string[] UnableEditDataValues = { "Directory", "FileName", "Handler", "Command" };
 
-        public ShellNewItem(string regPath)
+        public ShellNewItem(ShellNewList list, string regPath)
         {
+            this.Owner = list;
             InitializeComponents();
             this.RegPath = regPath;
+            BtnMoveUp.Visible = BtnMoveDown.Visible = this.CanSort && LockNewItem.IsLocked();
         }
 
         private string regPath;
@@ -33,30 +38,17 @@ namespace ContextMenuManager.Controls
         }
 
         public string SearchText => $"{AppString.SideBar.New} {Text}";
-        private string Extension => RegPath.Split('\\')[1];
+        public string Extension => RegPath.Split('\\')[1];
         private string SnKeyName => RegistryEx.GetKeyName(RegPath);
-        private string BuckupPath => $@"{RegistryEx.GetParentPath(RegPath)}\{(ItemVisible ? SnParts[1] : SnParts[0])}";
+        private string BackupPath => $@"{RegistryEx.GetParentPath(RegPath)}\{(ItemVisible ? SnParts[1] : SnParts[0])}";
 
         private const string HKCR = "HKEY_CLASSES_ROOT";
         private string TypePath => $@"{HKCR}\{FileExtensionDialog.GetTypeName(Extension)}";//关联类型路径
         private string DefaultTypePath => $@"{HKCR}\{FileExtensionDialog.GetTypeName(Extension, false)}";//默认关联类型路径
         private string TypeDefaultIcon => Registry.GetValue($@"{TypePath}\DefaultIcon", "", null)?.ToString();//关联类型默认图标路径
         private string DefaultTypeDefaultIcon => Registry.GetValue($@"{DefaultTypePath}\DefaultIcon", "", null)?.ToString();//默认关联类型默认图标路径
-        private bool IsFolderItem => Registry.GetValue(RegPath, "Directory", null) != null;
-
-        private bool CanEditData
-        {
-            get
-            {
-                using(RegistryKey key = RegistryEx.GetRegistryKey(RegPath))
-                {
-                    foreach(string valueName in new[] { "Directory", "FileName", "Handler" })
-                        if(key.GetValue(valueName) != null) return false;
-                    if(key.GetValue("Data") != null && key.GetValueKind("Data") != RegistryValueKind.String) return false;
-                    else return true;
-                }
-            }
-        }
+        private bool CanEditData => UnableEditDataValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够编辑初始数据的
+        public bool CanSort => !UnableSortExtensions.Contains(Extension, StringComparer.OrdinalIgnoreCase);//能够排序的
 
         public string ItemFilePath
         {
@@ -86,11 +78,8 @@ namespace ContextMenuManager.Controls
             get => SnKeyName.Equals(SnParts[0], StringComparison.OrdinalIgnoreCase);
             set
             {
-                using(RegistryKey srcKey = RegistryEx.GetRegistryKey(RegPath))
-                using(RegistryKey dstkey = RegistryEx.GetRegistryKey(BuckupPath, true, true))
-                    srcKey.CopyTo(dstkey);
-                RegistryEx.DeleteKeyTree(RegPath);
-                this.RegPath = BuckupPath;
+                RegistryEx.MoveTo(RegPath, BackupPath);
+                this.RegPath = BackupPath;
             }
         }
 
@@ -113,6 +102,7 @@ namespace ContextMenuManager.Controls
             {
                 RegistryEx.DeleteValue(RegPath, "MenuText");
                 Registry.SetValue(DefaultTypePath, "FriendlyTypeName", value);
+                this.Text = ResourceString.GetDirectString(value);
             }
         }
 
@@ -151,8 +141,11 @@ namespace ContextMenuManager.Controls
             set => Registry.SetValue(RegPath, "Data", value);
         }
 
-        public VisibleCheckBox ChkVisible { get; set; }
+        public ShellNewList Owner { get; private set; }
+        public MoveButton BtnMoveUp { get; set; }
+        public MoveButton BtnMoveDown { get; set; }
         public MenuButton BtnShowMenu { get; set; }
+        public VisibleCheckBox ChkVisible { get; set; }
         public ChangeTextMenuItem TsiChangeText { get; set; }
         public ChangeIconMenuItem TsiChangeIcon { get; set; }
         public WebSearchMenuItem TsiSearch { get; set; }
@@ -160,6 +153,8 @@ namespace ContextMenuManager.Controls
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
+        public RegExportMenuItem TsiRegExport { get; set; }
+
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
         readonly ToolStripMenuItem TsiEditData = new ToolStripMenuItem(AppString.Menu.InitialData);
 
@@ -167,12 +162,15 @@ namespace ContextMenuManager.Controls
         {
             BtnShowMenu = new MenuButton(this);
             ChkVisible = new VisibleCheckBox(this);
+            BtnMoveDown = new MoveButton(this, false);
+            BtnMoveUp = new MoveButton(this, true);
             TsiSearch = new WebSearchMenuItem(this);
             TsiChangeText = new ChangeTextMenuItem(this);
             TsiChangeIcon = new ChangeIconMenuItem(this);
             TsiFileLocation = new FileLocationMenuItem(this);
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiRegLocation = new RegLocationMenuItem(this);
+            TsiRegExport = new RegExportMenuItem(this);
             TsiDeleteMe = new DeleteMeMenuItem(this);
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiChangeText,
@@ -180,14 +178,13 @@ namespace ContextMenuManager.Controls
                 TsiDetails, new ToolStripSeparator(), TsiDeleteMe });
 
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
-                TsiEditData, TsiFileProperties, TsiFileLocation, TsiRegLocation });
+                TsiEditData, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport });
 
             TsiEditData.Click += (sender, e) => EditInitialData();
-            ContextMenuStrip.Opening += (sender, e) =>
-            {
-                TsiEditData.Visible = CanEditData;
-                TsiDeleteMe.Enabled = !IsFolderItem;
-            };
+            ContextMenuStrip.Opening += (sender, e) => TsiEditData.Visible = CanEditData;
+
+            BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
+            BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
         }
 
         private void EditInitialData()
@@ -207,8 +204,9 @@ namespace ContextMenuManager.Controls
         public void DeleteMe()
         {
             RegistryEx.DeleteKeyTree(this.RegPath);
-            RegistryEx.DeleteKeyTree(this.BuckupPath);
+            RegistryEx.DeleteKeyTree(this.BackupPath);
             this.Dispose();
+            if(LockNewItem.IsLocked()) Owner.WriteRegistry();
         }
     }
 }

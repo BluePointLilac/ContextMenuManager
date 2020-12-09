@@ -46,6 +46,7 @@ namespace ContextMenuManager.Controls
             this.RestartExplorer = info.RestartExplorer;
             ChkVisible = new VisibleCheckBox(this);
             MyToolTip.SetToolTip(ChkVisible, info.Tip);
+            this.SetNoClickEvent();
         }
 
         public RegRuleItem(RegRule[] rules, ItemInfo info)
@@ -131,7 +132,7 @@ namespace ContextMenuManager.Controls
             ItemInfo = new ItemInfo
             {
                 Text = AppString.Item.CustomFolder,
-                Image = AppImage.CustomFolder,
+                Image = AppImage.Folder,
                 Tip = AppString.Tip.CustomFolder,
                 RestartExplorer = true
             }
@@ -160,7 +161,7 @@ namespace ContextMenuManager.Controls
             ItemInfo = new ItemInfo
             {
                 Text = AppString.Item.RecycleBinProperties,
-                Image = AppImage.RecycleBinProperties,
+                Image = AppImage.RecycleBin,
                 RestartExplorer = true
             }
         };

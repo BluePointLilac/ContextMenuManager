@@ -12,7 +12,6 @@ namespace ContextMenuManager.Controls
     {
         public void LoadItems()
         {
-            this.ClearItems();
             this.AddNewItem();
             this.LoadCommonItems();
         }
@@ -34,9 +33,17 @@ namespace ContextMenuManager.Controls
 
         private void AddNewItem()
         {
-            NewItem newItem = new NewItem { Text = AppString.Item.AddGuidBlockedItem };
+            MyListItem newItem = new MyListItem
+            {
+                Text = AppString.Item.AddGuidBlockedItem,
+                Image = AppImage.AddNewItem
+            };
+            PictureButton btnAddNewItem = new PictureButton(AppImage.AddNewItem);
+            newItem.AddCtr(btnAddNewItem);
+            newItem.SetNoClickEvent();
             this.AddItem(newItem);
-            newItem.NewItemAdd += (sender, e) =>
+            MyToolTip.SetToolTip(btnAddNewItem, newItem.Text);
+            btnAddNewItem.MouseDown += (sender, e) =>
             {
                 using(InputDialog dlg = new InputDialog { Title = AppString.Dialog.InputGuid })
                 {

@@ -1,5 +1,7 @@
 ﻿using BulePointLilac.Controls;
+using BulePointLilac.Methods;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using static BulePointLilac.Methods.ObjectPath;
 
@@ -63,10 +65,32 @@ namespace ContextMenuManager.Controls.Interfaces
         public ObjectPathButton BtnOpenPath { get; set; }
         public FoldButton BtnFold { get; set; }
 
-        public GroupPathItem()
+        public GroupPathItem(string targetPath, PathType pathType)
         {
             BtnFold = new FoldButton(this);
             BtnOpenPath = new ObjectPathButton(this);
+            this.Font = new Font(base.Font, FontStyle.Bold);
+            this.TargetPath = targetPath;
+            this.PathType = pathType;
+            string tip = null;
+            switch(pathType)
+            {
+                case PathType.File:
+                    tip = AppString.Menu.FileLocation;
+                    Text = Path.GetFileNameWithoutExtension(targetPath);
+                    Image = ResourceIcon.GetExtensionIcon(targetPath).ToBitmap();
+                    break;
+                case PathType.Directory:
+                    tip = AppString.Menu.FileLocation;
+                    Text = Path.GetFileNameWithoutExtension(targetPath);
+                    Image = ResourceIcon.GetFolderIcon(targetPath).ToBitmap();
+                    break;
+                case PathType.Registry:
+                    tip = AppString.Menu.RegistryLocation;
+                    break;
+            }
+            MyToolTip.SetToolTip(BtnOpenPath, tip);
+            this.SetNoClickEvent();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace ContextMenuManager.Controls
 
         protected override bool RunDialog(IntPtr hwndOwner)
         {
-            using(NewShellItemForm frm = new NewShellItemForm
+            using(NewShellForm frm = new NewShellForm
             {
                 ScenePath = this.ScenePath,
                 ShellPath = this.ShellPath
@@ -28,7 +28,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        sealed class NewShellItemForm : NewItemForm
+        sealed class NewShellForm : NewItemForm
         {
             public string ShellPath { get; set; }
             public string NewItemRegPath { get; private set; }//返回的新建菜单项注册表路径
@@ -57,7 +57,10 @@ namespace ContextMenuManager.Controls
                 ShellList.MENUPATH_FOLDER,
                 ShellList.MENUPATH_ALLOBJECTS,
                 ShellList.SYSFILEASSPATH,
-                ShellList.MENUPATH_UNKNOWN
+                ShellList.MENUPATH_UNKNOWN,
+                ShellList.MENUPATH_LNKFILE,
+                ShellList.MENUPATH_EXEFILE,
+                ShellList.MENUPATH_UWPLNK
             };
 
             protected override void InitializeComponents()
@@ -71,8 +74,14 @@ namespace ContextMenuManager.Controls
 
                 rdoMulti.CheckedChanged += (sender, e) =>
                 {
-                    lblCommand.Enabled = txtCommand.Enabled
-                    = btnBrowse.Enabled = !rdoMulti.Checked;
+                    if(WindowsOsVersion.IsEqualVista && rdoMulti.Checked)
+                    {
+                        MessageBoxEx.Show(AppString.MessageBox.VistaUnsupportedMulti);
+                        rdoSingle.Checked = true;
+                        return;
+                    }
+                    lblCommand.Enabled = txtCommand.Enabled = lblArguments.Enabled 
+                    = txtArguments.Enabled = btnBrowse.Enabled = !rdoMulti.Checked;
                 };
 
                 btnBrowse.Click += (sender, e) => BrowseFile();
@@ -97,17 +106,17 @@ namespace ContextMenuManager.Controls
                 {
                     dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.pif;*.com";
                     if(dlg.ShowDialog() != DialogResult.OK) return;
-                    ItemCommand = $"\"{dlg.FileName}\"";
+                    Command = dlg.FileName;
                     ItemText = Path.GetFileNameWithoutExtension(dlg.FileName);
                     if(Array.FindIndex(DirScenePaths, path
                        => ScenePath.Equals(path, StringComparison.OrdinalIgnoreCase)) != -1)
                     {
-                        ItemCommand += " \"%V\"";//自动加目录后缀
+                        Arguments = "%V";//自动加目录后缀
                     }
                     else if(Array.FindIndex(FileObjectsScenePaths, path
                        => ScenePath.StartsWith(path, StringComparison.OrdinalIgnoreCase)) != -1)
                     {
-                        ItemCommand += " \"%1\"";//自动加文件对象后缀
+                        Arguments += "%1";//自动加文件对象后缀
                     }
                 }
             }
@@ -116,7 +125,7 @@ namespace ContextMenuManager.Controls
             {
                 using(var shellKey = RegistryEx.GetRegistryKey(ShellPath, true, true))
                 {
-                    string keyName = ItemText.Replace("\\", "").Trim();
+                    string keyName = "Item";
                     NewItemRegPath = ObjectPath.GetNewPathWithIndex($@"{ShellPath}\{keyName}", ObjectPath.PathType.Registry);
                     keyName = RegistryEx.GetKeyName(NewItemRegPath);
 
@@ -127,8 +136,8 @@ namespace ContextMenuManager.Controls
                             key.SetValue("SubCommands", "");
                         else
                         {
-                            if(!ItemCommand.IsNullOrWhiteSpace())
-                                key.CreateSubKey("command", true).SetValue("", ItemCommand);
+                            if(!FullCommand.IsNullOrWhiteSpace())
+                                key.CreateSubKey("command", true).SetValue("", FullCommand);
                         }
                     }
                 }

@@ -44,5 +44,12 @@ namespace BulePointLilac.Methods
             if(enabled) { SetWindowLong(ctr.Handle, GWL_STYLE, (~WS_DISABLED) & GetWindowLong(ctr.Handle, GWL_STYLE)); }
             else { SetWindowLong(ctr.Handle, GWL_STYLE, WS_DISABLED | GetWindowLong(ctr.Handle, GWL_STYLE)); }
         }
+
+        public static void SetNoClickEvent(this Control ctr)
+        {
+            Cursor cursor = ctr.Cursor;
+            ctr.MouseDown += (sender, e) => ctr.Cursor = Cursors.No;
+            ctr.MouseUp += (sender, e) => ctr.Cursor = cursor;
+        }
     }
 }

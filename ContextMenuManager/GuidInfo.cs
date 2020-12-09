@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -23,7 +24,7 @@ namespace ContextMenuManager
         }
 
         private static IniReader AppDic;
-        public static readonly IniReader UserDic = new IniReader(Program.GuidInfosDicPath);
+        public static readonly IniReader UserDic = new IniReader(AppConfig.UserGuidInfosDic);
         public static readonly Dictionary<Guid, IconLocation> IconLocationDic = new Dictionary<Guid, IconLocation>();
         private static readonly Dictionary<Guid, string> FilePathDic = new Dictionary<Guid, string>();
         public static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
@@ -52,11 +53,10 @@ namespace ContextMenuManager
         private static bool TryGetValue(string section, string key, out string value)
         {
             //用户自定义字典优先
-            if(UserDic != null && UserDic.TryGetValue(section, key, out value)) return true;
-            if(!File.Exists(Program.AppDataGuidInfosDicPath))
-                File.WriteAllText(Program.AppDataGuidInfosDicPath, Properties.Resources.GuidInfosDic, Encoding.UTF8);
-            if(AppDic == null)
-                AppDic = new IniReader(Program.AppDataGuidInfosDicPath);
+            if(UserDic.TryGetValue(section, key, out value)) return true;
+            if(!File.Exists(AppConfig.WebGuidInfosDic))
+                File.WriteAllText(AppConfig.WebGuidInfosDic, Properties.Resources.GuidInfosDic, Encoding.UTF8);
+            AppDic = AppDic ?? new IniReader(AppConfig.WebGuidInfosDic);
             if(AppDic.TryGetValue(section, key, out value)) return true;
             return false;
         }
@@ -82,6 +82,7 @@ namespace ContextMenuManager
                                 if(File.Exists(filePath)) break;
                             }
                         }
+                        if(File.Exists(filePath)) break;
                     }
                 }
                 FilePathDic.Add(guid, filePath);
@@ -99,6 +100,7 @@ namespace ContextMenuManager
                 if(TryGetValue(guid.ToString(), "Text", out itemText))
                 {
                     itemText = GetAbsStr(guid, itemText, true);
+                    itemText = ResourceString.GetDirectString(itemText);
                 }
                 if(itemText.IsNullOrWhiteSpace())
                 {
@@ -107,12 +109,25 @@ namespace ContextMenuManager
                         foreach(string value in new[] { "LocalizedString", "InfoTip", "" })
                         {
                             itemText = Registry.GetValue($@"{clsidPath}\{guid:B}", value, null)?.ToString();
-                            if(!string.IsNullOrEmpty(itemText)) break;
+                            itemText = ResourceString.GetDirectString(itemText);
+                            if(!itemText.IsNullOrWhiteSpace()) break;
                         }
+                        if(!itemText.IsNullOrWhiteSpace()) break;
                     }
                 }
-                itemText = ResourceString.GetDirectString(itemText);
-                if(itemText.IsNullOrWhiteSpace()) itemText = null;
+                if(itemText.IsNullOrWhiteSpace())
+                {
+                    string filePath = GetFilePath(guid);
+                    if(filePath != null)
+                    {
+                        itemText = FileVersionInfo.GetVersionInfo(filePath).FileDescription;
+                        if(itemText.IsNullOrWhiteSpace())
+                        {
+                            itemText = Path.GetFileName(filePath);
+                        }
+                    }
+                    else itemText = null;
+                }
                 ItemTextDic.Add(guid, itemText);
             }
             return itemText;

@@ -4,6 +4,8 @@ using ContextMenuManager.Controls.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using static Microsoft.Win32.Registry;
 
@@ -19,53 +21,126 @@ namespace ContextMenuManager.Controls
         /// <param name="parentPath">子菜单的父菜单的注册表路径</param>
         public void ShowDialog(string parentPath)
         {
-            using(ShellSubMenuForm frm = new ShellSubMenuForm(parentPath))
+            using(ShellSubMenuForm frm = new ShellSubMenuForm())
             {
                 frm.Text = this.Text;
                 frm.Icon = this.Icon;
+                frm.ParentPath = parentPath;
                 frm.ShowDialog();
             }
         }
 
         sealed class ShellSubMenuForm : Form
         {
-            /// <param name="parentPath">子菜单的父菜单的注册表路径</param>
-            public ShellSubMenuForm(string parentPath)
+            public ShellSubMenuForm()
             {
-                this.ShowInTaskbar = false;
+                this.ShowInTaskbar = this.MinimizeBox = this.MaximizeBox = false;
                 this.StartPosition = FormStartPosition.CenterParent;
                 this.MinimumSize = this.Size = new Size(646, 389).DpiZoom();
-                LstSubItems = new MyListBox { Dock = DockStyle.Fill, Parent = this };
-                string value = GetValue(parentPath, "SubCommands", null)?.ToString();
+                this.Controls.Add(MlbSubItems);
+                this.OnResize(null);
+            }
+
+            /// <summary>子菜单的父菜单的注册表路径</summary>
+            public string ParentPath { get; set; }
+            readonly MyListBox MlbSubItems = new MyListBox { Dock = DockStyle.Fill };
+
+            protected override void OnLoad(EventArgs e)
+            {
+                base.OnLoad(e);
+                bool isPublic = true;
+                string value = GetValue(ParentPath, "SubCommands", null)?.ToString();
                 if(value.IsNullOrWhiteSpace())
                 {
-                    using(var shellKey = RegistryEx.GetRegistryKey($@"{parentPath}\shell"))
+                    using(var shellKey = RegistryEx.GetRegistryKey($@"{ParentPath}\shell"))
                     {
-                        if(shellKey != null && shellKey.GetSubKeyNames().Length > 0)
-                        {
-                            new MultiItemsList(LstSubItems).LoadItems(parentPath);
-                            return;
-                        }
+                        if(shellKey != null && shellKey.GetSubKeyNames().Length > 0) isPublic = false;
                         else
                         {
                             using(SubMenuModeForm frm = new SubMenuModeForm())
                             {
                                 frm.ShowDialog();
-                                if(frm.SubMenuMode == 1)
+                                switch(frm.Mode)
                                 {
-                                    new MultiItemsList(LstSubItems).LoadItems(parentPath);
-                                    return;
+                                    case SubMenuModeForm.SubMode.Public:
+                                        isPublic = true; break;
+                                    case SubMenuModeForm.SubMode.Private:
+                                        isPublic = false; break;
+                                    case SubMenuModeForm.SubMode.None:
+                                        this.Dispose(); return;
                                 }
                             }
                         }
                     }
                 }
-                new CommonMultiItemsList(LstSubItems).LoadItems(parentPath);
+                if(isPublic)
+                {
+                    new PulicMultiItemsList(MlbSubItems).LoadItems(ParentPath);
+                    this.Text += $"({AppString.Dialog.Public})";
+                }
+                else
+                {
+                    new PrivateMultiItemsList(MlbSubItems).LoadItems(ParentPath);
+                    this.Text += $"({AppString.Dialog.Private})";
+                }
             }
 
-            readonly MyListBox LstSubItems;
+            sealed class SubMenuModeForm : Form
+            {
+                public SubMenuModeForm()
+                {
+                    this.Text = AppString.General.AppName;
+                    this.ShowIcon = this.ShowInTaskbar = false;
+                    this.MinimizeBox = this.MaximizeBox = false;
+                    this.FormBorderStyle = FormBorderStyle.FixedSingle;
+                    this.StartPosition = FormStartPosition.CenterParent;
+                    this.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 9F);
+                    this.Controls.AddRange(new Control[] { pnlTop, btnPrivate, btnPublic });
+                    pnlTop.Controls.Add(lblInfo);
+                    int a = 20.DpiZoom();
+                    this.ClientSize = new Size(lblInfo.Width + 2 * a, lblInfo.Height + btnPrivate.Height + 3 * a);
+                    lblInfo.Location = new Point(a, a);
+                    pnlTop.Height = lblInfo.Bottom + a;
+                    btnPrivate.Top = btnPublic.Top = pnlTop.Bottom + a / 2;
+                    btnPublic.Left = pnlTop.Width - btnPublic.Width - a;
+                    btnPrivate.Left = btnPublic.Left - btnPrivate.Width - a;
+                    btnPrivate.Click += (sender, e) => Mode = SubMode.Private;
+                    btnPublic.Click += (sender, e) => Mode = SubMode.Public;
+                }
 
-            sealed class CommonMultiItemsList : MyList
+                public enum SubMode { Public, Private, None }
+
+                public SubMode Mode { get; private set; } = SubMode.None;
+
+                readonly Label lblInfo = new Label
+                {
+                    Text = AppString.Dialog.SelectSubMenuMode,
+                    AutoSize = true
+                };
+
+                readonly Panel pnlTop = new Panel
+                {
+                    BackColor = Color.White,
+                    Dock = DockStyle.Top
+                };
+
+                readonly Button btnPrivate = new Button
+                {
+                    Text = AppString.Dialog.Private,
+                    DialogResult = DialogResult.OK,
+                    AutoSize = true
+                };
+
+                readonly Button btnPublic = new Button
+                {
+                    Text = AppString.Dialog.Public,
+                    DialogResult = DialogResult.OK,
+                    AutoSize = true
+                };
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            sealed class PulicMultiItemsList : MyList
             {
                 readonly List<string> SubKeyNames = new List<string>();
                 /// <summary>子菜单的父菜单的注册表路径</summary>
@@ -73,21 +148,14 @@ namespace ContextMenuManager.Controls
                 /// <summary>菜单所处环境注册表路径</summary>
                 private string ScenePath => RegistryEx.GetParentPath(RegistryEx.GetParentPath(ParentPath));
 
-                readonly NewItem newItem = new NewItem();
-                readonly AddCommonButton btnAddCommon = new AddCommonButton();
-                readonly PictureButton btnAddExisting = new PictureButton(AppImage.AddExisting);
-                readonly PictureButton btnAddSeparator = new PictureButton(AppImage.AddSeparator);
+                readonly SubNewItem subNewItem = new SubNewItem(true);
 
-                public CommonMultiItemsList(MyListBox owner) : base(owner)
+                public PulicMultiItemsList(MyListBox owner) : base(owner)
                 {
-                    this.AddItem(newItem);
-                    newItem.AddCtrs(new[] { btnAddCommon, btnAddExisting, btnAddSeparator });
-                    MyToolTip.SetToolTip(btnAddExisting, AppString.Tip.AddExistingItems);
-                    MyToolTip.SetToolTip(btnAddSeparator, AppString.Tip.AddSeparator);
-                    newItem.NewItemAdd += (sender, e) => AddNewItem();
-                    btnAddCommon.MouseDown += (sender, e) => AddCommonItems();
-                    btnAddExisting.MouseDown += (sender, e) => AddExistingItems();
-                    btnAddSeparator.MouseDown += (sender, e) => AddSeparator();
+                    this.AddItem(subNewItem);
+                    subNewItem.AddNewItem += (sender, e) => AddNewItem();
+                    subNewItem.AddExisting += (sender, e) => AddReference();
+                    subNewItem.AddSeparator += (sender, e) => AddSeparator();
                 }
 
                 /// <param name="parentPath">子菜单的父菜单的注册表路径</param>
@@ -116,7 +184,7 @@ namespace ContextMenuManager.Controls
 
                 private void AddNewItem()
                 {
-                    if(!CanAddMore()) return;
+                    if(!SubShellTypeItem.CanAddMore(this)) return;
                     using(NewShellDialog dlg = new NewShellDialog
                     {
                         ScenePath = this.ScenePath,
@@ -126,48 +194,26 @@ namespace ContextMenuManager.Controls
                         if(dlg.ShowDialog() != DialogResult.OK) return;
                         SubKeyNames.Add(dlg.NewItemKeyName);
                         WriteRegistry();
-                        SubShellItem item = new SubShellItem(this, dlg.NewItemKeyName);
-                        this.AddItem(item);
-                        this.HoveredItem = item;
+                        this.AddItem(new SubShellItem(this, dlg.NewItemKeyName));
                     }
                 }
 
-                private void AddCommonItems()
+                private void AddReference()
                 {
-                    if(!CanAddMore()) return;
-                    using(ShellCommonDialog dlg = new ShellCommonDialog
+                    if(!SubShellTypeItem.CanAddMore(this)) return;
+                    using(ShellStoreDialog dlg = new ShellStoreDialog
                     {
-                        ScenePath = this.ScenePath,
-                        ShellPath = ShellItem.CommandStorePath
+                        ShellPath = ShellItem.CommandStorePath,
+                        IgnoredKeyNames = ShellItem.SysStoreItemNames.ToList()
                     })
-                    {
-                        if(dlg.ShowDialog() == DialogResult.OK)
-                        {
-                            dlg.SelectedShellPaths.ForEach(path =>
-                            {
-                                string keyName = RegistryEx.GetKeyName(path);
-                                this.AddItem(new SubShellItem(this, keyName));
-                                SubKeyNames.Add(keyName);
-                            });
-                            WriteRegistry();
-                        }
-                    }
-                }
-
-                private void AddExistingItems()
-                {
-                    if(!CanAddMore()) return;
-                    using(ShellStoreDialog dlg = new ShellStoreDialog())
                     {
                         if(dlg.ShowDialog() != DialogResult.OK) return;
                         dlg.SelectedKeyNames.ForEach(keyName =>
                         {
-                            SubShellItem item = new SubShellItem(this, keyName);
-                            this.AddItem(item);
+                            this.AddItem(new SubShellItem(this, keyName));
                             this.SubKeyNames.Add(keyName);
                             WriteRegistry();
                         });
-                        this.HoveredItem = (MyListItem)Controls[Controls.Count - 1];
                     }
                 }
 
@@ -175,21 +221,7 @@ namespace ContextMenuManager.Controls
                 {
                     this.SubKeyNames.Add("|");
                     WriteRegistry();
-                    SeparatorItem item = new SeparatorItem(this);
-                    this.AddItem(item);
-                    this.HoveredItem = item;
-                }
-
-                private bool CanAddMore()
-                {
-                    int count = 0;
-                    foreach(Control item in Controls)
-                    {
-                        if(item.GetType() == typeof(SubShellItem)) count++;
-                    }
-                    bool flag = count < 16;
-                    if(!flag) MessageBoxEx.Show(AppString.MessageBox.CannotAddNewItem);
-                    return flag;
+                    this.AddItem(new SeparatorItem(this));
                 }
 
                 private void WriteRegistry()
@@ -197,106 +229,83 @@ namespace ContextMenuManager.Controls
                     SetValue(ParentPath, "SubCommands", string.Join(";", SubKeyNames.ToArray()));
                 }
 
-                private static void MoveItem(MyListItem item, CommonMultiItemsList list, bool isUp)
+                private void MoveItem(MyListItem item, bool isUp)
                 {
-                    int index = list.GetItemIndex(item);
+                    int index = this.GetItemIndex(item);
                     if(isUp)
                     {
                         if(index > 1)
                         {
-                            list.SetItemIndex(item, index - 1);
-                            list.SubKeyNames.Reverse(index - 2, 2);
+                            this.SetItemIndex(item, index - 1);
+                            this.SubKeyNames.Reverse(index - 2, 2);
                         }
                     }
                     else
                     {
-                        if(index < list.Controls.Count - 1)
+                        if(index < this.Controls.Count - 1)
                         {
-                            list.SetItemIndex(item, index + 1);
-                            list.SubKeyNames.Reverse(index - 1, 2);
+                            this.SetItemIndex(item, index + 1);
+                            this.SubKeyNames.Reverse(index - 1, 2);
                         }
                     }
-                    list.WriteRegistry();
+                    this.WriteRegistry();
                 }
 
-                private static void RemoveItem(CommonMultiItemsList list, MyListItem item)
+                private void DeleteItem(MyListItem item)
                 {
-                    int index = list.GetItemIndex(item);
-                    list.Controls.Remove(item);
-                    list.Controls[index - 1].Focus();
-                    list.SubKeyNames.RemoveAt(index - 1);
-                    list.WriteRegistry();
+                    int index = this.GetItemIndex(item);
+                    this.Controls.Remove(item);
+                    this.Controls[index - 1].Focus();
+                    this.SubKeyNames.RemoveAt(index - 1);
+                    this.WriteRegistry();
                     item.Dispose();
                 }
 
-                sealed class SubShellItem : ShellItem, IBtnMoveUpDownItem
+                sealed class SubShellItem : SubShellTypeItem
                 {
-                    public SubShellItem(CommonMultiItemsList list, string keyName) : base($@"{CommandStorePath}\{keyName}")
+                    public SubShellItem(PulicMultiItemsList list, string keyName) : base($@"{CommandStorePath}\{keyName}")
                     {
                         this.Owner = list;
-                        BtnMoveDown = new MoveButton(this, false);
-                        BtnMoveUp = new MoveButton(this, true);
-                        BtnMoveUp.MouseDown += (sender, e) => MoveItem(this, Owner, true);
-                        BtnMoveDown.MouseDown += (sender, e) => MoveItem(this, Owner, false);
+                        BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
+                        BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
                         ContextMenuStrip.Items.Remove(TsiDeleteMe);
                         ContextMenuStrip.Items.Add(TsiDeleteRef);
                         TsiDeleteRef.Click += (sender, e) => DeleteReference();
                     }
 
-                    protected override bool IsSubItem => true;
-
                     readonly ToolStripMenuItem TsiDeleteRef = new ToolStripMenuItem(AppString.Menu.DeleteReference);
-                    public CommonMultiItemsList Owner { get; private set; }
-                    public MoveButton BtnMoveUp { get; set; }
-                    public MoveButton BtnMoveDown { get; set; }
+                    public PulicMultiItemsList Owner { get; private set; }
 
                     private void DeleteReference()
                     {
                         if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDeleteReference,
                             MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            RemoveItem(Owner, this);
+                            Owner.DeleteItem(this);
                         }
-                    }
-
-                    public override void DeleteMe()
-                    {
-                        if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDeleteReferenced,
-                            MessageBoxButtons.YesNo) == DialogResult.Yes) base.DeleteMe();
                     }
                 }
 
-                sealed class SeparatorItem : MyListItem, IBtnDeleteItem, IBtnMoveUpDownItem
+                sealed class SeparatorItem : SubSeparatorItem
                 {
-                    public SeparatorItem(CommonMultiItemsList list)
+                    public SeparatorItem(PulicMultiItemsList list) : base()
                     {
                         this.Owner = list;
-                        this.Text = AppString.Item.Separator;
-                        this.Image = AppImage.Separator;
-                        BtnDelete = new DeleteButton(this);
-                        BtnMoveDown = new MoveButton(this, false);
-                        BtnMoveUp = new MoveButton(this, true);
-                        BtnMoveUp.MouseDown += (sender, e) => MoveItem(this, Owner, true);
-                        BtnMoveDown.MouseDown += (sender, e) => MoveItem(this, Owner, false);
-                        MyToolTip.SetToolTip(BtnDelete, AppString.Tip.Separator);
+                        BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
+                        BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
                     }
 
-                    public DeleteButton BtnDelete { get; set; }
+                    public PulicMultiItemsList Owner { get; private set; }
 
-                    public CommonMultiItemsList Owner { get; private set; }
-                    public MoveButton BtnMoveUp { get; set; }
-                    public MoveButton BtnMoveDown { get; set; }
-
-                    public void DeleteMe()
+                    public override void DeleteMe()
                     {
-                        RemoveItem(Owner, this);
-                        this.Dispose();
+                        Owner.DeleteItem(this);
                     }
                 }
 
                 sealed class InvalidItem : MyListItem, IBtnDeleteItem, IBtnMoveUpDownItem
                 {
-                    public InvalidItem(CommonMultiItemsList list, string keyName)
+                    public InvalidItem(PulicMultiItemsList list, string keyName)
                     {
                         this.Owner = list;
                         this.Text = $"{AppString.Item.InvalidItem} {keyName}";
@@ -304,43 +313,47 @@ namespace ContextMenuManager.Controls
                         BtnDelete = new DeleteButton(this);
                         BtnMoveDown = new MoveButton(this, false);
                         BtnMoveUp = new MoveButton(this, true);
-                        BtnMoveUp.MouseDown += (sender, e) => MoveItem(this, Owner, true);
-                        BtnMoveDown.MouseDown += (sender, e) => MoveItem(this, Owner, false);
-                        MyToolTip.SetToolTip(BtnDelete, AppString.Tip.InvalidItem);
+                        BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
+                        BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
+                        MyToolTip.SetToolTip(this, AppString.Tip.InvalidItem);
+                        MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
                     }
 
                     public DeleteButton BtnDelete { get; set; }
-                    public CommonMultiItemsList Owner { get; private set; }
+                    public PulicMultiItemsList Owner { get; private set; }
                     public MoveButton BtnMoveUp { get; set; }
                     public MoveButton BtnMoveDown { get; set; }
 
                     public void DeleteMe()
                     {
-                        RemoveItem(Owner, this);
-                        this.Dispose();
+                        Owner.DeleteItem(this);
                     }
                 }
             }
 
-            sealed class MultiItemsList : MyList
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            sealed class PrivateMultiItemsList : MyList
             {
-                public MultiItemsList(MyListBox owner) : base(owner)
+                public PrivateMultiItemsList(MyListBox owner) : base(owner)
                 {
-                    this.AddItem(newItem);
-                    newItem.AddCtr(btnAddCommon);
-                    newItem.NewItemAdd += (sender, e) => AddNewItem();
-                    btnAddCommon.MouseDown += (sender, e) => AddCommonItems();
+                    this.AddItem(subNewItem);
+                    subNewItem.AddNewItem += (sender, e) => AddNewItem();
+                    subNewItem.AddSeparator += (sender, e) => AddSeparator();
+                    subNewItem.AddExisting += (sender, e) => AddFromParentMenu();
                 }
 
-                readonly NewItem newItem = new NewItem();
-                readonly AddCommonButton btnAddCommon = new AddCommonButton();
-                /// <summary>子菜单的父菜单的注册表路径</summary>
+                readonly SubNewItem subNewItem = new SubNewItem(false);
+
+                /// <summary>父菜单的注册表路径</summary>
                 public string ParentPath { get; set; }
                 /// <summary>子菜单的Shell项注册表路径</summary>
                 private string ShellPath => $@"{ParentPath}\shell";
+                /// <summary>父菜单的Shell项注册表路径</summary>
+                private string ParentShellPath => RegistryEx.GetParentPath(ParentPath);
                 /// <summary>菜单所处环境注册表路径</summary>
-                private string ScenePath => RegistryEx.GetParentPath(RegistryEx.GetParentPath(ParentPath));
-
+                private string ScenePath => RegistryEx.GetParentPath(ParentShellPath);
+                /// <summary>父菜单的项名</summary>
+                private string ParentKeyName => RegistryEx.GetKeyName(ParentPath);
 
                 public void LoadItems(string parentPath)
                 {
@@ -351,82 +364,213 @@ namespace ContextMenuManager.Controls
                         RegTrustedInstaller.TakeRegTreeOwnerShip(shellKey.Name);
                         Array.ForEach(shellKey.GetSubKeyNames(), keyName =>
                         {
-                            this.AddItem(new SubShellItem($@"{ShellPath}\{keyName}"));
+                            string regPath = $@"{ShellPath}\{keyName}";
+                            int value = Convert.ToInt32(GetValue(regPath, "CommandFlags", 0));
+                            if(value % 16 >= 8)
+                            {
+                                this.AddItem(new SeparatorItem(this, regPath));
+                            }
+                            else
+                            {
+                                this.AddItem(new SubShellItem(this, regPath));
+                            }
                         });
                     }
                 }
 
                 private void AddNewItem()
                 {
-                    if(!CanAddMore()) return;
+                    if(!SubShellTypeItem.CanAddMore(this)) return;
                     using(NewShellDialog dlg = new NewShellDialog
                     {
                         ScenePath = this.ScenePath,
                         ShellPath = this.ShellPath
                     })
                     {
-                        if(dlg.ShowDialog() == DialogResult.OK)
-                            this.InsertItem(new SubShellItem(dlg.NewItemRegPath), GetItemIndex(newItem) + 1);
+                        if(dlg.ShowDialog() != DialogResult.OK) return;
+                        this.AddItem(new SubShellItem(this, dlg.NewItemRegPath));
                     }
                 }
 
-                private void AddCommonItems()
+                private void AddSeparator()
                 {
-                    if(!CanAddMore()) return;
-                    using(ShellCommonDialog dlg = new ShellCommonDialog
+                    string regPath = null;
+                    if(this.Controls.Count > 1)
                     {
-                        ScenePath = this.ScenePath,
-                        ShellPath = this.ShellPath
+                        regPath = GetItemRegPath((MyListItem)Controls[Controls.Count - 1]);
+                    }
+                    else
+                    {
+                        regPath = $@"{ShellPath}\Item";
+                    }
+                    regPath = ObjectPath.GetNewPathWithIndex(regPath, ObjectPath.PathType.Registry);
+                    SetValue(regPath, "CommandFlags", 0x8);
+                    this.AddItem(new SeparatorItem(this, regPath));
+                }
+
+                private void AddFromParentMenu()
+                {
+                    if(!SubShellTypeItem.CanAddMore(this)) return;
+                    using(ShellStoreDialog dlg = new ShellStoreDialog
+                    {
+                        ShellPath = this.ParentShellPath,
+                        IgnoredKeyNames = new List<string> { this.ParentKeyName }
                     })
                     {
-                        if(dlg.ShowDialog() == DialogResult.OK)
+                        if(dlg.ShowDialog() != DialogResult.OK) return;
+                        dlg.SelectedKeyNames.ForEach(keyName =>
                         {
-                            dlg.SelectedShellPaths.ForEach(path => this.AddItem(new SubShellItem(path)));
-                            this.SortItemByText();
-                            this.SetItemIndex(newItem, 0);
-                        }
+                            string srcPath = $@"{dlg.ShellPath}\{keyName}";
+                            string dstPath = ObjectPath.GetNewPathWithIndex($@"{this.ShellPath}\{keyName}", ObjectPath.PathType.Registry);
+
+                            RegistryEx.CopyTo(srcPath, dstPath);
+                            this.AddItem(new SubShellItem(this, dstPath));
+                        });
                     }
                 }
 
-                private bool CanAddMore()
+                public void MoveItem(MyListItem item, bool isUp)
+                {
+                    int index = this.GetItemIndex(item);
+                    MyListItem otherItem = null;
+                    if(isUp)
+                    {
+                        if(index > 1)
+                        {
+                            otherItem = (MyListItem)this.Controls[index - 1];
+                            this.SetItemIndex(item, index - 1);
+                        }
+                    }
+                    else
+                    {
+                        if(index < this.Controls.Count - 1)
+                        {
+                            otherItem = (MyListItem)this.Controls[index + 1];
+                            this.SetItemIndex(item, index + 1);
+                        }
+                    }
+                    if(otherItem != null)
+                    {
+                        string path1 = GetItemRegPath(item);
+                        string path2 = GetItemRegPath(otherItem);
+                        string tempPath = ObjectPath.GetNewPathWithIndex(path1, ObjectPath.PathType.Registry);
+                        RegistryEx.MoveTo(path1, tempPath);
+                        RegistryEx.MoveTo(path2, path1);
+                        RegistryEx.MoveTo(tempPath, path2);
+                        SetItemRegPath(item, path2);
+                        SetItemRegPath(otherItem, path1);
+                    }
+                }
+
+                private string GetItemRegPath(MyListItem item)
+                {
+                    PropertyInfo pi = item.GetType().GetProperty("RegPath");
+                    return pi.GetValue(item, null).ToString();
+                }
+
+                private void SetItemRegPath(MyListItem item, string regPath)
+                {
+                    PropertyInfo pi = item.GetType().GetProperty("RegPath");
+                    pi.SetValue(item, regPath, null);
+                }
+
+                sealed class SubShellItem : SubShellTypeItem
+                {
+                    public SubShellItem(PrivateMultiItemsList list, string regPath) : base(regPath)
+                    {
+                        this.Owner = list;
+                        BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
+                        BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
+                    }
+
+                    public PrivateMultiItemsList Owner { get; private set; }
+                }
+
+                sealed class SeparatorItem : SubSeparatorItem
+                {
+                    public SeparatorItem(PrivateMultiItemsList list, string regPath)
+                    {
+                        this.Owner = list;
+                        this.RegPath = regPath;
+                        BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
+                        BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
+                    }
+
+                    public PrivateMultiItemsList Owner { get; private set; }
+                    public string RegPath { get; private set; }
+
+                    public override void DeleteMe()
+                    {
+                        RegistryEx.DeleteKeyTree(this.RegPath);
+                        this.Dispose();
+                    }
+                }
+            }
+
+            class SubSeparatorItem : MyListItem, IBtnDeleteItem, IBtnMoveUpDownItem
+            {
+                public SubSeparatorItem()
+                {
+                    this.Text = AppString.Item.Separator;
+                    this.Image = AppImage.Separator;
+                    BtnDelete = new DeleteButton(this);
+                    BtnMoveDown = new MoveButton(this, false);
+                    BtnMoveUp = new MoveButton(this, true);
+                    MyToolTip.SetToolTip(this, AppString.Tip.Separator);
+                    MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
+                }
+
+                public DeleteButton BtnDelete { get; set; }
+                public MoveButton BtnMoveUp { get; set; }
+                public MoveButton BtnMoveDown { get; set; }
+
+                public virtual void DeleteMe() { }
+            }
+
+            class SubShellTypeItem : ShellItem, IBtnMoveUpDownItem
+            {
+                public SubShellTypeItem(string regPath) : base(regPath)
+                {
+                    BtnMoveDown = new MoveButton(this, false);
+                    BtnMoveUp = new MoveButton(this, true);
+                    this.SetCtrIndex(BtnMoveDown, 1);
+                    this.SetCtrIndex(BtnMoveUp, 2);
+                }
+
+                public MoveButton BtnMoveUp { get; set; }
+                public MoveButton BtnMoveDown { get; set; }
+
+                protected override bool IsSubItem => true;
+
+                public static bool CanAddMore(MyList list)
                 {
                     int count = 0;
-                    foreach(Control item in Controls)
+                    foreach(Control item in list.Controls)
                     {
-                        if(item.GetType() == typeof(SubShellItem)) count++;
+                        if(item.GetType().BaseType == typeof(SubShellTypeItem)) count++;
                     }
                     bool flag = count < 16;
                     if(!flag) MessageBoxEx.Show(AppString.MessageBox.CannotAddNewItem);
                     return flag;
                 }
+            }
 
-                sealed class SubShellItem : ShellItem
+            sealed class SubNewItem : NewItem
+            {
+                public SubNewItem(bool isPublic)
                 {
-                    public SubShellItem(string regPath) : base(regPath)
-                    {
-                        TsiOtherAttributes.DropDownItems.Add(tsiShowSeparator);
-                        tsiShowSeparator.Click += (sender, e) => ShowSeparator = !tsiShowSeparator.Checked;
-                        ContextMenuStrip.Opening += (sender, e) => tsiShowSeparator.Checked = ShowSeparator;
-                    }
-
-                    protected override bool IsSubItem => true;
-
-                    private bool ShowSeparator
-                    {
-                        get
-                        {
-                            int value = Convert.ToInt32(GetValue(RegPath, "CommandFlags", 0)) % 64;
-                            return value >= 32 && value < 56;
-                        }
-                        set
-                        {
-                            if(value) SetValue(RegPath, "CommandFlags", 32, Microsoft.Win32.RegistryValueKind.DWord);
-                            else RegistryEx.DeleteValue(RegPath, "CommandFlags");
-                        }
-                    }
-
-                    readonly ToolStripMenuItem tsiShowSeparator = new ToolStripMenuItem(AppString.Menu.ShowSeparator);
+                    this.AddCtrs(new[] { btnAddExisting, btnAddSeparator });
+                    MyToolTip.SetToolTip(btnAddExisting, isPublic ? AppString.Tip.AddReference : AppString.Tip.AddFromParentMenu);
+                    MyToolTip.SetToolTip(btnAddSeparator, AppString.Tip.AddSeparator);
+                    btnAddExisting.MouseDown += (sender, e) => AddExisting?.Invoke(null, null);
+                    btnAddSeparator.MouseDown += (sender, e) => AddSeparator?.Invoke(null, null);
                 }
+
+                readonly PictureButton btnAddExisting = new PictureButton(AppImage.AddExisting);
+                readonly PictureButton btnAddSeparator = new PictureButton(AppImage.AddSeparator);
+
+                public event EventHandler AddExisting;
+                public event EventHandler AddSeparator;
             }
         }
     }

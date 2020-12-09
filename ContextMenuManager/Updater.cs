@@ -13,17 +13,27 @@ namespace ContextMenuManager
         const string UpdateUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Update.ini";
         const string GuidInfosDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/GuidInfosDic.ini";
         const string ThirdRulesDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/ThirdRulesDic.xml";
-        const string ShellCommonDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/ShellCommonDic.xml";
+        const string EnhanceMenusDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/EnhanceMenusDic.xml";
 
-        public static void CheckUpdate()
+        public static void PeriodicUpdate()
         {
-            UpdateText(Program.AppDataGuidInfosDicPath, GuidInfosDicUrl);
-            UpdateText(Program.AppDataThirdRulesDicPath, ThirdRulesDicUrl);
-            UpdateText(Program.AppDataShellCommonDicPath, ShellCommonDicUrl);
-            try { UpdateApp(); } catch { }
+            //如果上次检测更新时间为一个月以前就进行更新操作
+            if(AppConfig.LastCheckUpdateTime.AddMonths(1).CompareTo(DateTime.Today) < 0)
+            {
+                CheckUpdate();
+                AppConfig.LastCheckUpdateTime = DateTime.Today;
+            }
         }
 
-        private static void UpdateApp()
+        public static bool CheckUpdate()
+        {
+            UpdateText(AppConfig.WebGuidInfosDic, GuidInfosDicUrl);
+            UpdateText(AppConfig.WebThirdRulesDic, ThirdRulesDicUrl);
+            UpdateText(AppConfig.WebEnhanceMenusDic, EnhanceMenusDicUrl);
+            try { return UpdateApp(); } catch { return false; }
+        }
+
+        private static bool UpdateApp()
         {
             IniReader reader = new IniReader(new StringBuilder(GetWebString(UpdateUrl).Replace("\\n", "\n")));
             Version version1 = new Version(reader.GetValue("Update", "Version"));
@@ -35,9 +45,10 @@ namespace ContextMenuManager
                     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
                     Process.Start(reader.GetValue("Update", "Url"));
-                    Process.GetCurrentProcess().Kill();
+                    return true;
                 }
             }
+            return false;
         }
 
         private static void UpdateText(string filePath, string url)

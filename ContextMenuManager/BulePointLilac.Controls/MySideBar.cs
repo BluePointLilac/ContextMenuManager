@@ -146,13 +146,13 @@ namespace BulePointLilac.Controls
                 new SolidBrush(ctr.ForeColor),
                 new PointF(HorizontalSpace, VerticalSpace));
         }
-        
+
         /// <summary>显示选中的项目</summary>
         private void ShowItem(Panel panel, MouseEventArgs e)
         {
             if(itemNames == null) return;
             int index = (e.Y - TopSpace) / ItemHeight;
-            if(index >= itemNames.Length || string.IsNullOrEmpty(itemNames[index]) || index == SelectIndex)
+            if(index >= itemNames.Length || index < 0 || string.IsNullOrEmpty(itemNames[index]) || index == SelectIndex)
             {
                 this.Cursor = Cursors.Default;
                 HoverIndex = SelectIndex;

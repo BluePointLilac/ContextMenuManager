@@ -31,6 +31,11 @@ namespace BulePointLilac.Methods
         public static bool GetFullFilePath(string fileName, out string fullPath)
         {
             fullPath = null;
+            if(File.Exists(fileName))
+            {
+                fullPath = fileName;
+                return true;
+            }
             foreach(string name in new[] { fileName, $"{fileName}.exe" })
             {
                 foreach(string dir in EnvironmentDirectorys)
@@ -50,19 +55,9 @@ namespace BulePointLilac.Methods
         /// <returns>成功提取返回现有文件路径，否则返回值为null</returns>
         public static string ExtractFilePath(string command)
         {
-            return ExtractFilePath(command, out _);
-        }
-
-        /// <param name="shortPath">文件短路径</param>
-        public static string ExtractFilePath(string command, out string shortPath)
-        {
-            shortPath = null;
             if(command.IsNullOrWhiteSpace()) return null;
             command = Environment.ExpandEnvironmentVariables(command).Replace(@"\\", @"\");
-            if(File.Exists(command)) {
-                shortPath = command;
-                return command;
-            }
+            if(File.Exists(command)) return command;
 
             string[] strs = Array.FindAll(command.Split(IllegalChars), str
                 => IgnoreCommandParts.Any(part => !part.Equals(str.Trim()))).Reverse().ToArray();
@@ -76,15 +71,7 @@ namespace BulePointLilac.Methods
                     if(path1.Contains(",")) paths.Add(path1.Substring(0, path1.LastIndexOf(',')));
                     foreach(string path in paths)
                     {
-                        if(File.Exists(path)) {
-                            shortPath = path;
-                            return path;
-                        }
-                        if(GetFullFilePath(path, out string fullPath))
-                        {
-                            shortPath = path;
-                            return fullPath;
-                        }
+                        if(GetFullFilePath(path, out string fullPath)) return fullPath;
                     }
                     index = path1.LastIndexOf(' ');
                 } while(index != -1);

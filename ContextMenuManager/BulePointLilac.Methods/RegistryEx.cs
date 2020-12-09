@@ -1,12 +1,54 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Security.AccessControl;
 
 namespace BulePointLilac.Methods
 {
-
     public static class RegistryEx
     {
+        public static void CopyTo(this RegistryKey srcKey, RegistryKey dstKey)
+        {
+            foreach(string name in srcKey.GetValueNames())
+            {
+                dstKey.SetValue(name, srcKey.GetValue(name), srcKey.GetValueKind(name));
+            }
+            foreach(string name in srcKey.GetSubKeyNames())
+            {
+                using(RegistryKey srcSubKey = srcKey.OpenSubKey(name))
+                using(RegistryKey dstSubKey = dstKey.CreateSubKey(name, true))
+                    srcSubKey.CopyTo(dstSubKey);
+            }
+        }
+
+        public static void CopyTo(string srcPath, string dstPath)
+        {
+            using(RegistryKey srcKey = GetRegistryKey(srcPath))
+            using(RegistryKey dstKey = GetRegistryKey(dstPath, true, true))
+            {
+                CopyTo(srcKey, dstKey);
+            }
+        }
+
+        public static void MoveTo(this RegistryKey srcKey, RegistryKey dstKey)
+        {
+            CopyTo(srcKey, dstKey);
+            DeleteKeyTree(srcKey.Name);
+        }
+
+        public static void MoveTo(string srcPath, string dstPath)
+        {
+            CopyTo(srcPath, dstPath);
+            DeleteKeyTree(srcPath);
+        }
+
+        public static RegistryKey CreateSubKey(this RegistryKey key, string subKeyName, bool writable)
+        {
+            key.CreateSubKey(subKeyName).Close();
+            RegTrustedInstaller.TakeRegTreeOwnerShip($@"{key.Name}\{subKeyName}");
+            return key.OpenSubKey(subKeyName, writable);
+        }
 
         /// <summary>获取指定路径注册表项的上一级路径</summary>
         public static string GetParentPath(string regPath) => regPath.Substring(0, regPath.LastIndexOf('\\'));
@@ -96,29 +138,12 @@ namespace BulePointLilac.Methods
             GetRootAndSubRegPath(regPath, out RegistryKey root, out string keyPath);
             using(root) return root.OpenSubKey(keyPath, check, rights);
         }
-    }
 
-    public static class RegistryKeyExtension
-    {
-        public static void CopyTo(this RegistryKey srcKey, RegistryKey dstKey)
+        public static void Export(string regPath, string filePath)
         {
-            foreach(string name in srcKey.GetValueNames())
-            {
-                dstKey.SetValue(name, srcKey.GetValue(name), srcKey.GetValueKind(name));
-            }
-            foreach(string name in srcKey.GetSubKeyNames())
-            {
-                using(RegistryKey srcSubKey = srcKey.OpenSubKey(name))
-                using(RegistryKey dstSubKey = dstKey.CreateSubKey(name, true))
-                    srcSubKey.CopyTo(dstSubKey);
-            }
-        }
-
-        public static RegistryKey CreateSubKey(this RegistryKey key, string subKeyName, bool writable)
-        {
-            key.CreateSubKey(subKeyName).Close();
-            RegTrustedInstaller.TakeRegTreeOwnerShip($@"{key.Name}\{subKeyName}");
-            return key.OpenSubKey(subKeyName, writable);
+            if(File.Exists(filePath)) File.Delete(filePath);
+            Process process = Process.Start("regedit.exe", $" /e \"{filePath}\" \"{regPath}\"");
+            process.WaitForExit();
         }
     }
 }

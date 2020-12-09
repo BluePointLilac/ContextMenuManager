@@ -43,11 +43,11 @@ namespace BulePointLilac.Controls
             button.Margin = new Padding(12.DpiZoom(), 4.DpiZoom(), 0, 0);
             button.MouseDown += (sender, e) =>
             {
-                if(e.Button == MouseButtons.Left) SelectedButton = button;
+                if(e.Button == MouseButtons.Left) { SelectedButton = button; button.Cursor = Cursors.Default; }
             };
             button.MouseEnter += (sender, e) =>
             {
-                if(button != SelectedButton) button.Opacity = 0.2F;
+                if(button != SelectedButton) { button.Opacity = 0.2F; button.Cursor = Cursors.Hand; }
             };
             button.MouseLeave += (sender, e) =>
             {
@@ -92,8 +92,6 @@ namespace BulePointLilac.Controls
             BackColor = Color.Transparent,
             ForeColor = Color.White
         };
-
-        private static Label LblText = new Label();
 
         public Image Image
         {

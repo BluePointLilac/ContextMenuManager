@@ -10,18 +10,89 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    class ShellItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiTextItem,
-        ITsiCommandItem, ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiDeleteItem
+    class ShellItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiTextItem, ITsiCommandItem,
+        ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem
     {
-        /// <summary>Shell子菜单注册表项路径</summary>
+        /// <summary>Shell公共引用子菜单注册表项路径</summary>
         public const string CommandStorePath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell";
+
+        /// <summary>系统原有Shell公共子菜单项名</summary>
+        public static readonly string[] SysStoreItemNames = { "Windows.aboutWindows", "Windows.AddColumns",
+                "Windows.AddDevice", "Windows.AddMediaServer", "Windows.AddNetworkLocation", "Windows.AddPrinter",
+                "Windows.AddRemovePrograms", "Windows.AddToFavorites", "Windows.Autoplay", "Windows.Backup",
+                "Windows.BitLocker", "Windows.BitLocker.Encrypt", "Windows.BitLocker.Manage",
+                "Windows.BitLocker.ResetPasswordPin", "Windows.burn", "Windows.Burn.Action", "Windows.change-passphrase",
+                "Windows.change-pin", "Windows.ChangeIndexedLocations", "Windows.ChooseColumns", "Windows.CleanUp",
+                "Windows.ClearAddressBarHistory", "Windows.ClearFrequentHistory", "Windows.clearRecentDocs",
+                "Windows.closewindow", "Windows.cmd", "Windows.cmdPromptAsAdministrator", "Windows.CompressedFile.extract",
+                "Windows.CompressedFile.ExtractTo", "Windows.CompressedFolder.extract", "Windows.CompressedItem.extract",
+                "Windows.Computer.Manage", "Windows.connectNetworkDrive", "Windows.copy", "Windows.copyaspath",
+                "Windows.CopyToBrowser", "Windows.CopyToMenu", "Windows.CscSync", "Windows.CscWorkOfflineOnline",
+                "Windows.cut", "Windows.Defragment", "Windows.delete", "Windows.Dialog.DisconnectNetworkDrive",
+                "Windows.DiscImage.burn", "Windows.DisconnectNetworkDrive", "Windows.DiskFormat",
+                "Windows.DriveFolder.DisconnectNetworkDrive", "Windows.edit", "Windows.Eject", "Windows.email",
+                "Windows.encrypt-bde", "Windows.encrypt-bde-elev", "Windows.Enqueue", "Windows.EraseDisc",
+                "Windows.EraseDisc.Action", "Windows.fax", "Windows.FinishBurn", "Windows.folderoptions",
+                "Windows.GroupByColumn", "Windows.help", "Windows.HideSelected", "Windows.HistoryVaultRestore",
+                "Windows.HomeGroupCPL", "Windows.HomeGroupJoin", "Windows.HomeGroupPassword", "Windows.HomeGroupSharing",
+                "Windows.HomeGroupTroubleshooter", "Windows.IconSize", "Windows.includeinlibrary", "Windows.invertselection",
+                "Windows.layout", "Windows.LibraryChangeIcon", "Windows.LibraryDefaultSaveLocation",
+                "Windows.LibraryIncludeInLibrary", "Windows.LibraryManageLibrary", "Windows.LibraryOptimizeLibraryFor",
+                "Windows.LibraryPublicSaveLocation", "Windows.LibraryRestoreDefaults", "Windows.LibrarySelChangeIcon",
+                "Windows.LibrarySelDefaultSaveLocation", "Windows.LibrarySelManageLibrary", "Windows.LibrarySelOptimizeLibraryFor",
+                "Windows.LibrarySelPublicSaveLocation", "Windows.LibrarySelRestoreDefaults", "Windows.LibrarySelShowInNavPane",
+                "Windows.LibraryShowInNavPane", "Windows.location.cmd", "Windows.location.cmdPromptAsAdministrator",
+                "Windows.location.opennewprocess", "Windows.location.opennewtab", "Windows.location.opennewwindow",
+                "Windows.location.Powershell", "Windows.location.PowershellAsAdmin", "Windows.manage-bde",
+                "Windows.manage-bde-elev", "Windows.MapNetworkDrive", "Windows.menubar", "Windows.ModernShare",
+                "Windows.mount", "Windows.MoveToBrowser", "Windows.MoveToMenu", "Windows.MultiVerb.cmd",
+                "Windows.MultiVerb.cmdPromptAsAdministrator", "Windows.MultiVerb.opennewprocess", "Windows.MultiVerb.opennewtab",
+                "Windows.MultiVerb.opennewwindow", "Windows.MultiVerb.Powershell", "Windows.MultiVerb.PowershellAsAdmin",
+                "Windows.navpane", "Windows.NavPaneExpandToCurrentFolder", "Windows.NavPaneShowAllFolders",
+                "Windows.NavPaneShowLibraries", "Windows.NetworkAndSharing", "Windows.NetworkViewDeviceWebpage",
+                "Windows.newfolder", "Windows.newitem", "Windows.open", "Windows.OpenContainingFolder.opencontaining",
+                "Windows.OpenControlPanel", "Windows.opennewprocess", "Windows.opennewtab", "Windows.opennewwindow",
+                "Windows.OpenPrinterServerProperty", "Windows.OpenPrintQueue", "Windows.OpenSearch.openfilelocation",
+                "Windows.OpenSearchViewSite", "Windows.OpenWith", "Windows.organize", "Windows.paste", "Windows.pastelink",
+                "Windows.PermanentDelete", "Windows.PinToHome", "Windows.pintostartscreen", "Windows.play", "Windows.playall",
+                "Windows.playmusic", "Windows.PowershellAsAdmin", "Windows.previewpane", "Windows.print", "Windows.properties",
+                "Windows.readingpane", "Windows.recycle", "Windows.RecycleBin.Empty", "Windows.RecycleBin.Location.properties",
+                "Windows.RecycleBin.properties", "Windows.RecycleBin.RestoreAll", "Windows.RecycleBin.RestoreItems",
+                "Windows.RecycleBin.Selection.properties", "Windows.redo", "Windows.remotedesktop", "Windows.RemoveMediaServer",
+                "Windows.removeproperties", "Windows.rename", "Windows.RibbonDelete", "Windows.RibbonPermissionsDialog",
+                "Windows.RibbonShare", "Windows.RibbonSync.MakeAvailableOffline", "Windows.RibbonSync.SyncThisFolder",
+                "Windows.RibbonSync.WorkOfflineOnline", "Windows.rotate270", "Windows.rotate90", "Windows.runas",
+                "Windows.runasuser", "Windows.SearchActiveDirectory", "Windows.SearchClearMru", "Windows.SearchCloseTab",
+                "Windows.SearchFilterDate", "Windows.SearchFilterKind", "Windows.SearchFilterMoreProperties",
+                "Windows.SearchFilterSize", "Windows.SearchMru", "Windows.SearchOpenLocation", "Windows.SearchOptionCompressed",
+                "Windows.SearchOptionContents", "Windows.SearchOptionDeep", "Windows.SearchOptionShallow",
+                "Windows.SearchOptionSystem", "Windows.SearchSave", "Windows.SearchSendTo", "Windows.SearchSendToComputer",
+                "Windows.selectall", "Windows.SelectionCheckboxes", "Windows.selectMode", "Windows.selectnone",
+                "Windows.separator", "Windows.setdesktopwallpaper", "Windows.Share", "Windows.SharePrivate",
+                "Windows.ShareSpecificUsers", "Windows.Shortcut.opencontaining", "Windows.ShowFileExtensions",
+                "Windows.ShowHiddenFiles", "Windows.SizeAllColumns", "Windows.slideshow", "Windows.SortAscending",
+                "Windows.SortByColumn", "Windows.SortDescending", "Windows.SortGroupsAscending", "Windows.SortGroupsDescending",
+                "Windows.StartScan", "Windows.statusbar", "Windows.Sync", "Windows.SystemProperties", "Windows.taskbarpin",
+                "Windows.ToggleRecycleConfirmations", "Windows.topviewrestoredefault", "Windows.Troubleshoot", "Windows.undo",
+                "Windows.UpdatePrinterDriver", "Windows.v2.Powershell", "Windows.View.OptionsGallery",
+                "Windows.ViewRemotePrinters", "Windows.zip", "Windows.Zip.Action",
+                
+                //Win8.1
+                "Windows.ManageDefaultPrinters", "Windows.NavPaneShowFavorites", "Windows.playto", "Windows.Powershell",
+                "Windows.ShareHomegroupFullAccess", "Windows.ShareHomegroupNoAccess", "Windows.ShareHomegroupReadAccess",
+                //Win8
+                "Windows.SearchOptionPartial",
+                //Win7
+                "Windows.librarypane"
+            };
 
         /// <summary>Shell类型菜单特殊注册表项名默认名称</summary>
         private static readonly Dictionary<string, string> DefaultNames
             = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
             {"open", AppString.Item.Open }, {"edit", AppString.Item.Edit }, {"print", AppString.Item.Print },
             {"find", AppString.Item.Find }, {"play", AppString.Item.Play }, {"runas", AppString.Item.Runas },
-            {"explore", AppString.Item.Explore }
+            //Win10为“浏览(&X)”，Win10之前为“资源管理器(&X)”
+            {"explore", WindowsOsVersion.IsBefore10 ? AppString.Item.ExploreOld : AppString.Item.Explore }
         };
 
         /// <summary>菜单项目在菜单中出现的位置</summary>
@@ -54,7 +125,7 @@ namespace ContextMenuManager.Controls
         private bool IsMultiItem => Registry.GetValue(RegPath, "SubCommands", null) != null;
         protected virtual bool IsSubItem => false;
         private bool IsOpenItem => KeyName.ToLower() == "open";
-        private bool TryProtectOpenItem => IsOpenItem && MessageBoxEx.Show(AppString.MessageBox.PromptIsOpenItem,
+        private bool TryProtectOpenItem => IsOpenItem && AppConfig.ProtectOpenItem && MessageBoxEx.Show(AppString.MessageBox.PromptIsOpenItem,
                 MessageBoxButtons.YesNo) != DialogResult.Yes;
 
         public string ItemFilePath => GuidInfo.GetFilePath(Guid) ?? ObjectPath.ExtractFilePath(ItemCommand);
@@ -134,15 +205,18 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                if(Convert.ToInt32(Registry.GetValue(RegPath, "CommandFlags", 0)) % 16 >= 8) return false;
-                //HideBasedOnVelocityId键值不适用于Win7系统，且在新版Win10为0x639bc8，在低版本Win10中为0x6698a6
-                int value = Convert.ToInt32(Registry.GetValue(RegPath, "HideBasedOnVelocityId", 0));
-                if(value == 0x639bc8 || value == 0x6698a6) return false;
+                if(WindowsOsVersion.IsAfterOrEqualWin10_1703)
+                {
+                    //HideBasedOnVelocityId键值仅适用于Win10系统1703以上版本
+                    if(Convert.ToInt32(Registry.GetValue(RegPath, "HideBasedOnVelocityId", 0)) == 0x639bc8) return false;
+                }
                 if(!IsSubItem)
                 {
                     //LegacyDisable和ProgrammaticAccessOnly键值不适用于子菜单
                     if(Registry.GetValue(RegPath, "LegacyDisable", null) != null) return false;
                     if(Registry.GetValue(RegPath, "ProgrammaticAccessOnly", null) != null) return false;
+                    //CommandFlags键值不适用于Vista系统，子菜单中该键值我用来做分割线键值
+                    if(WindowsOsVersion.IsAfterVista && Convert.ToInt32(Registry.GetValue(RegPath, "CommandFlags", 0)) % 16 >= 8) return false;
                 }
                 return true;
             }
@@ -158,7 +232,19 @@ namespace ContextMenuManager.Controls
                 else
                 {
                     if(TryProtectOpenItem) return;
-                    Registry.SetValue(RegPath, "CommandFlags", 8);
+                    if(!IsSubItem)
+                    {
+                        Registry.SetValue(RegPath, "LegacyDisable", string.Empty);
+                        Registry.SetValue(RegPath, "ProgrammaticAccessOnly", string.Empty);
+                    }
+                    else if(WindowsOsVersion.IsAfterOrEqualWin10_1703)
+                    {
+                        Registry.SetValue(RegPath, "HideBasedOnVelocityId", 0x639bc8);
+                    }
+                    else
+                    {
+                        MessageBoxEx.Show(AppString.MessageBox.CannotHideSubItem);
+                    }
                 }
             }
         }
@@ -184,8 +270,14 @@ namespace ContextMenuManager.Controls
             {
                 //MUIVerb长度不可超过80,超过80系统会隐藏该菜单项目
                 if(ResourceString.GetDirectString(value).Length >= 80)
+                {
                     MessageBoxEx.Show(AppString.MessageBox.TextLengthCannotExceed80);
-                else Registry.SetValue(RegPath, "MUIVerb", value);
+                }
+                else
+                {
+                    Registry.SetValue(RegPath, "MUIVerb", value);
+                    this.Text = ResourceString.GetDirectString(value);
+                }
             }
         }
 
@@ -239,12 +331,12 @@ namespace ContextMenuManager.Controls
                 {
                     icon = ResourceIcon.GetIcon(IconLocation, out iconPath, out iconIndex);
                     if(icon == null && Path.GetExtension(iconPath).ToLower() == ".exe")
-                        icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = 11);//文件为不存在的或没有图标的exe文件，不含图标的默认exe图标
+                        icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = -15);//文件为不存在的或没有图标的exe文件，不含图标的默认exe图标
                 }
                 else if(HasLUAShield)
-                    icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = 73);//管理员小盾牌图标
+                    icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = -78);//管理员小盾牌图标
                 else icon = ResourceIcon.GetIcon(iconPath = ItemFilePath, iconIndex = 0);//文件第一个图标
-                if(icon == null) icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = 2);//图标资源不存在，白纸图标
+                if(icon == null) icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = -2);//图标资源不存在，白纸图标
                 IconPath = iconPath;
                 IconIndex = iconIndex;
                 return icon;
@@ -271,6 +363,7 @@ namespace ContextMenuManager.Controls
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
+        public RegExportMenuItem TsiRegExport { get; set; }
 
         protected readonly ToolStripMenuItem TsiOtherAttributes = new ToolStripMenuItem(AppString.Menu.OtherAttributes);
         readonly ToolStripMenuItem TsiItemIcon = new ToolStripMenuItem(AppString.Menu.ItemIcon);
@@ -282,8 +375,9 @@ namespace ContextMenuManager.Controls
         readonly ToolStripMenuItem TsiShift = new ToolStripMenuItem(AppString.Menu.OnlyWithShift);
         readonly ToolStripMenuItem TsiExplorer = new ToolStripMenuItem(AppString.Menu.OnlyInExplorer);
         readonly ToolStripMenuItem TsiNoWorkDir = new ToolStripMenuItem(AppString.Menu.NoWorkingDirectory);
+        readonly ToolStripMenuItem TsiShieldIcon = new ToolStripMenuItem(AppString.Menu.ShieldIcon);
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
-        readonly PictureButton BtnSubItems = new PictureButton(AppImage.SubItems);
+        protected readonly PictureButton BtnSubItems = new PictureButton(AppImage.SubItems);
 
         private void InitializeComponents()
         {
@@ -296,19 +390,20 @@ namespace ContextMenuManager.Controls
             TsiFileLocation = new FileLocationMenuItem(this);
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiRegLocation = new RegLocationMenuItem(this);
+            TsiRegExport = new RegExportMenuItem(this);
             TsiDeleteMe = new DeleteMeMenuItem(this);
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] { TsiChangeText, new ToolStripSeparator(), TsiItemIcon,
                 TsiPosition, TsiOtherAttributes, new ToolStripSeparator(), TsiDetails, new ToolStripSeparator(), TsiDeleteMe});
 
-            TsiItemIcon.DropDownItems.AddRange(new ToolStripItem[] { TsiChangeIcon, TsiDeleteIcon });
+            TsiItemIcon.DropDownItems.AddRange(new ToolStripItem[] { TsiChangeIcon, TsiDeleteIcon, TsiShieldIcon });
 
             TsiPosition.DropDownItems.AddRange(new ToolStripItem[] { TsiDefault, TsiTop, TsiBottom });
 
             TsiOtherAttributes.DropDownItems.AddRange(new ToolStripItem[] { TsiShift, TsiExplorer, TsiNoWorkDir });
 
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
-                TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation});
+                TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport});
 
             TsiDeleteIcon.Click += (sender, e) => DeleteIcon();
             TsiTop.Click += (sender, e) => this.ItemPosition = Positions.Top;
@@ -319,6 +414,12 @@ namespace ContextMenuManager.Controls
             TsiNoWorkDir.Click += (sender, e) => this.NoWorkingDirectory = !TsiNoWorkDir.Checked;
             ContextMenuStrip.Opening += (sender, e) => RefreshMenuItem();
             BtnSubItems.MouseDown += (sender, e) => ShowSubItems();
+            TsiShieldIcon.Click += (sender, e) =>
+            {
+                TsiShieldIcon.Checked = !TsiShieldIcon.Checked;
+                if(TsiShieldIcon.Checked) UseShieldIcon();
+                else DeleteIcon();
+            };
             MyToolTip.SetToolTip(BtnSubItems, AppString.Tip.EditSubItems);
             this.AddCtr(BtnSubItems);
         }
@@ -330,44 +431,73 @@ namespace ContextMenuManager.Controls
             this.Image = this.Image.ToTransparent();
         }
 
+        private void UseShieldIcon()
+        {
+            this.IconLocation = null;
+            this.HasLUAShield = true;
+            this.Image = AppImage.Shield;
+            this.IconPath = "imageres.dll";
+            this.IconIndex = -78;
+        }
+
         private void RefreshMenuItem()
         {
-            if(this.HasIcon)
+            TsiShift.Visible = !IsSubItem;
+            TsiDeleteMe.Enabled = !(IsOpenItem && AppConfig.ProtectOpenItem);
+            TsiNoWorkDir.Checked = this.NoWorkingDirectory;
+            TsiChangeCommand.Visible = !IsMultiItem && Guid.Equals(Guid.Empty);
+            if(!this.IsSubItem) TsiShift.Checked = this.OnlyWithShift;
+
+            if(WindowsOsVersion.IsAfterVista)
             {
-                TsiChangeIcon.Text = AppString.Menu.ChangeIcon;
-                TsiDeleteIcon.Visible = true;
+                TsiItemIcon.Visible = true;
+                TsiPosition.Visible = !IsSubItem;
+                TsiExplorer.Visible = !IsSubItem;
+                if(this.HasIcon)
+                {
+                    TsiChangeIcon.Text = AppString.Menu.ChangeIcon;
+                    TsiDeleteIcon.Visible = true;
+                }
+                else
+                {
+                    TsiChangeIcon.Text = AppString.Menu.AddIcon;
+                    TsiDeleteIcon.Visible = false;
+                }
+                TsiShieldIcon.Checked = (IconLocation == null) && HasLUAShield;
+
+                if(!this.IsSubItem)
+                {
+                    TsiExplorer.Checked = this.OnlyInExplorer;
+                    TsiDefault.Checked = TsiTop.Checked = TsiBottom.Checked = false;
+                    switch(this.ItemPosition)
+                    {
+                        case Positions.Default:
+                            TsiDefault.Checked = true;
+                            break;
+                        case Positions.Top:
+                            TsiTop.Checked = true;
+                            break;
+                        case Positions.Bottom:
+                            TsiBottom.Checked = true;
+                            break;
+                    }
+                }
             }
             else
             {
-                TsiChangeIcon.Text = AppString.Menu.AddIcon;
-                TsiDeleteIcon.Visible = false;
-            }
-            TsiDeleteMe.Enabled = !IsOpenItem;
-            TsiChangeCommand.Visible = !IsMultiItem && Guid.Equals(Guid.Empty);
-            TsiPosition.Visible = TsiExplorer.Visible = TsiShift.Visible = !IsSubItem;
-            TsiNoWorkDir.Checked = this.NoWorkingDirectory;
-            if(!this.IsSubItem)
-            {
-                TsiShift.Checked = this.OnlyWithShift;
-                TsiExplorer.Checked = this.OnlyInExplorer;
-                TsiDefault.Checked = TsiTop.Checked = TsiBottom.Checked = false;
-                switch(this.ItemPosition)
-                {
-                    case Positions.Default:
-                        TsiDefault.Checked = true;
-                        break;
-                    case Positions.Top:
-                        TsiTop.Checked = true;
-                        break;
-                    case Positions.Bottom:
-                        TsiBottom.Checked = true;
-                        break;
-                }
+                TsiItemIcon.Visible = false;
+                TsiPosition.Visible = false;
+                TsiExplorer.Visible = false;
             }
         }
 
         private void ShowSubItems()
         {
+            if(WindowsOsVersion.IsEqualVista)
+            {
+                MessageBoxEx.Show(AppString.MessageBox.VistaUnsupportedMulti);
+                return;
+            }
             using(ShellSubMenuDialog dlg = new ShellSubMenuDialog())
             {
                 dlg.Text = AppString.Item.EditSubItems.Replace("%s", this.Text);

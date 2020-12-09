@@ -12,7 +12,7 @@ namespace ContextMenuManager.Controls
         public static readonly string WinXPath = Environment.ExpandEnvironmentVariables(@"%LocalAppData%\Microsoft\Windows\WinX");
         private static readonly Dictionary<string, IniReader> DesktopIniReaders = new Dictionary<string, IniReader>();
 
-        public static string GetMenuName(string filePath)
+        public static string GetItemText(string filePath)
         {
             string dirPath = Path.GetDirectoryName(filePath);
             string fileName = Path.GetFileName(filePath);
@@ -27,26 +27,19 @@ namespace ContextMenuManager.Controls
 
         public void LoadItems()
         {
-            Version ver = Environment.OSVersion.Version;
-            bool isWin10= ver.Major == 10;
-            bool isWin8 = (ver.Major == 6) && (ver.Minor >= 2);
-            if(isWin10 || isWin8)
+            if(WindowsOsVersion.ISAfterOrEqual8)
             {
-                this.ClearItems();
                 DesktopIniReaders.Clear();
                 Array.ForEach(new DirectoryInfo(WinXPath).GetDirectories(), di => LoadSubDirItems(di));
-                if(isWin10) this.AddItem(new RegRuleItem(RegRuleItem.WinXPowerShell) { MarginRight = RegRuleItem.SysMarginRignt });
             }
         }
 
         private void LoadSubDirItems(DirectoryInfo di)
         {
-            GroupPathItem groupItem = new GroupPathItem
+            GroupPathItem groupItem = new GroupPathItem(di.FullName, ObjectPath.PathType.Directory)
             {
-                TargetPath = di.FullName,
                 Text = Path.GetFileNameWithoutExtension(di.FullName),
-                Image = ResourceIcon.GetFolderIcon(di.FullName).ToBitmap(),
-                PathType = ObjectPath.PathType.Directory
+                Image = ResourceIcon.GetFolderIcon(di.FullName).ToBitmap()
             };
             this.AddItem(groupItem);
             string iniPath = $@"{di.FullName}\desktop.ini";

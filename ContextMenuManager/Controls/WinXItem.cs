@@ -36,7 +36,7 @@ namespace ContextMenuManager.Controls
             get
             {
                 string name = Shortcut.Description.Trim();
-                if(name == string.Empty) name = WinXList.GetMenuName(FilePath);
+                if(name == string.Empty) name = WinXList.GetItemText(FilePath);
                 if(name == string.Empty) name = Path.GetFileNameWithoutExtension(FilePath);
                 return name;
             }
@@ -44,6 +44,7 @@ namespace ContextMenuManager.Controls
             {
                 Shortcut.Description = value;
                 Shortcut.Save();
+                this.Text = ResourceString.GetDirectString(value);
                 ExplorerRestarter.NeedRestart = true;
             }
         }

@@ -2,6 +2,7 @@
 using ContextMenuManager.Controls;
 using System;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace ContextMenuManager
 {
@@ -12,12 +13,13 @@ namespace ContextMenuManager
             SetSideBarWidth();
             this.Text = AppString.General.AppName;
             this.Controls.Add(new ExplorerRestarter());
-            shellList.Owner = shellNewList.Owner = sendToList.Owner = openWithList.Owner
-                = winXList.Owner = guidBlockedList.Owner = thirdRuleList.Owner = MainBody;
+            appSettingBox.Owner = shellList.Owner = shellNewList.Owner = sendToList.Owner = openWithList.Owner
+                = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner = thirdRuleList.Owner = MainBody;
             donateBox.Parent = aboutMeBox.Parent = dictionariesBox.Parent = languagesBox.Parent = MainBody;
             SideBar.SelectIndexChanged += (sender, e) => SwitchItem();
             SideBar.HoverIndexChanged += (sender, e) => ShowItemInfo();
             ToolBar.SelectedButtonChanged += (sender, e) => SwitchTab();
+            ((RefreshButton)ToolBarButtons[3]).ClickMe += (sender, e) => SideBar.SelectIndex = SideBar.SelectIndex;
             ToolBar.AddButtons(ToolBarButtons);
             ToolBar.SelectedIndex = 0;
         }
@@ -26,6 +28,7 @@ namespace ContextMenuManager
             new MyToolBarButton(AppImage.Home, AppString.ToolBar.Home),//主页
             new MyToolBarButton(AppImage.Type, AppString.ToolBar.Type),//文件类型
             new MyToolBarButton(AppImage.Star, AppString.ToolBar.Rule),//其他规则
+            new RefreshButton(),//刷新
             new MyToolBarButton(AppImage.About, AppString.ToolBar.About)//关于
         };
         readonly ShellList shellList = new ShellList();
@@ -34,14 +37,16 @@ namespace ContextMenuManager
         readonly OpenWithList openWithList = new OpenWithList();
         readonly WinXList winXList = new WinXList();
         readonly GuidBlockedList guidBlockedList = new GuidBlockedList();
+        readonly EnhanceMenusList enhanceMenusList = new EnhanceMenusList();
         readonly ThirdRulesList thirdRuleList = new ThirdRulesList();
-        readonly AboutAppBox aboutMeBox = new AboutAppBox
+        readonly ReadOnlyRichTextBox aboutMeBox = new ReadOnlyRichTextBox
         {
             Text = AppString.Other.AboutApp
         };
         readonly DonateBox donateBox = new DonateBox();
         readonly LanguagesBox languagesBox = new LanguagesBox();
         readonly DictionariesBox dictionariesBox = new DictionariesBox();
+        readonly AppSettingBox appSettingBox = new AppSettingBox();
 
         static readonly string[] GeneralItems = {
             AppString.SideBar.File,
@@ -118,18 +123,25 @@ namespace ContextMenuManager
         };
 
         static readonly string[] OtherRuleItems = {
-            AppString.SideBar.GuidBlocked,
-            AppString.SideBar.ThirdRules
+            AppString.SideBar.EnhanceMenu,
+            AppString.SideBar.ThirdRules,
+            null,
+            AppString.SideBar.PublicReferences,
+            AppString.SideBar.GuidBlocked
         };
         static readonly string[] OtherRuleItemInfos = {
-            AppString.StatusBar.GuidBlocked,
-            AppString.StatusBar.ThirdRules
+            AppString.StatusBar.EnhanceMenu,
+            AppString.StatusBar.ThirdRules,
+            null,
+            AppString.StatusBar.PublicReferences,
+            AppString.StatusBar.GuidBlocked
         };
 
         static readonly string[] AboutItems = {
-            AppString.SideBar.AboutApp,
-            AppString.SideBar.Dictionaries,
+            AppString.SideBar.AppSetting,
             AppString.SideBar.AppLanguage,
+            AppString.SideBar.Dictionaries,
+            AppString.SideBar.AboutApp,
             AppString.SideBar.Donate
         };
 
@@ -169,9 +181,15 @@ namespace ContextMenuManager
 
         private void HideAllParts()
         {
-            shellList.Visible = shellNewList.Visible = sendToList.Visible = openWithList.Visible
-                = winXList.Visible = guidBlockedList.Visible = thirdRuleList.Visible
-                = donateBox.Visible = aboutMeBox.Visible = dictionariesBox.Visible = languagesBox.Visible = false;
+            foreach(Control ctr in MainBody.Controls)
+            {
+                ctr.Visible = false;
+                if(ctr.GetType().BaseType == typeof(MyList))
+                {
+                    if(ctr == appSettingBox) continue;
+                    ((MyList)ctr).ClearItems();
+                }
+            }
         }
 
         private void SwitchTab()
@@ -184,7 +202,7 @@ namespace ContextMenuManager
                     SideBar.ItemNames = TypeItems; break;
                 case 2:
                     SideBar.ItemNames = OtherRuleItems; break;
-                case 3:
+                case 4:
                     SideBar.ItemNames = AboutItems; break;
             }
             SideBar.SelectIndex = 0;
@@ -197,13 +215,13 @@ namespace ContextMenuManager
             switch(ToolBar.SelectedIndex)
             {
                 case 0:
-                    SwitchGeneralItem(); return;
+                    SwitchGeneralItem(); break;
                 case 1:
-                    SwitchTypeItem(); return;
+                    SwitchTypeItem(); break;
                 case 2:
-                    SwitchOtherRuleItem(); return;
-                case 3:
-                    SwitchAboutItem(); return;
+                    SwitchOtherRuleItem(); break;
+                case 4:
+                    SwitchAboutItem(); break;
             }
         }
 
@@ -258,9 +276,13 @@ namespace ContextMenuManager
             switch(SideBar.SelectIndex)
             {
                 case 0:
-                    guidBlockedList.LoadItems(); guidBlockedList.Visible = true; return;
+                    enhanceMenusList.LoadItems(); enhanceMenusList.Visible = true; break;
                 case 1:
-                    thirdRuleList.LoadItems(); thirdRuleList.Visible = true; return;
+                    thirdRuleList.LoadItems(); thirdRuleList.Visible = true; break;
+                case 3:
+                    shellList.Scene = ShellList.Scenes.CommandStore; shellList.Visible = true; break;
+                case 4:
+                    guidBlockedList.LoadItems(); guidBlockedList.Visible = true; break;
             }
         }
 
@@ -269,19 +291,23 @@ namespace ContextMenuManager
             switch(SideBar.SelectIndex)
             {
                 case 0:
-                    aboutMeBox.Visible = true;
-                    return;
+                    appSettingBox.LoadItems();
+                    appSettingBox.Visible = true;
+                    break;
                 case 1:
-                    dictionariesBox.Visible = true;
-                    dictionariesBox.LoadTexts();
-                    return;
-                case 2:
                     languagesBox.LoadLanguages();
                     languagesBox.Visible = true;
                     break;
+                case 2:
+                    dictionariesBox.LoadTexts();
+                    dictionariesBox.Visible = true;
+                    break;
                 case 3:
+                    aboutMeBox.Visible = true;
+                    break;
+                case 4:
                     donateBox.Visible = true;
-                    return;
+                    break;
             }
         }
 
@@ -291,6 +317,18 @@ namespace ContextMenuManager
             string[] strs = GeneralItems.Concat(TypeItems).Concat(OtherRuleItems).Concat(AboutItems).ToArray();
             Array.ForEach(strs, str => maxWidth = Math.Max(maxWidth, SideBar.GetItemWidth(str)));
             SideBar.Width = maxWidth;
+        }
+
+        sealed class RefreshButton : MyToolBarButton
+        {
+            public RefreshButton() : base(AppImage.Refresh, AppString.ToolBar.Refresh) { }
+
+            public EventHandler ClickMe;
+
+            protected override void OnMouseDown(MouseEventArgs e)
+            {
+                ClickMe?.Invoke(null, null);
+            }
         }
     }
 }

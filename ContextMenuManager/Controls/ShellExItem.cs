@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace ContextMenuManager.Controls
 {
     sealed class ShellExItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem,
-        ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiDeleteItem
+        ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem
     {
         public static Dictionary<string, Guid> GetPathAndGuids(string shellExPath)
         {
@@ -65,11 +65,11 @@ namespace ContextMenuManager.Controls
         private string ShellExPath => RegistryEx.GetParentPath(RegistryEx.GetParentPath(RegPath));
         private string CmhKeyName => RegistryEx.GetKeyName(RegistryEx.GetParentPath(RegPath));
         private string DefaultValue => Registry.GetValue(RegPath, "", null)?.ToString();
-        private string ItemText => GuidInfo.GetText(Guid) ?? ((Guid.ToString("B") == KeyName) ? DefaultValue : KeyName);
-        private string BuckupPath => $@"{ShellExPath}\{(ItemVisible ? CmhParts[1] : CmhParts[0])}\{KeyName}";
+        public string ItemText => GuidInfo.GetText(Guid) ?? ((Guid.ToString("B") == KeyName) ? DefaultValue : KeyName);
+        private string BackupPath => $@"{ShellExPath}\{(ItemVisible ? CmhParts[1] : CmhParts[0])}\{KeyName}";
         private GuidInfo.IconLocation IconLocation => GuidInfo.GetIconLocation(this.Guid);
         private bool IsOpenLnkItem => Guid.ToString() == LnkOpenGuid;
-        private bool TryProtectOpenItem => IsOpenLnkItem && MessageBoxEx.Show
+        private bool TryProtectOpenItem => IsOpenLnkItem && AppConfig.ProtectOpenItem && MessageBoxEx.Show
             (AppString.MessageBox.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
 
         public bool ItemVisible
@@ -78,11 +78,8 @@ namespace ContextMenuManager.Controls
             set
             {
                 if(!value && TryProtectOpenItem) return;
-                using(RegistryKey srcKey = RegistryEx.GetRegistryKey(RegPath))
-                using(RegistryKey dstKey = RegistryEx.GetRegistryKey(BuckupPath, true, true))
-                    srcKey?.CopyTo(dstKey);
-                RegistryEx.DeleteKeyTree(RegPath);
-                RegPath = BuckupPath;
+                RegistryEx.MoveTo(RegPath, BackupPath);
+                RegPath = BackupPath;
             }
         }
 
@@ -93,6 +90,8 @@ namespace ContextMenuManager.Controls
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
+        public RegExportMenuItem TsiRegExport { get; set; }
+
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
         readonly ToolStripMenuItem TsiHandleGuid = new ToolStripMenuItem(AppString.Menu.HandleGuid);
         readonly ToolStripMenuItem TsiCopyGuid = new ToolStripMenuItem(AppString.Menu.CopyGuid);
@@ -107,6 +106,7 @@ namespace ContextMenuManager.Controls
             TsiFileLocation = new FileLocationMenuItem(this);
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiRegLocation = new RegLocationMenuItem(this);
+            TsiRegExport = new RegExportMenuItem(this);
             TsiDeleteMe = new DeleteMeMenuItem(this);
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] { TsiHandleGuid, new ToolStripSeparator(),
@@ -116,7 +116,7 @@ namespace ContextMenuManager.Controls
                 TsiBlockGuid, new ToolStripSeparator(), TsiAddGuidDic });
 
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
-                TsiFileProperties, TsiFileLocation, TsiRegLocation});
+                TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport});
 
             ContextMenuStrip.Opening += (sender, e) => RefreshMenuItem();
             TsiCopyGuid.Click += (sender, e) => CopyGuid();
@@ -127,7 +127,7 @@ namespace ContextMenuManager.Controls
         private void CopyGuid()
         {
             Clipboard.SetText(Guid.ToString());
-            MessageBoxEx.Show($"{AppString.MessageBox.CopiedToClipboard}:\n{Guid}",
+            MessageBoxEx.Show($"{AppString.MessageBox.CopiedToClipboard}\n{Guid}",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -155,12 +155,17 @@ namespace ContextMenuManager.Controls
                 dlg.ItemIcon = this.Image;
                 dlg.ItemIconPath = this.IconLocation.IconPath;
                 dlg.ItemIconIndex = this.IconLocation.IconIndex;
-                IniFileHelper helper = new IniFileHelper(Program.GuidInfosDicPath);
+                IniWriter writer = new IniWriter
+                {
+                    FilePath = AppConfig.UserGuidInfosDic,
+                    DeleteFileWhenEmpty = true
+                };
                 string section = this.Guid.ToString();
                 if(dlg.ShowDialog() != DialogResult.OK)
                 {
-                    if(dlg.IsDelete) {
-                        helper.DeleteSection(section);
+                    if(dlg.IsDelete)
+                    {
+                        writer.DeleteSection(section);
                         GuidInfo.ItemTextDic.Remove(this.Guid);
                         GuidInfo.ItemImageDic.Remove(this.Guid);
                         GuidInfo.IconLocationDic.Remove(this.Guid);
@@ -170,11 +175,11 @@ namespace ContextMenuManager.Controls
                     }
                     return;
                 }
-                Directory.CreateDirectory(Program.ConfigDir);
-                if(!dlg.ItemName.IsNullOrWhiteSpace())
+                string name = ResourceString.GetDirectString(dlg.ItemName);
+                if(!name.IsNullOrWhiteSpace())
                 {
-                    helper.SetValue(section, "Text", dlg.ItemName);
-                    this.Text = ResourceString.GetDirectString(dlg.ItemName);
+                    writer.SetValue(section, "Text", dlg.ItemName);
+                    this.Text = name;
                     if(GuidInfo.ItemTextDic.ContainsKey(this.Guid))
                     {
                         GuidInfo.ItemTextDic[this.Guid] = this.Text;
@@ -184,9 +189,14 @@ namespace ContextMenuManager.Controls
                         GuidInfo.ItemTextDic.Add(this.Guid, this.Text);
                     }
                 }
+                else
+                {
+                    MessageBoxEx.Show(AppString.MessageBox.StringParsingFailed);
+                    return;
+                }
                 if(dlg.ItemIconLocation != null)
                 {
-                    helper.SetValue(section, "Icon", dlg.ItemIconLocation);
+                    writer.SetValue(section, "Icon", dlg.ItemIconLocation);
                     var location = new GuidInfo.IconLocation { IconPath = dlg.ItemIconPath, IconIndex = dlg.ItemIconIndex };
                     if(GuidInfo.IconLocationDic.ContainsKey(this.Guid))
                     {
@@ -211,7 +221,7 @@ namespace ContextMenuManager.Controls
 
         private void RefreshMenuItem()
         {
-            TsiDeleteMe.Enabled = !IsOpenLnkItem;
+            TsiDeleteMe.Enabled = !(IsOpenLnkItem && AppConfig.ProtectOpenItem);
             TsiBlockGuid.Checked = false;
             foreach(string path in GuidBlockedItem.BlockedPaths)
             {
@@ -226,7 +236,7 @@ namespace ContextMenuManager.Controls
         public void DeleteMe()
         {
             RegistryEx.DeleteKeyTree(this.RegPath);
-            RegistryEx.DeleteKeyTree(this.BuckupPath);
+            RegistryEx.DeleteKeyTree(this.BackupPath);
             this.Dispose();
         }
     }

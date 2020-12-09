@@ -83,16 +83,6 @@ namespace ContextMenuManager.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap AddCommon {
-            get {
-                object obj = ResourceManager.GetObject("AddCommon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
         internal static System.Drawing.Bitmap AddExisting {
             get {
                 object obj = ResourceManager.GetObject("AddExisting", resourceCulture);
@@ -113,7 +103,7 @@ namespace ContextMenuManager.Properties {
         /// <summary>
         ///   查找类似 ;此文件为ContextMenuManager程序的显示文本字典, 字典内换行符使用\n转义
         ///;如果你想要帮助作者为此程序添加其他语言字典, 可以修改此文本并保存在.\config\languages文件夹内, 
-        ///;比如美国英语字典保存为en-US.ini, 并给[General]\Language赋值 en-US 英语
+        ///;比如美国英语字典保存为en-US.ini, 并给[General]\Language赋值 en-US English
         ///;可以在Github或Gitee上Fork该项目并提交申请给我，或者直接发送文件到邮箱1617859183@qq.com
         ///
         ///[General]
@@ -125,6 +115,7 @@ namespace ContextMenuManager.Properties {
         ///Home = 主页
         ///Type = 文件类型
         ///Rule = 其他规则
+        ///Refresh = 刷新
         ///About = 关于
         ///
         ///[SideBar]
@@ -135,8 +126,7 @@ namespace ContextMenuManager.Properties {
         ///Desktop = 桌面背景
         ///Drive = 磁盘分区
         ///AllObjects = 所有对象
-        ///Computer = 此电脑
-        ///Recy [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///C [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string AppLanguageDic {
             get {
@@ -171,6 +161,26 @@ namespace ContextMenuManager.Properties {
             get {
                 object obj = ResourceManager.GetObject("Donate", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;
+        ///&lt;!--此文件为常用右键菜单字典,
+        ///Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型，
+        ///子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突--&gt;
+        ///&lt;Data&gt;
+        ///  &lt;File&gt;
+        ///    &lt;Shell&gt;
+        ///      &lt;Item KeyName=&apos;CopyContent&apos; Tip=&apos;不需打开文件直接复制文件文本内容&amp;#x000A;非UTF-16 LE(或带BOM)编码会乱码&apos;&gt;
+        ///        &lt;Value&gt;
+        ///          &lt;REG_SZ MUIVerb=&apos;复制内容到剪切板&apos; Icon=&apos;DxpTaskSync.dll,-52&apos;/&gt;
+        ///        &lt;/Value&gt;
+        ///        &lt;Sub [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string EnhanceMenusDic {
+            get {
+                return ResourceManager.GetString("EnhanceMenusDic", resourceCulture);
             }
         }
         
@@ -246,6 +256,16 @@ namespace ContextMenuManager.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap Refresh {
+            get {
+                object obj = ResourceManager.GetObject("Refresh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap SeparatorItem {
             get {
                 object obj = ResourceManager.GetObject("SeparatorItem", resourceCulture);
@@ -260,24 +280,6 @@ namespace ContextMenuManager.Properties {
             get {
                 object obj = ResourceManager.GetObject("Setting", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 &lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;
-        ///&lt;!--此文件为常用右键菜单字典,
-        ///Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型，
-        ///，子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突--&gt;
-        ///&lt;Data&gt;
-        ///  &lt;Group RegPath=&apos;HKEY_CLASSES_ROOT\*&apos;&gt;
-        ///    &lt;Shell&gt;
-        ///      &lt;Item KeyName=&apos;CopyContent&apos; Tip=&apos;不需打开文件直接复制文件文本内容&amp;#x000A;非UTF-16 LE(或带BOM)编码会乱码&apos;&gt;
-        ///        &lt;Value&gt;
-        ///          &lt;REG_SZ MUIVerb=&apos;复制内容到剪切板&apos; Icon=&apos;DxpTaskSync.dll,-52&apos;/&gt; [字符串的其余部分被截断]&quot;; 的本地化字符串。
-        /// </summary>
-        internal static string ShellCommonDic {
-            get {
-                return ResourceManager.GetString("ShellCommonDic", resourceCulture);
             }
         }
         
@@ -303,11 +305,12 @@ namespace ContextMenuManager.Properties {
         
         /// <summary>
         ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
-        ///&lt;!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，常驻菜单时须添加属性Common，RegPath为程序相关注册表主路径;
+        ///&lt;!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，不设置Guid则为常驻菜单，RegPath为程序相关注册表主路径;
         ///其相关菜单项目设置作为一个Item子元素，Item的Text为该Item项显示文本，Tip属性为鼠标悬浮在开关上时的提示信息，需要重启资源管理器生效则添加属性RestartExplorer;
         ///Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；ValueName为相关键名，On为启用键值，Off为禁用键值；
         ///每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；程序优先判定为On，即只要所有Rule不匹配Off键值就判定为On，键值类型不符时也判定为On;
-        ///ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认值时可省略，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型--&gt; [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认值时可省略，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型--&gt;
+        ///&lt; [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string ThirdRulesDic {
             get {

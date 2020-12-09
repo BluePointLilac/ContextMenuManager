@@ -40,12 +40,12 @@ namespace ContextMenuManager.Controls
                         MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
-                    if(ItemCommand.IsNullOrWhiteSpace())
+                    if(Command.IsNullOrWhiteSpace())
                     {
                         MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
-                    FilePath = ObjectPath.ExtractFilePath(ItemCommand);
+                    FilePath = ObjectPath.ExtractFilePath(Command);
                     AppRegPath = $@"HKEY_CLASSES_ROOT\Applications\{Path.GetFileName(FilePath)}";
                     if(FilePath == null || RegistryEx.GetRegistryKey(AppRegPath) != null)
                     {
@@ -64,7 +64,8 @@ namespace ContextMenuManager.Controls
                     dlg.Filter = $"{AppString.Dialog.Program}|*.exe";
                     if(dlg.ShowDialog() == DialogResult.OK)
                     {
-                        ItemCommand = $"\"{dlg.FileName}\" \"%1\"";
+                        Command = dlg.FileName;
+                        Arguments = "%1";
                         ItemText = FileVersionInfo.GetVersionInfo(dlg.FileName).FileDescription;
                     }
                 }
@@ -77,7 +78,7 @@ namespace ContextMenuManager.Controls
                     key.SetValue("FriendlyAppName", ItemText);
                     using(var cmdKey = key.CreateSubKey(@"shell\open\command", true))
                     {
-                        cmdKey.SetValue("", ItemCommand);
+                        cmdKey.SetValue("", FullCommand);
                         RegPath = cmdKey.Name;
                     }
                 }

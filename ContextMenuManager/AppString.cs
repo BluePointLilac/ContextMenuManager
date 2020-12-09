@@ -5,7 +5,7 @@ namespace ContextMenuManager
 {
     public static class AppString
     {
-        public static IniReader UserLanguage = new IniReader(Program.LanguageFilePath);
+        public static IniReader UserLanguage = new IniReader(AppConfig.LanguageIniPath);
         private static readonly IniReader DefaultLanguage = new IniReader(new StringBuilder(Properties.Resources.AppLanguageDic));
 
 
@@ -31,6 +31,7 @@ namespace ContextMenuManager
             public static string Home => GetValue("Home");
             public static string Type => GetValue("Type");
             public static string Rule => GetValue("Rule");
+            public static string Refresh => GetValue("Refresh");
             public static string About => GetValue("About");
         }
 
@@ -64,8 +65,11 @@ namespace ContextMenuManager
             public static string AudioDirectory => GetValue("AudioDirectory");
             public static string UnknownType => GetValue("UnknownType");
             public static string CustomType => GetValue("CustomType");
-            public static string GuidBlocked => GetValue("GuidBlocked");
+            public static string EnhanceMenu => GetValue("EnhanceMenu");
             public static string ThirdRules => GetValue("ThirdRules");
+            public static string GuidBlocked => GetValue("GuidBlocked");
+            public static string PublicReferences => GetValue("PublicReferences");
+            public static string AppSetting => GetValue("AppSetting");
             public static string AboutApp => GetValue("AboutApp");
             public static string Dictionaries => GetValue("Dictionaries");
             public static string AppLanguage => GetValue("AppLanguage");
@@ -102,8 +106,10 @@ namespace ContextMenuManager
             public static string AudioDirectory => GetValue("AudioDirectory");
             public static string UnknownType => GetValue("UnknownType");
             public static string CustomType => GetValue("CustomType");
-            public static string GuidBlocked => GetValue("GuidBlocked");
+            public static string EnhanceMenu => GetValue("EnhanceMenu");
             public static string ThirdRules => GetValue("ThirdRules");
+            public static string GuidBlocked => GetValue("GuidBlocked");
+            public static string PublicReferences => GetValue("PublicReferences");
         }
 
         /// <summary>菜单</summary>
@@ -115,6 +121,7 @@ namespace ContextMenuManager
             public static string ChangeIcon => GetValue("ChangeIcon");
             public static string AddIcon => GetValue("AddIcon");
             public static string DeleteIcon => GetValue("DeleteIcon");
+            public static string ShieldIcon => GetValue("ShieldIcon");
             public static string ItemPosition => GetValue("ItemPosition");
             public static string SetDefault => GetValue("SetDefault");
             public static string SetTop => GetValue("SetTop");
@@ -123,13 +130,13 @@ namespace ContextMenuManager
             public static string OnlyWithShift => GetValue("OnlyWithShift");
             public static string OnlyInExplorer => GetValue("OnlyInExplorer");
             public static string NoWorkingDirectory => GetValue("NoWorkingDirectory");
-            public static string ShowSeparator => GetValue("ShowSeparator");
             public static string Details => GetValue("Details");
             public static string WebSearch => GetValue("WebSearch");
             public static string ChangeCommand => GetValue("ChangeCommand");
             public static string FileProperties => GetValue("FileProperties");
             public static string FileLocation => GetValue("FileLocation");
             public static string RegistryLocation => GetValue("RegistryLocation");
+            public static string ExportRegistry => GetValue("ExportRegistry");
             public static string Delete => GetValue("Delete");
             public static string DeleteReference => GetValue("DeleteReference");
             public static string HandleGuid => GetValue("HandleGuid");
@@ -148,6 +155,7 @@ namespace ContextMenuManager
             public static string Open => GetValue("Open");
             public static string Edit => GetValue("Edit");
             public static string Explore => GetValue("Explore");
+            public static string ExploreOld => GetValue("ExploreOld");
             public static string Play => GetValue("Play");
             public static string Print => GetValue("Print");
             public static string Find => GetValue("Find");
@@ -166,6 +174,7 @@ namespace ContextMenuManager
             public static string EditSubItems => GetValue("EditSubItems");
             public static string InvalidItem => GetValue("InvalidItem");
             public static string Separator => GetValue("Separator");
+            public static string LockNewMenu => GetValue("LockNewMenu");
         }
 
         public static class Dialog
@@ -180,17 +189,21 @@ namespace ContextMenuManager
             public static string NewOpenWithItem => GetValue("NewOpenWithItem");
             public static string ItemText => GetValue("ItemText");
             public static string ItemCommand => GetValue("ItemCommand");
+            public static string CommandArguments => GetValue("CommandArguments");
             public static string ItemName => GetValue("ItemName");
             public static string ItemIcon => GetValue("ItemIcon");
             public static string SingleMenu => GetValue("SingleMenu");
             public static string MultiMenu => GetValue("MultiMenu");
+            public static string Public => GetValue("Public");
+            public static string Private => GetValue("Private");
             public static string InputGuid => GetValue("InputGuid");
             public static string AddGuidDic => GetValue("AddGuidDic");
             public static string DeleteGuidDic => GetValue("DeleteGuidDic");
             public static string SelectExtension => GetValue("SelectExtension");
             public static string CheckReference => GetValue("CheckReference");
-            public static string CheckCommon => GetValue("CheckCommon");
+            public static string CheckCopy => GetValue("CheckCopy");
             public static string SelectSubMenuMode => GetValue("SelectSubMenuMode");
+            public static string RegistryFile => GetValue("RegistryFile");
         }
 
         /// <summary>消息框</summary>
@@ -206,6 +219,8 @@ namespace ContextMenuManager
             public static string ConfirmDelete => GetValue("ConfirmDelete");
             public static string ConfirmDeleteReferenced => GetValue("ConfirmDeleteReferenced");
             public static string CannotAddNewItem => GetValue("CannotAddNewItem");
+            public static string VistaUnsupportedMulti => GetValue("VistaUnsupportedMulti");
+            public static string CannotHideSubItem => GetValue("CannotHideSubItem");
             public static string UnsupportedFilename => GetValue("UnsupportedFilename");
             public static string UnsupportedExtension => GetValue("UnsupportedExtension");
             public static string CannotChangePath => GetValue("CannotChangePath");
@@ -216,7 +231,9 @@ namespace ContextMenuManager
             public static string PromptIsOpenItem => GetValue("PromptIsOpenItem");
             public static string RestartApp => GetValue("RestartApp");
             public static string UpdateApp => GetValue("UpdateApp");
-            public static string FileOrFolderNotExists => GetValue("FileOrFolderNotExists");
+            public static string FileNotExists => GetValue("FileNotExists");
+            public static string FolderNotExists => GetValue("FolderNotExists");
+            public static string NoUpdateDetected => GetValue("NoUpdateDetected");
         }
 
         /// <summary>其他文本</summary>
@@ -235,6 +252,16 @@ namespace ContextMenuManager
             public static string AboutApp => GetValue("AboutApp");
             public static string Dictionaries => GetValue("Dictionaries");
             public static string Donate => GetValue("Donate");
+            public static string DonationList => GetValue("DonationList");
+            public static string ConfigFile => GetValue("ConfigFile");
+            public static string SaveToAppData => GetValue("SaveToAppData");
+            public static string SaveToAppDir => GetValue("SaveToAppDir");
+            public static string OpenConfigDir => GetValue("OpenConfigDir");
+            public static string AutoBackup => GetValue("AutoBackup");
+            public static string OpenBackupDir => GetValue("OpenBackupDir");
+            public static string CheckUpdate => GetValue("CheckUpdate");
+            public static string ImmediatelyCheckUpdate => GetValue("ImmediatelyCheckUpdate");
+            public static string ProtectOpenItem => GetValue("ProtectOpenItem");
         }
 
         /// <summary>提示文本</summary>
@@ -249,9 +276,14 @@ namespace ContextMenuManager
             public static string InvalidItem => GetValue("InvalidItem");
             public static string AddSeparator => GetValue("AddSeparator");
             public static string Separator => GetValue("Separator");
-            public static string AddExistingItems => GetValue("AddExistingItems");
-            public static string AddCommonItems => GetValue("AddCommonItems");
+            public static string AddReference => GetValue("AddReference");
+            public static string AddFromParentMenu => GetValue("AddFromParentMenu");
             public static string DeleteGuidDic => GetValue("DeleteGuidDic");
+            public static string LockNewMenu => GetValue("LockNewMenu");
+            public static string CheckUpdate => GetValue("CheckUpdate");
+            public static string LastCheckUpdateTime => GetValue("LastCheckUpdateTime");
+            public static string OpenLanguagesDir => GetValue("OpenLanguagesDir");
+            public static string OpenDictionariesDir => GetValue("OpenDictionariesDir");
         }
     }
 }

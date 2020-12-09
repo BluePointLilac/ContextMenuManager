@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace ContextMenuManager.Controls
 {
     sealed class OpenWithItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiTextItem,
-        ITsiCommandItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiDeleteItem
+        ITsiCommandItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem
     {
 
         public OpenWithItem(string regPath)
@@ -55,6 +55,7 @@ namespace ContextMenuManager.Controls
             set
             {
                 Registry.SetValue(AppPath, "FriendlyAppName", value);
+                this.Text = ResourceString.GetDirectString(value);
             }
         }
 
@@ -93,6 +94,8 @@ namespace ContextMenuManager.Controls
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
+        public RegExportMenuItem TsiRegExport { get; set; }
+
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
 
         private void InitializeComponents()
@@ -105,13 +108,14 @@ namespace ContextMenuManager.Controls
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiFileLocation = new FileLocationMenuItem(this);
             TsiRegLocation = new RegLocationMenuItem(this);
+            TsiRegExport = new RegExportMenuItem(this);
             TsiDeleteMe = new DeleteMeMenuItem(this);
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] { TsiChangeText,
                 new ToolStripSeparator(), TsiDetails, new ToolStripSeparator(), TsiDeleteMe });
 
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
-                TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation });
+                TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport });
 
             ContextMenuStrip.Opening += (sender, e) => TsiChangeText.Enabled = this.NameEquals;
         }

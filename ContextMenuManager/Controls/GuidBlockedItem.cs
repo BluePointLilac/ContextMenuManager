@@ -54,6 +54,8 @@ namespace ContextMenuManager.Controls
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiSearch, new ToolStripSeparator(),
                 TsiFileProperties, TsiFileLocation, TsiRegLocation });
+
+            MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
         }
 
         public void DeleteMe()

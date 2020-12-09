@@ -13,7 +13,7 @@ namespace BulePointLilac.Controls
             ctr.Disposed += (sender, e) => toolTip.Dispose();
         }
 
-        public static void SetToolTip(ToolStripMenuItem item, string tip)
+        public static void SetToolTip(ToolStripItem item, string tip)
         {
             //必须先设置item的Owner
             item.Owner.ShowItemToolTips = true;

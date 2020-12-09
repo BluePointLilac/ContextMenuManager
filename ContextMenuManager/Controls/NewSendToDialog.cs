@@ -12,7 +12,7 @@ namespace ContextMenuManager.Controls
 
         protected override bool RunDialog(IntPtr hwndOwner)
         {
-            using(NewSendToItemForm frm = new NewSendToItemForm())
+            using(NewSendToForm frm = new NewSendToForm())
             {
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag) this.FilePath = frm.FilePath;
@@ -20,7 +20,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        sealed class NewSendToItemForm : NewItemForm
+        sealed class NewSendToForm : NewItemForm
         {
             public string FilePath { get; set; }
 
@@ -40,7 +40,7 @@ namespace ContextMenuManager.Controls
             {
                 base.InitializeComponents();
                 this.Text = AppString.Dialog.NewSendToItem;
-                this.Controls.AddRange(new[] { rdoFile, rdoFolder });
+                this.Controls.AddRange(new Control[] { rdoFile, rdoFolder });
                 rdoFile.Top = rdoFolder.Top = btnOk.Top;
                 rdoFile.Left = lblCommand.Left;
                 rdoFolder.Left = rdoFile.Right + 20.DpiZoom();
@@ -58,14 +58,19 @@ namespace ContextMenuManager.Controls
                         MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
-                    if(ItemCommand.IsNullOrWhiteSpace())
+                    if(Command.IsNullOrWhiteSpace())
                     {
                         MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
                         return;
                     }
-                    if(ObjectPath.ExtractFilePath(ItemCommand) == null && !Directory.Exists(ItemCommand))
+                    if(rdoFile.Checked && !ObjectPath.GetFullFilePath(Command, out _))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.FileOrFolderNotExists);
+                        MessageBoxEx.Show(AppString.MessageBox.FileNotExists);
+                        return;
+                    }
+                    if(rdoFolder.Checked && !Directory.Exists(Command))
+                    {
+                        MessageBoxEx.Show(AppString.MessageBox.FolderNotExists);
                         return;
                     }
                     AddNewItem();
@@ -80,7 +85,7 @@ namespace ContextMenuManager.Controls
                     dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.vbs;*.vbe;*.jse;*.wsf";
                     if(dlg.ShowDialog() == DialogResult.OK)
                     {
-                        ItemCommand = $"\"{dlg.FileName}\"";
+                        Command = dlg.FileName;
                         ItemText = Path.GetFileNameWithoutExtension(dlg.FileName);
                     }
                 }
@@ -90,10 +95,11 @@ namespace ContextMenuManager.Controls
             {
                 using(FolderBrowserDialog dlg = new FolderBrowserDialog())
                 {
-                    dlg.SelectedPath = ItemCommand;
+                    if(Directory.Exists(Command)) dlg.SelectedPath = Command;
+                    else dlg.SelectedPath = Application.StartupPath;
                     if(dlg.ShowDialog() == DialogResult.OK)
                     {
-                        ItemCommand = dlg.SelectedPath;
+                        Command = dlg.SelectedPath;
                         ItemText = new DirectoryInfo(dlg.SelectedPath).Name;
                     }
                 }
@@ -103,19 +109,15 @@ namespace ContextMenuManager.Controls
             {
                 FilePath = $@"{SendToList.SendToPath}\{ObjectPath.RemoveIllegalChars(ItemText)}.lnk";
                 FilePath = ObjectPath.GetNewPathWithIndex(FilePath, ObjectPath.PathType.File);
-
-                WshShortcut shortcut = new WshShortcut { FullName = FilePath };
-                if(rdoFile.Checked)
+                WshShortcut shortcut = new WshShortcut
                 {
-                    ItemCommand = Environment.ExpandEnvironmentVariables(ItemCommand);
-                    shortcut.TargetPath = ObjectPath.ExtractFilePath(ItemCommand, out string shortPath);
-                    string str = ItemCommand.Substring(ItemCommand.IndexOf(shortPath) + shortPath.Length);
-                    shortcut.Arguments = str.Substring(str.IndexOf(" ") + 1);
-                    shortcut.WorkingDirectory = Path.GetDirectoryName(shortcut.TargetPath);
-                }
-                else shortcut.TargetPath = ItemCommand;
+                    FullName = FilePath,
+                    TargetPath = Command,
+                    WorkingDirectory = Path.GetDirectoryName(Command),
+                    Arguments = Arguments
+                };
                 shortcut.Save();
-                DesktopIniHelper.SetLocalizedFileName(FilePath, ItemText);
+                SendToList.DesktopIniWriter.SetValue("LocalizedFileNames", Path.GetFileName(FilePath), ItemText);
             }
         }
     }

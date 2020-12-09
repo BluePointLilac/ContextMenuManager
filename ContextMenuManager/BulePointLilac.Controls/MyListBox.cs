@@ -23,7 +23,6 @@ namespace BulePointLilac.Controls
 
     public class MyList : FlowLayoutPanel
     {
-
         public MyListBox Owner
         {
             get => (MyListBox)this.Parent;
@@ -64,6 +63,7 @@ namespace BulePointLilac.Controls
 
         public void AddItem(MyListItem item)
         {
+            if(item.Parent == this) return;
             item.Parent = this;
             item.Width = Owner.Width - item.Margin.Horizontal;
             Owner.Resize += (sender, e) => item.Width = Owner.Width - item.Margin.Horizontal;

@@ -11,6 +11,7 @@ namespace BulePointLilac.Controls
 
         public MyStatusBar()
         {
+            this.Text = DefaultText;
             this.Height = 30.DpiZoom();
             this.Dock = DockStyle.Bottom;
             this.Font = SystemFonts.StatusFont;

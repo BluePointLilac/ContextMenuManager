@@ -12,15 +12,14 @@ namespace ContextMenuManager.Controls
     {
         public void LoadItems()
         {
-            this.ClearItems();
             this.LoadCommonItems();
             this.SortItemByText();
             this.AddNewItem();
-            Version ver = Environment.OSVersion.Version;
             RegRuleItem storeItem = new RegRuleItem(RegRuleItem.UseStoreOpenWith)
             {
                 MarginRight = RegRuleItem.SysMarginRignt,
-                Visible = (ver.Major == 10) || (ver.Major == 6 && ver.Minor >= 2)
+                //Win8、Win8.1、Win10才有在应用商店中查找应用
+                Visible = WindowsOsVersion.ISAfterOrEqual8
             };
             this.InsertItem(storeItem, 1);
         }
@@ -61,7 +60,7 @@ namespace ContextMenuManager.Controls
         {
             NewItem newItem = new NewItem();
             this.InsertItem(newItem, 0);
-            newItem.NewItemAdd += (sender, e) =>
+            newItem.AddNewItem += (sender, e) =>
             {
                 using(NewOpenWithDialog dlg = new NewOpenWithDialog())
                 {

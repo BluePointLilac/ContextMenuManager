@@ -27,7 +27,7 @@ namespace ContextMenuManager.Controls
             if(this.Parent != null) this.Parent.Height += Visible ? Height : -Height;
         }
 
-        private readonly PictureButton BtnRestart = new PictureButton(AppImage.Refresh);
+        private readonly PictureButton BtnRestart = new PictureButton(AppImage.RestartExplorer);
 
         private static event EventHandler RestartHandler;
 
@@ -45,19 +45,22 @@ namespace ContextMenuManager.Controls
 
     public static class Explorer
     {
-        /// <summary>重启Explorer</summary>
         public static void ReStart()
         {
-            new Process
+            using(Process process = new Process())
             {
-                StartInfo = new ProcessStartInfo
+                process.StartInfo = new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = "/s /c tskill explorer",
+                    Arguments = "/c taskkill -f -im explorer.exe",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     UseShellExecute = true
-                }
-            }.Start();
+                };
+                process.Start();
+                process.WaitForExit();
+                process.StartInfo.Arguments = "/c explorer";
+                process.Start();
+            }
         }
     }
 }
