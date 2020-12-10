@@ -45,9 +45,3 @@
   [5]: https://gitee.com/BluePointLilac/ContextMenuManager/releases
   [6]: http://www.pcmoe.net/
   [7]: https://space.bilibili.com/34492771
-
-
-
-添加 / 隐藏翻译源、语种切换、鼠标悬浮取词开关和显示翻译文本开关在这里。不再提示
-
-请输入需要翻译的文本。
