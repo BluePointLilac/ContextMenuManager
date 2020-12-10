@@ -481,9 +481,27 @@ namespace ContextMenuManager.Controls
                         this.Owner = list;
                         BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
                         BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
+                        SetItemTextValue();
                     }
 
                     public PrivateMultiItemsList Owner { get; private set; }
+
+                    private void SetItemTextValue()
+                    {
+                        using(var key = RegistryEx.GetRegistryKey(this.RegPath, true))
+                        {
+                            bool hasValue = false;
+                            foreach(string valueName in new[] { "MUIVerb", "" })
+                            {
+                                if(key.GetValue(valueName) != null)
+                                {
+                                    hasValue = true; break;
+                                }
+                            }
+                            if(!hasValue) key.SetValue("MUIVerb", this.ItemText);
+                        }
+
+                    }
                 }
 
                 sealed class SeparatorItem : SubSeparatorItem
