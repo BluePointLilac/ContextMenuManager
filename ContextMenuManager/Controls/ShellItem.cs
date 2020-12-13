@@ -414,12 +414,7 @@ namespace ContextMenuManager.Controls
             TsiNoWorkDir.Click += (sender, e) => this.NoWorkingDirectory = !TsiNoWorkDir.Checked;
             ContextMenuStrip.Opening += (sender, e) => RefreshMenuItem();
             BtnSubItems.MouseDown += (sender, e) => ShowSubItems();
-            TsiShieldIcon.Click += (sender, e) =>
-            {
-                TsiShieldIcon.Checked = !TsiShieldIcon.Checked;
-                if(TsiShieldIcon.Checked) UseShieldIcon();
-                else DeleteIcon();
-            };
+            TsiShieldIcon.Click += (sender, e) => UseShieldIcon();
             MyToolTip.SetToolTip(BtnSubItems, AppString.Tip.EditSubItems);
             this.AddCtr(BtnSubItems);
         }
@@ -433,11 +428,13 @@ namespace ContextMenuManager.Controls
 
         private void UseShieldIcon()
         {
-            this.IconLocation = null;
-            this.HasLUAShield = true;
-            this.Image = AppImage.Shield;
-            this.IconPath = "imageres.dll";
-            this.IconIndex = -78;
+            bool flag = this.HasLUAShield = TsiShieldIcon.Checked = !TsiShieldIcon.Checked;
+            if(flag && IconLocation == null)
+            {
+                this.Image = AppImage.Shield;
+                this.IconPath = "imageres.dll";
+                this.IconIndex = -78;
+            }
         }
 
         private void RefreshMenuItem()
@@ -463,7 +460,7 @@ namespace ContextMenuManager.Controls
                     TsiChangeIcon.Text = AppString.Menu.AddIcon;
                     TsiDeleteIcon.Visible = false;
                 }
-                TsiShieldIcon.Checked = (IconLocation == null) && HasLUAShield;
+                TsiShieldIcon.Checked = HasLUAShield;
 
                 if(!this.IsSubItem)
                 {
