@@ -52,6 +52,10 @@ namespace BulePointLilac.Methods
             {
                 for(int i = sectionRow + 1; i < lines.Count; i++)
                 {
+                    if(lines[i].StartsWith(";") || lines[i].StartsWith("#"))
+                    {
+                        continue;//跳过注释
+                    }
                     if(lines[i].StartsWith("["))
                     {
                         nextSectionRow = i; break;//读取到下一个section
