@@ -58,7 +58,7 @@ namespace BulePointLilac.Methods
             Array.ForEach(lines, line =>
             {
                 string str = line.Trim();
-                if(str.StartsWith(";"))
+                if(str.StartsWith(";") || str.StartsWith("#"))
                 {
                     box.AppendText(str, Color.SkyBlue);
                 }
