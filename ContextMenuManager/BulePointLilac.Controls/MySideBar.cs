@@ -12,7 +12,7 @@ namespace BulePointLilac.Controls
             this.Dock = DockStyle.Left;
             this.ItemHeight = 30.DpiZoom();
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
-            this.ForeColor = Color.FromArgb(50, 50, 50);
+            this.ForeColor = Color.FromArgb(80, 80, 80);
             this.BackColor = Color.FromArgb(245, 245, 245);
             this.BackgroundImageLayout = ImageLayout.None;
             this.Controls.AddRange(new Control[] { LblSeparator, PnlSelected, PnlHovered });

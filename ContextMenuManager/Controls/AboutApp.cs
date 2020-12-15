@@ -207,7 +207,8 @@ namespace ContextMenuManager.Controls
         {
             ReadOnly = true,
             Multiline = true,
-            ScrollBars = ScrollBars.Vertical
+            ScrollBars = ScrollBars.Vertical,
+            ForeColor = Color.FromArgb(80, 80, 80)
         };
 
         readonly PictureButton btnOpenDir = new PictureButton(AppImage.Open);

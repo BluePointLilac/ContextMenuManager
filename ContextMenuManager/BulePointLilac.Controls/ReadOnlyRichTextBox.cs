@@ -12,7 +12,7 @@ namespace BulePointLilac.Controls
             this.Dock = DockStyle.Fill;
             this.BackColor = Color.White;
             this.BorderStyle = BorderStyle.None;
-            this.ForeColor = Color.FromArgb(60, 60, 60);
+            this.ForeColor = Color.FromArgb(80, 80, 80);
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
         }
 

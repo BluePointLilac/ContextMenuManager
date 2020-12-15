@@ -1,6 +1,7 @@
 ﻿using BulePointLilac.Controls;
 using ContextMenuManager.Controls;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -12,6 +13,7 @@ namespace ContextMenuManager
         {
             SetSideBarWidth();
             this.Text = AppString.General.AppName;
+            this.ForeColor = Color.FromArgb(80, 80, 80);
             this.Controls.Add(new ExplorerRestarter());
             appSettingBox.Owner = shellList.Owner = shellNewList.Owner = sendToList.Owner = openWithList.Owner
                 = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner = thirdRuleList.Owner = MainBody;
