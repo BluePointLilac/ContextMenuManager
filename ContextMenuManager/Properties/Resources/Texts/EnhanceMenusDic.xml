@@ -236,4 +236,30 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item Text='@shell32.dll,-30305' Icon='imageres.dll,-5303' KeyName='MoveTo' Guid='{c2fbb631-2971-11d1-a18c-00c04fd75d13}'/>
     </ShellEx>
   </AllObjects>
+
+  <Text Text='文本文件' Icon='notepad.exe,0' RegPath='HKEY_CLASSES_ROOT\SystemFileAssociations\text'>
+    <Shell>
+      <Item KeyName='OpenWithNotepad'>
+        <Value>
+          <REG_SZ MUIVerb='用记事本打开' Icon='%windir%\system32\notepad.exe,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='notepad.exe %1'/>
+        </SubKey>
+      </Item>
+    </Shell>
+  </Text>
+
+  <Image Text='图像文件' Icon='mspaint.exe,0' RegPath='HKEY_CLASSES_ROOT\SystemFileAssociations\image'>
+    <Shell>
+      <Item KeyName='OpenWithMsPaint'>
+        <Value>
+          <REG_SZ MUIVerb='用画图打开' Icon='mspaint.exe,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='mspaint.exe %1'/>
+        </SubKey>
+      </Item>
+    </Shell>
+  </Image>
 </Data>

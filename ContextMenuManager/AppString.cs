@@ -262,6 +262,9 @@ namespace ContextMenuManager
             public static string CheckUpdate => GetValue("CheckUpdate");
             public static string ImmediatelyCheckUpdate => GetValue("ImmediatelyCheckUpdate");
             public static string ProtectOpenItem => GetValue("ProtectOpenItem");
+            public static string WebSearchEngine => GetValue("WebSearchEngine");
+            public static string CustomEngine => GetValue("CustomEngine");
+            public static string SetCustomEngine => GetValue("SetCustomEngine");
         }
 
         /// <summary>提示文本</summary>
