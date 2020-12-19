@@ -55,9 +55,9 @@ namespace BulePointLilac.Methods
         public static void LoadIni(this RichTextBox box, string iniStr)
         {
             string[] lines = iniStr.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            Array.ForEach(lines, line =>
+            for(int i = 0; i < lines.Length; i++)
             {
-                string str = line.Trim();
+                string str = lines[i].Trim();
                 if(str.StartsWith(";") || str.StartsWith("#"))
                 {
                     box.AppendText(str, Color.SkyBlue);
@@ -79,8 +79,8 @@ namespace BulePointLilac.Methods
                     box.AppendText(str.Substring(index), Color.DimGray);
                 }
                 else box.AppendText(str, Color.SkyBlue);
-                box.AppendText(Environment.NewLine);
-            });
+                if(i != lines.Length - 1) box.AppendText(Environment.NewLine);
+            }
         }
 
         public static void AppendText(this RichTextBox box, string text, Color color, bool isBold = false)
