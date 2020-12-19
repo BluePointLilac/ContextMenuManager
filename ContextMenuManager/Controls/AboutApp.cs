@@ -293,12 +293,13 @@ namespace ContextMenuManager.Controls
             mliBackup.AddCtrs(new Control[] { chkBackup, btnBackupDir });
             mliUpdate.AddCtrs(new Control[] { lblGitee, lblGithub, lblUpdate });
             mliProtect.AddCtr(chkProtect);
+            mliEngine.AddCtr(cmbEngine);
             MyToolTip.SetToolTip(btnConfigDir, AppString.Other.OpenConfigDir);
             MyToolTip.SetToolTip(btnBackupDir, AppString.Other.OpenBackupDir);
             MyToolTip.SetToolTip(lblUpdate, AppString.Tip.CheckUpdate + Environment.NewLine
                 + AppString.Tip.LastCheckUpdateTime + AppConfig.LastCheckUpdateTime.ToLongDateString());
             cmbConfigDir.Items.AddRange(new[] { AppString.Other.SaveToAppData, AppString.Other.SaveToAppDir });
-            cmbConfigDir.Width = 160.DpiZoom();
+            cmbEngine.Items.AddRange(new[] { "Baidu", "Bing", "Google", "DogeDoge", "Sogou", "360", AppString.Other.CustomEngine });
             btnConfigDir.MouseDown += (sender, e) => Process.Start(AppConfig.ConfigDir);
             btnBackupDir.MouseDown += (sender, e) => Process.Start(AppConfig.BackupDir);
             lblGithub.Click += (sender, e) => Process.Start(GITHUBRELEASES);
@@ -322,6 +323,29 @@ namespace ContextMenuManager.Controls
                     Application.Restart();
                 }
             };
+            cmbEngine.SelectionChangeCommitted += (sender, e) =>
+            {
+                if(cmbEngine.SelectedIndex < cmbEngine.Items.Count - 1)
+                {
+                    AppConfig.EngineUrl = AppConfig.EngineUrls[cmbEngine.SelectedIndex];
+                }
+                else
+                {
+                    using(InputDialog dlg = new InputDialog { Title = AppString.Other.SetCustomEngine })
+                    {
+                        dlg.Text = AppConfig.EngineUrl;
+                        if(dlg.ShowDialog() == DialogResult.OK) AppConfig.EngineUrl = dlg.Text;
+                        string url = AppConfig.EngineUrl;
+                        for(int i = 0; i < AppConfig.EngineUrls.Length; i++)
+                        {
+                            if(url.Equals(AppConfig.EngineUrls[i]))
+                            {
+                                cmbEngine.SelectedIndex = i; break;
+                            }
+                        }
+                    }
+                }
+            };
             chkBackup.MouseDown += (sender, e) => AppConfig.AutoBackup = chkBackup.Checked = !chkBackup.Checked;
             chkProtect.MouseDown += (sender, e) => AppConfig.ProtectOpenItem = chkProtect.Checked = !chkProtect.Checked;
         }
@@ -333,7 +357,8 @@ namespace ContextMenuManager.Controls
         };
         readonly ComboBox cmbConfigDir = new ComboBox
         {
-            DropDownStyle = ComboBoxStyle.DropDownList
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Width = 160.DpiZoom()
         };
         readonly PictureButton btnConfigDir = new PictureButton(AppImage.Open);
 
@@ -379,12 +404,31 @@ namespace ContextMenuManager.Controls
         };
         readonly MyCheckBox chkProtect = new MyCheckBox();
 
+        readonly MyListItem mliEngine = new MyListItem
+        {
+            Text = AppString.Other.WebSearchEngine,
+            HasImage = false
+        };
+        readonly ComboBox cmbEngine = new ComboBox
+        {
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Width = 100.DpiZoom()
+        };
+
         public void LoadItems()
         {
-            this.AddItems(new[] { mliUpdate, mliConfigDir, mliBackup, mliProtect });
+            this.AddItems(new[] { mliUpdate, mliConfigDir, mliBackup, mliProtect, mliEngine });
             cmbConfigDir.SelectedIndex = AppConfig.SaveToAppDir ? 1 : 0;
             chkBackup.Checked = AppConfig.AutoBackup;
             chkProtect.Checked = AppConfig.ProtectOpenItem;
+            string url = AppConfig.EngineUrl;
+            for(int i = 0; i <= AppConfig.EngineUrls.Length; i++)
+            {
+                if(i == AppConfig.EngineUrls.Length || url.Equals(AppConfig.EngineUrls[i]))
+                {
+                    cmbEngine.SelectedIndex = i; break;
+                }
+            }
         }
     }
 }

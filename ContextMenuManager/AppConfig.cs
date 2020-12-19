@@ -40,6 +40,16 @@ namespace ContextMenuManager
         public const string ThIRDRULESDICXML = "ThirdRulesDic.xml";
         public const string ENHANCEMENUSICXML = "EnhanceMenusDic.xml";
 
+        public static readonly string[] EngineUrls =
+        {
+            "https://www.baidu.com/s?wd=%s",          //百度搜索
+            "https://www.bing.com/search?q=%s",       //必应搜索
+            "https://www.google.com/search?q=%s",     //谷歌搜索
+            "https://www.dogedoge.com/results?q=%s",  //多吉搜索
+            "https://www.sogou.com/web?query=%s",     //搜狗搜索
+            "https://www.so.com/s?q=%s",              //360搜索
+        };
+
         private static IniReader ConfigReader => new IniReader(ConfigIni);
         private static IniWriter ConfigWriter => new IniWriter(ConfigIni);
 
@@ -103,6 +113,20 @@ namespace ContextMenuManager
         {
             get => ConfigReader.GetValue("General", "ProtectOpenItem") != "0";
             set => ConfigWriter.SetValue("General", "ProtectOpenItem", (value ? 1 : 0).ToString());
+        }
+
+        public static string EngineUrl
+        {
+            get
+            {
+                string url = ConfigReader.GetValue("General", "EngineUrl");
+                if(url.IsNullOrWhiteSpace()) url = EngineUrls[0];
+                return url;
+            }
+            set
+            {
+                ConfigWriter.SetValue("General", "EngineUrl", value);
+            }
         }
 
         private static void CreateDirs()
