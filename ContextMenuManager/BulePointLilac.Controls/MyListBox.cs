@@ -184,8 +184,6 @@ namespace BulePointLilac.Controls
             }
         }
 
-        public int CtrCount { get => flpControls.Controls.Count; }
-
         private readonly Label lblText = new Label
         {
             AutoSize = true
@@ -198,9 +196,9 @@ namespace BulePointLilac.Controls
         };
         private readonly FlowLayoutPanel flpControls = new FlowLayoutPanel
         {
-            Anchor = AnchorStyles.Top | AnchorStyles.Right,
             FlowDirection = FlowDirection.RightToLeft,
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Anchor = AnchorStyles.Right,
             AutoSize = true,
             Top = 0
         };
@@ -242,14 +240,14 @@ namespace BulePointLilac.Controls
         {
             int space = 20.DpiZoom();
             //为第一个ctr预留垂直滚动条的宽度
-            if(CtrCount == 0) space += SystemInformation.VerticalScrollBarWidth;
+            if(flpControls.Controls.Count == 0) space += SystemInformation.VerticalScrollBarWidth;
             AddCtr(ctr, space);
         }
 
         public void AddCtr(Control ctr, int space)
         {
-            flpControls.Controls.Add(ctr);
-            ctr.Margin = new Padding(space);
+            ctr.Parent = flpControls;
+            ctr.Margin = new Padding(0, 0, space, 0);
             ctr.MouseEnter += (sender, e) => this.OnMouseEnter(null);
             ctr.MouseDown += (sender, e) => this.OnMouseEnter(null);
             CenterControl(ctr);
