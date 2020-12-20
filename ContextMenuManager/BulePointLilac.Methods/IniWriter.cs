@@ -33,7 +33,8 @@ namespace BulePointLilac.Methods
             return lines;
         }
 
-        public void SetValue(string section, string key, string value)
+        /// <param name="isGetValue">是否是获取value值</param>
+        private void SetValue(string section, string key, ref string value, bool isGetValue)
         {
             if(section == null) return;
             List<string> lines = GetLines();
@@ -67,6 +68,11 @@ namespace BulePointLilac.Methods
                         string str = lines[i].Substring(0, index).TrimEnd();
                         if(str.Equals(key, StringComparison.OrdinalIgnoreCase))
                         {
+                            if(isGetValue)//如果是获取Value值，直接返回
+                            {
+                                value = lines[i].Substring(index + 1).Trim();
+                                return;
+                            }
                             keyRow = i; continue;//得到目标key行
                         }
                     }
@@ -135,6 +141,19 @@ namespace BulePointLilac.Methods
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
                 File.WriteAllLines(FilePath, lines.ToArray(), Encoding);
             }
+        }
+
+        public void SetValue(string section, string key, string value)
+        {
+            SetValue(section, key, ref value, false);
+        }
+
+        /// <summary>一次读取只获取一个值，用此方法比IniReader.GetValue要快</summary>
+        public string GetValue(string section, string key)
+        {
+            string value = string.Empty;
+            SetValue(section, key, ref value, true);
+            return value;
         }
 
         public void DeleteKey(string section, string key)
