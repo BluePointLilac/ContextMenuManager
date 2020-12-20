@@ -50,6 +50,7 @@ namespace ContextMenuManager
             "https://www.so.com/s?q=%s",              //360搜索
         };
 
+        private static IniReader ConfigReader => new IniReader(ConfigIni);
         private static IniWriter ConfigWriter => new IniWriter(ConfigIni);
 
         public static DateTime LastCheckUpdateTime
@@ -58,7 +59,7 @@ namespace ContextMenuManager
             {
                 try
                 {
-                    string time = ConfigWriter.GetValue("General", "LastCheckUpdateTime");
+                    string time = ConfigReader.GetValue("General", "LastCheckUpdateTime");
                     //二进制数据时间不会受系统时间格式影响
                     return DateTime.FromBinary(Convert.ToInt64(time));
                 }
@@ -78,7 +79,7 @@ namespace ContextMenuManager
         {
             get
             {
-                string language = ConfigWriter.GetValue("General", "Language");
+                string language = ConfigReader.GetValue("General", "Language");
                 DirectoryInfo di = new DirectoryInfo(LangsDir);
                 if(language == string.Empty && di.Exists)
                 {
@@ -104,13 +105,13 @@ namespace ContextMenuManager
 
         public static bool AutoBackup
         {
-            get => ConfigWriter.GetValue("General", "AutoBackup") != "0";
+            get => ConfigReader.GetValue("General", "AutoBackup") != "0";
             set => ConfigWriter.SetValue("General", "AutoBackup", (value ? 1 : 0).ToString());
         }
 
         public static bool ProtectOpenItem
         {
-            get => ConfigWriter.GetValue("General", "ProtectOpenItem") != "0";
+            get => ConfigReader.GetValue("General", "ProtectOpenItem") != "0";
             set => ConfigWriter.SetValue("General", "ProtectOpenItem", (value ? 1 : 0).ToString());
         }
 
@@ -118,7 +119,7 @@ namespace ContextMenuManager
         {
             get
             {
-                string url = ConfigWriter.GetValue("General", "EngineUrl");
+                string url = ConfigReader.GetValue("General", "EngineUrl");
                 if(url.IsNullOrWhiteSpace()) url = EngineUrls[0];
                 return url;
             }
