@@ -17,7 +17,7 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <Item Text="任务栏 任务栏设置 锁定任务栏" RestartExplorer="">
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="TaskbarLockAll" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="TaskbarLockAll" On="0" Off="1"/>
-    </Item>    
+    </Item>
     <Item Text="任务栏 工具栏" RestartExplorer="" Tip="禁用后已启用工具栏将被禁用, 请谨慎操作">
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoToolbarsOnTaskbar" On="0" Off="1"/>
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCloseDragDropBands" On="0" Off="1"/>
@@ -28,36 +28,14 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="TaskbarNoPinnedList" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" ValueName="TaskbarNoPinnedList" On="0" Off="1"/>
     </Item>
+    <Item Text="任务栏 人脉" RestartExplorer="">
+      <OSVersion Compare=">=">10.0.16199</OSVersion>
+      <Rule RegPath="HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" ValueName="PeopleBand" On="1" Off="0"/>
+      <Rule RegPath="HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" ValueName="HidePeopleBar" On="0" Off="1"/>
+    </Item>
     <Item Text="任务栏 Windows lnk 工作区" Tip="禁用此项将同时禁用 Win+W 快捷键">
       <OSVersion Compare=">=">10.0</OSVersion>
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsInkWorkspace" ValueName="AllowWindowsInkWorkspace" On="1" Off="0"/>
-    </Item>
-    <Item Text="目录背景 自定义文件夹" RestartExplorer="" Tip="禁用此项将会同时禁用文件系统&#x000A;对象属性面板中的自定义选项卡">
-      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeThisFolder" On="0" Off="1"/>
-      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeWebView" On="0" Off="1"/>
-      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeThisFolder" On="0" Off="1"/>
-      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoCustomizeWebView" On="0" Off="1"/>
-    </Item>
-    <Item Text="此电脑 映射网络驱动器 断开网络驱动器的连接" RestartExplorer="">
-      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoNetConnectDisconnect" On="0" Off="1"/>
-      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoNetConnectDisconnect" On="0" Off="1"/>
-    </Item>
-    <Item Text="回收站 属性" RestartExplorer="">
-      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoPropertiesRecycleBin" On="0" Off="1"/>
-      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoPropertiesRecycleBin" On="0" Off="1"/>
-    </Item>
-    <Item Text="发送到 可移动磁盘" RestartExplorer="" Tip="仅当插入可移动磁盘时有作用,&#x000A;显示该可移动磁盘的所有分区">
-      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoDrivesInSendToMenu" On="0" Off="1"/>
-      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoDrivesInSendToMenu" On="0" Off="1"/>
-    </Item>
-    <Item Text="发送到 快速构建子菜单" Tip="禁用此项将加快主菜单弹出速度&#x000A;但会延缓发送到子菜单弹出速度">
-      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" ValueName="DelaySendToMenuBuild" On="0" Off="1"/>
-      <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" ValueName="DelaySendToMenuBuild" On="0" Off="1"/>
-    </Item>
-    <Item Text="打开方式 在Microsoft Store中查找应用">
-      <OSVersion Compare=">=">6.2</OSVersion>
-      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
-      <Rule RegPath="HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer" ValueName="NoUseStoreOpenWith" On="0" Off="1"/>
     </Item>
     <Item Text="开始屏幕 程序右键菜单卸载" RestartExplorer="">
       <OSVersion Compare=">=">10.0</OSVersion>
@@ -165,7 +143,7 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <Rule RegPath="\Global\CoProcManager" ValueName="ShowTrayIcon" On="1" Off="0"/>
     </Item>
   </Group>
-  
+
   <Group Text="ACD看图" Guid="c2396f1e-4ba2-4b7d-857a-f764761c012b" RegPath="HKEY_CURRENT_USER\SOFTWARE\acdkantu">
     <Item Text="显示桌面右键菜单">
       <Rule ValueName="menu" On="1" Off="0" ValueKind="REG_SZ"/>
