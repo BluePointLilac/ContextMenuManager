@@ -129,7 +129,7 @@ namespace ContextMenuManager.Controls
                 MessageBoxButtons.YesNo) != DialogResult.Yes;
 
         public string ItemFilePath => GuidInfo.GetFilePath(Guid) ?? ObjectPath.ExtractFilePath(ItemCommand);
-        private bool HasIcon => IconLocation != null || HasLUAShield;
+        private bool HasIcon => !IconLocation.IsNullOrWhiteSpace() || HasLUAShield;
 
         private bool OnlyInExplorer
         {
@@ -330,7 +330,7 @@ namespace ContextMenuManager.Controls
                 if(IconLocation != null)
                 {
                     icon = ResourceIcon.GetIcon(IconLocation, out iconPath, out iconIndex);
-                    if(icon == null && Path.GetExtension(iconPath).ToLower() == ".exe")
+                    if(icon == null && Path.GetExtension(iconPath)?.ToLower() == ".exe")
                         icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = -15);//文件为不存在的或没有图标的exe文件，不含图标的默认exe图标
                 }
                 else if(HasLUAShield)
