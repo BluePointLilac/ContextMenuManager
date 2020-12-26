@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class RegRuleItem : MyListItem, IChkVisibleItem, IFoldSubItem
+    sealed class RegRuleItem : MyListItem, IChkVisibleItem, IFoldSubItem, IBtnShowMenuItem, ITsiWebSearchItem
     {
         public struct RegRule
         {
@@ -44,9 +44,12 @@ namespace ContextMenuManager.Controls
             this.Text = info.Text;
             this.Image = info.Image;
             this.RestartExplorer = info.RestartExplorer;
+            BtnShowMenu = new MenuButton(this);
             ChkVisible = new VisibleCheckBox(this);
             MyToolTip.SetToolTip(ChkVisible, info.Tip);
-            this.SetNoClickEvent();
+            TsiSearch = new WebSearchMenuItem(this);
+            this.ContextMenuStrip = new ContextMenuStrip();
+            this.ContextMenuStrip.Items.Add(TsiSearch);
         }
 
         public RegRuleItem(RegRule[] rules, ItemInfo info)
@@ -69,18 +72,6 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        public int MarginRight
-        {
-            get => ChkVisible.Margin.Right;
-            set
-            {
-                Padding p = ChkVisible.Margin;
-                ChkVisible.Margin = new Padding(p.Left, p.Top, value, p.Bottom);
-            }
-        }
-
-        public static readonly int SysMarginRignt = 78.DpiZoom();
-
         public VisibleCheckBox ChkVisible { get; set; }
         public bool RestartExplorer { get; set; }
 
@@ -94,6 +85,7 @@ namespace ContextMenuManager.Controls
                     {
                         if(key?.GetValue(rule.ValueName) == null) continue;
                         if(key.GetValueKind(rule.ValueName) != rule.ValueKind) continue;
+                        string value = key.GetValue(rule.ValueName)?.ToString();
                         if(key.GetValue(rule.ValueName).ToString().ToLower()
                             == rule.TurnOffValue.ToString().ToLower()) return false;
                     }
@@ -105,13 +97,24 @@ namespace ContextMenuManager.Controls
                 foreach(RegRule rule in Rules)
                 {
                     object data = value ? rule.TurnOnValue : rule.TurnOffValue;
-                    Registry.SetValue(rule.RegPath, rule.ValueName, data, rule.ValueKind);
+                    if(data != null)
+                    {
+                        Registry.SetValue(rule.RegPath, rule.ValueName, data, rule.ValueKind);
+                    }
+                    else
+                    {
+                        RegistryEx.DeleteValue(rule.RegPath, rule.ValueName);
+                    }
                 }
                 if(RestartExplorer) ExplorerRestarter.NeedRestart = true;
             }
         }
 
         public IFoldGroupItem FoldGroupItem { get; set; }
+        public WebSearchMenuItem TsiSearch { get; set; }
+        public MenuButton BtnShowMenu { get; set; }
+
+        public string SearchText => Text;
 
         const string CU_SMWCEA = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
         const string LM_SMWCPE = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer";
@@ -120,6 +123,7 @@ namespace ContextMenuManager.Controls
         const string CU_SMWCE = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer";
         const string LM_SPMWE = @"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer";
         const string CU_SPMWE = @"HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer";
+        public const string SkypeGuidStr = "{776dbc8d-7347-478c-8d71-791e12ef49d8}";
 
         public static RuleAndInfo CustomFolder = new RuleAndInfo
         {
@@ -208,16 +212,18 @@ namespace ContextMenuManager.Controls
             }
         };
 
-        public static RuleAndInfo WinXPowerShell = new RuleAndInfo
+        public static RuleAndInfo ShareWithSkype = new RuleAndInfo
         {
             Rules = new[]
-            {
-                new RegRule(CU_SMWCEA, "DontUsePowerShellOnWinX", 0, 1)
+    {
+                new RegRule(GuidBlockedItem.HKLMBLOCKED, SkypeGuidStr, null, "", RegistryValueKind.String),
+                new RegRule(GuidBlockedItem.HKCUBLOCKED, SkypeGuidStr, null, "", RegistryValueKind.String)
             },
             ItemInfo = new ItemInfo
             {
-                Text = AppString.Item.WinXPowerShell,
-                Image = AppImage.Cmd,
+                Text = AppString.Item.ShareWithSkype,
+                Tip = AppString.Tip.ShareWithSkype,
+                Image = AppImage.Skype,
                 RestartExplorer = true
             }
         };

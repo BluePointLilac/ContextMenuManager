@@ -17,7 +17,6 @@ namespace ContextMenuManager.Controls
             this.AddNewItem();
             RegRuleItem storeItem = new RegRuleItem(RegRuleItem.UseStoreOpenWith)
             {
-                MarginRight = RegRuleItem.SysMarginRignt,
                 //Win8、Win8.1、Win10才有在应用商店中查找应用
                 Visible = WindowsOsVersion.ISAfterOrEqual8
             };
