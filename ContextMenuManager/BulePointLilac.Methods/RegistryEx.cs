@@ -34,13 +34,13 @@ namespace BulePointLilac.Methods
         public static void MoveTo(this RegistryKey srcKey, RegistryKey dstKey)
         {
             CopyTo(srcKey, dstKey);
-            DeleteKeyTree(srcKey.Name);
+            DeleteKeyTree(srcKey.Name, true);
         }
 
         public static void MoveTo(string srcPath, string dstPath)
         {
             CopyTo(srcPath, dstPath);
-            DeleteKeyTree(srcPath);
+            DeleteKeyTree(srcPath, true);
         }
 
         public static RegistryKey CreateSubKey(this RegistryKey key, string subKeyName, bool writable)

@@ -222,29 +222,36 @@ namespace ContextMenuManager.Controls
             }
             set
             {
-                if(value)
+                try
                 {
-                    RegistryEx.DeleteValue(RegPath, "CommandFlags");
-                    RegistryEx.DeleteValue(RegPath, "HideBasedOnVelocityId");
-                    RegistryEx.DeleteValue(RegPath, "LegacyDisable");
-                    RegistryEx.DeleteValue(RegPath, "ProgrammaticAccessOnly");
-                }
-                else
-                {
-                    if(TryProtectOpenItem) return;
-                    if(!IsSubItem)
+                    if(value)
                     {
-                        Registry.SetValue(RegPath, "LegacyDisable", string.Empty);
-                        Registry.SetValue(RegPath, "ProgrammaticAccessOnly", string.Empty);
-                    }
-                    else if(WindowsOsVersion.IsAfterOrEqualWin10_1703)
-                    {
-                        Registry.SetValue(RegPath, "HideBasedOnVelocityId", 0x639bc8);
+                        RegistryEx.DeleteValue(RegPath, "CommandFlags");
+                        RegistryEx.DeleteValue(RegPath, "HideBasedOnVelocityId");
+                        RegistryEx.DeleteValue(RegPath, "LegacyDisable");
+                        RegistryEx.DeleteValue(RegPath, "ProgrammaticAccessOnly");
                     }
                     else
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.CannotHideSubItem);
+                        if(TryProtectOpenItem) return;
+                        if(!IsSubItem)
+                        {
+                            Registry.SetValue(RegPath, "LegacyDisable", string.Empty);
+                            Registry.SetValue(RegPath, "ProgrammaticAccessOnly", string.Empty);
+                        }
+                        else if(WindowsOsVersion.IsAfterOrEqualWin10_1703)
+                        {
+                            Registry.SetValue(RegPath, "HideBasedOnVelocityId", 0x639bc8);
+                        }
+                        else
+                        {
+                            MessageBoxEx.Show(AppString.MessageBox.CannotHideSubItem);
+                        }
                     }
+                }
+                catch
+                {
+                    MessageBoxEx.Show(AppString.MessageBox.AuthorityProtection);
                 }
             }
         }
@@ -505,7 +512,15 @@ namespace ContextMenuManager.Controls
 
         public virtual void DeleteMe()
         {
-            RegistryEx.DeleteKeyTree(this.RegPath);
+            try
+            {
+                RegistryEx.DeleteKeyTree(this.RegPath, true);
+            }
+            catch
+            {
+                MessageBoxEx.Show(AppString.MessageBox.AuthorityProtection);
+                return;
+            }
             this.Dispose();
         }
     }

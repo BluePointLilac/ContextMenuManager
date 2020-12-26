@@ -77,7 +77,15 @@ namespace ContextMenuManager.Controls
             set
             {
                 if(!value && TryProtectOpenItem) return;
-                RegistryEx.MoveTo(RegPath, BackupPath);
+                try
+                {
+                    RegistryEx.MoveTo(RegPath, BackupPath);
+                }
+                catch
+                {
+                    MessageBoxEx.Show(AppString.MessageBox.AuthorityProtection);
+                    return;
+                }
                 RegPath = BackupPath;
             }
         }
@@ -234,8 +242,16 @@ namespace ContextMenuManager.Controls
 
         public void DeleteMe()
         {
-            RegistryEx.DeleteKeyTree(this.RegPath);
-            RegistryEx.DeleteKeyTree(this.BackupPath);
+            try
+            {
+                RegistryEx.DeleteKeyTree(this.RegPath, true);
+                RegistryEx.DeleteKeyTree(this.BackupPath, true);
+            }
+            catch
+            {
+                MessageBoxEx.Show(AppString.MessageBox.AuthorityProtection);
+                return;
+            }
             this.Dispose();
         }
     }
