@@ -25,8 +25,8 @@ namespace ContextMenuManager.Controls
             this.SortItemByText();
             this.AddNewItem();
             this.AddDirItem();
-            this.AddItem(new RegRuleItem(RegRuleItem.SendToDrive) { MarginRight = RegRuleItem.SysMarginRignt });
-            this.AddItem(new RegRuleItem(RegRuleItem.DeferBuildSendTo) { MarginRight = RegRuleItem.SysMarginRignt });
+            this.AddItem(new RegRuleItem(RegRuleItem.SendToDrive));
+            this.AddItem(new RegRuleItem(RegRuleItem.DeferBuildSendTo));
         }
 
         private void AddNewItem()
