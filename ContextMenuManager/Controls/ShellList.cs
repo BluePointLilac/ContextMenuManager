@@ -131,16 +131,17 @@ namespace ContextMenuManager.Controls
             switch(scene)
             {
                 case Scenes.File:
-                    this.AddItem(new SpecialItems.SkypeShareItem());
+                    if(WindowsOsVersion.ISAfterOrEqual10)
+                        this.AddItem(new RegRuleItem(RegRuleItem.ShareWithSkype));
                     break;
                 case Scenes.Background:
-                    this.AddItem(new RegRuleItem(RegRuleItem.CustomFolder) { MarginRight = RegRuleItem.SysMarginRignt });
+                    this.AddItem(new RegRuleItem(RegRuleItem.CustomFolder));
                     break;
                 case Scenes.Computer:
-                    this.AddItem(new RegRuleItem(RegRuleItem.NetworkDrive) { MarginRight = RegRuleItem.SysMarginRignt });
+                    this.AddItem(new RegRuleItem(RegRuleItem.NetworkDrive));
                     break;
                 case Scenes.RecycleBin:
-                    this.AddItem(new RegRuleItem(RegRuleItem.RecycleBinProperties) { MarginRight = RegRuleItem.SysMarginRignt });
+                    this.AddItem(new RegRuleItem(RegRuleItem.RecycleBinProperties));
                     break;
                 case Scenes.Library:
                     this.LoadItems(MENUPATH_LIBRARY_BACKGROUND);
@@ -162,6 +163,7 @@ namespace ContextMenuManager.Controls
         private void LoadItems(string scenePath)
         {
             if(this.Scene == Scenes.CustomType && TypeItem.Extension == null) return;
+            RegTrustedInstaller.TakeRegKeyOwnerShip(scenePath);
             this.LoadShellItems(GetShellPath(scenePath));
             this.LoadShellExItems(GetShellExPath(scenePath));
         }
