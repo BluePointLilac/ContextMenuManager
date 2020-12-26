@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class LockNewItem : MyListItem, IChkVisibleItem
+    sealed class LockNewItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiWebSearchItem
     {
         public LockNewItem(ShellNewList list)
         {
@@ -17,14 +17,16 @@ namespace ContextMenuManager.Controls
             this.Image = AppImage.Lock;
             this.Text = AppString.Item.LockNewMenu;
             this.SetNoClickEvent();
-            ChkVisible = new VisibleCheckBox(this)
-            {
-                Margin = new Padding(Margin.Left, Margin.Top, RegRuleItem.SysMarginRignt, Margin.Bottom),
-                Checked = IsLocked()
-            };
+            BtnShowMenu = new MenuButton(this);
+            ChkVisible = new VisibleCheckBox(this) { Checked = IsLocked() };
             MyToolTip.SetToolTip(ChkVisible, AppString.Tip.LockNewMenu);
+            TsiSearch = new WebSearchMenuItem(this);
+            this.ContextMenuStrip = new ContextMenuStrip();
+            this.ContextMenuStrip.Items.Add(TsiSearch);
         }
 
+        public MenuButton BtnShowMenu { get; set; }
+        public WebSearchMenuItem TsiSearch { get; set; }
         public VisibleCheckBox ChkVisible { get; set; }
         public ShellNewList Owner { get; private set; }
 
@@ -48,6 +50,9 @@ namespace ContextMenuManager.Controls
                 }
             }
         }
+
+        public string SearchText => Text;
+
 
         public static bool IsLocked()
         {
