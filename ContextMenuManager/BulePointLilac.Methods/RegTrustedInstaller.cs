@@ -154,7 +154,7 @@ namespace BulePointLilac.Methods
             WindowsIdentity id = null;
             //利用试错判断是否有写入权限
             try { key = RegistryEx.GetRegistryKey(regPath, true); }
-            catch(Exception)
+            catch
             {
                 try
                 {
@@ -204,7 +204,7 @@ namespace BulePointLilac.Methods
                     ///不过我发现经过上面的操作，虽然无法还原所有者权限，但是已经获取了注册表权限
                     ///即已经将TrustedInstaller权限更改为当前管理员用户权限，我要的目的已经达到了
                 }
-                catch(Exception) { }
+                catch { }
             }
             finally { key?.Close(); id?.Dispose(); }
         }
