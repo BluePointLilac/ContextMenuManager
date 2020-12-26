@@ -117,7 +117,6 @@ namespace ContextMenuManager.Controls
                 {
                     this.IsPublic = isPublic;
                     this.AddCtr(chkSelected);
-                    //this.SetCtrIndex(chkSelected, 2);
                     ChkVisible.Visible = BtnSubItems.Visible = false;
                     RegTrustedInstaller.TakeRegTreeOwnerShip(regPath);
                 }
