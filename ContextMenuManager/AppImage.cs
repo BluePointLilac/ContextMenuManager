@@ -49,6 +49,8 @@ namespace ContextMenuManager
         public static readonly Image Types = Resources.Types.ResizeImage(Scale);
         ///<summary>Microsoft Store图标</summary>
         public static readonly Image MicrosoftStore = Resources.MicrosoftStore.ResizeImage(Scale);
+        ///<summary>Skype图标</summary>
+        public static readonly Image Skype = Resources.Skype.ResizeImage(Scale);
         ///<summary>dll文件默认图标</summary>
         public static readonly Image DllDefaultIcon = ResourceIcon.GetExtensionIcon(".dll").ToBitmap();
         ///<summary>资源不存在图标</summary>
