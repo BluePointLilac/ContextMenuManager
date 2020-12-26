@@ -79,6 +79,8 @@ namespace BulePointLilac.Methods
                 }
             }
 
+            if(isGetValue) return;
+
             if(sectionRow == -1)
             {
                 if(key != null && value != null)
