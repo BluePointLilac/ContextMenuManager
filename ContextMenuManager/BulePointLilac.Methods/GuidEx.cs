@@ -12,7 +12,8 @@ namespace BulePointLilac.Methods
                 guid = new Guid(str);
                 return true;
             }
-            catch(Exception) {
+            catch
+            {
                 guid = Guid.Empty;
                 return false;
             }
