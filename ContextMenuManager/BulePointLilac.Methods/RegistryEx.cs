@@ -73,7 +73,7 @@ namespace BulePointLilac.Methods
 
         /// <summary>递归删除指定注册表项及所有子项</summary>
         /// <param name="regPath">注册表路径</param>
-        /// <param name="throwOnMissingKey">找不到注册表项时是否抛出异常</param>
+        /// <param name="throwOnMissingKey">找不到注册表项或者没有操作权限时是否抛出异常</param>
         public static void DeleteKeyTree(string regPath, bool throwOnMissingKey = false)
         {
             string dirPath = GetParentPath(regPath);
