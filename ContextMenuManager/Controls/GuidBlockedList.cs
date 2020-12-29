@@ -13,10 +13,10 @@ namespace ContextMenuManager.Controls
         public void LoadItems()
         {
             this.AddNewItem();
-            this.LoadCommonItems();
+            this.LoadBlockedItems();
         }
 
-        private void LoadCommonItems()
+        private void LoadBlockedItems()
         {
             List<string> values = new List<string>();
             Array.ForEach(GuidBlockedItem.BlockedPaths, path =>
@@ -26,8 +26,7 @@ namespace ContextMenuManager.Controls
             });
             Array.ForEach(values.Distinct(StringComparer.OrdinalIgnoreCase).ToArray(), value =>
             {
-                if(GuidInfo.TryGetGuid(value, out Guid guid, out string guidPath))
-                    this.AddItem(new GuidBlockedItem(guid, guidPath));
+                    this.AddItem(new GuidBlockedItem(value));
             });
         }
 
@@ -47,9 +46,9 @@ namespace ContextMenuManager.Controls
             {
                 using(InputDialog dlg = new InputDialog { Title = AppString.Dialog.InputGuid })
                 {
-                    if(GuidInfo.TryGetGuid(Clipboard.GetText(), out Guid guid)) dlg.Text = guid.ToString();
+                    if(GuidEx.TryParse(Clipboard.GetText(), out Guid guid)) dlg.Text = guid.ToString();
                     if(dlg.ShowDialog() != DialogResult.OK) return;
-                    if(GuidInfo.TryGetGuid(dlg.Text, out guid, out string guidPath))
+                    if(GuidEx.TryParse(dlg.Text, out guid))
                     {
                         Array.ForEach(GuidBlockedItem.BlockedPaths, path =>
                         {
@@ -63,10 +62,10 @@ namespace ContextMenuManager.Controls
                                 return;
                             }
                         }
-                        this.InsertItem(new GuidBlockedItem(guid, guidPath), 1);
+                        this.InsertItem(new GuidBlockedItem(dlg.Text), 1);
                         ExplorerRestarter.NeedRestart = true;
                     }
-                    else MessageBoxEx.Show(AppString.MessageBox.UnknownGuid);
+                    else MessageBoxEx.Show(AppString.MessageBox.MalformedGuid);
                 }
             };
         }

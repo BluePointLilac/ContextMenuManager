@@ -6,41 +6,44 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    class GuidBlockedItem : MyListItem, IBtnDeleteItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem
+    class GuidBlockedItem : MyListItem, IBtnDeleteItem, ITsiWebSearchItem, ITsiFilePathItem
     {
         public const string HKLMBLOCKED = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked";
         public const string HKCUBLOCKED = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked";
         public static readonly string[] BlockedPaths = { HKLMBLOCKED, HKCUBLOCKED };
 
-        public GuidBlockedItem(Guid guid, string guidPath)
+        public GuidBlockedItem(string value)
         {
             InitializeComponents();
-            this.Guid = guid;
-            this.RegPath = guidPath;
+            this.Value = value;
+            if(GuidEx.TryParse(value, out Guid guid))
+            {
+                this.Guid = guid;
+                this.Text = GuidInfo.GetText(guid);
+                this.Image = GuidInfo.GetImage(guid);
+                this.ItemFilePath = GuidInfo.GetFilePath(Guid);
+            }
+            else
+            {
+                this.Guid = Guid.Empty;
+                this.Text = AppString.MessageBox.MalformedGuid;
+                this.Image = AppImage.DllDefaultIcon;
+            }
+            this.Text += "\n" + value;
         }
 
-        private Guid guid;
-        public Guid Guid
-        {
-            get => guid;
-            set
-            {
-                guid = value;
-                this.Text = $"{GuidInfo.GetText(value)}\n{value}";
-                this.Image = GuidInfo.GetImage(value);
-            }
-        }
+        public string Value { get; set; }
+        public Guid Guid { get; set; }
 
         public DeleteButton BtnDelete { get; set; }
         public ObjectPathButton BtnOpenPath { get; set; }
 
-        public string SearchText => Guid.ToString();
-        public string ItemFilePath => GuidInfo.GetFilePath(Guid);
+        public string SearchText => Value;
+        public string ItemFilePath { get; set; }
 
         public WebSearchMenuItem TsiSearch { get; set; }
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public FilePropertiesMenuItem TsiFileProperties { get; set; }
-        public RegLocationMenuItem TsiRegLocation { get; set; }
         public string RegPath { get; set; }
 
         private void InitializeComponents()
@@ -50,17 +53,16 @@ namespace ContextMenuManager.Controls
             TsiSearch = new WebSearchMenuItem(this);
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiFileLocation = new FileLocationMenuItem(this);
-            TsiRegLocation = new RegLocationMenuItem(this);
 
-            ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiSearch, new ToolStripSeparator(),
-                TsiFileProperties, TsiFileLocation, TsiRegLocation });
+            ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiSearch,
+                new ToolStripSeparator(), TsiFileProperties, TsiFileLocation });
 
             MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
         }
 
         public void DeleteMe()
         {
-            Array.ForEach(BlockedPaths, path => { RegistryEx.DeleteValue(path, Guid.ToString("B")); });
+            Array.ForEach(BlockedPaths, path => { RegistryEx.DeleteValue(path, this.Value); });
             ExplorerRestarter.NeedRestart = true;
             this.Dispose();
         }

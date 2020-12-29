@@ -355,8 +355,8 @@ namespace ContextMenuManager.Controls
             get
             {
                 string value = Registry.GetValue(CommandPath, "DelegateExecute", null)?.ToString();
-                if(GuidInfo.TryGetGuid(value, out Guid guid)) return guid;
-                else return Guid.Empty;
+                GuidEx.TryParse(value, out Guid guid);
+                return guid;
             }
         }
 

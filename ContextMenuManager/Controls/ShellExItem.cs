@@ -23,8 +23,8 @@ namespace ContextMenuManager.Controls
                     {
                         using(RegistryKey key = cmKey.OpenSubKey(keyName))
                         {
-                            if(!GuidInfo.TryGetGuid(key.GetValue("")?.ToString(), out Guid guid))
-                                GuidInfo.TryGetGuid(keyName, out guid);
+                            if(!GuidEx.TryParse(key.GetValue("")?.ToString(), out Guid guid))
+                                GuidEx.TryParse(keyName, out guid);
                             if(!guid.Equals(Guid.Empty))
                                 dic.Add(key.Name, guid);
                         }
@@ -245,7 +245,7 @@ namespace ContextMenuManager.Controls
             try
             {
                 RegistryEx.DeleteKeyTree(this.RegPath, true);
-                RegistryEx.DeleteKeyTree(this.BackupPath, true);
+                RegistryEx.DeleteKeyTree(this.BackupPath);
             }
             catch
             {

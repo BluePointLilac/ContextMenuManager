@@ -18,7 +18,14 @@ namespace ContextMenuManager.Controls
                 foreach(XmlElement groupXE in ReadXml().DocumentElement.ChildNodes)
                 {
                     Guid guid = Guid.Empty;
-                    if(groupXE.HasAttribute("Guid") && !GuidInfo.TryGetGuid(groupXE.GetAttribute("Guid"), out guid)) continue;
+                    if(groupXE.HasAttribute("Guid"))
+                    {
+                        if(GuidEx.TryParse(groupXE.GetAttribute("Guid"), out guid))
+                        {
+                            if(!File.Exists(GuidInfo.GetFilePath(guid))) continue;
+                        }
+                        else continue;
+                    }
 
                     GroupPathItem groupItem = new GroupPathItem(groupXE.GetAttribute("RegPath"), ObjectPath.PathType.Registry)
                     {

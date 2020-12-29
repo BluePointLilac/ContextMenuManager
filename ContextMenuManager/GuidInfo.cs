@@ -1,4 +1,5 @@
 ﻿using BulePointLilac.Methods;
+using ContextMenuManager.Controls;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -23,40 +24,28 @@ namespace ContextMenuManager
             public int IconIndex { get; set; }
         }
 
-        private static IniReader AppDic;
+        static GuidInfo()
+        {
+            //将Skype添加到字典
+            Guid skypeGuid = new Guid(RegRuleItem.SkypeGuidStr);
+            FilePathDic.Add(skypeGuid, null);
+            ItemTextDic.Add(skypeGuid, AppString.Item.ShareWithSkype);
+            ItemImageDic.Add(skypeGuid, AppImage.Skype);
+        }
+
+        private static readonly IniReader AppDic = new IniReader(new StringBuilder(Properties.Resources.GuidInfosDic));
         public static readonly IniReader UserDic = new IniReader(AppConfig.UserGuidInfosDic);
+        public static readonly IniReader WebDic = new IniReader(AppConfig.WebGuidInfosDic);
         public static readonly Dictionary<Guid, IconLocation> IconLocationDic = new Dictionary<Guid, IconLocation>();
         private static readonly Dictionary<Guid, string> FilePathDic = new Dictionary<Guid, string>();
         public static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
         public static readonly Dictionary<Guid, Image> ItemImageDic = new Dictionary<Guid, Image>();
 
-        public static bool TryGetGuid(string value, out Guid guid) => TryGetGuid(value, out guid, out _);
-
-        public static bool TryGetGuid(string value, out Guid guid, out string guidPath)
-        {
-            guidPath = null;
-            if(!GuidEx.TryParse(value, out guid)) return false;
-            foreach(string path in ClsidPaths)
-            {
-                using(RegistryKey key = RegistryEx.GetRegistryKey($@"{path}\{guid:B}"))
-                {
-                    if(key != null)
-                    {
-                        guidPath = key.Name;
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
         private static bool TryGetValue(string section, string key, out string value)
         {
             //用户自定义字典优先
             if(UserDic.TryGetValue(section, key, out value)) return true;
-            if(!File.Exists(AppConfig.WebGuidInfosDic))
-                File.WriteAllText(AppConfig.WebGuidInfosDic, Properties.Resources.GuidInfosDic, Encoding.UTF8);
-            AppDic = AppDic ?? new IniReader(AppConfig.WebGuidInfosDic);
+            if(WebDic.TryGetValue(section, key, out value)) return true;
             if(AppDic.TryGetValue(section, key, out value)) return true;
             return false;
         }
@@ -77,9 +66,18 @@ namespace ContextMenuManager
                         {
                             using(RegistryKey key = guidKey.OpenSubKey(keyName))
                             {
-                                string value = key?.GetValue("")?.ToString();
-                                filePath = ObjectPath.ExtractFilePath(value);
-                                if(File.Exists(filePath)) break;
+                                if(key == null) continue;
+                                string value1 = key.GetValue("CodeBase")?.ToString()?.Replace("file:///", "")?.Replace('/', '\\');
+                                if(File.Exists(value1))
+                                {
+                                    filePath = value1; break;
+                                }
+                                string value2 = key.GetValue("")?.ToString();
+                                value2 = ObjectPath.ExtractFilePath(value2);
+                                if(File.Exists(value2))
+                                {
+                                    filePath = value2; break;
+                                }
                             }
                         }
                         if(File.Exists(filePath)) break;

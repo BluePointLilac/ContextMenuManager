@@ -155,7 +155,7 @@ namespace ContextMenuManager.Controls
             {
                 XmlElement verXE = (XmlElement)itemXE.SelectSingleNode("OSVersion");
                 if(!JudgeOSVersion(verXE)) continue;
-                if(!GuidInfo.TryGetGuid(itemXE.GetAttribute("Guid"), out Guid guid)) continue;
+                if(!GuidEx.TryParse(itemXE.GetAttribute("Guid"), out Guid guid)) continue;
                 EnhanceShellExItem item = new EnhanceShellExItem
                 {
                     FoldGroupItem = groupItem,
