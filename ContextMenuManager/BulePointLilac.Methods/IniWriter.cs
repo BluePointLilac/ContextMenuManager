@@ -141,7 +141,14 @@ namespace BulePointLilac.Methods
             else
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
+                FileAttributes attributes = FileAttributes.Normal;
+                if(File.Exists(FilePath))
+                {
+                    attributes = File.GetAttributes(FilePath);
+                    File.SetAttributes(FilePath, FileAttributes.Normal);
+                }
                 File.WriteAllLines(FilePath, lines.ToArray(), Encoding);
+                File.SetAttributes(FilePath, attributes);
             }
         }
 
