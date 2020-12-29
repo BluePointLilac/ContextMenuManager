@@ -63,7 +63,7 @@ namespace ContextMenuManager.Controls
         public void DeleteMe()
         {
             Array.ForEach(BlockedPaths, path => { RegistryEx.DeleteValue(path, this.Value); });
-            ExplorerRestarter.NeedRestart = true;
+            if(!this.Guid.Equals(Guid.Empty)) ExplorerRestarter.NeedRestart = true;
             this.Dispose();
         }
     }
