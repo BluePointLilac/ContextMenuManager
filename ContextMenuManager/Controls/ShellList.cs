@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
@@ -300,7 +301,7 @@ namespace ContextMenuManager.Controls
                 this.Text = AppString.Item.SetPerceivedType;
                 this.Visible = TypeItem.Extension != null;
                 this.AddCtr(cmbType);
-                cmbType.Text = PerceivedType;
+                cmbType.Text = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(PerceivedType);
                 cmbType.Items.AddRange(PerceptionTypes);
                 cmbType.TextChanged += (sneder, e) => PerceivedType = cmbType.Text;
                 TypeItem.ExtensionChanged += (sender, e) => this.Visible = TypeItem.Extension != null;
