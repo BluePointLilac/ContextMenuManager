@@ -5,9 +5,8 @@ namespace ContextMenuManager
 {
     public static class AppString
     {
-        public static IniReader UserLanguage = new IniReader(AppConfig.LanguageIniPath);
+        public static readonly IniReader UserLanguage = new IniReader(AppConfig.LanguageIniPath);
         private static readonly IniReader DefaultLanguage = new IniReader(new StringBuilder(Properties.Resources.AppLanguageDic));
-
 
         private static string GetStringValue(string section, string key)
         {
@@ -167,7 +166,7 @@ namespace ContextMenuManager
             public static string RemovableDrive => GetValue("RemovableDrive");
             public static string BuildSendtoMenu => GetValue("BuildSendtoMenu");
             public static string UseStoreOpenWith => GetValue("UseStoreOpenWith");
-            public static string WinXPowerShell => GetValue("WinXPowerShell");
+            public static string ShareWithSkype => GetValue("ShareWithSkype");
             public static string NewItem => GetValue("NewItem");
             public static string AddGuidBlockedItem => GetValue("AddGuidBlockedItem");
             public static string CurrentExtension => GetValue("CurrentExtension");
@@ -222,10 +221,10 @@ namespace ContextMenuManager
             public static string VistaUnsupportedMulti => GetValue("VistaUnsupportedMulti");
             public static string CannotHideSubItem => GetValue("CannotHideSubItem");
             public static string UnsupportedFilename => GetValue("UnsupportedFilename");
-            public static string UnsupportedExtension => GetValue("UnsupportedExtension");
+            public static string NoOpenModeExtension => GetValue("NoOpenModeExtension");
             public static string CannotChangePath => GetValue("CannotChangePath");
             public static string CopiedToClipboard => GetValue("CopiedToClipboard");
-            public static string UnknownGuid => GetValue("UnknownGuid");
+            public static string MalformedGuid => GetValue("MalformedGuid");
             public static string HasBeenAdded => GetValue("HasBeenAdded");
             public static string EditInitialData => GetValue("EditInitialData");
             public static string PromptIsOpenItem => GetValue("PromptIsOpenItem");
@@ -234,6 +233,7 @@ namespace ContextMenuManager
             public static string FileNotExists => GetValue("FileNotExists");
             public static string FolderNotExists => GetValue("FolderNotExists");
             public static string NoUpdateDetected => GetValue("NoUpdateDetected");
+            public static string AuthorityProtection => GetValue("AuthorityProtection");
         }
 
         /// <summary>其他文本</summary>
@@ -287,6 +287,7 @@ namespace ContextMenuManager
             public static string LastCheckUpdateTime => GetValue("LastCheckUpdateTime");
             public static string OpenLanguagesDir => GetValue("OpenLanguagesDir");
             public static string OpenDictionariesDir => GetValue("OpenDictionariesDir");
+            public static string ShareWithSkype => GetValue("ShareWithSkype");
         }
     }
 }

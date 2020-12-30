@@ -55,8 +55,8 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <Item Text="层叠右键菜单">
       <Rule ValueName="shell_ShowSubmenu" On="1" Off="0"/>
     </Item>
-    <Item Text="自动解压">
-      <Rule ValueName="shell_ExtractAuto" On="1" Off="0"/>
+    <Item Text="隐藏Bandizip图标">
+      <Rule ValueName="shell_HideIcon" On="1" Off="0"/>
     </Item>
     <Item Text="预览压缩文件">
       <Rule ValueName="shell_Preview" On="1" Off="0"/>
@@ -67,8 +67,35 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <Item Text="打开命令提示符">
       <Rule ValueName="shell_OpenCmd" On="1" Off="0"/>
     </Item>
-    <Item Text="隐藏Bandizip图标">
-      <Rule ValueName="shell_HideIcon" On="1" Off="0"/>
+    <Item Text="解压到当前文件夹">
+      <Rule ValueName="shell_ExtractHere" On="1" Off="0"/>
+    </Item>
+    <Item Text="自动解压">
+      <Rule ValueName="shell_ExtractAuto" On="1" Off="0"/>
+    </Item>
+    <Item Text="解压到...">
+      <Rule ValueName="shell_ExtractSub" On="1" Off="0"/>
+    </Item>
+    <Item Text="解压到当前文件夹 (智能) 并删除原始文件">
+      <Rule ValueName="shell_ExtractAuto_Del" On="1" Off="0"/>
+    </Item>
+    <Item Text="选择解压路径">
+      <Rule ValueName="shell_ExtractDlg" On="1" Off="0"/>
+    </Item>
+    <Item Text="测试压缩文件">
+      <Rule ValueName="shell_TestArchive" On="1" Off="0"/>
+    </Item>
+    <Item Text="用Bandizip打开">
+      <Rule ValueName="shell_OpenArchive" On="1" Off="0"/>
+    </Item>
+    <Item Text="以管理员身份解压">
+      <Rule ValueName="shell_ExtractAsAdmin" On="1" Off="0"/>
+    </Item>
+    <Item Text="以管理员身份压缩">
+      <Rule ValueName="shell_ArchivingAsAdmin" On="1" Off="0"/>
+    </Item>
+    <Item Text="选中压缩文件时仍显示压缩菜单">
+      <Rule ValueName="shell_ShowCompressMenu2Archive" On="1" Off="0"/>
     </Item>
   </Group>
 
@@ -94,29 +121,53 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
   </Group>
 
   <Group Text="WinRAR" Guid="b41db860-64e4-11d2-9906-e49fadc173ca" RegPath="HKEY_CURRENT_USER\SOFTWARE\WinRAR">
-    <Item Text="启用右键菜单">
-      <Rule RegPath="\Setup" ValueName="CascadedMenu" On="1" Off="0"/>
-    </Item>
     <Item Text="层叠右键菜单">
       <Rule RegPath="\Setup" ValueName="CascadedMenu" On="1" Off="0"/>
     </Item>
     <Item Text="显示图标">
       <Rule RegPath="\Setup" ValueName="MenuIcons" On="1" Off="0"/>
     </Item>
-    <Item Text="解压到 [文件夹名]">
-      <Rule RegPath="\MenuItems" ValueName="Extr" On="1" Off="0"/>
+    <Item Text="解压文件(A)...">
+      <Rule RegPath="\Setup\MenuItems" ValueName="ExtrTo" On="1" Off="0"/>
     </Item>
-    <Item Text="解压到当前文件夹">
-      <Rule RegPath="\MenuItems" ValueName="ExtrHere" On="1" Off="0"/>
+    <Item Text="解压到当前文件夹(X)">
+      <Rule RegPath="\Setup\MenuItems" ValueName="ExtrHere" On="1" Off="0"/>
     </Item>
-    <Item Text="解压每个压缩文件到单独文件夹">
-      <Rule RegPath="\MenuItems" ValueName="ExtrSep" On="1" Off="0"/>
+    <Item Text="解压到 [文件夹名] (E)">
+      <Rule RegPath="\Setup\MenuItems" ValueName="Extr" On="1" Off="0"/>
     </Item>
-    <Item Text="压缩并Email">
-      <Rule RegPath="\MenuItems" ValueName="EmailOpt" On="1" Off="0"/>
+    <Item Text="解压每个压缩文件到单独文件夹(S)" Tip="选中多个文件时">
+      <Rule RegPath="\Setup\MenuItems" ValueName="ExtrSep" On="1" Off="0"/>
     </Item>
-    <Item Text="压缩到 [文件名] 并Email">
-      <Rule RegPath="\MenuItems" ValueName="EmailArc" On="1" Off="0"/>
+    <Item Text="使用WinRAR打开(用于自解压文件)">
+      <Rule RegPath="\Setup\MenuItems" ValueName="OpenSFX" On="1" Off="0"/>
+    </Item>
+    <Item Text="使用WinRAR打开(用于常规压缩文件)">
+      <Rule RegPath="\Setup\MenuItems" ValueName="OpenArc" On="1" Off="0"/>
+    </Item>
+    <Item Text="添加到压缩文件(A)...">
+      <Rule RegPath="\Setup\MenuItems" ValueName="AddTo" On="1" Off="0"/>
+    </Item>
+    <Item Text="添加到 [压缩文件名称](T)">
+      <Rule RegPath="\Setup\MenuItems" ValueName="AddArc" On="1" Off="0"/>
+    </Item>
+    <Item Text="压缩到 [压缩文件名称] 并发送电子邮件">
+      <Rule RegPath="\Setup\MenuItems" ValueName="EmailArc" On="1" Off="0"/>
+    </Item>
+    <Item Text="压缩并发送电子邮件...">
+      <Rule RegPath="\Setup\MenuItems" ValueName="EmailOpt" On="1" Off="0"/>
+    </Item>
+    <Item Text="测试压缩文件(R)">
+      <Rule RegPath="\Setup\MenuItems" ValueName="Test" On="1" Off="0"/>
+    </Item>
+    <Item Text="转换压缩文件(V)...">
+      <Rule RegPath="\Setup\MenuItems" ValueName="Convert" On="1" Off="0"/>
+    </Item>
+    <Item Text="右键拖放文件显示压缩菜单">
+      <Rule RegPath="\Setup\MenuItems" ValueName="DragAdd" On="1" Off="0"/>
+    </Item>
+    <Item Text="右键拖放压缩文件显示解压菜单">
+      <Rule RegPath="\Setup\MenuItems" ValueName="DragExtr" On="1" Off="0"/>
     </Item>
   </Group>
 
