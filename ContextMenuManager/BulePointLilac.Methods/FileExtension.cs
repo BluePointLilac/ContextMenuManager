@@ -9,7 +9,7 @@ namespace BulePointLilac.Methods
         public static string GetOpenMode(string extension)
         {
             string mode = Registry.GetValue($@"{FileExtsPath}\{extension}\UserChoice", "ProgId", null)?.ToString();
-            if(mode != null) return mode;
+            if(!string.IsNullOrEmpty(mode)) return mode;
             mode = Registry.GetValue($@"HKEY_CLASSES_ROOT\{extension}", "", null)?.ToString();
             return mode;
         }
