@@ -12,12 +12,7 @@ namespace BulePointLilac.Methods
         /// <summary>路径类型</summary>
         public enum PathType { File, Directory, Registry }
 
-        private static readonly List<string> EnvironmentDirectorys = new List<string> {
-                @"%SystemRoot%\System32",
-                @"%SystemRoot%",
-                @"%SystemRoot%\System32\WindowsPowerShell\v1.0"
-            };
-
+        private static readonly string[] EnvironmentDirectorys = { @"%SystemRoot%\System32", @"%SystemRoot%" };
         private const string RegAppPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
         private const string RegLastPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit";
 
