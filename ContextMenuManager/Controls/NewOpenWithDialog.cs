@@ -40,9 +40,9 @@ namespace ContextMenuManager.Controls
                         MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
-                    if(Command.IsNullOrWhiteSpace())
+                    if(FullCommand.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
                         return;
                     }
                     FilePath = ObjectPath.ExtractFilePath(Command);
