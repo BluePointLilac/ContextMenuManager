@@ -132,6 +132,7 @@ namespace ContextMenuManager.Controls
                     using(var key = shellKey.CreateSubKey(keyName, true))
                     {
                         key.SetValue("MUIVerb", ItemText);
+                        key.SetValue("NeverDefault", "");
                         if(rdoMulti.Checked)
                             key.SetValue("SubCommands", "");
                         else

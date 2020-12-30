@@ -7,7 +7,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Shell>
       <Item KeyName='CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示'>
         <Value>
-          <REG_SZ MUIVerb='复制文件路径' Icon='imageres.dll,-5302'/>
+          <REG_SZ MUIVerb='复制文件路径' Icon='imageres.dll,-5302' NeverDefault=''/>
         </Value>
         <SubKey>
           <Command Default='mshta vbscript:clipboarddata.setdata("text","%1")(close)'/>
@@ -15,7 +15,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       </Item>
       <Item KeyName='CopyContent' Tip='不需打开文件直接复制文件文本内容&#x000A;非UTF-16 LE(或带BOM)编码会乱码'>
         <Value>
-          <REG_SZ MUIVerb='复制内容到剪切板' Icon='DxpTaskSync.dll,-52'/>
+          <REG_SZ MUIVerb='复制内容到剪切板' Icon='DxpTaskSync.dll,-52' NeverDefault=''/>
         </Value>
         <SubKey>
           <Command Default='cmd /c clip &lt; "%1"'/>
@@ -24,7 +24,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='TakeOwnerShip'>
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='获取所有者权限' HasLUAShield='' NoWorkingDirectory=''/>
+          <REG_SZ MUIVerb='获取所有者权限' HasLUAShield='' NoWorkingDirectory='' NeverDefault=''/>
         </Value>
         <SubKey>
           <Command Default='powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList &apos;/c takeown /f \"%1\" &amp; icacls \"%1\" /grant *S-1-3-4:F /c /l&apos; -Verb runAs"'/>
@@ -36,7 +36,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='GetHash'>
         <OSVersion Compare=">=">6.3</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='获取哈希值'/>
+          <REG_SZ MUIVerb='获取哈希值' NeverDefault=''/>
         </Value>
         <SubKey>
           <Command Default='powershell -noexit get-filehash -literalpath "%1" -algorithm SHA1 | format-list;get-filehash -literalpath "%1" -algorithm SHA256 | format-list;get-filehash -literalpath "%1" -algorithm SHA384 | format-list;get-filehash -literalpath "%1" -algorithm SHA512 | format-list;get-filehash -literalpath "%1" -algorithm MACTripleDES | format-list;get-filehash -literalpath "%1" -algorithm MD5 | format-list;get-filehash -literalpath "%1" -algorithm RIPEMD160 | format-list'/>
@@ -49,7 +49,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Shell>
       <Item KeyName='CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示'>
         <Value>
-          <REG_SZ MUIVerb='复制文件夹路径' Icon='imageres.dll,-5302'/>
+          <REG_SZ MUIVerb='复制文件夹路径' Icon='imageres.dll,-5302' NeverDefault=''/>
         </Value>
         <SubKey>
           <Command Default='mshta vbscript:clipboarddata.setdata("text","%1")(close)'/>
@@ -63,7 +63,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName="TakeOwnerShip">
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='获取所有者权限' HasLUAShield='' NoWorkingDirectory=''/>
+          <REG_SZ MUIVerb='获取所有者权限' HasLUAShield='' NoWorkingDirectory='' NeverDefault=''/>
         </Value>
         <SubKey>
           <Command Default='powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList &apos;/c takeown /f \"%1\" /r /d y &amp; icacls \"%1\" /grant *S-1-3-4:F /t /c /l /q&apos; -Verb runAs"'>
@@ -195,7 +195,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <!--优化驱动器-->
       <Item KeyName='OptimizeDrives'>
         <Value>
-          <REG_SZ MUIVerb='@dfrgui.exe,-106' Icon='dfrgui.exe,0'/>
+          <REG_SZ MUIVerb='@dfrgui.exe,-106' Icon='dfrgui.exe,0' NeverDefault=''/>
         </Value>
         <SubKey>
           <Command Default='dfrgui.exe'/>
@@ -204,7 +204,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <!--磁盘清理-->
       <Item KeyName='Windows.CleanUp'>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-22026' Icon='cleanmgr.exe,-104' CommandStateSync='' ExplorerCommandHandler='{9cca66bb-9c78-4e59-a76f-a5e9990b8aa0}'/>
+          <REG_SZ MUIVerb='@shell32.dll,-22026' Icon='cleanmgr.exe,-104' NeverDefault='' CommandStateSync='' ExplorerCommandHandler='{9cca66bb-9c78-4e59-a76f-a5e9990b8aa0}'/>
           <REG_DWORD ImpliedSelectionModel='0x1'/>
         </Value>
       </Item>
@@ -217,14 +217,14 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='Windows.PermanentDelete' Tip='不能用于删除lnk快捷方式文件,&#x000A;或通过快捷方式删除其目标对象'>
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-37394' Icon='shell32.dll,-240' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{E9571AB2-AD92-4ec6-8924-4E5AD33790F5}'/>
+          <REG_SZ MUIVerb='@shell32.dll,-37394' Icon='shell32.dll,-240' NeverDefault='' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{E9571AB2-AD92-4ec6-8924-4E5AD33790F5}'/>
         </Value>
       </Item>
       <!--复制路径-->
       <Item KeyName='Windows.CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示'>
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-30329' Icon='imageres.dll,-5302' CommandStateHandler='{3B1599F9-E00A-4BBF-AD3E-B3F99FA87779}' CanonicalName='{707C7BC6-685A-4A4D-A275-3966A5A3EFAA}' CommandStateSync='' VerbHandler='{f3d06e7c-1e45-4a26-847e-f9fcdee59be0}' VerbName='copyaspath' Description='@shell32.dll,-30336'/>
+          <REG_SZ MUIVerb='@shell32.dll,-30329' Icon='imageres.dll,-5302' NeverDefault='' CommandStateHandler='{3B1599F9-E00A-4BBF-AD3E-B3F99FA87779}' CanonicalName='{707C7BC6-685A-4A4D-A275-3966A5A3EFAA}' CommandStateSync='' VerbHandler='{f3d06e7c-1e45-4a26-847e-f9fcdee59be0}' VerbName='copyaspath' Description='@shell32.dll,-30336'/>
           <REG_DWORD InvokeCommandOnSelection='1'/>
         </Value>
       </Item>
@@ -241,7 +241,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Shell>
       <Item KeyName='OpenWithNotepad'>
         <Value>
-          <REG_SZ MUIVerb='用记事本打开' Icon='%windir%\system32\notepad.exe,0'/>
+          <REG_SZ MUIVerb='用记事本打开' Icon='%windir%\system32\notepad.exe,0' NeverDefault=''/>
         </Value>
         <SubKey>
           <Command Default='notepad.exe %1'/>
@@ -254,7 +254,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Shell>
       <Item KeyName='OpenWithMsPaint'>
         <Value>
-          <REG_SZ MUIVerb='用画图打开' Icon='mspaint.exe,0'/>
+          <REG_SZ MUIVerb='用画图打开' Icon='mspaint.exe,0' NeverDefault=''/>
         </Value>
         <SubKey>
           <Command Default='mspaint.exe %1'/>

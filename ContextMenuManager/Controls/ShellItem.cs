@@ -169,6 +169,16 @@ namespace ContextMenuManager.Controls
             }
         }
 
+        private bool NeverDefault
+        {
+            get => Registry.GetValue(RegPath, "NeverDefault", null) != null;
+            set
+            {
+                if(value) Registry.SetValue(RegPath, "NeverDefault", "");
+                else RegistryEx.DeleteValue(RegPath, "NeverDefault");
+            }
+        }
+
         private Positions ItemPosition
         {
             get
@@ -375,14 +385,15 @@ namespace ContextMenuManager.Controls
         protected readonly ToolStripMenuItem TsiOtherAttributes = new ToolStripMenuItem(AppString.Menu.OtherAttributes);
         readonly ToolStripMenuItem TsiItemIcon = new ToolStripMenuItem(AppString.Menu.ItemIcon);
         readonly ToolStripMenuItem TsiDeleteIcon = new ToolStripMenuItem(AppString.Menu.DeleteIcon);
+        readonly ToolStripMenuItem TsiShieldIcon = new ToolStripMenuItem(AppString.Menu.ShieldIcon);
         readonly ToolStripMenuItem TsiPosition = new ToolStripMenuItem(AppString.Menu.ItemPosition);
         readonly ToolStripMenuItem TsiDefault = new ToolStripMenuItem(AppString.Menu.SetDefault);
-        readonly ToolStripMenuItem TsiTop = new ToolStripMenuItem(AppString.Menu.SetTop);
-        readonly ToolStripMenuItem TsiBottom = new ToolStripMenuItem(AppString.Menu.SetBottom);
-        readonly ToolStripMenuItem TsiShift = new ToolStripMenuItem(AppString.Menu.OnlyWithShift);
-        readonly ToolStripMenuItem TsiExplorer = new ToolStripMenuItem(AppString.Menu.OnlyInExplorer);
+        readonly ToolStripMenuItem TsiSetTop = new ToolStripMenuItem(AppString.Menu.SetTop);
+        readonly ToolStripMenuItem TsiSetBottom = new ToolStripMenuItem(AppString.Menu.SetBottom);
+        readonly ToolStripMenuItem TsiOnlyWithShift = new ToolStripMenuItem(AppString.Menu.OnlyWithShift);
+        readonly ToolStripMenuItem TsiOnlyInExplorer = new ToolStripMenuItem(AppString.Menu.OnlyInExplorer);
         readonly ToolStripMenuItem TsiNoWorkDir = new ToolStripMenuItem(AppString.Menu.NoWorkingDirectory);
-        readonly ToolStripMenuItem TsiShieldIcon = new ToolStripMenuItem(AppString.Menu.ShieldIcon);
+        readonly ToolStripMenuItem TsiNeverDefault = new ToolStripMenuItem(AppString.Menu.NeverDefault);
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
         protected readonly PictureButton BtnSubItems = new PictureButton(AppImage.SubItems);
 
@@ -405,20 +416,21 @@ namespace ContextMenuManager.Controls
 
             TsiItemIcon.DropDownItems.AddRange(new ToolStripItem[] { TsiChangeIcon, TsiDeleteIcon, TsiShieldIcon });
 
-            TsiPosition.DropDownItems.AddRange(new ToolStripItem[] { TsiDefault, TsiTop, TsiBottom });
+            TsiPosition.DropDownItems.AddRange(new ToolStripItem[] { TsiDefault, TsiSetTop, TsiSetBottom });
 
-            TsiOtherAttributes.DropDownItems.AddRange(new ToolStripItem[] { TsiShift, TsiExplorer, TsiNoWorkDir });
+            TsiOtherAttributes.DropDownItems.AddRange(new ToolStripItem[] { TsiOnlyWithShift, TsiOnlyInExplorer, TsiNoWorkDir, TsiNeverDefault });
 
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
                 TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport});
 
             TsiDeleteIcon.Click += (sender, e) => DeleteIcon();
-            TsiTop.Click += (sender, e) => this.ItemPosition = Positions.Top;
-            TsiBottom.Click += (sender, e) => this.ItemPosition = Positions.Bottom;
+            TsiSetTop.Click += (sender, e) => this.ItemPosition = Positions.Top;
+            TsiSetBottom.Click += (sender, e) => this.ItemPosition = Positions.Bottom;
             TsiDefault.Click += (sender, e) => this.ItemPosition = Positions.Default;
-            TsiExplorer.Click += (sender, e) => this.OnlyInExplorer = !TsiExplorer.Checked;
-            TsiShift.Click += (sender, e) => this.OnlyWithShift = !TsiShift.Checked;
+            TsiOnlyInExplorer.Click += (sender, e) => this.OnlyInExplorer = !TsiOnlyInExplorer.Checked;
+            TsiOnlyWithShift.Click += (sender, e) => this.OnlyWithShift = !TsiOnlyWithShift.Checked;
             TsiNoWorkDir.Click += (sender, e) => this.NoWorkingDirectory = !TsiNoWorkDir.Checked;
+            TsiNeverDefault.Click += (sender, e) => this.NeverDefault = !TsiNeverDefault.Checked;
             ContextMenuStrip.Opening += (sender, e) => RefreshMenuItem();
             BtnSubItems.MouseDown += (sender, e) => ShowSubItems();
             TsiShieldIcon.Click += (sender, e) => UseShieldIcon();
@@ -446,17 +458,18 @@ namespace ContextMenuManager.Controls
 
         private void RefreshMenuItem()
         {
-            TsiShift.Visible = !IsSubItem;
+            TsiOnlyWithShift.Visible = !IsSubItem;
             TsiDeleteMe.Enabled = !(IsOpenItem && AppConfig.ProtectOpenItem);
             TsiNoWorkDir.Checked = this.NoWorkingDirectory;
             TsiChangeCommand.Visible = !IsMultiItem && Guid.Equals(Guid.Empty);
-            if(!this.IsSubItem) TsiShift.Checked = this.OnlyWithShift;
+            if(!this.IsSubItem) TsiOnlyWithShift.Checked = this.OnlyWithShift;
 
             if(WindowsOsVersion.IsAfterVista)
             {
                 TsiItemIcon.Visible = true;
                 TsiPosition.Visible = !IsSubItem;
-                TsiExplorer.Visible = !IsSubItem;
+                TsiOnlyInExplorer.Visible = !IsSubItem;
+                TsiNeverDefault.Visible = !IsSubItem;
                 if(this.HasIcon)
                 {
                     TsiChangeIcon.Text = AppString.Menu.ChangeIcon;
@@ -469,20 +482,21 @@ namespace ContextMenuManager.Controls
                 }
                 TsiShieldIcon.Checked = HasLUAShield;
 
-                if(!this.IsSubItem)
+                if(!IsSubItem)
                 {
-                    TsiExplorer.Checked = this.OnlyInExplorer;
-                    TsiDefault.Checked = TsiTop.Checked = TsiBottom.Checked = false;
+                    TsiOnlyInExplorer.Checked = this.OnlyInExplorer;
+                    TsiNeverDefault.Checked = this.NeverDefault;
+                    TsiDefault.Checked = TsiSetTop.Checked = TsiSetBottom.Checked = false;
                     switch(this.ItemPosition)
                     {
                         case Positions.Default:
                             TsiDefault.Checked = true;
                             break;
                         case Positions.Top:
-                            TsiTop.Checked = true;
+                            TsiSetTop.Checked = true;
                             break;
                         case Positions.Bottom:
-                            TsiBottom.Checked = true;
+                            TsiSetBottom.Checked = true;
                             break;
                     }
                 }
@@ -491,7 +505,8 @@ namespace ContextMenuManager.Controls
             {
                 TsiItemIcon.Visible = false;
                 TsiPosition.Visible = false;
-                TsiExplorer.Visible = false;
+                TsiOnlyInExplorer.Visible = false;
+                TsiNeverDefault.Visible = false;
             }
         }
 

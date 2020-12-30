@@ -129,6 +129,7 @@ namespace ContextMenuManager
             public static string OnlyWithShift => GetValue("OnlyWithShift");
             public static string OnlyInExplorer => GetValue("OnlyInExplorer");
             public static string NoWorkingDirectory => GetValue("NoWorkingDirectory");
+            public static string NeverDefault => GetValue("NeverDefault");
             public static string Details => GetValue("Details");
             public static string WebSearch => GetValue("WebSearch");
             public static string ChangeCommand => GetValue("ChangeCommand");
