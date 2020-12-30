@@ -35,7 +35,7 @@ namespace ContextMenuManager.Controls
             get => IsLocked();
             set
             {
-                if(value) Lock();
+                if(value) Owner.WriteRegistry();
                 else UnLock();
                 foreach(Control ctr in Owner.Controls)
                 {
