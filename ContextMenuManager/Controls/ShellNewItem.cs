@@ -16,11 +16,12 @@ namespace ContextMenuManager.Controls
      * 但当ShellNew项中不存在合法的MenuText键值时，菜单名称取HKCR\<DefaultOpenMode>的FriendlyTypeName键值或者默认值，后两个键值都为空时也不成立
      * 3.ShellNew项中存在"NullFile", "Data", "FileName", "Directory", "Command"中的一个或多个键值*/
     sealed class ShellNewItem : MyListItem, IChkVisibleItem, ITsiTextItem, IBtnShowMenuItem, IBtnMoveUpDownItem,
-         ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem
+         ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem, ITsiCommandItem
     {
         public static readonly string[] SnParts = { "ShellNew", "-ShellNew" };
         public static readonly string[] UnableSortExtensions = { ".library-ms", ".lnk", "Folder" };
         private static readonly string[] UnableEditDataValues = { "Directory", "FileName", "Handler", "Command" };
+        private static readonly string[] UnableChangeCommandValues = { "Data", "Directory", "FileName", "Handler" };
 
         public ShellNewItem(ShellNewList list, string regPath)
         {
@@ -55,6 +56,7 @@ namespace ContextMenuManager.Controls
         private string DefaultOpenModePath => $@"{HKCR}\{DefaultOpenMode}";//默认关联打开方式注册表路径
 
         private bool CanEditData => UnableEditDataValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够编辑初始数据的
+        private bool CanChangeCommand => UnableChangeCommandValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够更改菜单命令的
         public bool CanSort => !UnableSortExtensions.Contains(Extension, StringComparer.OrdinalIgnoreCase);//能够排序的
 
         public string ItemFilePath
@@ -148,6 +150,25 @@ namespace ContextMenuManager.Controls
             set => Registry.SetValue(RegPath, "Data", value);
         }
 
+        public string ItemCommand
+        {
+            get => Registry.GetValue(RegPath, "Command", null)?.ToString();
+            set
+            {
+                if(value.IsNullOrWhiteSpace())
+                {
+                    if(Registry.GetValue(RegPath, "NullFile", null) != null)
+                    {
+                        RegistryEx.DeleteValue(RegPath, "Command");
+                    }
+                }
+                else
+                {
+                    Registry.SetValue(RegPath, "Command", value);
+                }
+            }
+        }
+
         public ShellNewList Owner { get; private set; }
         public MoveButton BtnMoveUp { get; set; }
         public MoveButton BtnMoveDown { get; set; }
@@ -161,6 +182,7 @@ namespace ContextMenuManager.Controls
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
         public RegExportMenuItem TsiRegExport { get; set; }
+        public ChangeCommandMenuItem TsiChangeCommand { get; set; }
 
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
         readonly ToolStripMenuItem TsiEditData = new ToolStripMenuItem(AppString.Menu.InitialData);
@@ -174,22 +196,27 @@ namespace ContextMenuManager.Controls
             TsiSearch = new WebSearchMenuItem(this);
             TsiChangeText = new ChangeTextMenuItem(this);
             TsiChangeIcon = new ChangeIconMenuItem(this);
+            TsiChangeCommand = new ChangeCommandMenuItem(this);
             TsiFileLocation = new FileLocationMenuItem(this);
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiRegLocation = new RegLocationMenuItem(this);
             TsiRegExport = new RegExportMenuItem(this);
             TsiDeleteMe = new DeleteMeMenuItem(this);
+            TsiChangeCommand.CommandCanBeEmpty = true;
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiChangeText,
                 new ToolStripSeparator(), TsiChangeIcon, new ToolStripSeparator(),
                 TsiDetails, new ToolStripSeparator(), TsiDeleteMe });
 
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
-                TsiEditData, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport });
+                TsiEditData,TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport });
 
             TsiEditData.Click += (sender, e) => EditInitialData();
-            ContextMenuStrip.Opening += (sender, e) => TsiEditData.Visible = CanEditData;
-
+            ContextMenuStrip.Opening += (sender, e) =>
+            {
+                TsiEditData.Visible = CanEditData;
+                TsiChangeCommand.Visible = CanChangeCommand;
+            };
             BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
             BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
         }
