@@ -301,7 +301,7 @@ namespace ContextMenuManager.Controls
                 this.Text = AppString.Item.SetPerceivedType;
                 this.Visible = TypeItem.Extension != null;
                 this.AddCtr(cmbType);
-                cmbType.Text = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(PerceivedType);
+                cmbType.Text = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(PerceivedType ?? string.Empty);
                 cmbType.Items.AddRange(PerceptionTypes);
                 cmbType.TextChanged += (sneder, e) => PerceivedType = cmbType.Text;
                 TypeItem.ExtensionChanged += (sender, e) => this.Visible = TypeItem.Extension != null;
