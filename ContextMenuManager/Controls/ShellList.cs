@@ -29,6 +29,7 @@ namespace ContextMenuManager.Controls
         public const string MENUPATH_UWPLNK = @"HKEY_CLASSES_ROOT\Launcher.ImmersiveApplication";//UWP快捷方式
         public const string MENUPATH_UNKNOWN = @"HKEY_CLASSES_ROOT\Unknown";//未知格式
         public const string MENUPATH_TEXT = @"HKEY_CLASSES_ROOT\SystemFileAssociations\text";//通用文本文件
+        public const string MENUPATH_DOCUMENT = @"HKEY_CLASSES_ROOT\SystemFileAssociations\document";//通用文档文件
         public const string MENUPATH_IMAGE = @"HKEY_CLASSES_ROOT\SystemFileAssociations\image";//通用图像文件
         public const string MENUPATH_VIDEO = @"HKEY_CLASSES_ROOT\SystemFileAssociations\video";//通用视频文件
         public const string MENUPATH_AUDIO = @"HKEY_CLASSES_ROOT\SystemFileAssociations\audio";//通用音频文件
@@ -40,7 +41,7 @@ namespace ContextMenuManager.Controls
         public enum Scenes
         {
             File, Folder, Directory, Background, Desktop, Drive, AllObjects, Computer, RecycleBin,
-            Library, LnkFile, UwpLnk, ExeFile, TextFile, ImageFile, VideoFile, AudioFile,
+            Library, LnkFile, UwpLnk, ExeFile, TextFile, DocumentFile, ImageFile, VideoFile, AudioFile,
             ImageDirectory, VideoDirectory, AudioDirectory, UnknownType, CustomType, CommandStore
         }
 
@@ -102,6 +103,8 @@ namespace ContextMenuManager.Controls
                     scenePath = MENUPATH_EXEFILE; break;
                 case Scenes.TextFile:
                     scenePath = MENUPATH_TEXT; break;
+                case Scenes.DocumentFile:
+                    scenePath = MENUPATH_DOCUMENT; break;
                 case Scenes.ImageFile:
                     scenePath = MENUPATH_IMAGE; break;
                 case Scenes.VideoFile:

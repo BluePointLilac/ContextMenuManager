@@ -93,6 +93,7 @@ namespace ContextMenuManager
             AppString.SideBar.ExeFile,
             null,
             AppString.SideBar.TextFile,
+            AppString.SideBar.DocumentFile,
             AppString.SideBar.ImageFile,
             AppString.SideBar.VideoFile,
             AppString.SideBar.AudioFile,
@@ -102,7 +103,6 @@ namespace ContextMenuManager
             AppString.SideBar.AudioDirectory,
             null,
             AppString.SideBar.UnknownType,
-            null,
             AppString.SideBar.CustomType
         };
         static readonly string[] TypeItemInfos = {
@@ -111,6 +111,7 @@ namespace ContextMenuManager
             AppString.StatusBar.ExeFile,
             null,
             AppString.StatusBar.TextFile,
+            AppString.StatusBar.DocumentFile,
             AppString.StatusBar.ImageFile,
             AppString.StatusBar.VideoFile,
             AppString.StatusBar.AudioFile,
@@ -120,7 +121,6 @@ namespace ContextMenuManager
             AppString.StatusBar.AudioDirectory,
             null,
             AppString.StatusBar.UnknownType,
-            null,
             AppString.StatusBar.CustomType
         };
 
@@ -168,6 +168,7 @@ namespace ContextMenuManager
             ShellList.Scenes.ExeFile,
             null,
             ShellList.Scenes.TextFile,
+            ShellList.Scenes.DocumentFile,
             ShellList.Scenes.ImageFile,
             ShellList.Scenes.VideoFile,
             ShellList.Scenes.AudioFile,
@@ -177,7 +178,6 @@ namespace ContextMenuManager
             ShellList.Scenes.AudioDirectory,
             null,
             ShellList.Scenes.UnknownType,
-            null,
             ShellList.Scenes.CustomType
         };
 
