@@ -51,25 +51,34 @@ namespace ContextMenuManager.Controls
                     extensions.Insert(0, str);
                 }
             }
-            foreach(string extension in extensions)
+            using(RegistryKey root = Registry.ClassesRoot)
             {
-                using(RegistryKey extKey = Registry.ClassesRoot.OpenSubKey(extension))
+                foreach(string extension in extensions)
                 {
-                    string typeName = extKey.GetValue("")?.ToString();
-                    if(typeName == null) continue;
-                    using(RegistryKey tKey = extKey.OpenSubKey(typeName))
+                    using(RegistryKey extKey = root.OpenSubKey(extension))
                     {
-                        foreach(string part in ShellNewItem.SnParts)
+                        string defalutOpenMode = extKey.GetValue("")?.ToString();
+                        if(string.IsNullOrEmpty(defalutOpenMode)) continue;
+                        using(RegistryKey openModeKey = root.OpenSubKey(defalutOpenMode))
                         {
-                            string snPart = part;
-                            if(tKey != null) snPart = $@"{typeName}\{snPart}";
-                            using(RegistryKey snKey = extKey.OpenSubKey(snPart))
+                            string value1 = openModeKey.GetValue("FriendlyTypeName")?.ToString();
+                            string value2 = openModeKey.GetValue("")?.ToString();
+                            value1 = ResourceString.GetDirectString(value1);
+                            if(value1.IsNullOrWhiteSpace() && value2.IsNullOrWhiteSpace()) continue;
+                        }
+                        using(RegistryKey tKey = extKey.OpenSubKey(defalutOpenMode))
+                        {
+                            foreach(string part in ShellNewItem.SnParts)
                             {
-                                if(ValueNames.Any(valueName => snKey?.GetValue(valueName) != null))
+                                string snPart = part;
+                                if(tKey != null) snPart = $@"{defalutOpenMode}\{snPart}";
+                                using(RegistryKey snKey = extKey.OpenSubKey(snPart))
                                 {
-                                    ShellNewItem item = new ShellNewItem(this, snKey.Name);
-                                    if(item.ItemText != null) { this.AddItem(item); break; }
-                                    else item.Dispose();
+                                    if(ValueNames.Any(valueName => snKey?.GetValue(valueName) != null))
+                                    {
+                                        this.AddItem(new ShellNewItem(this, snKey.Name));
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -129,6 +138,12 @@ namespace ContextMenuManager.Controls
                 {
                     if(dlg.ShowDialog() != DialogResult.OK) return;
                     string extension = dlg.Extension;
+                    string openMode = FileExtension.GetOpenMode(extension);
+                    if(string.IsNullOrEmpty(openMode))
+                    {
+                        MessageBoxEx.Show(AppString.MessageBox.NoOpenModeExtension);
+                        return;
+                    }
                     foreach(Control ctr in this.Controls)
                     {
                         if(ctr.GetType() == typeof(ShellNewItem))
@@ -140,16 +155,25 @@ namespace ContextMenuManager.Controls
                             }
                         }
                     }
-                    string typeName = FileExtensionDialog.GetTypeName(extension, false);
+
                     using(RegistryKey exKey = Registry.ClassesRoot.OpenSubKey(extension, true))
+                    using(RegistryKey snKey = exKey.CreateSubKey("ShellNew", true))
                     {
-                        exKey.SetValue("", typeName);
-                        using(RegistryKey snKey = exKey.CreateSubKey("ShellNew", true))
+                        string defaultOpenMode = exKey.GetValue("")?.ToString();
+                        if(string.IsNullOrEmpty(defaultOpenMode))
                         {
-                            snKey.SetValue("NullFile", string.Empty);
-                            this.AddItem(new ShellNewItem(this, snKey.Name));
-                            if(LockNewItem.IsLocked()) this.WriteRegistry();
+                            exKey.SetValue("", openMode);
                         }
+
+                        snKey.SetValue("NullFile", string.Empty);
+                        ShellNewItem item = new ShellNewItem(this, snKey.Name);
+                        this.AddItem(item);
+                        item.Focus();
+                        if(item.ItemText.IsNullOrWhiteSpace())
+                        {
+                            item.ItemText = $"{extension.Substring(1)} file";
+                        }
+                        if(LockNewItem.IsLocked()) this.WriteRegistry();
                     }
                 }
             };

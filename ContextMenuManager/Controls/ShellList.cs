@@ -251,9 +251,8 @@ namespace ContextMenuManager.Controls
                 }
             }
 
-            const string HKCR = "HKEY_CLASSES_ROOT";
             public static string SysAssExtPath => Extension == null ? null : $@"{SYSFILEASSPATH}\{Extension}";
-            public static string AssExtPath => Extension == null ? null : $@"{HKCR}\{FileExtensionDialog.GetTypeName(Extension)}";
+            public static string AssExtPath => Extension == null ? null : $@"HKEY_CLASSES_ROOT\{FileExtension.GetOpenMode(Extension)}";
 
             public static event EventHandler ExtensionChanged;
 

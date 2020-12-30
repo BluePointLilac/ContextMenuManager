@@ -9,6 +9,12 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
+    /* 新建菜单项成立条件与相关规则：
+     * 1.有关联打开方式，优先为HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\<扩展名>\UserChoice的ProgId键值（以下简称<OpenMode>）
+     * 再次为HKCR\<扩展名>的默认键值（以下简称<DefaultOpenMode>）
+     * 2.<DefaultOpenMode>不能为空，HKCR\<DefaultOpenMode>项需存在，<DefaultOpenMode>不一定为关联打开方式，
+     * 但当ShellNew项中不存在合法的MenuText键值时，菜单名称取HKCR\<DefaultOpenMode>的FriendlyTypeName键值或者默认值，后两个键值都为空时也不成立
+     * 3.ShellNew项中存在"NullFile", "Data", "FileName", "Directory", "Command"中的一个或多个键值*/
     sealed class ShellNewItem : MyListItem, IChkVisibleItem, ITsiTextItem, IBtnShowMenuItem, IBtnMoveUpDownItem,
          ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem
     {
@@ -43,10 +49,11 @@ namespace ContextMenuManager.Controls
         private string BackupPath => $@"{RegistryEx.GetParentPath(RegPath)}\{(ItemVisible ? SnParts[1] : SnParts[0])}";
 
         private const string HKCR = "HKEY_CLASSES_ROOT";
-        private string TypePath => $@"{HKCR}\{FileExtensionDialog.GetTypeName(Extension)}";//关联类型路径
-        private string DefaultTypePath => $@"{HKCR}\{FileExtensionDialog.GetTypeName(Extension, false)}";//默认关联类型路径
-        private string TypeDefaultIcon => Registry.GetValue($@"{TypePath}\DefaultIcon", "", null)?.ToString();//关联类型默认图标路径
-        private string DefaultTypeDefaultIcon => Registry.GetValue($@"{DefaultTypePath}\DefaultIcon", "", null)?.ToString();//默认关联类型默认图标路径
+        private string OpenMode => FileExtension.GetOpenMode(Extension);//关联打开方式
+        private string OpenModePath => $@"{HKCR}\{OpenMode}";//关联打开方式注册表路径
+        private string DefaultOpenMode => Registry.GetValue($@"{HKCR}\{Extension}", "", null)?.ToString();//默认关联打开方式
+        private string DefaultOpenModePath => $@"{HKCR}\{DefaultOpenMode}";//默认关联打开方式注册表路径
+
         private bool CanEditData => UnableEditDataValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够编辑初始数据的
         public bool CanSort => !UnableSortExtensions.Contains(Extension, StringComparer.OrdinalIgnoreCase);//能够排序的
 
@@ -55,7 +62,7 @@ namespace ContextMenuManager.Controls
             get
             {
                 string filePath = null;
-                using(RegistryKey key = RegistryEx.GetRegistryKey(DefaultTypePath))
+                using(RegistryKey key = RegistryEx.GetRegistryKey(OpenModePath))
                 {
                     if(key == null) return filePath;
                     string value = key.OpenSubKey(@"shell\open\command")?.GetValue("")?.ToString();
@@ -90,25 +97,32 @@ namespace ContextMenuManager.Controls
                 string name = Registry.GetValue(RegPath, "MenuText", null)?.ToString();
                 name = ResourceString.GetDirectString(name);
                 if(!string.IsNullOrEmpty(name)) return name;
-                name = Registry.GetValue(DefaultTypePath, "FriendlyTypeName", null)?.ToString();
+                name = Registry.GetValue(DefaultOpenModePath, "FriendlyTypeName", null)?.ToString();
                 name = ResourceString.GetDirectString(name);
                 if(!string.IsNullOrEmpty(name)) return name;
 
-                name = Registry.GetValue(DefaultTypePath, "", null)?.ToString();
+                name = Registry.GetValue(DefaultOpenModePath, "", null)?.ToString();
                 if(!string.IsNullOrEmpty(name)) return name;
                 return null;
             }
             set
             {
                 RegistryEx.DeleteValue(RegPath, "MenuText");
-                Registry.SetValue(DefaultTypePath, "FriendlyTypeName", value);
+                Registry.SetValue(DefaultOpenModePath, "FriendlyTypeName", value);
                 this.Text = ResourceString.GetDirectString(value);
             }
         }
 
         public string IconLocation
         {
-            get => Registry.GetValue(RegPath, "IconPath", null)?.ToString();
+            get
+            {
+                string value = Registry.GetValue(RegPath, "IconPath", null)?.ToString();
+                if(!value.IsNullOrWhiteSpace()) return value;
+                value = Registry.GetValue($@"{OpenModePath}\DefaultIcon", "", null)?.ToString();
+                if(!value.IsNullOrWhiteSpace()) return value;
+                return ItemFilePath;
+            }
             set => Registry.SetValue(RegPath, "IconPath", value);
         }
 
@@ -116,18 +130,11 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                if(TypeDefaultIcon != null && TypeDefaultIcon.StartsWith("@"))
-                    return ResourceIcon.GetExtensionIcon(Extension);
-
-                Icon icon;
-                string iconPath;
-                int iconIndex;
-                string value = IconLocation;
-                if(value.IsNullOrWhiteSpace()) value = DefaultTypeDefaultIcon;
-                if(!string.IsNullOrEmpty(value)) icon = ResourceIcon.GetIcon(value, out iconPath, out iconIndex);
-                else icon = ResourceIcon.GetIcon(iconPath = ItemFilePath, iconIndex = 0);
-                if(icon == null) icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = 2);//图标资源不存在
-                IconPath = iconPath; IconIndex = iconIndex;
+                string location = IconLocation;
+                if(location.StartsWith("@")) return ResourceIcon.GetExtensionIcon(Extension);
+                Icon icon = ResourceIcon.GetIcon(location, out string path, out int index);
+                if(icon == null) icon = ResourceIcon.GetIcon(path = "imageres.dll", index = -2);
+                IconPath = path; IconIndex = index;
                 return icon;
             }
         }
