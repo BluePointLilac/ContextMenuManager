@@ -11,7 +11,7 @@ namespace BulePointLilac.Methods
     {
         /// <summary>路径类型</summary>
         public enum PathType { File, Directory, Registry }
-
+        //右键菜单仅支持%SystemRoot%\System32和%SystemRoot%两个环境变量，不考虑其他系统环境变量和用户环境变量，和Win+R命令有区别
         private static readonly string[] EnvironmentDirectorys = { @"%SystemRoot%\System32", @"%SystemRoot%" };
         private const string RegAppPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
         private const string RegLastPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit";
