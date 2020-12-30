@@ -121,6 +121,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BulePointLilac.Methods\DirectoryEx.cs" />
+    <Compile Include="BulePointLilac.Methods\FileExtension.cs" />
     <Compile Include="BulePointLilac.Methods\GuidEx.cs" />
     <Compile Include="BulePointLilac.Methods\IniReader.cs" />
     <Compile Include="BulePointLilac.Methods\IniWriter.cs" />
@@ -149,9 +150,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\LockNewItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\SpecialItems\SkypeShareItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ShellStoreDialog.cs">
@@ -342,6 +340,7 @@
   <ItemGroup>
     <Content Include="Properties\AppIcon.ico" />
     <Content Include="Properties\Resources\Images\Refresh.png" />
+    <Content Include="Properties\Resources\Images\Skype.png" />
     <Content Include="Properties\Resources\Texts\EnhanceMenusDic.xml" />
     <Content Include="Properties\Resources\Images\About.png" />
     <Content Include="Properties\Resources\Images\Add.png" />
