@@ -173,6 +173,7 @@ namespace ContextMenuManager
             public static string NewItem => GetValue("NewItem");
             public static string AddGuidBlockedItem => GetValue("AddGuidBlockedItem");
             public static string CurrentExtension => GetValue("CurrentExtension");
+            public static string SetPerceivedType => GetValue("SetPerceivedType");
             public static string EditSubItems => GetValue("EditSubItems");
             public static string InvalidItem => GetValue("InvalidItem");
             public static string Separator => GetValue("Separator");

@@ -3,6 +3,7 @@ using BulePointLilac.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -158,6 +159,7 @@ namespace ContextMenuManager.Controls
                     break;
                 case Scenes.CustomType:
                     this.InsertItem(new TypeItem(), 0);
+                    this.InsertItem(new PerceptionItem(), 1);
                     this.LoadItems(TypeItem.AssExtPath);
                     break;
             }
@@ -242,7 +244,6 @@ namespace ContextMenuManager.Controls
 
         sealed class TypeItem : MyListItem
         {
-
             static string extension;
             public static string Extension
             {
@@ -256,12 +257,16 @@ namespace ContextMenuManager.Controls
 
             public static string SysAssExtPath => Extension == null ? null : $@"{SYSFILEASSPATH}\{Extension}";
             public static string AssExtPath => Extension == null ? null : $@"HKEY_CLASSES_ROOT\{FileExtension.GetOpenMode(Extension)}";
+            public static string ExtensionPath => $@"HKEY_CLASSES_ROOT\{Extension}";
 
             public static event EventHandler ExtensionChanged;
 
+            readonly PictureButton BtnType = new PictureButton(AppImage.Types);
+
             public TypeItem()
             {
-                GetImageAndText();
+                this.GetText();
+                this.Image = AppImage.CustomType;
                 this.AddCtr(BtnType);
                 this.SetNoClickEvent();
                 BtnType.MouseDown += (sender, e) =>
@@ -269,24 +274,60 @@ namespace ContextMenuManager.Controls
                     using(FileExtensionDialog dlg = new FileExtensionDialog())
                         if(dlg.ShowDialog() == DialogResult.OK) Extension = dlg.Extension;
                 };
-                ExtensionChanged += (sender, e) => GetImageAndText();
+                ExtensionChanged += (sender, e) => this.GetText();
             }
 
-            readonly PictureButton BtnType = new PictureButton(AppImage.Types);
-
-            private void GetImageAndText()
+            private void GetText()
             {
                 if(Extension == null)
                 {
-                    this.Image = AppImage.CustomType;
                     this.Text = AppString.Dialog.SelectExtension;
                 }
                 else
                 {
-                    this.Image = ResourceIcon.GetExtensionIcon(Extension)?.ToBitmap() ?? AppImage.NotFound;
                     this.Text = $"{AppString.Item.CurrentExtension}{Extension}";
                 }
             }
+        }
+
+        sealed class PerceptionItem : MyListItem
+        {
+            private static readonly string[] PerceptionTypes = { "Text", "Image", "Video", "Audio", "System", "Compressed" };
+
+            public PerceptionItem()
+            {
+                this.Image = ResourceIcon.GetExtensionIcon(TypeItem.Extension)?.ToBitmap() ?? AppImage.NotFound;
+                this.Text = AppString.Item.SetPerceivedType;
+                this.Visible = TypeItem.Extension != null;
+                this.AddCtr(cmbType);
+                cmbType.Text = PerceivedType;
+                cmbType.Items.AddRange(PerceptionTypes);
+                cmbType.TextChanged += (sneder, e) => PerceivedType = cmbType.Text;
+                TypeItem.ExtensionChanged += (sender, e) => this.Visible = TypeItem.Extension != null;
+            }
+
+            private static string PerceivedType
+            {
+                get => Registry.GetValue(TypeItem.ExtensionPath, "PerceivedType", null)?.ToString();
+                set
+                {
+                    if(value.IsNullOrWhiteSpace())
+                    {
+                        RegistryEx.DeleteValue(TypeItem.ExtensionPath, "PerceivedType");
+                    }
+                    else
+                    {
+                        Registry.SetValue(TypeItem.ExtensionPath, "PerceivedType", value);
+                    }
+                }
+            }
+
+            readonly ComboBox cmbType = new ComboBox
+            {
+                Font = new Font(SystemFonts.MenuFont.FontFamily, 10F),
+                ImeMode = ImeMode.Disable,
+                Width = 100.DpiZoom()
+            };
         }
     }
 }
