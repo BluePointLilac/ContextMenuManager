@@ -74,32 +74,24 @@ namespace ContextMenuManager
             }
         }
 
-        public static string LanguageIniPath
+        public static string LanguageIniPath => $@"{LangsDir}\{Language}.ini";
+
+        public static string Language
         {
             get
             {
                 string language = ConfigWriter.GetValue("General", "Language");
-                DirectoryInfo di = new DirectoryInfo(LangsDir);
-                if(language == string.Empty && di.Exists)
+                if(language == string.Empty)
                 {
-                    string sysLanguageName = new CultureInfo(GetUserDefaultUILanguage()).Name;
-                    foreach(FileInfo fi in di.GetFiles())
-                    {
-                        string name = Path.GetFileNameWithoutExtension(fi.Name);
-                        //如果为空，则赋值为系统显示语言文件名文件（存在时）
-                        if(name.Equals(sysLanguageName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            language = fi.FullName; break;
-                        }
-                    }
+                    language = new CultureInfo(GetUserDefaultUILanguage()).Name;
                 }
-                else if(!File.Exists(language)) language = string.Empty;
+                if(!File.Exists($@"{LangsDir}\{language}.ini"))
+                {
+                    language = string.Empty;
+                }
                 return language;
             }
-            set
-            {
-                ConfigWriter.SetValue("General", "Language", value);
-            }
+            set => ConfigWriter.SetValue("General", "Language", value);
         }
 
         public static bool AutoBackup

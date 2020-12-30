@@ -213,7 +213,7 @@ namespace ContextMenuManager.Controls
 
         readonly PictureButton btnOpenDir = new PictureButton(AppImage.Open);
 
-        readonly List<string> iniPaths = new List<string>();
+        readonly List<string> languages = new List<string>();
 
         protected override void OnResize(EventArgs e)
         {
@@ -234,15 +234,13 @@ namespace ContextMenuManager.Controls
             cmbLanguages.Items.Clear();
             cmbLanguages.Items.Add("(default) 简体中文");
             string str = AppString.Other.Translators + Environment.NewLine + new string('-', 74);
-            DirectoryInfo di = new DirectoryInfo(AppConfig.LangsDir);
-            if(di.Exists)
+            if(Directory.Exists(AppConfig.LangsDir))
             {
-                iniPaths.Clear();
-                FileInfo[] fis = di.GetFiles();
-                foreach(FileInfo fi in fis)
+                languages.Clear();
+                foreach(string fileName in Directory.GetFiles(AppConfig.LangsDir,"*.ini"))
                 {
-                    iniPaths.Add(fi.FullName);
-                    IniReader reader = new IniReader(fi.FullName);
+                    languages.Add(Path.GetFileNameWithoutExtension(fileName));
+                    IniReader reader = new IniReader(fileName);
                     string language = reader.GetValue("General", "Language");
                     string translator = reader.GetValue("General", "Translator");
                     str += Environment.NewLine + language + new string('\t', 5) + translator;
@@ -255,27 +253,27 @@ namespace ContextMenuManager.Controls
 
         private void ChangeLanguage()
         {
-            string path = "default";
+            string language = "default";
             int index = GetSelectIndex();
             if(cmbLanguages.SelectedIndex == index) return;
-            if(cmbLanguages.SelectedIndex > 0) path = iniPaths[cmbLanguages.SelectedIndex - 1];
+            if(cmbLanguages.SelectedIndex > 0) language = languages[cmbLanguages.SelectedIndex - 1];
             if(MessageBoxEx.Show(AppString.MessageBox.RestartApp, MessageBoxButtons.OKCancel) != DialogResult.OK)
             {
                 cmbLanguages.SelectedIndex = index;
             }
             else
             {
-                AppConfig.LanguageIniPath = path;
+                AppConfig.Language = language;
                 Application.Restart();
             }
         }
 
         private int GetSelectIndex()
         {
-            string path = AppConfig.LanguageIniPath;
-            for(int i = 0; i < iniPaths.Count; i++)
+            string language = AppConfig.Language;
+            for(int i = 0; i < languages.Count; i++)
             {
-                if(iniPaths[i].Equals(path, StringComparison.OrdinalIgnoreCase)) return i + 1;
+                if(languages[i].Equals(language, StringComparison.OrdinalIgnoreCase)) return i + 1;
             }
             return 0;
         }
