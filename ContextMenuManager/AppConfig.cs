@@ -52,28 +52,6 @@ namespace ContextMenuManager
 
         private static readonly IniWriter ConfigWriter = new IniWriter(ConfigIni);
 
-        public static DateTime LastCheckUpdateTime
-        {
-            get
-            {
-                try
-                {
-                    string time = ConfigWriter.GetValue("General", "LastCheckUpdateTime");
-                    //二进制数据时间不会受系统时间格式影响
-                    return DateTime.FromBinary(Convert.ToInt64(time));
-                }
-                catch
-                {
-                    //将上次检测更新时间推前到两个月前
-                    return DateTime.Today.AddMonths(-2);
-                }
-            }
-            set
-            {
-                ConfigWriter.SetValue("General", "LastCheckUpdateTime", value.ToBinary().ToString());
-            }
-        }
-
         public static string LanguageIniPath => $@"{LangsDir}\{Language}.ini";
 
         public static string Language
@@ -98,6 +76,28 @@ namespace ContextMenuManager
         {
             get => ConfigWriter.GetValue("General", "AutoBackup") != "0";
             set => ConfigWriter.SetValue("General", "AutoBackup", (value ? 1 : 0).ToString());
+        }
+
+        public static DateTime LastCheckUpdateTime
+        {
+            get
+            {
+                try
+                {
+                    string time = ConfigWriter.GetValue("General", "LastCheckUpdateTime");
+                    //二进制数据时间不会受系统时间格式影响
+                    return DateTime.FromBinary(Convert.ToInt64(time));
+                }
+                catch
+                {
+                    //将上次检测更新时间推前到两个月前
+                    return DateTime.Today.AddMonths(-2);
+                }
+            }
+            set
+            {
+                ConfigWriter.SetValue("General", "LastCheckUpdateTime", value.ToBinary().ToString());
+            }
         }
 
         public static bool ProtectOpenItem
