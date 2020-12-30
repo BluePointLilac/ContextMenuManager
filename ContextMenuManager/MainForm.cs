@@ -97,12 +97,12 @@ namespace ContextMenuManager
             AppString.SideBar.ImageFile,
             AppString.SideBar.VideoFile,
             AppString.SideBar.AudioFile,
-            null,
             AppString.SideBar.ImageDirectory,
             AppString.SideBar.VideoDirectory,
             AppString.SideBar.AudioDirectory,
             null,
             AppString.SideBar.UnknownType,
+            null,
             AppString.SideBar.CustomType
         };
         static readonly string[] TypeItemInfos = {
@@ -115,12 +115,12 @@ namespace ContextMenuManager
             AppString.StatusBar.ImageFile,
             AppString.StatusBar.VideoFile,
             AppString.StatusBar.AudioFile,
-            null,
             AppString.StatusBar.ImageDirectory,
             AppString.StatusBar.VideoDirectory,
             AppString.StatusBar.AudioDirectory,
             null,
             AppString.StatusBar.UnknownType,
+            null,
             AppString.StatusBar.CustomType
         };
 
@@ -172,12 +172,12 @@ namespace ContextMenuManager
             ShellList.Scenes.ImageFile,
             ShellList.Scenes.VideoFile,
             ShellList.Scenes.AudioFile,
-            null,
             ShellList.Scenes.ImageDirectory,
             ShellList.Scenes.VideoDirectory,
             ShellList.Scenes.AudioDirectory,
             null,
             ShellList.Scenes.UnknownType,
+            null,
             ShellList.Scenes.CustomType
         };
 
