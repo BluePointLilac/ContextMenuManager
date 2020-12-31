@@ -85,7 +85,6 @@ namespace ContextMenuManager.Controls
                     {
                         if(key?.GetValue(rule.ValueName) == null) continue;
                         if(key.GetValueKind(rule.ValueName) != rule.ValueKind) continue;
-                        string value = key.GetValue(rule.ValueName)?.ToString();
                         if(key.GetValue(rule.ValueName).ToString().ToLower()
                             == rule.TurnOffValue.ToString().ToLower()) return false;
                     }
@@ -215,7 +214,7 @@ namespace ContextMenuManager.Controls
         public static RuleAndInfo ShareWithSkype = new RuleAndInfo
         {
             Rules = new[]
-    {
+            {
                 new RegRule(GuidBlockedItem.HKLMBLOCKED, SkypeGuidStr, null, "", RegistryValueKind.String),
                 new RegRule(GuidBlockedItem.HKCUBLOCKED, SkypeGuidStr, null, "", RegistryValueKind.String)
             },
