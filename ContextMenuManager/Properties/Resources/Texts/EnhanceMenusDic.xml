@@ -36,7 +36,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='GetHash'>
         <OSVersion Compare=">=">6.3</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='获取哈希值'/>
+          <REG_SZ MUIVerb='获取哈希值' Icon='powershell.exe,0'/>
         </Value>
         <SubKey>
           <Command Default='powershell -noexit get-filehash -literalpath "%1" -algorithm SHA1 | format-list;get-filehash -literalpath "%1" -algorithm SHA256 | format-list;get-filehash -literalpath "%1" -algorithm SHA384 | format-list;get-filehash -literalpath "%1" -algorithm SHA512 | format-list;get-filehash -literalpath "%1" -algorithm MACTripleDES | format-list;get-filehash -literalpath "%1" -algorithm MD5 | format-list;get-filehash -literalpath "%1" -algorithm RIPEMD160 | format-list'/>
@@ -119,6 +119,15 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <Command Default='mshta vbscript:createobject("shell.application").shellexecute("cmd","/s /k pushd %v","","runas",1)(close)'/>
         </SubKey>
       </Item>
+      <Item KeyName='ExplorerUWP'>
+        <OSVersion Compare=">=">10.0</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='资源管理器UWP' Icon='explorer.exe,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='explorer shell:AppsFolder\c5e2524a-ea46-4f67-841f-6a9465d9d515_cw5n1h2txyewy!App'/>
+        </SubKey>
+      </Item>
     </Shell>
     <ShellEx>
       <Item Text='窗口转换程序' Icon='imageres.dll,0' KeyName='Flip3D' Guid='{3080f90e-d7ad-11d9-bd98-0000947b0257}'/>
@@ -185,6 +194,15 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         </Value>
         <SubKey>
           <Command Default='SlideToShutDown.exe'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='BatteryReport'>
+        <Value>
+          <OSVersion Compare=">=">10.0</OSVersion>
+          <REG_SZ MUIVerb='电池使用报告' Icon='cmd.exe,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='cmd /c powercfg /batteryreport /output BatteryReport.html &amp; BatteryReport.html &amp; pause'/>
         </SubKey>
       </Item>
     </Shell>

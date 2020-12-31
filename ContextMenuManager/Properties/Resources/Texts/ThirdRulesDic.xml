@@ -10,6 +10,11 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoViewContextMenu" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoViewContextMenu" On="0" Off="1"/>
     </Item>
+    <Item Text="系统 使用较宽的新版右键菜单" RestartExplorer="">
+      <OSVersion Compare=">=">10.0.14393</OSVersion>
+      <OSVersion Compare="&lt;">10.0.17763</OSVersion>
+      <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\FlightedFeatures" ValueName="ImmersiveContextMenu" On="1" Off="0"/>
+    </Item>
     <Item Text="任务栏 右键菜单" RestartExplorer="">
       <Rule RegPath="HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoTrayContextMenu" On="0" Off="1"/>
       <Rule RegPath="HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" ValueName="NoTrayContextMenu" On="0" Off="1"/>
