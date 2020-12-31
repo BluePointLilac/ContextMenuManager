@@ -262,4 +262,46 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       </Item>
     </Shell>
   </Image>
+
+  <DLL Text='DLL文件' Icon='imageres.dll,-67' RegPath='HKEY_CLASSES_ROOT\SystemFileAssociations\.dll'>
+    <Shell>
+      <Item KeyName='Register'>
+        <Value>
+          <REG_SZ MUIVerb='注册 DLL'/>
+        </Value>
+        <SubKey>
+          <Command Default='mshta vbscript:createobject("shell.application").shellexecute("regsvr32","%1","","runas",1)(close)'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='UnRegister'>
+        <Value>
+          <REG_SZ MUIVerb='注销 DLL'/>
+        </Value>
+        <SubKey>
+          <Command Default='mshta vbscript:createobject("shell.application").shellexecute("regsvr32","/u %1","","runas",1)(close)'/>
+        </SubKey>
+      </Item>
+    </Shell>
+  </DLL>
+
+  <OCX Text='OCX文件' Icon='imageres.dll,-67' RegPath='HKEY_CLASSES_ROOT\SystemFileAssociations\.ocx'>
+    <Shell>
+      <Item KeyName='Register'>
+        <Value>
+          <REG_SZ MUIVerb='注册 OCX'/>
+        </Value>
+        <SubKey>
+          <Command Default='mshta vbscript:createobject("shell.application").shellexecute("regsvr32","%1","","runas",1)(close)'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='UnRegister'>
+        <Value>
+          <REG_SZ MUIVerb='注销 OCX'/>
+        </Value>
+        <SubKey>
+          <Command Default='mshta vbscript:createobject("shell.application").shellexecute("regsvr32","/u %1","","runas",1)(close)'/>
+        </SubKey>
+      </Item>
+    </Shell>
+  </OCX>
 </Data>
