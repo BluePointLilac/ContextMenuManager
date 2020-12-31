@@ -88,6 +88,7 @@ namespace ContextMenuManager.Controls
                     if(shellXE != null) LoadShellItems(shellXE, groupItem);
                     if(shellExXE != null) LoadShellExItems(shellExXE, groupItem);
                     groupItem.IsFold = true;
+                    groupItem.HideWhenNoSubItem();
                 }
             }
             catch { }

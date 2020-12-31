@@ -92,5 +92,15 @@ namespace ContextMenuManager.Controls.Interfaces
             MyToolTip.SetToolTip(BtnOpenPath, tip);
             this.SetNoClickEvent();
         }
+
+        public void HideWhenNoSubItem()
+        {
+            int count = 0;
+            foreach(var ctr in this.Parent.Controls)
+            {
+                if(ctr is IFoldSubItem item && item.FoldGroupItem == this) count++;
+            }
+            if(count == 0) this.Visible = false;
+        }
     }
 }

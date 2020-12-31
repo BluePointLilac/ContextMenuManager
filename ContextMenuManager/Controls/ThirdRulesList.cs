@@ -65,6 +65,7 @@ namespace ContextMenuManager.Controls
                         this.AddItem(new RegRuleItem(rules, itemInfo) { FoldGroupItem = groupItem, HasImage = false });
                     }
                     groupItem.IsFold = true;
+                    groupItem.HideWhenNoSubItem();
                 }
             }
             catch { }
