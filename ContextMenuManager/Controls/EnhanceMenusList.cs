@@ -123,8 +123,7 @@ namespace ContextMenuManager.Controls
         {
             foreach(XmlElement itemXE in shellXE.GetElementsByTagName("Item"))
             {
-                XmlElement verXE = (XmlElement)itemXE.SelectSingleNode("OSVersion");
-                if(!JudgeOSVersion(verXE)) continue;
+                if(!JudgeOSVersion(itemXE)) continue;
                 XmlElement szXE = (XmlElement)itemXE.SelectSingleNode("Value/REG_SZ");
                 string keyName = itemXE.GetAttribute("KeyName");
                 if(keyName.IsNullOrWhiteSpace()) continue;
@@ -153,8 +152,7 @@ namespace ContextMenuManager.Controls
         {
             foreach(XmlElement itemXE in shellExXE.GetElementsByTagName("Item"))
             {
-                XmlElement verXE = (XmlElement)itemXE.SelectSingleNode("OSVersion");
-                if(!JudgeOSVersion(verXE)) continue;
+                if(!JudgeOSVersion(itemXE)) continue;
                 if(!GuidEx.TryParse(itemXE.GetAttribute("Guid"), out Guid guid)) continue;
                 EnhanceShellExItem item = new EnhanceShellExItem
                 {
@@ -173,28 +171,36 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        public static bool JudgeOSVersion(XmlElement osXE)
+        public static bool JudgeOSVersion(XmlElement itemXE)
         {
-            if(osXE == null) return true;
-            Version ver = new Version(osXE.InnerText);
-            Version osVer = Environment.OSVersion.Version;
-            int compare = osVer.CompareTo(ver);
-            string symbol = osXE.GetAttribute("Compare");
-            switch(symbol)
+            bool JudgeOne(XmlElement osXE)
             {
-                case ">":
-                    return compare > 0;
-                case "<":
-                    return compare < 0;
-                case "=":
-                    return compare == 0;
-                case ">=":
-                    return compare >= 0;
-                case "<=":
-                    return compare <= 0;
-                default:
-                    return true;
+                Version ver = new Version(osXE.InnerText);
+                Version osVer = Environment.OSVersion.Version;
+                int compare = osVer.CompareTo(ver);
+                string symbol = osXE.GetAttribute("Compare");
+                switch(symbol)
+                {
+                    case ">":
+                        return compare > 0;
+                    case "<":
+                        return compare < 0;
+                    case "=":
+                        return compare == 0;
+                    case ">=":
+                        return compare >= 0;
+                    case "<=":
+                        return compare <= 0;
+                    default:
+                        return true;
+                }
             }
+
+            foreach(XmlElement osXE in itemXE.GetElementsByTagName("OSVersion"))
+            {
+                if(!JudgeOne(osXE)) return false;
+            }
+            return true;
         }
     }
 }

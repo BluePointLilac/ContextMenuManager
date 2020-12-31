@@ -37,8 +37,7 @@ namespace ContextMenuManager.Controls
 
                     foreach(XmlElement itemXE in groupXE.ChildNodes)
                     {
-                        XmlElement verXE = (XmlElement)itemXE.SelectSingleNode("OSVersion");
-                        if(!EnhanceMenusList.JudgeOSVersion(verXE)) continue;
+                        if(!EnhanceMenusList.JudgeOSVersion(itemXE)) continue;
                         RegRuleItem.ItemInfo itemInfo = new RegRuleItem.ItemInfo
                         {
                             Text = itemXE.GetAttribute("Text"),
