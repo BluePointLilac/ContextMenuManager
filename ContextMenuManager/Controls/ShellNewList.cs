@@ -61,6 +61,7 @@ namespace ContextMenuManager.Controls
                         if(string.IsNullOrEmpty(defalutOpenMode)) continue;
                         using(RegistryKey openModeKey = root.OpenSubKey(defalutOpenMode))
                         {
+                            if(openModeKey == null) continue;
                             string value1 = openModeKey.GetValue("FriendlyTypeName")?.ToString();
                             string value2 = openModeKey.GetValue("")?.ToString();
                             value1 = ResourceString.GetDirectString(value1);
