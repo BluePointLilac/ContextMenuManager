@@ -133,7 +133,7 @@ namespace ContextMenuManager.Controls
             get
             {
                 string location = IconLocation;
-                if(location.StartsWith("@")) return ResourceIcon.GetExtensionIcon(Extension);
+                if(location == null || location.StartsWith("@")) return ResourceIcon.GetExtensionIcon(Extension);
                 Icon icon = ResourceIcon.GetIcon(location, out string path, out int index);
                 if(icon == null) icon = ResourceIcon.GetIcon(path = "imageres.dll", index = -2);
                 IconPath = path; IconIndex = index;
