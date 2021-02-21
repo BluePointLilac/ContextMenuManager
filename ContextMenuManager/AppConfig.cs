@@ -1,9 +1,9 @@
-﻿using System;
+﻿using BluePointLilac.Methods;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using BluePointLilac.Methods;
 
 namespace ContextMenuManager
 {

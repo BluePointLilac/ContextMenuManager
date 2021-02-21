@@ -132,7 +132,8 @@ namespace ContextMenuManager.Controls
             TsiChangeGroup.Click += (sender, e) => ChangeGroup();
             BtnMoveDown.MouseDown += (sender, e) => MoveItem(false);
             BtnMoveUp.MouseDown += (sender, e) => MoveItem(true);
-            TsiAdministrator.Click += (sender, e) => {
+            TsiAdministrator.Click += (sender, e) =>
+            {
                 WinXList.HashLnk(this.FilePath);
                 ExplorerRestarter.Show();
             };

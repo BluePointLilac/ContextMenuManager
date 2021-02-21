@@ -26,7 +26,7 @@ namespace ContextMenuManager.Controls
             });
             Array.ForEach(values.Distinct(StringComparer.OrdinalIgnoreCase).ToArray(), value =>
             {
-                    this.AddItem(new GuidBlockedItem(value));
+                this.AddItem(new GuidBlockedItem(value));
             });
         }
 

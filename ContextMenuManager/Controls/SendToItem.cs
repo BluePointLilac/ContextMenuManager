@@ -117,7 +117,7 @@ namespace ContextMenuManager.Controls
                 if(IsShortcut)
                 {
                     location = Shortcut.IconLocation;
-                    if(location==",0") location = Shortcut.TargetPath;
+                    if(location == ",0") location = Shortcut.TargetPath;
                 }
                 else
                 {

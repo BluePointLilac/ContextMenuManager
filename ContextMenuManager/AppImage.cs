@@ -60,7 +60,7 @@ namespace ContextMenuManager
         ///<summary>资源管理器图标</summary>
         public static readonly Image Explorer = ResourceIcon.GetIcon("explorer.exe", 0).ToBitmap();
         ///<summary>命令提示符图标</summary>
-        public static readonly Image Cmd= ResourceIcon.GetIcon("cmd.exe", 0).ToBitmap();
+        public static readonly Image Cmd = ResourceIcon.GetIcon("cmd.exe", 0).ToBitmap();
         ///<summary>重启Explorer图标</summary>
         public static readonly Image RestartExplorer = ResourceIcon.GetIcon("shell32.dll", 238).ToBitmap();
         ///<summary>网络驱动器图标</summary>

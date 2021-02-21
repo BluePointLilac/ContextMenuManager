@@ -1,6 +1,6 @@
-﻿using System.Drawing;
+﻿using BluePointLilac.Methods;
+using System.Drawing;
 using System.Windows.Forms;
-using BluePointLilac.Methods;
 
 namespace BluePointLilac.Controls
 {
