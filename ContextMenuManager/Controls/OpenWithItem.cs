@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
 using Microsoft.Win32;
 using System;
@@ -33,8 +33,9 @@ namespace ContextMenuManager.Controls
                 ChkVisible.Checked = this.ItemVisible;
             }
         }
-
-        private string AppPath => RegistryEx.GetParentPath(RegistryEx.GetParentPath(RegistryEx.GetParentPath(RegPath)));
+        public string ValueName => null;
+        private string ShellPath => RegistryEx.GetParentPath(RegPath);
+        private string AppPath => RegistryEx.GetParentPath(RegistryEx.GetParentPath(ShellPath));
         private bool NameEquals => RegistryEx.GetKeyName(AppPath).Equals(Path.GetFileName(ItemFilePath), StringComparison.OrdinalIgnoreCase);
         private Icon ItemIcon => Icon.ExtractAssociatedIcon(ItemFilePath);
 
@@ -123,6 +124,10 @@ namespace ContextMenuManager.Controls
         public void DeleteMe()
         {
             RegistryEx.DeleteKeyTree(this.RegPath);
+            using(RegistryKey key = RegistryEx.GetRegistryKey(ShellPath))
+            {
+                if(key.GetSubKeyNames().Length == 0) RegistryEx.DeleteKeyTree(this.AppPath);
+            }
             this.Dispose();
         }
     }

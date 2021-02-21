@@ -1,9 +1,10 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -34,23 +35,26 @@ namespace ContextMenuManager.Controls
         {
             public ShellSubMenuForm()
             {
-                this.ShowInTaskbar = this.MinimizeBox = this.MaximizeBox = false;
                 this.StartPosition = FormStartPosition.CenterParent;
-                this.MinimumSize = this.Size = new Size(646, 389).DpiZoom();
-                this.Controls.Add(MlbSubItems);
+                this.ShowInTaskbar = this.MaximizeBox = this.MinimizeBox = false;
+                this.MinimumSize = this.Size = new Size(646, 369).DpiZoom();
+                this.Controls.AddRange(new Control[] { MlbSubItems, StatusBar });
                 this.OnResize(null);
             }
 
             /// <summary>子菜单的父菜单的注册表路径</summary>
             public string ParentPath { get; set; }
             readonly MyListBox MlbSubItems = new MyListBox { Dock = DockStyle.Fill };
+            readonly MyStatusBar StatusBar = new MyStatusBar();
+            private MyList LstSubItems;
 
             protected override void OnLoad(EventArgs e)
             {
                 base.OnLoad(e);
                 bool isPublic = true;
                 string value = GetValue(ParentPath, "SubCommands", null)?.ToString();
-                if(value.IsNullOrWhiteSpace())
+                if(value == null) isPublic = false;
+                else if(value.IsNullOrWhiteSpace())
                 {
                     using(var shellKey = RegistryEx.GetRegistryKey($@"{ParentPath}\shell"))
                     {
@@ -75,14 +79,27 @@ namespace ContextMenuManager.Controls
                 }
                 if(isPublic)
                 {
-                    new PulicMultiItemsList(MlbSubItems).LoadItems(ParentPath);
+                    LstSubItems = new PulicMultiItemsList(MlbSubItems);
+                    ((PulicMultiItemsList)LstSubItems).LoadItems(ParentPath);
                     this.Text += $"({AppString.Dialog.Public})";
                 }
                 else
                 {
-                    new PrivateMultiItemsList(MlbSubItems).LoadItems(ParentPath);
+                    LstSubItems = new PrivateMultiItemsList(MlbSubItems);
+                    ((PrivateMultiItemsList)LstSubItems).LoadItems(ParentPath);
                     this.Text += $"({AppString.Dialog.Private})";
                 }
+                LstSubItems.HoveredItemChanged += (sender, a) =>
+                {
+                    if(!AppConfig.ShowFilePath) return;
+                    MyListItem item = LstSubItems.HoveredItem;
+                    if(item is ITsiFilePathItem pathItem)
+                    {
+                        string path = pathItem.ItemFilePath;
+                        if(File.Exists(path)) { StatusBar.Text = path; return; }
+                    }
+                    StatusBar.Text = item.Text;
+                };
             }
 
             sealed class SubMenuModeForm : Form
@@ -193,7 +210,7 @@ namespace ContextMenuManager.Controls
                     {
                         if(dlg.ShowDialog() != DialogResult.OK) return;
                         SubKeyNames.Add(dlg.NewItemKeyName);
-                        WriteRegistry();
+                        SaveSorting();
                         this.AddItem(new SubShellItem(this, dlg.NewItemKeyName));
                     }
                 }
@@ -210,9 +227,10 @@ namespace ContextMenuManager.Controls
                         if(dlg.ShowDialog() != DialogResult.OK) return;
                         dlg.SelectedKeyNames.ForEach(keyName =>
                         {
+                            if(!SubShellTypeItem.CanAddMore(this)) return;
                             this.AddItem(new SubShellItem(this, keyName));
                             this.SubKeyNames.Add(keyName);
-                            WriteRegistry();
+                            SaveSorting();
                         });
                     }
                 }
@@ -220,11 +238,11 @@ namespace ContextMenuManager.Controls
                 private void AddSeparator()
                 {
                     this.SubKeyNames.Add("|");
-                    WriteRegistry();
+                    SaveSorting();
                     this.AddItem(new SeparatorItem(this));
                 }
 
-                private void WriteRegistry()
+                private void SaveSorting()
                 {
                     SetValue(ParentPath, "SubCommands", string.Join(";", SubKeyNames.ToArray()));
                 }
@@ -248,7 +266,7 @@ namespace ContextMenuManager.Controls
                             this.SubKeyNames.Reverse(index - 1, 2);
                         }
                     }
-                    this.WriteRegistry();
+                    this.SaveSorting();
                 }
 
                 private void DeleteItem(MyListItem item)
@@ -257,7 +275,7 @@ namespace ContextMenuManager.Controls
                     this.Controls.Remove(item);
                     this.Controls[index - 1].Focus();
                     this.SubKeyNames.RemoveAt(index - 1);
-                    this.WriteRegistry();
+                    this.SaveSorting();
                     item.Dispose();
                 }
 
@@ -317,6 +335,7 @@ namespace ContextMenuManager.Controls
                         BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
                         MyToolTip.SetToolTip(this, AppString.Tip.InvalidItem);
                         MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
+                        this.SetNoClickEvent();
                     }
 
                     public DeleteButton BtnDelete { get; set; }
@@ -347,7 +366,7 @@ namespace ContextMenuManager.Controls
                 /// <summary>父菜单的注册表路径</summary>
                 public string ParentPath { get; set; }
                 /// <summary>子菜单的Shell项注册表路径</summary>
-                private string ShellPath => $@"{ParentPath}\shell";
+                private string ShellPath { get; set; }
                 /// <summary>父菜单的Shell项注册表路径</summary>
                 private string ParentShellPath => RegistryEx.GetParentPath(ParentPath);
                 /// <summary>菜单所处环境注册表路径</summary>
@@ -358,6 +377,15 @@ namespace ContextMenuManager.Controls
                 public void LoadItems(string parentPath)
                 {
                     this.ParentPath = parentPath;
+                    string sckValue = GetValue(parentPath, "ExtendedSubCommandsKey", null)?.ToString();
+                    if(!sckValue.IsNullOrWhiteSpace())
+                    {
+                        this.ShellPath = $@"HKEY_CLASSES_ROOT\{sckValue}\shell";
+                    }
+                    else
+                    {
+                        this.ShellPath = $@"{parentPath}\shell";
+                    }
                     using(var shellKey = RegistryEx.GetRegistryKey(ShellPath))
                     {
                         if(shellKey == null) return;
@@ -420,8 +448,9 @@ namespace ContextMenuManager.Controls
                         if(dlg.ShowDialog() != DialogResult.OK) return;
                         dlg.SelectedKeyNames.ForEach(keyName =>
                         {
+                            if(!SubShellTypeItem.CanAddMore(this)) return;
                             string srcPath = $@"{dlg.ShellPath}\{keyName}";
-                            string dstPath = ObjectPath.GetNewPathWithIndex($@"{this.ShellPath}\{keyName}", ObjectPath.PathType.Registry);
+                            string dstPath = ObjectPath.GetNewPathWithIndex($@"{ShellPath}\{keyName}", ObjectPath.PathType.Registry);
 
                             RegistryEx.CopyTo(srcPath, dstPath);
                             this.AddItem(new SubShellItem(this, dstPath));
@@ -530,12 +559,12 @@ namespace ContextMenuManager.Controls
                 public SubSeparatorItem()
                 {
                     this.Text = AppString.Item.Separator;
-                    this.Image = AppImage.Separator;
+                    this.HasImage = false;
                     BtnDelete = new DeleteButton(this);
                     BtnMoveDown = new MoveButton(this, false);
                     BtnMoveUp = new MoveButton(this, true);
-                    MyToolTip.SetToolTip(this, AppString.Tip.Separator);
                     MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
+                    this.SetNoClickEvent();
                 }
 
                 public DeleteButton BtnDelete { get; set; }

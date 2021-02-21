@@ -1,4 +1,4 @@
-﻿using BulePointLilac.Methods;
+﻿using BluePointLilac.Methods;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -13,7 +13,7 @@ namespace ContextMenuManager.Controls.Interfaces
 
     interface ITsiRegDeleteItem : ITsiDeleteItem
     {
-        string ItemText { get; }
+        string Text { get; }
         string RegPath { get; }
     }
 
@@ -23,20 +23,19 @@ namespace ContextMenuManager.Controls.Interfaces
         {
             this.Click += (sender, e) =>
             {
-                if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDeletePermanently,
-                    MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if(item is ITsiRegDeleteItem regItem && AppConfig.AutoBackup)
                 {
-                    if(item is ITsiRegDeleteItem regItem && AppConfig.AutoBackup)
-                    {
-                        string date = DateTime.Today.ToString("yyyy-MM-dd");
-                        string fileName = ObjectPath.RemoveIllegalChars(regItem.ItemText);
-                        string filePath = $@"{AppConfig.BackupDir}\{date}\{fileName}.reg";
-                        filePath = ObjectPath.GetNewPathWithIndex(filePath, ObjectPath.PathType.File);
-                        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                        RegistryEx.Export(regItem.RegPath, filePath);
-                    }
-                    item.DeleteMe();
+                    if(MessageBoxEx.Show(AppString.MessageBox.DeleteButCanRestore,
+                     MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+                    string date = DateTime.Today.ToString("yyyy-MM-dd");
+                    string time = DateTime.Now.ToString("HH.mm.ss");
+                    string filePath = $@"{AppConfig.BackupDir}\{date}\{regItem.Text}-{time}.reg";
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    RegistryEx.Export(regItem.RegPath, filePath);
                 }
+                else if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDeletePermanently,
+                     MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+                item.DeleteMe();
             };
         }
     }

@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -110,27 +110,30 @@ namespace ContextMenuManager.Controls
                 foreach(StoreShellItem item in list.Controls)
                     if(item.IsSelected) SelectedKeyNames.Add(item.KeyName);
             }
+        }
+    }
 
-            sealed class StoreShellItem : ShellItem
+    sealed class StoreShellItem : ShellItem
+    {
+        public StoreShellItem(string regPath, bool isPublic, bool isSelect = true) : base(regPath)
+        {
+            this.IsPublic = isPublic;
+            if(isSelect)
             {
-                public StoreShellItem(string regPath, bool isPublic) : base(regPath)
-                {
-                    this.IsPublic = isPublic;
-                    this.AddCtr(chkSelected);
-                    ChkVisible.Visible = BtnSubItems.Visible = false;
-                    RegTrustedInstaller.TakeRegTreeOwnerShip(regPath);
-                }
-                public bool IsSelected => chkSelected.Checked;
-                public bool IsPublic { get; set; }
-                readonly CheckBox chkSelected = new CheckBox { AutoSize = true };
-
-                public override void DeleteMe()
-                {
-                    if(IsPublic && MessageBoxEx.Show(AppString.MessageBox.ConfirmDeleteReferenced,
-                        MessageBoxButtons.YesNo) != DialogResult.Yes) return;
-                    base.DeleteMe();
-                }
+                this.AddCtr(chkSelected, 40.DpiZoom());
+                ChkVisible.Visible = BtnShowMenu.Visible = BtnSubItems.Visible = false;
             }
+            RegTrustedInstaller.TakeRegTreeOwnerShip(regPath);
+        }
+        public bool IsSelected => chkSelected.Checked;
+        public bool IsPublic { get; set; }
+        readonly CheckBox chkSelected = new CheckBox { AutoSize = true };
+
+        public override void DeleteMe()
+        {
+            if(IsPublic && MessageBoxEx.Show(AppString.MessageBox.ConfirmDeleteReferenced,
+                MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+            base.DeleteMe();
         }
     }
 }

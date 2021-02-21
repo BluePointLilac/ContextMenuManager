@@ -1,7 +1,6 @@
-﻿using BulePointLilac.Methods;
+﻿using BluePointLilac.Methods;
 using System.IO;
 using System.Windows.Forms;
-using static BulePointLilac.Methods.ObjectPath;
 
 namespace ContextMenuManager.Controls.Interfaces
 {
@@ -17,15 +16,9 @@ namespace ContextMenuManager.Controls.Interfaces
     {
         public FileLocationMenuItem(ITsiFilePathItem item) : base(AppString.Menu.FileLocation)
         {
-            bool FileExists() => File.Exists(item.ItemFilePath);
-            bool DirExists() => Directory.Exists(item.ItemFilePath);
-            item.ContextMenuStrip.Opening += (sender, e)
-                => this.Visible = FileExists() || DirExists();
-            this.Click += (sender, e) =>
-            {
-                if(FileExists()) ShowPath(item.ItemFilePath, PathType.File);
-                else if(DirExists()) ShowPath(item.ItemFilePath, PathType.Directory);
-            };
+            item.ContextMenuStrip.Opening += (sender, e) =>
+                this.Visible = File.Exists(item.ItemFilePath) || Directory.Exists(item.ItemFilePath);
+            this.Click += (sender, e) => ExternalProgram.JumpExplorer(item.ItemFilePath);
         }
     }
 
@@ -35,7 +28,7 @@ namespace ContextMenuManager.Controls.Interfaces
         {
             item.ContextMenuStrip.Opening += (sender, e)
                 => this.Visible = File.Exists(item.ItemFilePath) || Directory.Exists(item.ItemFilePath);
-            this.Click += (sender, e) => PropertiesDialog.Show(item.ItemFilePath);
+            this.Click += (sender, e) => ExternalProgram.ShowPropertiesDialog(item.ItemFilePath);
         }
     }
 }

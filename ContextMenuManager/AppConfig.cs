@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using BulePointLilac.Methods;
+using BluePointLilac.Methods;
 
 namespace ContextMenuManager
 {
@@ -11,8 +11,10 @@ namespace ContextMenuManager
     {
         static AppConfig()
         {
-            CreateDirs();
-            DeleteOldFiles();
+            foreach(string dirPath in new[] { ConfigDir, ProgramsDir, BackupDir, LangsDir, DicsDir, WebDicsDir, UserDicsDir })
+            {
+                Directory.CreateDirectory(dirPath);
+            }
         }
 
         [DllImport("kernel32.dll")]
@@ -25,6 +27,7 @@ namespace ContextMenuManager
         public static string ConfigIni = $@"{ConfigDir}\Config.ini";
         public static string BackupDir = $@"{ConfigDir}\Backup";
         public static string LangsDir = $@"{ConfigDir}\Languages";
+        public static string ProgramsDir = $@"{ConfigDir}\Programs";
         public static string DicsDir = $@"{ConfigDir}\Dictionaries";
         public static string WebDicsDir = $@"{DicsDir}\Web";
         public static string UserDicsDir = $@"{DicsDir}\User";
@@ -34,7 +37,7 @@ namespace ContextMenuManager
         public static string UserThirdRulesDic = $@"{UserDicsDir}\{ThIRDRULESDICXML}";
         public static string WebEnhanceMenusDic = $@"{WebDicsDir}\{ENHANCEMENUSICXML}";
         public static string UserEnhanceMenusDic = $@"{UserDicsDir}\{ENHANCEMENUSICXML}";
-
+        public static string HashLnkExePath = $@"{ProgramsDir}\HashLnk.exe";
         public const string ZH_CNINI = "zh-CN.ini";
         public const string GUIDINFOSDICINI = "GuidInfosDic.ini";
         public const string ThIRDRULESDICXML = "ThirdRulesDic.xml";
@@ -120,43 +123,22 @@ namespace ContextMenuManager
             }
         }
 
-        private static void CreateDirs()
+        public static bool ShowFilePath
         {
-            foreach(string dirPath in new[] { ConfigDir, BackupDir, LangsDir, DicsDir, WebDicsDir, UserDicsDir })
-            {
-                Directory.CreateDirectory(dirPath);
-            }
+            get => ConfigWriter.GetValue("General", "ShowFilePath") == "1";
+            set => ConfigWriter.SetValue("General", "ShowFilePath", (value ? 1 : 0).ToString());
         }
 
-        private static void DeleteOldFiles()
+        public static bool WinXSortable
         {
-            DirectoryInfo configDi = new DirectoryInfo(ConfigDir);
-            foreach(DirectoryInfo di in configDi.GetDirectories())
-            {
-                bool isOther = true;
-                foreach(string path in new[] { BackupDir, LangsDir, DicsDir })
-                {
-                    if(di.FullName.Equals(path, StringComparison.OrdinalIgnoreCase))
-                    {
-                        isOther = false;
-                        break;
-                    }
-                }
-                if(isOther) Directory.Delete(di.FullName);
-            }
-            foreach(FileInfo fi in configDi.GetFiles())
-            {
-                bool isOther = true;
-                foreach(string path in new[] { ConfigIni })
-                {
-                    if(fi.FullName.Equals(path, StringComparison.OrdinalIgnoreCase))
-                    {
-                        isOther = false;
-                        break;
-                    }
-                }
-                if(isOther) File.Delete(fi.FullName);
-            }
+            get => ConfigWriter.GetValue("General", "WinXSortable") == "1";
+            set => ConfigWriter.SetValue("General", "WinXSortable", (value ? 1 : 0).ToString());
+        }
+
+        public static bool OpenMoreRegedit
+        {
+            get => ConfigWriter.GetValue("General", "OpenMoreRegedit") == "1";
+            set => ConfigWriter.SetValue("General", "OpenMoreRegedit", (value ? 1 : 0).ToString());
         }
     }
 }

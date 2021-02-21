@@ -1,4 +1,4 @@
-﻿using BulePointLilac.Methods;
+﻿using BluePointLilac.Methods;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -45,12 +45,11 @@ namespace ContextMenuManager.Controls
                 Text = AppString.Dialog.MultiMenu,
                 AutoSize = true
             };
+            readonly ShellExecuteCheckBox chkSE = new ShellExecuteCheckBox();
 
             static readonly string[] DirScenePaths = {
                 ShellList.MENUPATH_DIRECTORY,
-                ShellList.MENUPATH_DIRECTORY_IMAGE,
-                ShellList.MENUPATH_DIRECTORY_VIDEO,
-                ShellList.MENUPATH_DIRECTORY_AUDIO
+                $@"{ShellList.SYSFILEASSPATH}\Directory."
             };
             static readonly string[] FileObjectsScenePaths = {
                 ShellList.MENUPATH_FILE,
@@ -58,19 +57,19 @@ namespace ContextMenuManager.Controls
                 ShellList.MENUPATH_ALLOBJECTS,
                 ShellList.SYSFILEASSPATH,
                 ShellList.MENUPATH_UNKNOWN,
-                ShellList.MENUPATH_LNKFILE,
-                ShellList.MENUPATH_EXEFILE,
                 ShellList.MENUPATH_UWPLNK
             };
 
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
-                this.Text = AppString.Dialog.NewShellItem;
-                this.Controls.AddRange(new[] { rdoSingle, rdoMulti });
+                this.Controls.AddRange(new Control[] { rdoSingle, rdoMulti, chkSE });
                 rdoSingle.Top = rdoMulti.Top = btnOk.Top;
                 rdoSingle.Left = lblCommand.Left;
                 rdoMulti.Left = rdoSingle.Right + 20.DpiZoom();
+                chkSE.Top = txtArguments.Top + (txtArguments.Height - chkSE.Height) / 2;
+                this.Resize += (sender, e) => chkSE.Left = txtArguments.Right + 20.DpiZoom();
+                this.OnResize(null);
 
                 rdoMulti.CheckedChanged += (sender, e) =>
                 {
@@ -80,8 +79,8 @@ namespace ContextMenuManager.Controls
                         rdoSingle.Checked = true;
                         return;
                     }
-                    lblCommand.Enabled = txtCommand.Enabled = lblArguments.Enabled 
-                    = txtArguments.Enabled = btnBrowse.Enabled = !rdoMulti.Checked;
+                    lblCommand.Enabled = txtFilePath.Enabled = lblArguments.Enabled
+                    = txtArguments.Enabled = btnBrowse.Enabled = chkSE.Enabled = !rdoMulti.Checked;
                 };
 
                 btnBrowse.Click += (sender, e) => BrowseFile();
@@ -104,19 +103,36 @@ namespace ContextMenuManager.Controls
             {
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
-                    dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.pif;*.com";
+                    dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.pif;*.com;*.vbs;*.vbe;*.js;*.jse;*.wsf";
                     if(dlg.ShowDialog() != DialogResult.OK) return;
-                    Command = dlg.FileName;
                     ItemText = Path.GetFileNameWithoutExtension(dlg.FileName);
-                    if(Array.FindIndex(DirScenePaths, path
-                       => ScenePath.Equals(path, StringComparison.OrdinalIgnoreCase)) != -1)
+                    string extension = Path.GetExtension(dlg.FileName).ToLower();
+                    switch(extension)
                     {
-                        Arguments = "%V";//自动加目录后缀
+                        case ".vbs":
+                        case ".vbe":
+                        case ".js":
+                        case ".jse":
+                        case ".wsf":
+                            ItemFilePath = "wscript.exe";
+                            Arguments = dlg.FileName;
+                            break;
+                        default:
+                            ItemFilePath = dlg.FileName;
+                            break;
+                    }
+                    if(Array.FindIndex(DirScenePaths, path
+                       => ScenePath.StartsWith(path, StringComparison.OrdinalIgnoreCase)) != -1)
+                    {
+                        if(!Arguments.IsNullOrWhiteSpace()) Arguments += " ";
+                        if(ScenePath != ShellList.MENUPATH_BACKGROUND)
+                            Arguments += "\"%V\"";//自动加目录后缀
                     }
                     else if(Array.FindIndex(FileObjectsScenePaths, path
                        => ScenePath.StartsWith(path, StringComparison.OrdinalIgnoreCase)) != -1)
                     {
-                        Arguments += "%1";//自动加文件对象后缀
+                        if(!Arguments.IsNullOrWhiteSpace()) Arguments += " ";
+                        Arguments += "\"%1\"";//自动加文件对象后缀
                     }
                 }
             }
@@ -126,7 +142,7 @@ namespace ContextMenuManager.Controls
                 using(var shellKey = RegistryEx.GetRegistryKey(ShellPath, true, true))
                 {
                     string keyName = "Item";
-                    NewItemRegPath = ObjectPath.GetNewPathWithIndex($@"{ShellPath}\{keyName}", ObjectPath.PathType.Registry);
+                    NewItemRegPath = ObjectPath.GetNewPathWithIndex($@"{ShellPath}\{keyName}", ObjectPath.PathType.Registry, 0);
                     keyName = RegistryEx.GetKeyName(NewItemRegPath);
 
                     using(var key = shellKey.CreateSubKey(keyName, true))
@@ -136,8 +152,13 @@ namespace ContextMenuManager.Controls
                             key.SetValue("SubCommands", "");
                         else
                         {
-                            if(!FullCommand.IsNullOrWhiteSpace())
-                                key.CreateSubKey("command", true).SetValue("", FullCommand);
+                            if(!ItemCommand.IsNullOrWhiteSpace())
+                            {
+                                string command;
+                                if(!chkSE.Checked) command = ItemCommand;
+                                else command = ShellExecuteDialog.GetCommand(ItemFilePath, Arguments, chkSE.Verb, chkSE.WindowStyle);
+                                key.CreateSubKey("command", true).SetValue("", command);
+                            }
                         }
                     }
                 }

@@ -133,8 +133,8 @@
   <data name="AppLanguageDic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\texts\applanguagedic.ini;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="CustomType" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\images\customtype.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Custom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\images\custom.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -148,11 +148,20 @@
   <data name="GuidInfosDic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\texts\guidinfosdic.ini;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="HashLnk_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\hashlnk\hashlnk_32.exe;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HashLnk_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\hashlnk\hashlnk_64.exe;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Home" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\home.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MicrosoftStore" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\microsoftstore.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="NewFolder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\images\newfolder.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="NewItem" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\newitem.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -163,8 +172,8 @@
   <data name="Refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\refresh.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SeparatorItem" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\images\separatoritem.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Select" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\images\select.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Setting" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\setting.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -189,9 +198,6 @@
   </data>
   <data name="Type" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\type.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Types" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\images\types.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Up" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

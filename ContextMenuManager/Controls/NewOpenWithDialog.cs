@@ -1,4 +1,4 @@
-﻿using BulePointLilac.Methods;
+﻿using BluePointLilac.Methods;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -26,12 +26,13 @@ namespace ContextMenuManager.Controls
             public string RegPath { get; private set; }
 
             private string FilePath;
-            private string AppRegPath;
+            private string FileName => Path.GetFileName(FilePath);
+            private string AppRegPath => $@"HKEY_CLASSES_ROOT\Applications\{FileName}";
+            private string CommandPath => $@"{AppRegPath}\shell\open\command";
 
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
-                this.Text = AppString.Dialog.NewOpenWithItem;
                 btnBrowse.Click += (sender, e) => BrowseFile();
                 btnOk.Click += (sender, e) =>
                 {
@@ -40,17 +41,26 @@ namespace ContextMenuManager.Controls
                         MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
                         return;
                     }
-                    if(FullCommand.IsNullOrWhiteSpace())
+                    if(ItemCommand.IsNullOrWhiteSpace())
                     {
                         MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
                         return;
                     }
-                    FilePath = ObjectPath.ExtractFilePath(Command);
-                    AppRegPath = $@"HKEY_CLASSES_ROOT\Applications\{Path.GetFileName(FilePath)}";
-                    if(FilePath == null || RegistryEx.GetRegistryKey(AppRegPath) != null)
+                    FilePath = ObjectPath.ExtractFilePath(base.ItemFilePath);
+                    using(var key = RegistryEx.GetRegistryKey(CommandPath))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.UnsupportedFilename);
-                        return;
+                        string path = ObjectPath.ExtractFilePath(key?.GetValue("")?.ToString());
+                        string name = Path.GetFileName(path);
+                        if(FilePath != null && FilePath.Equals(path, StringComparison.OrdinalIgnoreCase))
+                        {
+                            MessageBoxEx.Show(AppString.MessageBox.HasBeenAdded);
+                            return;
+                        }
+                        if(FileName == null || FileName.Equals(name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            MessageBoxEx.Show(AppString.MessageBox.UnsupportedFilename);
+                            return;
+                        }
                     }
                     AddNewItem();
                     this.DialogResult = DialogResult.OK;
@@ -64,8 +74,8 @@ namespace ContextMenuManager.Controls
                     dlg.Filter = $"{AppString.Dialog.Program}|*.exe";
                     if(dlg.ShowDialog() == DialogResult.OK)
                     {
-                        Command = dlg.FileName;
-                        Arguments = "%1";
+                        base.ItemFilePath = dlg.FileName;
+                        Arguments = "\"%1\"";
                         ItemText = FileVersionInfo.GetVersionInfo(dlg.FileName).FileDescription;
                     }
                 }
@@ -76,11 +86,11 @@ namespace ContextMenuManager.Controls
                 using(var key = RegistryEx.GetRegistryKey(AppRegPath, true, true))
                 {
                     key.SetValue("FriendlyAppName", ItemText);
-                    using(var cmdKey = key.CreateSubKey(@"shell\open\command", true))
-                    {
-                        cmdKey.SetValue("", FullCommand);
-                        RegPath = cmdKey.Name;
-                    }
+                }
+                using(var cmdKey = RegistryEx.GetRegistryKey(CommandPath, true, true))
+                {
+                    cmdKey.SetValue("", ItemCommand);
+                    RegPath = cmdKey.Name;
                 }
             }
         }

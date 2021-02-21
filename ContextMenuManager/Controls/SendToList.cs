@@ -1,7 +1,6 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -10,23 +9,19 @@ namespace ContextMenuManager.Controls
     sealed class SendToList : MyList
     {
         public static readonly string SendToPath = Environment.ExpandEnvironmentVariables(@"%AppData%\Microsoft\Windows\SendTo");
-        public static readonly string DesktopIniPath = $@"{SendToPath}\desktop.ini";
-        public static IniWriter DesktopIniWriter = new IniWriter(DesktopIniPath);
-        public static IniReader DesktopIniReader;
 
         public void LoadItems()
         {
-            DesktopIniReader = new IniReader(DesktopIniPath);
-            Array.ForEach(new DirectoryInfo(SendToPath).GetFiles(), fi =>
+            Array.ForEach(Directory.GetFiles(SendToPath), path =>
             {
-                if(fi.Name.ToLower() != "desktop.ini")
-                    this.AddItem(new SendToItem(fi.FullName));
+                if(Path.GetFileName(path).ToLower() != "desktop.ini")
+                    this.AddItem(new SendToItem(path));
             });
             this.SortItemByText();
             this.AddNewItem();
             this.AddDirItem();
-            this.AddItem(new RegRuleItem(RegRuleItem.SendToDrive));
-            this.AddItem(new RegRuleItem(RegRuleItem.DeferBuildSendTo));
+            this.AddItem(new VisibleRegRuleItem(VisibleRegRuleItem.SendToDrive));
+            this.AddItem(new VisibleRegRuleItem(VisibleRegRuleItem.DeferBuildSendTo));
         }
 
         private void AddNewItem()
@@ -35,10 +30,21 @@ namespace ContextMenuManager.Controls
             this.InsertItem(newItem, 0);
             newItem.AddNewItem += (sender, e) =>
             {
-                using(NewSendToDialog dlg = new NewSendToDialog())
+                using(NewLnkFileDialog dlg = new NewLnkFileDialog())
                 {
-                    if(dlg.ShowDialog() == DialogResult.OK)
-                        this.InsertItem(new SendToItem(dlg.FilePath), 2);
+                    dlg.FileFilter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.vbs;*.vbe;*.js;*.jse;*.wsf";
+                    if(dlg.ShowDialog() != DialogResult.OK) return;
+                    string lnkPath = $@"{SendToPath}\{ObjectPath.RemoveIllegalChars(dlg.ItemText)}.lnk";
+                    lnkPath = ObjectPath.GetNewPathWithIndex(lnkPath, ObjectPath.PathType.File);
+                    using(WshShortcut shortcut = new WshShortcut(lnkPath))
+                    {
+                        shortcut.TargetPath = dlg.ItemFilePath;
+                        shortcut.WorkingDirectory = Path.GetDirectoryName(dlg.ItemFilePath);
+                        shortcut.Arguments = dlg.Arguments;
+                        shortcut.Save();
+                    }
+                    DesktopIni.SetLocalizedFileNames(lnkPath, dlg.ItemText);
+                    this.InsertItem(new SendToItem(lnkPath), 2);
                 }
             };
         }
@@ -52,7 +58,7 @@ namespace ContextMenuManager.Controls
             };
             PictureButton btnPath = new PictureButton(AppImage.Open);
             MyToolTip.SetToolTip(btnPath, AppString.Menu.FileLocation);
-            btnPath.MouseDown += (sender, e) => Process.Start(SendToPath);
+            btnPath.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(SendToPath);
             item.AddCtr(btnPath);
             item.SetNoClickEvent();
             this.InsertItem(item, 1);

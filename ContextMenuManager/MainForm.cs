@@ -1,7 +1,9 @@
-﻿using BulePointLilac.Controls;
+﻿using BluePointLilac.Controls;
 using ContextMenuManager.Controls;
+using ContextMenuManager.Controls.Interfaces;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -16,21 +18,22 @@ namespace ContextMenuManager
             this.ForeColor = Color.FromArgb(80, 80, 80);
             this.Controls.Add(new ExplorerRestarter());
             appSettingBox.Owner = shellList.Owner = shellNewList.Owner = sendToList.Owner = openWithList.Owner
-                = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner = thirdRuleList.Owner = MainBody;
+                = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner = thirdRuleList.Owner = iEList.Owner = MainBody;
             donateBox.Parent = aboutMeBox.Parent = dictionariesBox.Parent = languagesBox.Parent = MainBody;
             SideBar.SelectIndexChanged += (sender, e) => SwitchItem();
             SideBar.HoverIndexChanged += (sender, e) => ShowItemInfo();
             ToolBar.SelectedButtonChanged += (sender, e) => SwitchTab();
-            ((RefreshButton)ToolBarButtons[3]).ClickMe += (sender, e) => SideBar.SelectIndex = SideBar.SelectIndex;
+            ToolBarButtons[3].MouseDown += (sender, e) => SwitchItem();
             ToolBar.AddButtons(ToolBarButtons);
             ToolBar.SelectedIndex = 0;
+            if(AppConfig.ShowFilePath) ShowFilePath();
         }
 
         readonly MyToolBarButton[] ToolBarButtons = new MyToolBarButton[] {
             new MyToolBarButton(AppImage.Home, AppString.ToolBar.Home),//主页
             new MyToolBarButton(AppImage.Type, AppString.ToolBar.Type),//文件类型
             new MyToolBarButton(AppImage.Star, AppString.ToolBar.Rule),//其他规则
-            new RefreshButton(),//刷新
+            new MyToolBarButton(AppImage.Refresh,AppString.ToolBar.Refresh){ CanBeSelected = false },//刷新
             new MyToolBarButton(AppImage.About, AppString.ToolBar.About)//关于
         };
         readonly ShellList shellList = new ShellList();
@@ -41,6 +44,7 @@ namespace ContextMenuManager
         readonly GuidBlockedList guidBlockedList = new GuidBlockedList();
         readonly EnhanceMenusList enhanceMenusList = new EnhanceMenusList();
         readonly ThirdRulesList thirdRuleList = new ThirdRulesList();
+        readonly IEList iEList = new IEList();
         readonly ReadOnlyRichTextBox aboutMeBox = new ReadOnlyRichTextBox
         {
             Text = AppString.Other.AboutApp
@@ -92,51 +96,43 @@ namespace ContextMenuManager
             AppString.SideBar.UwpLnk,
             AppString.SideBar.ExeFile,
             null,
-            AppString.SideBar.TextFile,
-            AppString.SideBar.DocumentFile,
-            AppString.SideBar.ImageFile,
-            AppString.SideBar.VideoFile,
-            AppString.SideBar.AudioFile,
-            AppString.SideBar.ImageDirectory,
-            AppString.SideBar.VideoDirectory,
-            AppString.SideBar.AudioDirectory,
+            AppString.SideBar.CustomExtension,
+            AppString.SideBar.PerceivedType,
+            AppString.SideBar.DirectoryType,
             null,
-            AppString.SideBar.UnknownType,
-            null,
-            AppString.SideBar.CustomType
+            AppString.SideBar.UnknownType
         };
         static readonly string[] TypeItemInfos = {
             AppString.StatusBar.LnkFile,
             AppString.StatusBar.UwpLnk,
             AppString.StatusBar.ExeFile,
             null,
-            AppString.StatusBar.TextFile,
-            AppString.StatusBar.DocumentFile,
-            AppString.StatusBar.ImageFile,
-            AppString.StatusBar.VideoFile,
-            AppString.StatusBar.AudioFile,
-            AppString.StatusBar.ImageDirectory,
-            AppString.StatusBar.VideoDirectory,
-            AppString.StatusBar.AudioDirectory,
+            AppString.StatusBar.CustomExtension,
+            AppString.StatusBar.PerceivedType,
+            AppString.StatusBar.DirectoryType,
             null,
-            AppString.StatusBar.UnknownType,
-            null,
-            AppString.StatusBar.CustomType
+            AppString.StatusBar.UnknownType
         };
 
         static readonly string[] OtherRuleItems = {
             AppString.SideBar.EnhanceMenu,
             AppString.SideBar.ThirdRules,
             null,
+            AppString.SideBar.DragDrop,
             AppString.SideBar.PublicReferences,
-            AppString.SideBar.GuidBlocked
+            AppString.SideBar.GuidBlocked,
+            null,
+            AppString.SideBar.IEMenu
         };
         static readonly string[] OtherRuleItemInfos = {
             AppString.StatusBar.EnhanceMenu,
             AppString.StatusBar.ThirdRules,
             null,
+            AppString.StatusBar.DragDrop,
             AppString.StatusBar.PublicReferences,
-            AppString.StatusBar.GuidBlocked
+            AppString.StatusBar.GuidBlocked,
+            null,
+            AppString.StatusBar.IEMenu
         };
 
         static readonly string[] AboutItems = {
@@ -167,18 +163,11 @@ namespace ContextMenuManager
             ShellList.Scenes.UwpLnk,
             ShellList.Scenes.ExeFile,
             null,
-            ShellList.Scenes.TextFile,
-            ShellList.Scenes.DocumentFile,
-            ShellList.Scenes.ImageFile,
-            ShellList.Scenes.VideoFile,
-            ShellList.Scenes.AudioFile,
-            ShellList.Scenes.ImageDirectory,
-            ShellList.Scenes.VideoDirectory,
-            ShellList.Scenes.AudioDirectory,
+            ShellList.Scenes.CustomExtension,
+            ShellList.Scenes.PerceivedType,
+            ShellList.Scenes.DirectoryType,
             null,
-            ShellList.Scenes.UnknownType,
-            null,
-            ShellList.Scenes.CustomType
+            ShellList.Scenes.UnknownType
         };
 
         private void HideAllParts()
@@ -245,6 +234,27 @@ namespace ContextMenuManager
             StatusBar.Text = MyStatusBar.DefaultText;
         }
 
+        private void ShowFilePath()
+        {
+            foreach(MyList list in new MyList[] { shellList, shellNewList, sendToList, openWithList, winXList, guidBlockedList, iEList })
+            {
+                list.HoveredItemChanged += (sender, e) =>
+                {
+                    MyListItem item = list.HoveredItem;
+                    if(item is ITsiFilePathItem pathItem)
+                    {
+                        string path = pathItem.ItemFilePath;
+                        if(File.Exists(path)) { StatusBar.Text = path; return; }
+                    }
+                    if(item is GuidBlockedItem guidItem)
+                    {
+                        StatusBar.Text = guidItem.Value; return;
+                    }
+                    StatusBar.Text = item.Text;
+                };
+            }
+        }
+
         private void SwitchGeneralItem()
         {
             switch(SideBar.SelectIndex)
@@ -261,6 +271,7 @@ namespace ContextMenuManager
                     if(SideBar.SelectIndex <= 9)
                     {
                         shellList.Scene = GeneralShellScenes[SideBar.SelectIndex];
+                        shellList.LoadItems();
                         shellList.Visible = true;
                     }
                     break;
@@ -270,6 +281,7 @@ namespace ContextMenuManager
         private void SwitchTypeItem()
         {
             shellList.Scene = (ShellList.Scenes)TypeShellScenes[SideBar.SelectIndex];
+            shellList.LoadItems();
             shellList.Visible = true;
         }
 
@@ -282,9 +294,13 @@ namespace ContextMenuManager
                 case 1:
                     thirdRuleList.LoadItems(); thirdRuleList.Visible = true; break;
                 case 3:
-                    shellList.Scene = ShellList.Scenes.CommandStore; shellList.Visible = true; break;
+                    shellList.Scene = ShellList.Scenes.DragDrop; shellList.LoadItems(); shellList.Visible = true; break;
                 case 4:
+                    shellList.Scene = ShellList.Scenes.CommandStore; shellList.LoadItems(); shellList.Visible = true; break;
+                case 5:
                     guidBlockedList.LoadItems(); guidBlockedList.Visible = true; break;
+                case 7:
+                    iEList.LoadItems(); iEList.Visible = true; break;
             }
         }
 
@@ -319,18 +335,6 @@ namespace ContextMenuManager
             string[] strs = GeneralItems.Concat(TypeItems).Concat(OtherRuleItems).Concat(AboutItems).ToArray();
             Array.ForEach(strs, str => maxWidth = Math.Max(maxWidth, SideBar.GetItemWidth(str)));
             SideBar.Width = maxWidth;
-        }
-
-        sealed class RefreshButton : MyToolBarButton
-        {
-            public RefreshButton() : base(AppImage.Refresh, AppString.ToolBar.Refresh) { }
-
-            public EventHandler ClickMe;
-
-            protected override void OnMouseDown(MouseEventArgs e)
-            {
-                ClickMe?.Invoke(null, null);
-            }
         }
     }
 }

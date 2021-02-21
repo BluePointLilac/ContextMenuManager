@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
 using Microsoft.Win32;
 using System;
@@ -15,6 +15,8 @@ namespace ContextMenuManager.Controls
     {
         /// <summary>Shell公共引用子菜单注册表项路径</summary>
         public const string CommandStorePath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell";
+
+        private const string OpenInNewWindowPath = @"HKEY_CLASSES_ROOT\Folder\shell\opennewwindow";
 
         /// <summary>系统原有Shell公共子菜单项名</summary>
         public static readonly string[] SysStoreItemNames = { "Windows.aboutWindows", "Windows.AddColumns",
@@ -119,17 +121,27 @@ namespace ContextMenuManager.Controls
             }
         }
 
+        public string ValueName => null;
         public string SearchText => Text;
         private string CommandPath => $@"{RegPath}\command";
         public string KeyName => RegistryEx.GetKeyName(RegPath);
-        private bool IsMultiItem => Registry.GetValue(RegPath, "SubCommands", null) != null;
         protected virtual bool IsSubItem => false;
         private bool IsOpenItem => KeyName.ToLower() == "open";
-        private bool TryProtectOpenItem => IsOpenItem && AppConfig.ProtectOpenItem && MessageBoxEx.Show(AppString.MessageBox.PromptIsOpenItem,
-                MessageBoxButtons.YesNo) != DialogResult.Yes;
 
         public string ItemFilePath => GuidInfo.GetFilePath(Guid) ?? ObjectPath.ExtractFilePath(ItemCommand);
         private bool HasIcon => !IconLocation.IsNullOrWhiteSpace() || HasLUAShield;
+
+        private bool IsMultiItem
+        {
+            get
+            {
+                object value = Registry.GetValue(RegPath, "SubCommands", null);
+                if(value != null) return true;
+                value = Registry.GetValue(RegPath, "ExtendedSubCommandsKey", null);
+                if(!string.IsNullOrEmpty(value?.ToString())) return true;
+                return false;
+            }
+        }
 
         private bool OnlyInExplorer
         {
@@ -138,7 +150,7 @@ namespace ContextMenuManager.Controls
             {
                 if(value)
                 {
-                    if(TryProtectOpenItem) return;
+                    if(TryProtectOpenItem()) return;
                     Registry.SetValue(RegPath, "OnlyInBrowserWindow", "");
                 }
                 else RegistryEx.DeleteValue(RegPath, "OnlyInBrowserWindow");
@@ -152,7 +164,7 @@ namespace ContextMenuManager.Controls
             {
                 if(value)
                 {
-                    if(TryProtectOpenItem) return;
+                    if(TryProtectOpenItem()) return;
                     Registry.SetValue(RegPath, "Extended", "");
                 }
                 else RegistryEx.DeleteValue(RegPath, "Extended");
@@ -176,6 +188,16 @@ namespace ContextMenuManager.Controls
             {
                 if(value) Registry.SetValue(RegPath, "NeverDefault", "");
                 else RegistryEx.DeleteValue(RegPath, "NeverDefault");
+            }
+        }
+
+        private bool ShowAsDisabledIfHidden
+        {
+            get => Registry.GetValue(RegPath, "ShowAsDisabledIfHidden", null) != null;
+            set
+            {
+                if(value) Registry.SetValue(RegPath, "ShowAsDisabledIfHidden", "");
+                else RegistryEx.DeleteValue(RegPath, "ShowAsDisabledIfHidden");
             }
         }
 
@@ -234,24 +256,38 @@ namespace ContextMenuManager.Controls
             {
                 try
                 {
-                    if(value)
+                    void DeleteSomeValues()
                     {
-                        RegistryEx.DeleteValue(RegPath, "CommandFlags");
-                        RegistryEx.DeleteValue(RegPath, "HideBasedOnVelocityId");
                         RegistryEx.DeleteValue(RegPath, "LegacyDisable");
                         RegistryEx.DeleteValue(RegPath, "ProgrammaticAccessOnly");
+                        if(WindowsOsVersion.IsAfterVista && Convert.ToInt32(Registry.GetValue(RegPath, "CommandFlags", 0)) % 16 >= 8)
+                        {
+                            RegistryEx.DeleteValue(RegPath, "CommandFlags");
+                        }
+                    };
+
+                    if(value)
+                    {
+                        RegistryEx.DeleteValue(RegPath, "HideBasedOnVelocityId");
+                        DeleteSomeValues();
                     }
                     else
                     {
-                        if(TryProtectOpenItem) return;
+                        if(TryProtectOpenItem()) return;
                         if(!IsSubItem)
                         {
-                            Registry.SetValue(RegPath, "LegacyDisable", string.Empty);
-                            Registry.SetValue(RegPath, "ProgrammaticAccessOnly", string.Empty);
+                            //当LegaryDisable键值作用于文件夹-"在新窗口中打开"时
+                            //会导致点击任务栏explorer图标和 Win+E 快捷键错误访问
+                            if(!RegPath.StartsWith(OpenInNewWindowPath, StringComparison.OrdinalIgnoreCase))
+                            {
+                                Registry.SetValue(RegPath, "LegacyDisable", "");
+                            }
+                            Registry.SetValue(RegPath, "ProgrammaticAccessOnly", "");
                         }
-                        else if(WindowsOsVersion.IsAfterOrEqualWin10_1703)
+                        if(WindowsOsVersion.IsAfterOrEqualWin10_1703)
                         {
                             Registry.SetValue(RegPath, "HideBasedOnVelocityId", 0x639bc8);
+                            if(ShowAsDisabledIfHidden) DeleteSomeValues();
                         }
                         else
                         {
@@ -307,7 +343,7 @@ namespace ContextMenuManager.Controls
             }
             set
             {
-                if(TryProtectOpenItem) return;
+                if(TryProtectOpenItem()) return;
                 Registry.SetValue(CommandPath, "", value);
                 if(!this.HasIcon) this.Image = this.ItemIcon.ToBitmap().ToTransparent();
             }
@@ -365,7 +401,11 @@ namespace ContextMenuManager.Controls
             get
             {
                 string value = Registry.GetValue(CommandPath, "DelegateExecute", null)?.ToString();
-                GuidEx.TryParse(value, out Guid guid);
+                if(!GuidEx.TryParse(value, out Guid guid))
+                {
+                    value = Registry.GetValue($@"{RegPath}\DropTarget", "CLSID", null)?.ToString();
+                    GuidEx.TryParse(value, out guid);
+                }
                 return guid;
             }
         }
@@ -382,6 +422,7 @@ namespace ContextMenuManager.Controls
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
         public RegExportMenuItem TsiRegExport { get; set; }
 
+        protected readonly PictureButton BtnSubItems = new PictureButton(AppImage.SubItems);
         protected readonly ToolStripMenuItem TsiOtherAttributes = new ToolStripMenuItem(AppString.Menu.OtherAttributes);
         readonly ToolStripMenuItem TsiItemIcon = new ToolStripMenuItem(AppString.Menu.ItemIcon);
         readonly ToolStripMenuItem TsiDeleteIcon = new ToolStripMenuItem(AppString.Menu.DeleteIcon);
@@ -395,7 +436,7 @@ namespace ContextMenuManager.Controls
         readonly ToolStripMenuItem TsiNoWorkDir = new ToolStripMenuItem(AppString.Menu.NoWorkingDirectory);
         readonly ToolStripMenuItem TsiNeverDefault = new ToolStripMenuItem(AppString.Menu.NeverDefault);
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
-        protected readonly PictureButton BtnSubItems = new PictureButton(AppImage.SubItems);
+        readonly ToolStripMenuItem TsiShowAsDisabled = new ToolStripMenuItem(AppString.Menu.ShowAsDisabledIfHidden);
 
         private void InitializeComponents()
         {
@@ -418,7 +459,8 @@ namespace ContextMenuManager.Controls
 
             TsiPosition.DropDownItems.AddRange(new ToolStripItem[] { TsiDefault, TsiSetTop, TsiSetBottom });
 
-            TsiOtherAttributes.DropDownItems.AddRange(new ToolStripItem[] { TsiOnlyWithShift, TsiOnlyInExplorer, TsiNoWorkDir, TsiNeverDefault });
+            TsiOtherAttributes.DropDownItems.AddRange(new ToolStripItem[] { TsiOnlyWithShift, TsiOnlyInExplorer,
+                TsiNoWorkDir, TsiNeverDefault, TsiShowAsDisabled });
 
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
                 TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport});
@@ -431,6 +473,7 @@ namespace ContextMenuManager.Controls
             TsiOnlyWithShift.Click += (sender, e) => this.OnlyWithShift = !TsiOnlyWithShift.Checked;
             TsiNoWorkDir.Click += (sender, e) => this.NoWorkingDirectory = !TsiNoWorkDir.Checked;
             TsiNeverDefault.Click += (sender, e) => this.NeverDefault = !TsiNeverDefault.Checked;
+            TsiShowAsDisabled.Click += (sender, e) => SetDisabled(!TsiShowAsDisabled.Checked);
             ContextMenuStrip.Opening += (sender, e) => RefreshMenuItem();
             BtnSubItems.MouseDown += (sender, e) => ShowSubItems();
             TsiShieldIcon.Click += (sender, e) => UseShieldIcon();
@@ -448,12 +491,25 @@ namespace ContextMenuManager.Controls
         private void UseShieldIcon()
         {
             bool flag = this.HasLUAShield = TsiShieldIcon.Checked = !TsiShieldIcon.Checked;
-            if(flag && IconLocation == null)
+            if(IconLocation == null)
             {
-                this.Image = AppImage.Shield;
-                this.IconPath = "imageres.dll";
-                this.IconIndex = -78;
+                if(flag)
+                {
+                    this.Image = AppImage.Shield;
+                    this.IconPath = "imageres.dll";
+                    this.IconIndex = -78;
+                }
+                else
+                {
+                    this.Image = this.Image.ToTransparent();
+                }
             }
+        }
+
+        private void SetDisabled(bool flag)
+        {
+            this.ShowAsDisabledIfHidden = flag;
+            if(!ItemVisible && flag) ItemVisible = false;
         }
 
         private void RefreshMenuItem()
@@ -461,6 +517,8 @@ namespace ContextMenuManager.Controls
             TsiOnlyWithShift.Visible = !IsSubItem;
             TsiDeleteMe.Enabled = !(IsOpenItem && AppConfig.ProtectOpenItem);
             TsiNoWorkDir.Checked = this.NoWorkingDirectory;
+            TsiShowAsDisabled.Visible = WindowsOsVersion.IsAfterOrEqualWin10_1703;
+            TsiShowAsDisabled.Checked = this.ShowAsDisabledIfHidden;
             TsiChangeCommand.Visible = !IsMultiItem && Guid.Equals(Guid.Empty);
             if(!this.IsSubItem) TsiOnlyWithShift.Checked = this.OnlyWithShift;
 
@@ -523,6 +581,13 @@ namespace ContextMenuManager.Controls
                 dlg.Icon = ResourceIcon.GetIcon(IconPath, IconIndex);
                 dlg.ShowDialog(this.RegPath);
             }
+        }
+
+        private bool TryProtectOpenItem()
+        {
+            if(!IsOpenItem) return false;
+            if(!AppConfig.ProtectOpenItem) return false;
+            return MessageBoxEx.Show(AppString.MessageBox.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
         }
 
         public virtual void DeleteMe()

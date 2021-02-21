@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
 using Microsoft.Win32;
 using System;
@@ -19,7 +19,9 @@ namespace ContextMenuManager.Controls
          ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem, ITsiCommandItem
     {
         public static readonly string[] SnParts = { "ShellNew", "-ShellNew" };
-        public static readonly string[] UnableSortExtensions = { ".library-ms", ".lnk", "Folder" };
+        public static readonly string[] UnableSortExtensions = { "Folder", ".library-ms" };
+        public static readonly string[] DefaultBeforeSeparatorExtensions = { "Folder", ".library-ms", ".lnk" };
+        public static readonly string[] EffectValueNames = { "NullFile", "Data", "FileName", "Directory", "Command" };
         private static readonly string[] UnableEditDataValues = { "Directory", "FileName", "Handler", "Command" };
         private static readonly string[] UnableChangeCommandValues = { "Data", "Directory", "FileName", "Handler" };
 
@@ -28,7 +30,7 @@ namespace ContextMenuManager.Controls
             this.Owner = list;
             InitializeComponents();
             this.RegPath = regPath;
-            BtnMoveUp.Visible = BtnMoveDown.Visible = this.CanSort && LockNewItem.IsLocked();
+            SetSortabled(ShellNewLockItem.IsLocked);
         }
 
         private string regPath;
@@ -44,6 +46,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
+        public string ValueName => null;
         public string SearchText => $"{AppString.SideBar.New} {Text}";
         public string Extension => RegPath.Split('\\')[1];
         private string SnKeyName => RegistryEx.GetKeyName(RegPath);
@@ -54,10 +57,12 @@ namespace ContextMenuManager.Controls
         private string OpenModePath => $@"{HKCR}\{OpenMode}";//关联打开方式注册表路径
         private string DefaultOpenMode => Registry.GetValue($@"{HKCR}\{Extension}", "", null)?.ToString();//默认关联打开方式
         private string DefaultOpenModePath => $@"{HKCR}\{DefaultOpenMode}";//默认关联打开方式注册表路径
+        private string ConfigPath => $@"{RegPath}\Config";
 
+        public bool CanSort => !UnableSortExtensions.Contains(Extension, StringComparer.OrdinalIgnoreCase);//能够排序的
         private bool CanEditData => UnableEditDataValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够编辑初始数据的
         private bool CanChangeCommand => UnableChangeCommandValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够更改菜单命令的
-        public bool CanSort => !UnableSortExtensions.Contains(Extension, StringComparer.OrdinalIgnoreCase);//能够排序的
+        private bool DefaultBeforeSeparator => DefaultBeforeSeparatorExtensions.Contains(Extension, StringComparer.OrdinalIgnoreCase);//默认显示在分割线上不可更改的
 
         public string ItemFilePath
         {
@@ -169,6 +174,34 @@ namespace ContextMenuManager.Controls
             }
         }
 
+        public bool BeforeSeparator
+        {
+            get
+            {
+                if(DefaultBeforeSeparator) return true;
+                else return Registry.GetValue(ConfigPath, "BeforeSeparator", null) != null;
+            }
+            set
+            {
+                if(value)
+                {
+                    Registry.SetValue(ConfigPath, "BeforeSeparator", "");
+                }
+                else
+                {
+                    using(RegistryKey snkey = RegistryEx.GetRegistryKey(RegPath, true))
+                    using(RegistryKey ckey = snkey.OpenSubKey("Config", true))
+                    {
+                        ckey.DeleteValue("BeforeSeparator");
+                        if(ckey.GetValueNames().Length == 0 && ckey.GetSubKeyNames().Length == 0)
+                        {
+                            snkey.DeleteSubKey("Config");
+                        }
+                    }
+                }
+            }
+        }
+
         public ShellNewList Owner { get; private set; }
         public MoveButton BtnMoveUp { get; set; }
         public MoveButton BtnMoveDown { get; set; }
@@ -185,6 +218,8 @@ namespace ContextMenuManager.Controls
         public ChangeCommandMenuItem TsiChangeCommand { get; set; }
 
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
+        readonly ToolStripMenuItem TsiOtherAttributes = new ToolStripMenuItem(AppString.Menu.OtherAttributes);
+        readonly ToolStripMenuItem TsiBeforeSeparator = new ToolStripMenuItem(AppString.Menu.BeforeSeparator);
         readonly ToolStripMenuItem TsiEditData = new ToolStripMenuItem(AppString.Menu.InitialData);
 
         private void InitializeComponents()
@@ -205,18 +240,24 @@ namespace ContextMenuManager.Controls
             TsiChangeCommand.CommandCanBeEmpty = true;
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiChangeText,
-                new ToolStripSeparator(), TsiChangeIcon, new ToolStripSeparator(),
-                TsiDetails, new ToolStripSeparator(), TsiDeleteMe });
+                new ToolStripSeparator(), TsiChangeIcon, new ToolStripSeparator(), TsiOtherAttributes,
+                new ToolStripSeparator(), TsiDetails, new ToolStripSeparator(), TsiDeleteMe });
 
-            TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
-                TsiEditData,TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport });
+            TsiOtherAttributes.DropDownItems.AddRange(new[] { TsiBeforeSeparator, TsiEditData });
 
-            TsiEditData.Click += (sender, e) => EditInitialData();
+            TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch,
+                new ToolStripSeparator(), TsiChangeCommand, TsiFileProperties,
+                TsiFileLocation, TsiRegLocation, TsiRegExport });
+
             ContextMenuStrip.Opening += (sender, e) =>
             {
                 TsiEditData.Visible = CanEditData;
                 TsiChangeCommand.Visible = CanChangeCommand;
+                TsiBeforeSeparator.Enabled = !DefaultBeforeSeparator;
+                TsiBeforeSeparator.Checked = BeforeSeparator;
             };
+            TsiEditData.Click += (sender, e) => EditInitialData();
+            TsiBeforeSeparator.Click += (sender, e) => MoveWithSeparator(!TsiBeforeSeparator.Checked);
             BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
             BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
         }
@@ -235,12 +276,26 @@ namespace ContextMenuManager.Controls
             }
         }
 
+        public void SetSortabled(bool isLocked)
+        {
+            BtnMoveDown.Visible = BtnMoveUp.Visible = isLocked && CanSort;
+        }
+
+        private void MoveWithSeparator(bool isBefore)
+        {
+            BeforeSeparator = isBefore;
+            ShellNewList list = (ShellNewList)this.Parent;
+            int index = list.GetItemIndex(list.Separator);
+            list.SetItemIndex(this, index);
+            if(ShellNewLockItem.IsLocked) list.SaveSorting();
+        }
+
         public void DeleteMe()
         {
             RegistryEx.DeleteKeyTree(this.RegPath);
             RegistryEx.DeleteKeyTree(this.BackupPath);
             this.Dispose();
-            if(LockNewItem.IsLocked()) Owner.WriteRegistry();
+            if(ShellNewLockItem.IsLocked) Owner.SaveSorting();
         }
     }
 }

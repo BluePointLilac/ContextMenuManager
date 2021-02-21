@@ -1,4 +1,4 @@
-﻿using BulePointLilac.Methods;
+﻿using BluePointLilac.Methods;
 using ContextMenuManager.Controls;
 using Microsoft.Win32;
 using System;
@@ -27,7 +27,7 @@ namespace ContextMenuManager
         static GuidInfo()
         {
             //将Skype添加到字典
-            Guid skypeGuid = new Guid(RegRuleItem.SkypeGuidStr);
+            Guid skypeGuid = new Guid(VisibleRegRuleItem.SkypeGuid);
             FilePathDic.Add(skypeGuid, null);
             ItemTextDic.Add(skypeGuid, AppString.Item.ShareWithSkype);
             ItemImageDic.Add(skypeGuid, AppImage.Skype);

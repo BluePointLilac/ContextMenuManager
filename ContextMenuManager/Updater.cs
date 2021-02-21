@@ -1,6 +1,5 @@
-﻿using BulePointLilac.Methods;
+﻿using BluePointLilac.Methods;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -44,7 +43,8 @@ namespace ContextMenuManager
                 if(MessageBoxEx.Show($"{AppString.MessageBox.UpdateApp}{version1}\n{info}",
                     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
-                    Process.Start(reader.GetValue("Update", "Url"));
+                    string url = reader.GetValue("Update", "Url");
+                    ExternalProgram.OpenUrl(url);
                     return true;
                 }
             }
@@ -55,7 +55,7 @@ namespace ContextMenuManager
         {
             string contents = GetWebString(url);
             if(!contents.IsNullOrWhiteSpace())
-                File.WriteAllText(filePath, contents, Encoding.UTF8);
+                File.WriteAllText(filePath, contents.Replace("\n", "\r\n"), Encoding.Unicode);
         }
 
         private static string GetWebString(string url)
@@ -64,8 +64,8 @@ namespace ContextMenuManager
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-                return reader.ReadToEnd();
+                using(StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    return reader.ReadToEnd();
             }
             catch { return null; }
         }

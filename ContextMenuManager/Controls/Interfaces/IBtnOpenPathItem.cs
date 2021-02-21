@@ -1,5 +1,6 @@
-﻿using BulePointLilac.Controls;
-using static BulePointLilac.Methods.ObjectPath;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
+using static BluePointLilac.Methods.ObjectPath;
 
 namespace ContextMenuManager.Controls.Interfaces
 {
@@ -15,7 +16,19 @@ namespace ContextMenuManager.Controls.Interfaces
         public ObjectPathButton(IBtnOpenPathItem item) : base(AppImage.Open)
         {
             ((MyListItem)item).AddCtr(this);
-            this.MouseDown += (sender, e) => ShowPath(item.TargetPath, item.PathType);
+            this.MouseDown += (sender, e) =>
+            {
+                switch(item.PathType)
+                {
+                    case PathType.File:
+                    case PathType.Directory:
+                        ExternalProgram.JumpExplorer(item.TargetPath);
+                        break;
+                    case PathType.Registry:
+                        ExternalProgram.JumpRegEdit(item.TargetPath, null, AppConfig.OpenMoreRegedit);
+                        break;
+                }
+            };
         }
     }
 }

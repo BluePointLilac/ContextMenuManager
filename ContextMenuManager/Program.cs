@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BluePointLilac.Methods;
+using System;
 using System.Windows.Forms;
 
 namespace ContextMenuManager
@@ -12,8 +13,10 @@ namespace ContextMenuManager
     static class Program
     {
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            bool isRestart = args.Length > 0 && args[0] == "Restart";
+            if(!isRestart && SingleInstance.IsRunning()) return;
             Updater.PeriodicUpdate();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

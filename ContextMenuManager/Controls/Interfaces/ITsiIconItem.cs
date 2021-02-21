@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using System.Drawing;
 using System.Windows.Forms;
 

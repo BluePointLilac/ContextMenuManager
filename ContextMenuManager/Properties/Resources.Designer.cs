@@ -19,7 +19,7 @@ namespace ContextMenuManager.Properties {
     // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
     // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
     // (以 /str 作为命令选项)，或重新生成 VS 项目。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -47,8 +47,8 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   重写当前线程的 CurrentUICulture 属性
-        ///   重写当前线程的 CurrentUICulture 属性。
+        ///   重写当前线程的 CurrentUICulture 属性，对
+        ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Globalization.CultureInfo Culture {
@@ -101,10 +101,10 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找类似 ;此文件为ContextMenuManager程序的显示文本字典
-        ///;如果你想要帮助作者为此程序添加其他语言字典, 可以修改此文本并保存在.\config\languages文件夹内, 
-        ///;比如美国英语字典保存为en-US.ini, 并给[General]\Language赋值 en-US English
-        ///;可以在Github或Gitee上Fork该项目并提交申请给我，或者直接发送文件到邮箱1617859183@qq.com
+        ///   查找类似 ;此文件为 ContextMenuManager Windows右键管理程序 的显示文本字典
+        ///;翻译：可帮助作者为此程序提供翻译并提交到Github，以下内容中等号右侧内容替换为翻译文本，
+        ///;General-Translator为翻译贡献者，General-Language为语言名称，如en-US 美国英语
+        ///;翻译文件保存在Config\languages目录中，文件名保存为en-US.ini
         ///;翻译说明：暂时不翻译的值保留为空即可，字典内赋值换行请使用\n进行转义
         ///
         ///[General]
@@ -125,7 +125,8 @@ namespace ContextMenuManager.Properties {
         ///Directory = 目录
         ///Background = 目录背景
         ///Desktop = 桌面背景
-        ///Drive = 磁盘 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///Drive = 磁盘分区
+        ///AllObjects  [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string AppLanguageDic {
             get {
@@ -136,9 +137,9 @@ namespace ContextMenuManager.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap CustomType {
+        internal static System.Drawing.Bitmap Custom {
             get {
-                object obj = ResourceManager.GetObject("CustomType", resourceCulture);
+                object obj = ResourceManager.GetObject("Custom", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -167,16 +168,14 @@ namespace ContextMenuManager.Properties {
         ///   查找类似 &lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;
         ///&lt;!--此文件为常用右键菜单字典,
         ///Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型，
-        ///子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突--&gt;
+        ///子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突
+        ///由于Shell项太过复杂，程序只根据注册表项名判断存在即启用，故同一场景下不允许有相同KeyName属性的Shell项目，ShellEx项只要Guid符合则为启用--&gt;
         ///&lt;Data&gt;
         ///  &lt;File&gt;
         ///    &lt;Shell&gt;
-        ///      &lt;Item KeyName=&apos;CopyAsPath&apos; Tip=&apos;系统原生菜单项需按住Shift显示,&amp;#x000A;此项可以直接显示&apos;&gt;
+        ///      &lt;Item KeyName=&apos;CopyContent&apos; Tip=&apos;不需打开文件直接复制文件文本内容&amp;#x000A;非UTF-16 LE(或带BOM)编码会乱码&apos;&gt;
         ///        &lt;Value&gt;
-        ///          &lt;REG_SZ MUIVerb=&apos;复制文件路径&apos; Icon=&apos;imageres.dll,-5302&apos;/&gt;
-        ///        &lt;/Value&gt;
-        ///        &lt;SubKey&gt;
-        ///           [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///          &lt;REG [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string EnhanceMenusDic {
             get {
@@ -214,6 +213,26 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] HashLnk_32 {
+            get {
+                object obj = ResourceManager.GetObject("HashLnk_32", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] HashLnk_64 {
+            get {
+                object obj = ResourceManager.GetObject("HashLnk_64", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
         internal static System.Drawing.Bitmap Home {
@@ -229,6 +248,16 @@ namespace ContextMenuManager.Properties {
         internal static System.Drawing.Bitmap MicrosoftStore {
             get {
                 object obj = ResourceManager.GetObject("MicrosoftStore", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap NewFolder {
+            get {
+                object obj = ResourceManager.GetObject("NewFolder", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -266,9 +295,9 @@ namespace ContextMenuManager.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap SeparatorItem {
+        internal static System.Drawing.Bitmap Select {
             get {
-                object obj = ResourceManager.GetObject("SeparatorItem", resourceCulture);
+                object obj = ResourceManager.GetObject("Select", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -314,13 +343,13 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///   查找类似 &lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;
         ///&lt;!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，不设置Guid则为常驻菜单，RegPath为程序相关注册表主路径;
         ///其相关菜单项目设置作为一个Item子元素，Item的Text为该Item项显示文本，Tip属性为鼠标悬浮在开关上时的提示信息，需要重启资源管理器生效则添加属性RestartExplorer;
-        ///Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；ValueName为相关键名，On为启用键值，Off为禁用键值；
-        ///每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；程序优先判定为On，即只要所有Rule不匹配Off键值就判定为On，键值类型不符时也判定为On;
-        ///ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认值时可省略，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型--&gt;
-        ///&lt; [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；
+        ///ValueName为相关键名，On为启用键值，Off为禁用键值；不设置On或Off属性时，其值为null，对应注册表键值不存在；
+        ///每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；判定规则：当有多条规则时，前面的规则注册表键值匹配On则为On，匹配Off则为Off，并终止判断，都不匹配时继续往下判断，若所有规则都不匹配则为On
+        ///ValueKind为键值类型，默认键值类型ValueKind为REG_D [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string ThirdRulesDic {
             get {
@@ -354,16 +383,6 @@ namespace ContextMenuManager.Properties {
         internal static System.Drawing.Bitmap Type {
             get {
                 object obj = ResourceManager.GetObject("Type", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
-        internal static System.Drawing.Bitmap Types {
-            get {
-                object obj = ResourceManager.GetObject("Types", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

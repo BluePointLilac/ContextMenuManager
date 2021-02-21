@@ -1,9 +1,12 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
+using ContextMenuManager.Controls.Interfaces;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
@@ -11,13 +14,16 @@ namespace ContextMenuManager.Controls
     sealed class ShellNewList : MyList
     {
         public const string ShellNewPath = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Discardable\PostSetup\ShellNew";
-        private static readonly string[] ValueNames = { "NullFile", "Data", "FileName", "Directory", "Command" };
+
+        public ShellNewSeparator Separator;
 
         public void LoadItems()
         {
             this.AddNewItem();
-            this.AddItem(new LockNewItem(this));
-            if(LockNewItem.IsLocked()) this.LoadLockItems();
+            this.AddItem(new ShellNewLockItem(this));
+            Separator = new ShellNewSeparator();
+            this.AddItem(Separator);
+            if(ShellNewLockItem.IsLocked) this.LoadLockItems();
             else this.LoadUnlockItems();
         }
 
@@ -44,11 +50,10 @@ namespace ContextMenuManager.Controls
         {
             foreach(string extension in ShellNewItem.UnableSortExtensions)
             {
-                string str = extensions.Find(ext => ext.Equals(extension, StringComparison.OrdinalIgnoreCase));
-                if(str != null)
+                if(extensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
                 {
-                    extensions.Remove(str);
-                    extensions.Insert(0, str);
+                    extensions.Remove(extension);
+                    extensions.Insert(0, extension);
                 }
             }
             using(RegistryKey root = Registry.ClassesRoot)
@@ -57,7 +62,7 @@ namespace ContextMenuManager.Controls
                 {
                     using(RegistryKey extKey = root.OpenSubKey(extension))
                     {
-                        string defalutOpenMode = extKey.GetValue("")?.ToString();
+                        string defalutOpenMode = extKey?.GetValue("")?.ToString();
                         if(string.IsNullOrEmpty(defalutOpenMode)) continue;
                         using(RegistryKey openModeKey = root.OpenSubKey(defalutOpenMode))
                         {
@@ -75,9 +80,18 @@ namespace ContextMenuManager.Controls
                                 if(tKey != null) snPart = $@"{defalutOpenMode}\{snPart}";
                                 using(RegistryKey snKey = extKey.OpenSubKey(snPart))
                                 {
-                                    if(ValueNames.Any(valueName => snKey?.GetValue(valueName) != null))
+                                    if(ShellNewItem.EffectValueNames.Any(valueName => snKey?.GetValue(valueName) != null))
                                     {
-                                        this.AddItem(new ShellNewItem(this, snKey.Name));
+                                        ShellNewItem item = new ShellNewItem(this, snKey.Name);
+                                        if(item.BeforeSeparator)
+                                        {
+                                            int index2 = this.GetItemIndex(Separator);
+                                            this.InsertItem(item, index2);
+                                        }
+                                        else
+                                        {
+                                            this.AddItem(item);
+                                        }
                                         break;
                                     }
                                 }
@@ -88,45 +102,32 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        public void MoveItem(ShellNewItem item, bool isUp)
+        public void MoveItem(ShellNewItem shellNewItem, bool isUp)
         {
-            int index = this.GetItemIndex(item);
-            int firstIndex = 0;
-            for(int i = 0; i < this.Controls.Count; i++)
+            int index = this.GetItemIndex(shellNewItem);
+            index += isUp ? -1 : 1;
+            if(index == this.Controls.Count) return;
+            Control ctr = this.Controls[index];
+            if(ctr is ShellNewItem item && item.CanSort)
             {
-                Control ctr = this.Controls[i];
-                if(ctr.GetType() == typeof(ShellNewItem) && ((ShellNewItem)ctr).CanSort)
-                {
-                    firstIndex = i; break;
-                }
+                this.SetItemIndex(shellNewItem, index);
+                this.SaveSorting();
             }
-            if(isUp)
-            {
-                if(index > firstIndex)
-                {
-                    this.SetItemIndex(item, index - 1);
-                }
-            }
-            else
-            {
-                if(index < this.Controls.Count - 1)
-                {
-                    this.SetItemIndex(item, index + 1);
-                }
-            }
-            this.WriteRegistry();
         }
 
-        public void WriteRegistry()
+        public void SaveSorting()
         {
             List<string> extensions = new List<string>();
             for(int i = 2; i < this.Controls.Count; i++)
             {
-                extensions.Add(((ShellNewItem)Controls[i]).Extension);
+                if(Controls[i] is ShellNewItem item)
+                {
+                    extensions.Add(item.Extension);
+                }
             }
-            LockNewItem.UnLock();
+            ShellNewLockItem.UnLock();
             Registry.SetValue(ShellNewPath, "Classes", extensions.ToArray());
-            LockNewItem.Lock();
+            ShellNewLockItem.Lock();
         }
 
         private void AddNewItem()
@@ -147,9 +148,9 @@ namespace ContextMenuManager.Controls
                     }
                     foreach(Control ctr in this.Controls)
                     {
-                        if(ctr.GetType() == typeof(ShellNewItem))
+                        if(ctr is ShellNewItem item)
                         {
-                            if(((ShellNewItem)ctr).Extension.Equals(extension, StringComparison.OrdinalIgnoreCase))
+                            if(item.Extension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                             {
                                 MessageBoxEx.Show(AppString.MessageBox.HasBeenAdded);
                                 return;
@@ -174,10 +175,109 @@ namespace ContextMenuManager.Controls
                         {
                             item.ItemText = $"{extension.Substring(1)} file";
                         }
-                        if(LockNewItem.IsLocked()) this.WriteRegistry();
+                        if(ShellNewLockItem.IsLocked) this.SaveSorting();
                     }
                 }
             };
+        }
+    }
+
+    sealed class ShellNewLockItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiWebSearchItem
+    {
+        public ShellNewLockItem(ShellNewList list)
+        {
+            this.Owner = list;
+            this.Image = AppImage.Lock;
+            this.Text = AppString.Item.LockNewMenu;
+            this.SetNoClickEvent();
+            BtnShowMenu = new MenuButton(this);
+            ChkVisible = new VisibleCheckBox(this) { Checked = IsLocked };
+            MyToolTip.SetToolTip(ChkVisible, AppString.Tip.LockNewMenu);
+            TsiSearch = new WebSearchMenuItem(this);
+            this.ContextMenuStrip = new ContextMenuStrip();
+            this.ContextMenuStrip.Items.Add(TsiSearch);
+        }
+
+        public MenuButton BtnShowMenu { get; set; }
+        public WebSearchMenuItem TsiSearch { get; set; }
+        public VisibleCheckBox ChkVisible { get; set; }
+        public ShellNewList Owner { get; private set; }
+
+        public bool ItemVisible
+        {
+            get => IsLocked;
+            set
+            {
+                if(value) Owner.SaveSorting();
+                else UnLock();
+                foreach(Control ctr in Owner.Controls)
+                {
+                    if(ctr is ShellNewItem item)
+                    {
+                        item.SetSortabled(value);
+                    }
+                }
+            }
+        }
+
+        public string SearchText => Text;
+
+        public static bool IsLocked
+        {
+            get
+            {
+                using(RegistryKey key = RegistryEx.GetRegistryKey(ShellNewList.ShellNewPath))
+                {
+                    RegistrySecurity rs = key.GetAccessControl();
+                    foreach(RegistryAccessRule rar in rs.GetAccessRules(true, true, typeof(NTAccount)))
+                    {
+                        if(rar.AccessControlType.ToString().Equals("Deny", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if(rar.IdentityReference.ToString().Equals("Everyone", StringComparison.OrdinalIgnoreCase)) return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+
+        public static void Lock()
+        {
+            using(RegistryKey key = RegistryEx.GetRegistryKey(ShellNewList.ShellNewPath, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ChangePermissions))
+            {
+                RegistrySecurity rs = new RegistrySecurity();
+                RegistryAccessRule rar = new RegistryAccessRule("Everyone", RegistryRights.Delete | RegistryRights.WriteKey, AccessControlType.Deny);
+                rs.AddAccessRule(rar);
+                key.SetAccessControl(rs);
+            }
+        }
+
+        public static void UnLock()
+        {
+            using(RegistryKey key = RegistryEx.GetRegistryKey(ShellNewList.ShellNewPath, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ChangePermissions))
+            {
+                RegistrySecurity rs = key.GetAccessControl();
+                foreach(RegistryAccessRule rar in rs.GetAccessRules(true, true, typeof(NTAccount)))
+                {
+                    if(rar.AccessControlType.ToString().Equals("Deny", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if(rar.IdentityReference.ToString().Equals("Everyone", StringComparison.OrdinalIgnoreCase))
+                        {
+                            rs.RemoveAccessRule(rar);
+                        }
+                    }
+                }
+                key.SetAccessControl(rs);
+            }
+        }
+    }
+
+    sealed class ShellNewSeparator : MyListItem
+    {
+        public ShellNewSeparator()
+        {
+            this.Text = AppString.Item.Separator;
+            this.HasImage = false;
         }
     }
 }

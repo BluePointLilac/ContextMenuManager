@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -12,10 +12,10 @@ namespace ContextMenuManager.Controls
     {
         public void LoadItems()
         {
-            this.LoadCommonItems();
+            this.LoadOpenWithItems();
             this.SortItemByText();
             this.AddNewItem();
-            RegRuleItem storeItem = new RegRuleItem(RegRuleItem.UseStoreOpenWith)
+            VisibleRegRuleItem storeItem = new VisibleRegRuleItem(VisibleRegRuleItem.UseStoreOpenWith)
             {
                 //Win8、Win8.1、Win10才有在应用商店中查找应用
                 Visible = WindowsOsVersion.ISAfterOrEqual8
@@ -23,7 +23,7 @@ namespace ContextMenuManager.Controls
             this.InsertItem(storeItem, 1);
         }
 
-        private void LoadCommonItems()
+        private void LoadOpenWithItems()
         {
             using(RegistryKey appKey = Registry.ClassesRoot.OpenSubKey("Applications"))
             {

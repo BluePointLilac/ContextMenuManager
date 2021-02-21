@@ -1,4 +1,4 @@
-﻿using BulePointLilac.Controls;
+﻿using BluePointLilac.Controls;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls.Interfaces

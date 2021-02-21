@@ -110,31 +110,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
-    <Compile Include="BulePointLilac.Controls\MyToolTip.cs" />
-    <Compile Include="BulePointLilac.Controls\ReadOnlyRichTextBox.cs">
+    <Compile Include="BluePointLilac.Controls\MyToolTip.cs" />
+    <Compile Include="BluePointLilac.Controls\ReadOnlyRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\ResizbleForm.cs">
+    <Compile Include="BluePointLilac.Controls\ResizbleForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\MyToolBar.cs">
+    <Compile Include="BluePointLilac.Controls\MyToolBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Methods\DirectoryEx.cs" />
-    <Compile Include="BulePointLilac.Methods\FileExtension.cs" />
-    <Compile Include="BulePointLilac.Methods\GuidEx.cs" />
-    <Compile Include="BulePointLilac.Methods\IniReader.cs" />
-    <Compile Include="BulePointLilac.Methods\IniWriter.cs" />
-    <Compile Include="BulePointLilac.Methods\MessageBoxEx.cs" />
-    <Compile Include="BulePointLilac.Methods\RichTextBoxExtension.cs" />
-    <Compile Include="BulePointLilac.Methods\StringExtension.cs" />
-    <Compile Include="BulePointLilac.Methods\TextBoxExtension.cs" />
-    <Compile Include="BulePointLilac.Methods\WindowsOsVersion.cs" />
-    <Compile Include="BulePointLilac.Methods\WshShortcut.cs" />
+    <Compile Include="BluePointLilac.Methods\DesktopIni.cs" />
+    <Compile Include="BluePointLilac.Methods\DirectoryEx.cs" />
+    <Compile Include="BluePointLilac.Methods\FileExtension.cs" />
+    <Compile Include="BluePointLilac.Methods\GuidEx.cs" />
+    <Compile Include="BluePointLilac.Methods\IniReader.cs" />
+    <Compile Include="BluePointLilac.Methods\IniWriter.cs" />
+    <Compile Include="BluePointLilac.Methods\MessageBoxEx.cs" />
+    <Compile Include="BluePointLilac.Methods\ExternalProgram.cs" />
+    <Compile Include="BluePointLilac.Methods\RichTextBoxExtension.cs" />
+    <Compile Include="BluePointLilac.Methods\SingleInstance.cs" />
+    <Compile Include="BluePointLilac.Methods\StringExtension.cs" />
+    <Compile Include="BluePointLilac.Methods\TextBoxExtension.cs" />
+    <Compile Include="BluePointLilac.Methods\WindowsOsVersion.cs" />
+    <Compile Include="BluePointLilac.Methods\WshShortcut.cs" />
     <Compile Include="Controls\AddGuidDicDialog.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\CommandDialog.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\EnhanceMenusItem.cs">
@@ -143,13 +143,34 @@
     <Compile Include="Controls\EnhanceMenusList.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\IEItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\IEList.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Interfaces\IBtnMoveUpDownItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiAdministratorItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiShortcutCommandItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Interfaces\ITsiRegExportItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\LockNewItem.cs">
+    <Compile Include="Controls\NewIEDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\NewLnkFileDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SelectDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellExecuteDialog.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ShellStoreDialog.cs">
@@ -200,9 +221,6 @@
     <Compile Include="Controls\AboutApp.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\FileExtensionDialog.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\GuidBlockedItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -212,16 +230,13 @@
     <Compile Include="Controls\NewOpenWithDialog.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\NewSendToDialog.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\NewShellDialog.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\OpenWithList.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\RegRuleItem.cs">
+    <Compile Include="Controls\RuleItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\OpenWithItem.cs">
@@ -248,6 +263,9 @@
     <Compile Include="Controls\ThirdRulesList.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\WinXGroupItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WinXItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -257,31 +275,31 @@
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\IconDialog.cs">
+    <Compile Include="BluePointLilac.Controls\IconDialog.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\InputDialog.cs">
+    <Compile Include="BluePointLilac.Controls\InputDialog.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\MyCheckBox.cs">
+    <Compile Include="BluePointLilac.Controls\MyCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\MyListBox.cs">
+    <Compile Include="BluePointLilac.Controls\MyListBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\MyMainForm.cs">
+    <Compile Include="BluePointLilac.Controls\MyMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\MySideBar.cs">
+    <Compile Include="BluePointLilac.Controls\MySideBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\MyStatusBar.cs">
+    <Compile Include="BluePointLilac.Controls\MyStatusBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ShellSubMenuDialog.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Controls\PictureButton.cs">
+    <Compile Include="BluePointLilac.Controls\PictureButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ShellExItem.cs">
@@ -290,20 +308,24 @@
     <Compile Include="Controls\ShellItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BulePointLilac.Methods\ControlExtension.cs" />
-    <Compile Include="BulePointLilac.Methods\HighDpi.cs" />
-    <Compile Include="BulePointLilac.Methods\RegistryEx.cs" />
-    <Compile Include="BulePointLilac.Methods\PropertiesDialog.cs" />
-    <Compile Include="BulePointLilac.Methods\RegTrustedInstaller.cs" />
+    <Compile Include="BluePointLilac.Methods\ControlExtension.cs" />
+    <Compile Include="BluePointLilac.Methods\HighDpi.cs" />
+    <Compile Include="BluePointLilac.Methods\RegistryEx.cs" />
+    <Compile Include="BluePointLilac.Methods\RegTrustedInstaller.cs" />
     <Compile Include="AppString.cs" />
     <Compile Include="AppImage.cs" />
-    <Compile Include="BulePointLilac.Methods\EncodingType.cs" />
+    <Compile Include="BluePointLilac.Methods\EncodingType.cs" />
     <Compile Include="GuidInfo.cs" />
-    <Compile Include="BulePointLilac.Methods\ImageExtension.cs" />
-    <Compile Include="BulePointLilac.Methods\ResourceIcon.cs" />
-    <Compile Include="BulePointLilac.Methods\ResourceString.cs" />
-    <Compile Include="BulePointLilac.Methods\ObjectPath.cs" />
+    <Compile Include="BluePointLilac.Methods\ImageExtension.cs" />
+    <Compile Include="BluePointLilac.Methods\ResourceIcon.cs" />
+    <Compile Include="BluePointLilac.Methods\ResourceString.cs" />
+    <Compile Include="BluePointLilac.Methods\ObjectPath.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Updater.cs" />
     <None Include="App.config" />
     <None Include="Properties\App.manifest" />
@@ -314,11 +336,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -339,6 +356,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\AppIcon.ico" />
+    <Content Include="Properties\Resources\HashLnk\HashLnk_32.exe" />
+    <Content Include="Properties\Resources\HashLnk\HashLnk_64.exe" />
+    <Content Include="Properties\Resources\Images\Custom.png" />
+    <Content Include="Properties\Resources\Images\NewFolder.png" />
     <Content Include="Properties\Resources\Images\Refresh.png" />
     <Content Include="Properties\Resources\Images\Skype.png" />
     <Content Include="Properties\Resources\Texts\EnhanceMenusDic.xml" />
@@ -346,20 +367,17 @@
     <Content Include="Properties\Resources\Images\Add.png" />
     <Content Include="Properties\Resources\Images\AddExisting.png" />
     <Content Include="Properties\Resources\Images\AddSeparator.png" />
-    <Content Include="Properties\Resources\Images\CustomType.png" />
     <Content Include="Properties\Resources\Images\Delete.png" />
     <Content Include="Properties\Resources\Images\Home.png" />
     <Content Include="Properties\Resources\Images\MicrosoftStore.png" />
     <Content Include="Properties\Resources\Images\NewItem.png" />
     <Content Include="Properties\Resources\Images\Open.png" />
-    <Content Include="Properties\Resources\Images\SeparatorItem.png" />
     <Content Include="Properties\Resources\Images\Setting.png" />
     <Content Include="Properties\Resources\Images\Star.png" />
     <Content Include="Properties\Resources\Images\SubItems.png" />
     <Content Include="Properties\Resources\Images\TurnOff.png" />
     <Content Include="Properties\Resources\Images\TurnOn.png" />
     <Content Include="Properties\Resources\Images\Type.png" />
-    <Content Include="Properties\Resources\Images\Types.png" />
     <Content Include="Properties\Resources\Images\Up.png" />
     <Content Include="Properties\Resources\Images\Donate.png" />
     <Content Include="Properties\Resources\Texts\ThirdRulesDic.xml" />

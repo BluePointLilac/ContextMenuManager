@@ -1,4 +1,4 @@
-﻿using BulePointLilac.Methods;
+﻿using BluePointLilac.Methods;
 using System;
 using System.IO;
 using System.Windows.Forms;

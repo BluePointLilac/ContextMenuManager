@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
 using System;
 using System.Windows.Forms;
@@ -63,7 +63,7 @@ namespace ContextMenuManager.Controls
         public void DeleteMe()
         {
             Array.ForEach(BlockedPaths, path => { RegistryEx.DeleteValue(path, this.Value); });
-            if(!this.Guid.Equals(Guid.Empty)) ExplorerRestarter.NeedRestart = true;
+            if(!this.Guid.Equals(Guid.Empty)) ExplorerRestarter.Show();
             this.Dispose();
         }
     }

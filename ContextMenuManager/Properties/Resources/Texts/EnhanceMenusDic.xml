@@ -1,18 +1,11 @@
 ﻿<?xml version='1.0' encoding='utf-8' ?>
 <!--此文件为常用右键菜单字典,
 Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型，
-子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突-->
+子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突
+由于Shell项太过复杂，程序只根据注册表项名判断存在即启用，故同一场景下不允许有相同KeyName属性的Shell项目，ShellEx项只要Guid符合则为启用-->
 <Data>
   <File>
     <Shell>
-      <Item KeyName='CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示'>
-        <Value>
-          <REG_SZ MUIVerb='复制文件路径' Icon='imageres.dll,-5302'/>
-        </Value>
-        <SubKey>
-          <Command Default='mshta vbscript:clipboarddata.setdata("text","%1")(close)'/>
-        </SubKey>
-      </Item>
       <Item KeyName='CopyContent' Tip='不需打开文件直接复制文件文本内容&#x000A;非UTF-16 LE(或带BOM)编码会乱码'>
         <Value>
           <REG_SZ MUIVerb='复制内容到剪切板' Icon='DxpTaskSync.dll,-52'/>
@@ -22,21 +15,21 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         </SubKey>
       </Item>
       <Item KeyName='TakeOwnerShip'>
-        <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='获取所有者权限' HasLUAShield='' NoWorkingDirectory=''/>
+          <REG_SZ MUIVerb='管理员取得所有权限' HasLUAShield='' NoWorkingDirectory=''/>
         </Value>
         <SubKey>
-          <Command Default='powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList &apos;/c takeown /f \"%1\" &amp; icacls \"%1\" /grant *S-1-3-4:F /c /l&apos; -Verb runAs"'/>
-          <Value>
-            <REG_SZ IsolatedCommand='powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList &apos;/c takeown /f \"%1\" &amp; icacls \"%1\" /grant *S-1-3-4:F /c /l&apos; -Verb runAs"'/>
-          </Value>
+          <Command>
+            <ShellExecute Verb='runas' WindowStyle='0'/>
+            <FileName>takeown.exe</FileName>
+            <Arguments>/f "%1" /a</Arguments>
+          </Command>
         </SubKey>
       </Item>
       <Item KeyName='GetHash'>
         <OSVersion Compare=">=">6.3</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='获取哈希值' Icon='powershell.exe,0'/>
+          <REG_SZ MUIVerb='获取哈希值'/>
         </Value>
         <SubKey>
           <Command Default='powershell -noexit get-filehash -literalpath "%1" -algorithm SHA1 | format-list;get-filehash -literalpath "%1" -algorithm SHA256 | format-list;get-filehash -literalpath "%1" -algorithm SHA384 | format-list;get-filehash -literalpath "%1" -algorithm SHA512 | format-list;get-filehash -literalpath "%1" -algorithm MACTripleDES | format-list;get-filehash -literalpath "%1" -algorithm MD5 | format-list;get-filehash -literalpath "%1" -algorithm RIPEMD160 | format-list'/>
@@ -45,31 +38,17 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     </Shell>
   </File>
 
-  <Folder>
-    <Shell>
-      <Item KeyName='CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示'>
-        <Value>
-          <REG_SZ MUIVerb='复制文件夹路径' Icon='imageres.dll,-5302'/>
-        </Value>
-        <SubKey>
-          <Command Default='mshta vbscript:clipboarddata.setdata("text","%1")(close)'/>
-        </SubKey>
-      </Item>
-    </Shell>
-  </Folder>
-
   <Directory>
     <Shell>
-      <Item KeyName="TakeOwnerShip">
-        <OSVersion Compare=">=">6.2</OSVersion>
+      <Item KeyName='TakeOwnerShip'>
         <Value>
-          <REG_SZ MUIVerb='获取所有者权限' HasLUAShield='' NoWorkingDirectory=''/>
+          <REG_SZ MUIVerb='管理员取得所有权限' HasLUAShield='' NoWorkingDirectory=''/>
         </Value>
         <SubKey>
-          <Command Default='powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList &apos;/c takeown /f \"%1\" /r /d y &amp; icacls \"%1\" /grant *S-1-3-4:F /t /c /l /q&apos; -Verb runAs"'>
-            <Value>
-              <REG_SZ IsolatedCommand='powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList &apos;/c takeown /f \"%1\" /r /d y &amp; icacls \"%1\" /grant *S-1-3-4:F /t /c /l /q&apos; -Verb runAs"'/>
-            </Value>
+          <Command>
+            <ShellExecute Verb='runas' WindowStyle='0'/>
+            <FileName>takeown.exe</FileName>
+            <Arguments>/f "%v" /a /r /d y</Arguments>
           </Command>
         </SubKey>
       </Item>
@@ -81,7 +60,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='Windows.NewFolder'>
         <OSVersion Compare=">=">6.1</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-31236' Icon='shell32.dll,-319' Position='top' CommandStateSync='' CommandStateHandler='{3756e7f5-e514-4776-a32b-eb24bc1efe7a}' CanonicalName='{E44616AD-6DF1-4B94-85A4-E465AE8A19DB}'/>
+          <REG_SZ MUIVerb='@shell32.dll,-31236' Icon='shell32.dll,-319' Position='top' CommandStateSync='' 
+                  CommandStateHandler='{3756e7f5-e514-4776-a32b-eb24bc1efe7a}' CanonicalName='{E44616AD-6DF1-4B94-85A4-E465AE8A19DB}'/>
           <REG_DWORD ImpliedSelectionModel='4' InvokeCommandOnSelection='0'/>
         </Value>
       </Item>
@@ -102,21 +82,101 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='Windows.ShowHiddenFiles'>
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='显示/隐藏 隐藏文件' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{f7300245-1f4b-41ba-8948-6fd392064494}'/>
+          <REG_SZ MUIVerb='显示/隐藏 隐藏文件' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync=''
+                  ExplorerCommandHandler='{f7300245-1f4b-41ba-8948-6fd392064494}'/>
         </Value>
       </Item>
       <Item KeyName='Windows.ShowFileExtensions'>
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='显示/隐藏 文件扩展名' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{4ac6c205-2853-4bf5-b47c-919a42a48a16}'/>
+          <REG_SZ MUIVerb='显示/隐藏 文件扩展名' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync=''
+                  ExplorerCommandHandler='{4ac6c205-2853-4bf5-b47c-919a42a48a16}'/>
         </Value>
+      </Item>
+      <Item KeyName='ShowHiddenFiles'>
+        <OSVersion Compare="&lt;">6.2</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='显示/隐藏 隐藏文件' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <FileName>wscript.exe</FileName>
+            <Arguments>
+              <CreateFile
+                FileName='ShowHiddenFiles.vbs'
+                Content='
+                On Error Resume Next
+                Dim wsh, path, value
+                Set wsh = CreateObject("WScript.Shell")
+                path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Hidden"
+                value = 1
+                If wsh.RegRead(path) = value Then value = 2
+                wsh.RegWrite path, value, "REG_DWORD"
+                wsh.SendKeys "{F5}"
+                Set wsh = Nothing'/>
+            </Arguments>
+          </Command>
+        </SubKey>
+      </Item>
+      <Item KeyName='ShowFileExtensions'>
+        <OSVersion Compare="&lt;">6.2</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='显示/隐藏 文件扩展名' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <FileName>wscript.exe</FileName>
+            <Arguments>
+              <CreateFile
+                FileName='ShowFileExtensions.vbs'
+                Content='
+                On Error Resume Next
+                Dim wsh, path, value
+                Set wsh = CreateObject("WScript.Shell")
+                path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\HideFileExt"
+                value = 1
+                If wsh.RegRead(path) = value Then value = 0
+                wsh.RegWrite path, value, "REG_DWORD"
+                wsh.SendKeys "{F5}"
+                Set wsh = Nothing'/>
+            </Arguments>
+          </Command>
+        </SubKey>
+      </Item>
+      <Item KeyName='ShowSuperHidden'>
+        <Value>
+          <REG_SZ MUIVerb='显示/隐藏 系统隐藏文件' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <FileName>wscript.exe</FileName>
+            <Arguments>
+              <CreateFile
+                FileName='ShowSuperHidden.vbs'
+                Content='
+                On Error Resume Next
+                Dim wsh, path, value
+                Set wsh = CreateObject("WScript.Shell")
+                path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ShowSuperHidden"
+                value = 1
+                If wsh.RegRead(path) = value Then value = 0
+                wsh.RegWrite path, value, "REG_DWORD"
+                wsh.SendKeys "{F5}"
+                Set wsh = Nothing'/>
+            </Arguments>
+          </Command>
+        </SubKey>
       </Item>
       <Item KeyName='RunasCmd'>
         <Value>
           <REG_SZ MUIVerb='以管理员身份打开命令提示符' HasLUAShield='' NoWorkingDirectory=''/>
         </Value>
         <SubKey>
-          <Command Default='mshta vbscript:createobject("shell.application").shellexecute("cmd","/s /k pushd %v","","runas",1)(close)'/>
+          <Command>
+            <ShellExecute Verb='runas'/>
+            <FileName>cmd.exe</FileName>
+            <Arguments>/s /k pushd "%v"</Arguments>
+          </Command>
         </SubKey>
       </Item>
       <Item KeyName='ExplorerUWP'>
@@ -130,7 +190,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       </Item>
     </Shell>
     <ShellEx>
-      <Item Text='窗口转换程序' Icon='imageres.dll,0' KeyName='Flip3D' Guid='{3080f90e-d7ad-11d9-bd98-0000947b0257}'/>
+      <!--窗口转换程序-->
+      <Item Text='@shell32.dll,-12715' Icon='imageres.dll,0' KeyName='Flip3D' Guid='{3080f90e-d7ad-11d9-bd98-0000947b0257}'/>
     </ShellEx>
   </Background>
 
@@ -138,22 +199,23 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Shell>
       <Item KeyName='OpenThisPC'>
         <Value>
-          <REG_SZ MUIVerb='打开此电脑' Icon='imageres.dll,-109'/>
+          <REG_SZ MUIVerb='此电脑' Icon='imageres.dll,-109'/>
         </Value>
         <SubKey>
-          <Command Default='explorer.exe /e,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}'/>
+          <Command Default='explorer /e,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}'/>
         </SubKey>
       </Item>
       <Item KeyName='OpenControlPanel'>
         <Value>
-          <REG_SZ MUIVerb='打开控制面板' Icon='imageres.dll,-27'/>
+          <REG_SZ MUIVerb='控制面板' Icon='imageres.dll,-27'/>
         </Value>
         <SubKey>
-          <Command Default='rundll32.exe shell32.dll,Control_RunDLL'/>
+          <Command Default='control.exe'/>
         </SubKey>
       </Item>
       <Item KeyName='RestartExplorer'>
         <OSVersion Compare=">=">6.1</OSVersion>
+        <FileExists>%SystemRoot%\System32\tskill.exe</FileExists>
         <Value>
           <REG_SZ MUIVerb='重启资源管理器' Icon='shell32.dll,238'/>
         </Value>
@@ -161,12 +223,33 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <Command Default='tskill explorer'/>
         </SubKey>
       </Item>
+      <Item KeyName='VbsRestartExplorer'>
+        <Value>
+          <REG_SZ MUIVerb='重启资源管理器' Icon='shell32.dll,238'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <FileName>wscript.exe</FileName>
+            <Arguments>
+              <CreateFile
+                FileName='RestartExplorer.vbs'
+                Content='
+                Dim wsh
+                Set wsh = CreateObject("WScript.Shell")
+                wsh.Run "taskkill -f -im explorer.exe",0
+                WScript.Sleep 1000
+                wsh.Run("explorer.exe")
+                Set wsh = Nothing'/>
+            </Arguments>
+          </Command>
+        </SubKey>
+      </Item>
       <Item KeyName='OpenMoreRegedit'>
         <Value>
           <REG_SZ MUIVerb='多开注册表编辑器' Icon='regedit.exe,0'/>
         </Value>
         <SubKey>
-          <Command Default='regedit.exe -m'/>
+          <Command Default='regedit -m'/>
         </SubKey>
       </Item>
       <Item KeyName='SnippingTool'>
@@ -175,7 +258,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='截图工具' Icon='snippingTool.exe,0'/>
         </Value>
         <SubKey>
-          <Command Default='snippingTool.exe'/>
+          <Command Default='snippingTool'/>
         </SubKey>
       </Item>
       <Item KeyName='SnipToClipboard' Tip='截屏后可直接Ctrl+V粘贴图片&#x000A;适用位置:Word、QQ、PS等&#x000A;快捷键:Win+Shift+S'>
@@ -187,6 +270,81 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <Command Default='explorer ms-screenclip:'/>
         </SubKey>
       </Item>
+      <Item KeyName='ScreenKeyboard'>
+        <Value>
+          <REG_SZ MUIVerb='屏幕键盘' Icon='osk.exe,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='osk.exe'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='ShutDownMenu'>
+        <Value>
+          <REG_SZ MUIVerb='关机选项' Icon='shell32.dll,-28' SubCommands='' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Shell>
+            <SubKey>
+              <Item0>
+                <Value>
+                  <REG_SZ MUIVerb='锁定'/>
+                </Value>
+                <SubKey>
+                  <Command Default='rundll32 User32.dll,LockWorkStation'/>
+                </SubKey>
+              </Item0>
+              <Item1>
+                <Value>
+                  <REG_SZ MUIVerb='注销'/>
+                </Value>
+                <SubKey>
+                  <Command Default='shutdown -l'/>
+                </SubKey>
+              </Item1>
+              <Item2>
+                <Value>
+                  <REG_SZ MUIVerb='更换用户'/>
+                </Value>
+                <SubKey>
+                  <Command Default='tsdiscon'/>
+                </SubKey>
+              </Item2>
+              <Item3>
+                <Value>
+                  <REG_SZ MUIVerb='睡眠'/>
+                </Value>
+                <SubKey>
+                  <Command Default='rundll32 powrprof.dll,SetSuspendState Sleep'/>
+                </SubKey>
+              </Item3>
+              <Item4>
+                <Value>
+                  <REG_SZ MUIVerb='休眠'/>
+                </Value>
+                <SubKey>
+                  <Command Default='shutdown -h'/>
+                </SubKey>
+              </Item4>
+              <Item5>
+                <Value>
+                  <REG_SZ MUIVerb='重启'/>
+                </Value>
+                <SubKey>
+                  <Command Default='shutdown -r -f -t 00'/>
+                </SubKey>
+              </Item5>
+              <Item6>
+                <Value>
+                  <REG_SZ MUIVerb='关机'/>
+                </Value>
+                <SubKey>
+                  <Command Default='shutdown -s -f -t 00'/>
+                </SubKey>
+              </Item6>
+            </SubKey>
+          </Shell>
+        </SubKey>
+      </Item>
       <Item KeyName='SlideToShutDown'>
         <OSVersion Compare=">=">6.3</OSVersion>
         <Value>
@@ -196,13 +354,182 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <Command Default='SlideToShutDown.exe'/>
         </SubKey>
       </Item>
-      <Item KeyName='BatteryReport'>
+      <Item KeyName='PowerPlan'>
         <Value>
-          <OSVersion Compare=">=">10.0</OSVersion>
-          <REG_SZ MUIVerb='电池使用报告' Icon='cmd.exe,0'/>
+          <REG_SZ MUIVerb='电源计划' Icon='powercpl.dll,0' SubCommands='' Position='bottom'/>
         </Value>
         <SubKey>
-          <Command Default='cmd /c powercfg /batteryreport /output BatteryReport.html &amp; BatteryReport.html &amp; pause'/>
+          <Shell>
+            <SubKey>
+              <Item0>
+                <Value>
+                  <REG_SZ MUIVerb='节能'/>
+                </Value>
+                <SubKey>
+                  <Command Default='powercfg /S a1841308-3541-4fab-bc81-f71556f20b4a'/>
+                </SubKey>
+              </Item0>
+              <Item1>
+                <Value>
+                  <REG_SZ MUIVerb='平衡'/>
+                </Value>
+                <SubKey>
+                  <Command Default='powercfg /S 381b4222-f694-41f0-9685-ff5bb260df2e'/>
+                </SubKey>
+              </Item1>
+              <Item2>
+                <Value>
+                  <REG_SZ MUIVerb='高性能'/>
+                </Value>
+                <SubKey>
+                  <Command Default='powercfg /S 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c'/>
+                </SubKey>
+              </Item2>
+            </SubKey>
+          </Shell>
+        </SubKey>
+      </Item>
+      <Item KeyName='AppMode'>
+        <OSVersion Compare=">=">10.0.17763</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='颜色模式' Icon='themecpl.dll,-1' SubCommands='' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Shell>
+            <SubKey>
+              <Item0>
+                <Value>
+                  <REG_SZ MUIVerb='浅色应用' Icon='imageres.dll,-5411'/>
+                </Value>
+                <SubKey>
+                  <Command Default='Reg Add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 1 /f'/>
+                </SubKey>
+              </Item0>
+              <Item1>
+                <Value>
+                  <REG_SZ MUIVerb='深色应用' Icon='imageres.dll,-5412'/>
+                </Value>
+                <SubKey>
+                  <Command Default='Reg Add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /t REG_DWORD /d 0 /f'/>
+                </SubKey>
+              </Item1>
+            </SubKey>
+          </Shell>
+        </SubKey>
+      </Item>
+      <Item KeyName='VirtualMode' Tip='解决 Hyper-V 和 VirtualBox 不能共存的问题'>
+        <OSVersion Compare=">=">10.0</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='虚拟模式' Icon='imageres.dll,-109' SubCommands='' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Shell>
+            <SubKey>
+              <Item0>
+                <Value>
+                  <REG_SZ MUIVerb='Hyper-V'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <FileName>wscript.exe</FileName>
+                    <Arguments>
+                      <CreateFile
+                        FileName='HyperVMode.vbs'
+                        Content='
+                        Dim sap, wsh, msg
+                        Set sap = CreateObject("Shell.Application")
+                        sap.ShellExecute "bcdedit", "/set hypervisorlaunchtype auto", "" ,"runas", 0
+                        msg = "你当前切换的模式为 Hyper-V，" &amp; VbCrlf
+                        msg = msg &amp; "该模式可使用 Windows SandBox 和 Hyper-V，" &amp; VbCrlf
+                        msg = msg &amp; "不可使用 VirtualBox 和 VMware 等虚拟机程序，" &amp; VbCrlf
+                        msg = msg &amp; "是否立即重启计算机应用该模式？" &amp; VbCrlf
+                        msg = msg &amp; "你也可稍后自行重启，请保存好工作！"
+                        If Msgbox(msg, VbYesNo + VbInformation, "虚拟模式") = VbYes Then
+                            Set wsh = CreateObject("WScript.Shell")
+                            wsh.Run("shutdown -r -f -t 00")
+                            Set wsh = Nothing
+                        End If
+                        Set sap = Nothing'/>
+                    </Arguments>
+                  </Command>
+                </SubKey>
+              </Item0>
+              <Item1>
+                <Value>
+                  <REG_SZ MUIVerb='VirtualBox'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <FileName>wscript.exe</FileName>
+                    <Arguments>
+                      <CreateFile
+                        FileName='VirtualBoxMode.vbs'
+                        Content='
+                        Dim sap, wsh, msg
+                        Set sap = CreateObject("Shell.Application")
+                        sap.ShellExecute "bcdedit", "/set hypervisorlaunchtype off", "", "runas", 0
+                        msg = "你当前切换的模式为 VirtualBox，" &amp; VbCrlf
+                        msg = msg &amp; "该模式可使用 VirtualBox 和 VMware 等虚拟机程序，" &amp; VbCrlf
+                        msg = msg &amp; "不可使用 Windows SandBox 和 Hyper-V，" &amp; VbCrlf
+                        msg = msg &amp; "是否立即重启计算机应用该模式？" &amp; VbCrlf
+                        msg = msg &amp; "你也可稍后自行重启，请保存好工作！"
+                        If Msgbox(msg, VbYesNo + VbInformation, "虚拟模式") = VbYes Then
+                            Set wsh = CreateObject("WScript.Shell")
+                            wsh.Run("shutdown -r -f -t 00")
+                            Set wsh = Nothing
+                        End If
+                        Set sap = Nothing'/>
+                    </Arguments>
+                  </Command>
+                </SubKey>
+              </Item1>
+            </SubKey>
+          </Shell>
+        </SubKey>
+      </Item>
+      <Item KeyName='WallPaperLocation'>
+        <Value>
+          <REG_SZ MUIVerb='壁纸位置' Icon='imageres.dll,-5346' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <FileName>wscript.exe</FileName>
+            <Arguments>
+              <CreateFile
+                FileName='WallPaperLocation.vbs'
+                Content='
+                On Error Resume Next
+                Dim wsh, path
+                Set wsh = CreateObject("WScript.Shell")
+                path = wsh.RegRead("HKCU\Control Panel\Desktop\WallPaper")
+                wsh.Run("explorer /select, " &amp; path)
+                Set wsh = Nothing'/>
+            </Arguments>
+          </Command>
+        </SubKey>
+      </Item>
+      <Item KeyName='DesktopIcon'>
+        <Value>
+          <REG_SZ MUIVerb='桌面图标设置' Icon='desk.cpl,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='control desk.cpl,,0'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='ScreenSaver'>
+        <Value>
+          <REG_SZ MUIVerb='屏幕保护设置' Icon='desk.cpl,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='control desk.cpl,,1'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='Baidu'>
+        <Value>
+          <REG_SZ MUIVerb='百度一下' Icon='Windows.Storage.Search.dll,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='explorer "https://www.baidu.com"'/>
         </SubKey>
       </Item>
     </Shell>
@@ -222,9 +549,61 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <!--磁盘清理-->
       <Item KeyName='Windows.CleanUp'>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-22026' Icon='cleanmgr.exe,-104' CommandStateSync='' ExplorerCommandHandler='{9cca66bb-9c78-4e59-a76f-a5e9990b8aa0}'/>
+          <REG_SZ MUIVerb='@shell32.dll,-22026' Icon='cleanmgr.exe,-104' CommandStateSync='' 
+                  ExplorerCommandHandler='{9cca66bb-9c78-4e59-a76f-a5e9990b8aa0}'/>
           <REG_DWORD ImpliedSelectionModel='0x1'/>
         </Value>
+      </Item>
+      <Item KeyName='ShowDriveLetters'>
+        <Value>
+          <REG_SZ MUIVerb='显示/隐藏 盘符' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <FileName>Wscript.exe</FileName>
+            <Arguments>
+              <CreateFile
+                FileName='ShowDriveLetters.vbs'
+                Content='
+                On Error Resume Next
+                Dim wsh, path, value
+                Set wsh = CreateObject("WScript.Shell")
+                path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ShowDriveLettersFirst"
+                value = 2
+                If wsh.RegRead(path) = value Then value = 0
+                wsh.RegWrite path, value, "REG_DWORD"
+                wsh.SendKeys "{F5}"
+                Set wsh = Nothing'/>
+            </Arguments>
+          </Command>
+        </SubKey>
+      </Item>
+      <Item KeyName='ShowVolumeStrips'>
+        <Value>
+          <REG_SZ MUIVerb='显示/隐藏 容量条' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <ShellExecute Verb='runas'/>
+            <FileName>Wscript.exe</FileName>
+            <Arguments>
+              <CreateFile
+                FileName='ShowVolumeStrips.vbs'
+                Content='
+                On Error Resume Next
+                Dim wsh, path, value
+                Set wsh = CreateObject("WScript.Shell")
+                path = "HKLM\SOFTWARE\Classes\Drive\TileInfo"
+                value = "prop:*System.PercentFull;System.Computer.DecoratedFreeSpace;System.Volume.FileSystem"
+                If wsh.RegRead(path) = value Then
+                    value = "prop:System.FreeSpace;System.Capacity"
+                End If
+                wsh.RegWrite path, value
+                wsh.SendKeys "{F5}"
+                Set wsh = Nothing'/>
+            </Arguments>
+          </Command>
+        </SubKey>
       </Item>
     </Shell>
   </Drive>
@@ -235,16 +614,77 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='Windows.PermanentDelete' Tip='不能用于删除lnk快捷方式文件,&#x000A;或通过快捷方式删除其目标对象'>
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-37394' Icon='shell32.dll,-240' Position='bottom' CommandStateSync='' ExplorerCommandHandler='{E9571AB2-AD92-4ec6-8924-4E5AD33790F5}'/>
+          <REG_SZ MUIVerb='@shell32.dll,-37394' Icon='shell32.dll,-240' Position='bottom' CommandStateSync='' 
+                  ExplorerCommandHandler='{E9571AB2-AD92-4ec6-8924-4E5AD33790F5}'/>
         </Value>
       </Item>
+      <Item KeyName='CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示, 路径不带双引号'>
+        <Value>
+          <REG_SZ MUIVerb='复制路径' Icon='imageres.dll,-5302'/>
+        </Value>
+        <SubKey>
+          <Command Default='mshta vbscript:clipboarddata.setdata("text","%1")(close)'/>
+        </SubKey>
+      </Item>
       <!--复制路径-->
-      <Item KeyName='Windows.CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示'>
+      <Item KeyName='Windows.CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示, 路径带双引号'>
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-30329' Icon='imageres.dll,-5302' CommandStateHandler='{3B1599F9-E00A-4BBF-AD3E-B3F99FA87779}' CanonicalName='{707C7BC6-685A-4A4D-A275-3966A5A3EFAA}' CommandStateSync='' VerbHandler='{f3d06e7c-1e45-4a26-847e-f9fcdee59be0}' VerbName='copyaspath' Description='@shell32.dll,-30336'/>
+          <REG_SZ MUIVerb='@shell32.dll,-30329' Icon='imageres.dll,-5302' CommandStateHandler='{3B1599F9-E00A-4BBF-AD3E-B3F99FA87779}' 
+                  CanonicalName='{707C7BC6-685A-4A4D-A275-3966A5A3EFAA}' CommandStateSync='' VerbHandler='{f3d06e7c-1e45-4a26-847e-f9fcdee59be0}' 
+                  VerbName='copyaspath' Description='@shell32.dll,-30336'/>
           <REG_DWORD InvokeCommandOnSelection='1'/>
         </Value>
+      </Item>
+      <!--幻灯片放映-->
+      <Item KeyName='Windows.SlideShow'>
+        <Value>
+          <REG_SZ MUIVerb='@shell32.dll,-31287' Icon='imageres.dll,-5347' CommandStateHandler='{880ac964-2e34-4425-8cf2-86ada2c3a019}' 
+                  CanonicalName='{73BCE053-3BBC-4AD7-9FE7-7A7C212C98E6}' CommandStateSync='' Description='@shell32.dll,-31288' VerbToInvoke='slideshow'/>
+          <REG_DWORD MediaTypeFlags='5'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <Value>
+              <REG_SZ DelegateExecute='{80c68d96-366b-11dc-9eaa-00161718cf63}'/>
+            </Value>
+          </Command>
+        </SubKey>
+      </Item>
+      <Item KeyName='HideAttributes'>
+        <Value>
+          <REG_SZ MUIVerb='隐藏属性' SubCommands='' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Shell>
+            <SubKey>
+              <Item0>
+                <Value>
+                  <REG_SZ MUIVerb='显示'/>
+                </Value>
+                <SubKey>
+                  <Command Default='attrib -s -h "%1"'/>
+                </SubKey>
+              </Item0>
+              <Item1>
+                <Value>
+                  <REG_SZ MUIVerb='隐藏'/>
+                </Value>
+                <SubKey>
+                  <Command Default='attrib -s +h "%1"'/>
+                </SubKey>
+              </Item1>
+              <Item2>
+                <Value>
+                  <REG_SZ MUIVerb='系统隐藏'/>
+                </Value>
+                <SubKey>
+                  <Command Default='attrib +s +h "%1"'/>
+                </SubKey>
+              </Item2>
+            </SubKey>
+          </Shell>
+        </SubKey>
       </Item>
     </Shell>
     <ShellEx>
@@ -255,6 +695,151 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     </ShellEx>
   </AllObjects>
 
+  <Computer>
+    <Shell>
+      <Item KeyName='SystemInfo'>
+        <Value>
+          <REG_SZ MUIVerb='系统信息' Icon='msinfo32.exe,0'/>
+        </Value>
+        <SubKey>
+          <Command Default='msinfo32.exe'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='UserAccountControlSettings'>
+        <Value>
+          <REG_SZ MUIVerb='用户账户控制设置'/>
+        </Value>
+        <SubKey>
+          <Command Default='UserAccountControlSettings.exe'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='Gpedit'>
+        <FileExists>%SystemRoot%\System32\gpedit.msc</FileExists>
+        <Value>
+          <REG_SZ MUIVerb='组策略编辑器'/>
+        </Value>
+        <SubKey>
+          <Command Default='mmc.exe gpedit.msc'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='GodMode'>
+        <Value>
+          <REG_SZ MUIVerb='上帝模式' Icon='imageres.dll,-27'/>
+        </Value>
+        <SubKey>
+          <Command Default='explorer shell:::{ED7BA470-8E54-465E-825C-99712043E01C}'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='EditHosts'>
+        <Value>
+          <REG_SZ MUIVerb='编辑 Hosts'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <ShellExecute Verb='runas'/>
+            <FileName>notepad.exe</FileName>
+            <Arguments>"%systemroot%\system32\drivers\etc\hosts"</Arguments>
+          </Command>
+        </SubKey>
+      </Item>
+      <Item KeyName='FlushDNS'>
+        <Value>
+          <REG_SZ MUIVerb='刷新DNS缓存'/>
+        </Value>
+        <SubKey>
+          <Command Default='ipconfig /flushdns'/>
+        </SubKey>
+      </Item>
+      <Item KeyName='BatteryReport'>
+        <Value>
+          <OSVersion Compare=">=">10.0</OSVersion>
+          <REG_SZ MUIVerb='电池使用报告' Icon='powercpl.dll,0'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <FileName>wscript.exe</FileName>
+            <Arguments>
+              <CreateFile
+                FileName='BatteryReport.vbs'
+                Content='
+                On Error Resume Next
+                Dim wsh, fso, path
+                Set wsh = CreateObject("WScript.Shell")
+                Set fso = CreateObject("Scripting.FileSystemObject")
+                path = fso.GetSpecialFolder(2) &amp; "\BatteryReport.html"
+                If fso.FileExists(path) Then 
+                    fso.DeleteFile(path)
+                    WScript.Sleep 1000
+                End If
+                wsh.Run "powercfg /batteryreport /output " &amp; path, 0
+                WScript.Sleep 1000
+                wsh.Run("explorer.exe " &amp; path)
+                Set wsh = Nothing
+                Set fso = Nothing'/>
+            </Arguments>
+          </Command>
+        </SubKey>
+      </Item>
+      <Item KeyName='EditSignInInfo'>
+        <Value>
+          <REG_SZ MUIVerb='编辑登录提示'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <ShellExecute Verb='runas'/>
+            <FileName>wscript.exe</FileName>
+            <Arguments>
+              <CreateFile
+                FileName='EditSignInInfo.vbs'
+                Content='
+                On Error Resume Next
+                Dim wsh, path, value
+                Set wsh = CreateObject("WScript.Shell")
+                path = "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LegalnoticeCaption"
+                value = wsh.RegRead(path)
+                value = InputBox("请输入提示标题", "编辑登录提示", value)
+                wsh.RegWrite path, value
+                path = "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LegalnoticeText"
+                value = wsh.RegRead(path)
+                value = InputBox("请输入提示内容", "编辑登录提示", value)
+                wsh.RegWrite path, value
+                Set wsh = Nothing'/>
+            </Arguments>
+          </Command>
+        </SubKey>
+      </Item>
+    </Shell>
+  </Computer>
+
+  <RecycleBin>
+    <Shell>
+      <Item KeyName='CleanThumbCache'>
+        <Value>
+          <REG_SZ MUIVerb='清理缩略图缓存'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <ShellExecute Verb='runas' WindowStyle='0'/>
+            <FileName>
+              <CreateFile
+                FileName='CleanThumbCache.bat'
+                Content='
+                @echo off
+                taskkill /f /im explorer.exe
+                del /a "%LocalAppData%\IconCache.db"
+                cd /d "%LocalAppData%\Microsoft\Windows\Explorer"
+                for /r %%f in (iconcache_*.db) do del %%f
+                for /r %%f in (thumbcache_*.db) do del %%f
+                reg delete "HKCR\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify" /v IconStreams /f
+                reg delete "HKCR\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify" /v PastIconsStream /f
+                start explorer'/>
+            </FileName>
+          </Command>
+        </SubKey>
+      </Item>
+    </Shell>
+  </RecycleBin>
+
   <Text Text='文本文件' Icon='notepad.exe,0' RegPath='HKEY_CLASSES_ROOT\SystemFileAssociations\text'>
     <Shell>
       <Item KeyName='OpenWithNotepad'>
@@ -262,7 +847,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='用记事本打开' Icon='%windir%\system32\notepad.exe,0'/>
         </Value>
         <SubKey>
-          <Command Default='notepad.exe %1'/>
+          <Command Default='notepad.exe "%1"'/>
         </SubKey>
       </Item>
     </Shell>
@@ -275,7 +860,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='用画图打开' Icon='mspaint.exe,0'/>
         </Value>
         <SubKey>
-          <Command Default='mspaint.exe %1'/>
+          <Command Default='mspaint.exe "%1"'/>
         </SubKey>
       </Item>
     </Shell>
@@ -288,7 +873,11 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='注册 DLL'/>
         </Value>
         <SubKey>
-          <Command Default='mshta vbscript:createobject("shell.application").shellexecute("regsvr32","%1","","runas",1)(close)'/>
+          <Command>
+            <ShellExecute Verb='runas' WindowStyle='0'/>
+            <FileName>regsvr32.exe</FileName>
+            <Arguments>"%1"</Arguments>
+          </Command>
         </SubKey>
       </Item>
       <Item KeyName='UnRegister'>
@@ -296,7 +885,11 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='注销 DLL'/>
         </Value>
         <SubKey>
-          <Command Default='mshta vbscript:createobject("shell.application").shellexecute("regsvr32","/u %1","","runas",1)(close)'/>
+          <Command>
+            <ShellExecute Verb='runas' WindowStyle='0'/>
+            <FileName>regsvr32.exe</FileName>
+            <Arguments>/u "%1"</Arguments>
+          </Command>
         </SubKey>
       </Item>
     </Shell>
@@ -309,7 +902,11 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='注册 OCX'/>
         </Value>
         <SubKey>
-          <Command Default='mshta vbscript:createobject("shell.application").shellexecute("regsvr32","%1","","runas",1)(close)'/>
+          <Command>
+            <ShellExecute Verb='runas' WindowStyle='0'/>
+            <FileName>regsvr32.exe</FileName>
+            <Arguments>"%1"</Arguments>
+          </Command>
         </SubKey>
       </Item>
       <Item KeyName='UnRegister'>
@@ -317,7 +914,11 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='注销 OCX'/>
         </Value>
         <SubKey>
-          <Command Default='mshta vbscript:createobject("shell.application").shellexecute("regsvr32","/u %1","","runas",1)(close)'/>
+          <Command>
+            <ShellExecute Verb='runas' WindowStyle='0'/>
+            <FileName>regsvr32.exe</FileName>
+            <Arguments>/u "%1"</Arguments>
+          </Command>
         </SubKey>
       </Item>
     </Shell>

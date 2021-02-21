@@ -1,10 +1,12 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 namespace ContextMenuManager.Controls
@@ -63,8 +65,16 @@ namespace ContextMenuManager.Controls
         private static void WriteSubKeysValue(XmlElement keyXE, string regPath)
         {
             if(keyXE == null) return;
-            string defaultValue = keyXE.GetAttribute("Default");
-            if(!defaultValue.IsNullOrWhiteSpace()) Registry.SetValue(regPath, "", defaultValue);
+            string defaultValue = Environment.ExpandEnvironmentVariables(keyXE.GetAttribute("Default"));
+            if(!defaultValue.IsNullOrWhiteSpace())
+            {
+                Registry.SetValue(regPath, "", defaultValue);
+            }
+            else if(keyXE.Name == "Command")
+            {
+                //按照规则Command节点无默认值则创建文件
+                WriteCommandValue(keyXE, regPath);
+            }
             WriteAttributesValue(keyXE.SelectSingleNode("Value"), regPath);
 
             XmlNode subKeyXN = keyXE.SelectSingleNode("SubKey");
@@ -73,6 +83,50 @@ namespace ContextMenuManager.Controls
                 foreach(XmlElement xe in subKeyXN.ChildNodes)
                     WriteSubKeysValue(xe, $@"{regPath}\{xe.Name}");
             }
+        }
+
+        private static void WriteCommandValue(XmlElement cmdXE, string regPath)
+        {
+            XmlElement fnXE = (XmlElement)cmdXE.SelectSingleNode("FileName");
+            XmlElement argXE = (XmlElement)cmdXE.SelectSingleNode("Arguments");
+            XmlElement seXE = (XmlElement)cmdXE.SelectSingleNode("ShellExecute");
+
+            string command;
+            string fileName = fnXE?.InnerText.Trim();
+            string arguments = argXE?.InnerText.Trim();
+            if(string.IsNullOrEmpty(fileName)) fileName = CreateCommandFile(fnXE);
+            if(string.IsNullOrEmpty(arguments)) arguments = CreateCommandFile(argXE);
+            fileName = Environment.ExpandEnvironmentVariables(fileName);
+            arguments = Environment.ExpandEnvironmentVariables(arguments);
+            if(seXE != null)
+            {
+                string verb = seXE.HasAttribute("Verb") ? seXE.GetAttribute("Verb") : "open";
+                int windowStyle = seXE.HasAttribute("WindowStyle") ? Convert.ToInt32(seXE.GetAttribute("WindowStyle")) : 1;
+                string directory = Environment.ExpandEnvironmentVariables(seXE.GetAttribute("Directory"));
+                command = ShellExecuteDialog.GetCommand(fileName, arguments, verb, windowStyle, directory);
+            }
+            else
+            {
+                command = fileName;
+                if(arguments != string.Empty) command += $" {arguments}";
+            }
+            Registry.SetValue(regPath, "", command);
+        }
+
+        private static string CreateCommandFile(XmlElement xe)
+        {
+            if(xe == null) return string.Empty;
+            XmlElement cfXE = (XmlElement)xe.SelectSingleNode("CreateFile");
+            if(cfXE == null) return string.Empty;
+            string fileName = cfXE.GetAttribute("FileName");
+            string content = cfXE.GetAttribute("Content");
+            string extension = Path.GetExtension(fileName).ToLower();
+            string filePath = $@"{AppConfig.ProgramsDir}\{fileName}";
+            Encoding encoding = Encoding.Unicode;
+            if(extension == ".bat" || extension == ".cmd") encoding = Encoding.Default;
+            if(File.Exists(filePath)) File.Delete(filePath);
+            File.WriteAllText(filePath, content, encoding);
+            return filePath;
         }
     }
 

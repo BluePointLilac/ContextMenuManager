@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -32,17 +32,9 @@ namespace ContextMenuManager.Controls
 
         private void AddNewItem()
         {
-            MyListItem newItem = new MyListItem
-            {
-                Text = AppString.Item.AddGuidBlockedItem,
-                Image = AppImage.AddNewItem
-            };
-            PictureButton btnAddNewItem = new PictureButton(AppImage.AddNewItem);
-            newItem.AddCtr(btnAddNewItem);
-            newItem.SetNoClickEvent();
+            NewItem newItem = new NewItem(AppString.Item.AddGuidBlockedItem);
             this.AddItem(newItem);
-            MyToolTip.SetToolTip(btnAddNewItem, newItem.Text);
-            btnAddNewItem.MouseDown += (sender, e) =>
+            newItem.AddNewItem += (sender, e) =>
             {
                 using(InputDialog dlg = new InputDialog { Title = AppString.Dialog.InputGuid })
                 {
@@ -63,7 +55,7 @@ namespace ContextMenuManager.Controls
                             }
                         }
                         this.InsertItem(new GuidBlockedItem(dlg.Text), 1);
-                        ExplorerRestarter.NeedRestart = true;
+                        ExplorerRestarter.Show();
                     }
                     else MessageBoxEx.Show(AppString.MessageBox.MalformedGuid);
                 }

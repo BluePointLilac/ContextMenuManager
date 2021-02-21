@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
 using Microsoft.Win32;
 using System;
@@ -8,15 +8,16 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class ShellExItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem,
+    sealed class ShellExItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, IFoldSubItem,
         ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem
     {
-        public static Dictionary<string, Guid> GetPathAndGuids(string shellExPath)
+        public static Dictionary<string, Guid> GetPathAndGuids(string shellExPath, bool isDragDrop = false)
         {
             Dictionary<string, Guid> dic = new Dictionary<string, Guid>();
-            foreach(string cmhPart in CmhParts)
+            string[] parts = isDragDrop ? DdhParts : CmhParts;
+            foreach(string part in parts)
             {
-                using(RegistryKey cmKey = RegistryEx.GetRegistryKey($@"{shellExPath}\{cmhPart}"))
+                using(RegistryKey cmKey = RegistryEx.GetRegistryKey($@"{shellExPath}\{part}"))
                 {
                     if(cmKey == null) continue;
                     foreach(string keyName in cmKey.GetSubKeyNames())
@@ -34,6 +35,7 @@ namespace ContextMenuManager.Controls
             return dic;
         }
 
+        public static readonly string[] DdhParts = { "DragDropHandlers", "-DragDropHandlers" };
         public static readonly string[] CmhParts = { "ContextMenuHandlers", "-ContextMenuHandlers" };
         private const string LnkOpenGuid = "00021401-0000-0000-c000-000000000046";
 
@@ -57,26 +59,39 @@ namespace ContextMenuManager.Controls
             }
         }
 
+        public string ValueName => DefaultValue;
         public Guid Guid { get; set; }
         public string SearchText => Text;
         public string ItemFilePath => GuidInfo.GetFilePath(Guid);
         private string KeyName => RegistryEx.GetKeyName(RegPath);
-        private string ShellExPath => RegistryEx.GetParentPath(RegistryEx.GetParentPath(RegPath));
-        private string CmhKeyName => RegistryEx.GetKeyName(RegistryEx.GetParentPath(RegPath));
+        private string ParentPath => RegistryEx.GetParentPath(RegPath);
+        private string ShellExPath => RegistryEx.GetParentPath(ParentPath);
+        private string ParentKeyName => RegistryEx.GetKeyName(ParentPath);
         private string DefaultValue => Registry.GetValue(RegPath, "", null)?.ToString();
         public string ItemText => GuidInfo.GetText(Guid) ?? ((Guid.ToString("B") == KeyName) ? DefaultValue : KeyName);
-        private string BackupPath => $@"{ShellExPath}\{(ItemVisible ? CmhParts[1] : CmhParts[0])}\{KeyName}";
         private GuidInfo.IconLocation IconLocation => GuidInfo.GetIconLocation(this.Guid);
         private bool IsOpenLnkItem => Guid.ToString() == LnkOpenGuid;
-        private bool TryProtectOpenItem => IsOpenLnkItem && AppConfig.ProtectOpenItem && MessageBoxEx.Show
-            (AppString.MessageBox.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
+        public bool IsDragDropItem => ParentKeyName.EndsWith(DdhParts[0], StringComparison.OrdinalIgnoreCase);
+
+        private string BackupPath
+        {
+            get
+            {
+                string[] parts = IsDragDropItem ? DdhParts : CmhParts;
+                return $@"{ShellExPath}\{(ItemVisible ? parts[1] : parts[0])}\{KeyName}";
+            }
+        }
 
         public bool ItemVisible
         {
-            get => CmhKeyName.Equals(CmhParts[0], StringComparison.OrdinalIgnoreCase);
+            get
+            {
+                string[] parts = IsDragDropItem ? DdhParts : CmhParts;
+                return ParentKeyName.Equals(parts[0], StringComparison.OrdinalIgnoreCase);
+            }
             set
             {
-                if(!value && TryProtectOpenItem) return;
+                if(!value && TryProtectOpenItem()) return;
                 try
                 {
                     RegistryEx.MoveTo(RegPath, BackupPath);
@@ -98,6 +113,7 @@ namespace ContextMenuManager.Controls
         public RegLocationMenuItem TsiRegLocation { get; set; }
         public DeleteMeMenuItem TsiDeleteMe { get; set; }
         public RegExportMenuItem TsiRegExport { get; set; }
+        public IFoldGroupItem FoldGroupItem { get; set; }
 
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
         readonly ToolStripMenuItem TsiHandleGuid = new ToolStripMenuItem(AppString.Menu.HandleGuid);
@@ -151,7 +167,7 @@ namespace ContextMenuManager.Controls
                     Registry.SetValue(path, this.Guid.ToString("B"), string.Empty);
                 }
             }
-            ExplorerRestarter.NeedRestart = true;
+            ExplorerRestarter.Show();
         }
 
         private void AddGuidDic()
@@ -238,6 +254,13 @@ namespace ContextMenuManager.Controls
                     break;
                 }
             }
+        }
+
+        private bool TryProtectOpenItem()
+        {
+            if(!IsOpenLnkItem) return false;
+            if(!AppConfig.ProtectOpenItem) return false;
+            return MessageBoxEx.Show(AppString.MessageBox.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
         }
 
         public void DeleteMe()

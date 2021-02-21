@@ -1,7 +1,6 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
@@ -17,8 +16,8 @@ namespace ContextMenuManager.Controls
             MyToolTip.SetToolTip(BtnRestart, AppString.Tip.RestartExplorer);
             this.AddCtr(BtnRestart);
             this.CanMoveForm();
-            BtnRestart.MouseDown += (sender, e) => { Explorer.ReStart(); this.Visible = false; };
-            RestartHandler += (sender, e) => this.Visible = NeedRestart;
+            BtnRestart.MouseDown += (sender, e) => { ExternalProgram.RestartExplorer(); this.Visible = false; };
+            ShowHandler += (sender, e) => this.Visible = true;
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -29,38 +28,8 @@ namespace ContextMenuManager.Controls
 
         private readonly PictureButton BtnRestart = new PictureButton(AppImage.RestartExplorer);
 
-        private static event EventHandler RestartHandler;
+        private static event EventHandler ShowHandler;
 
-        private static bool needRestart;
-        public static bool NeedRestart
-        {
-            get => needRestart;
-            set
-            {
-                needRestart = value;
-                RestartHandler?.Invoke(null, null);
-            }
-        }
-    }
-
-    public static class Explorer
-    {
-        public static void ReStart()
-        {
-            using(Process process = new Process())
-            {
-                process.StartInfo = new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = "/c taskkill -f -im explorer.exe",
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    UseShellExecute = true
-                };
-                process.Start();
-                process.WaitForExit();
-                process.StartInfo.Arguments = "/c explorer";
-                process.Start();
-            }
-        }
+        public new static void Show() { ShowHandler?.Invoke(null, null); }
     }
 }

@@ -1,4 +1,4 @@
-﻿using BulePointLilac.Methods;
+﻿using BluePointLilac.Methods;
 using ContextMenuManager.Properties;
 using System.Drawing;
 
@@ -41,12 +41,12 @@ namespace ContextMenuManager
         public static readonly Image Down = Up.RotateImage(RotateFlipType.Rotate180FlipNone);
         ///<summary>新建项目图标</summary>
         public static readonly Image NewItem = Resources.NewItem.ResizeImage(Scale);
-        ///<summary>分隔线图标</summary>
-        public static readonly Image Separator = Resources.SeparatorItem.ResizeImage(Scale);
-        ///<summary>自定义类型图标</summary>
-        public static readonly Image CustomType = Resources.CustomType.ResizeImage(Scale);
-        ///<summary>所有文件类型图标</summary>
-        public static readonly Image Types = Resources.Types.ResizeImage(Scale);
+        ///<summary>新建文件夹图标</summary>
+        public static readonly Image NewFolder = Resources.NewFolder.ResizeImage(Scale);
+        ///<summary>自定义图标</summary>
+        public static readonly Image Custom = Resources.Custom.ResizeImage(Scale);
+        ///<summary>选择图标</summary>
+        public static readonly Image Select = Resources.Select.ResizeImage(Scale);
         ///<summary>Microsoft Store图标</summary>
         public static readonly Image MicrosoftStore = Resources.MicrosoftStore.ResizeImage(Scale);
         ///<summary>Skype图标</summary>

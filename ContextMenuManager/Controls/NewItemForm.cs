@@ -1,5 +1,5 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,6 +12,7 @@ namespace ContextMenuManager.Controls
         {
             this.AcceptButton = btnOk;
             this.CancelButton = btnCancel;
+            this.Text = AppString.Item.NewItem;
             this.Font = SystemFonts.MenuFont;
             this.MaximizeBox = this.MinimizeBox = false;
             this.ShowIcon = this.ShowInTaskbar = false;
@@ -22,15 +23,16 @@ namespace ContextMenuManager.Controls
         }
 
         public string ItemText { get => txtText.Text; set => txtText.Text = value; }
-        public string Command { get => txtCommand.Text; set => txtCommand.Text = value; }
+        public string ItemFilePath { get => txtFilePath.Text; set => txtFilePath.Text = value; }
         public string Arguments { get => txtArguments.Text; set => txtArguments.Text = value; }
-        public string FullCommand
+        public string ItemCommand
         {
             get
             {
-                if(Arguments.IsNullOrWhiteSpace()) return Command;
-                else if(Command.IsNullOrWhiteSpace()) return Arguments;
-                else return $"\"{Command}\" \"{Arguments}\"";
+                if(Arguments.IsNullOrWhiteSpace()) return ItemFilePath;
+                if(ItemFilePath.IsNullOrWhiteSpace()) return Arguments;
+                if(Arguments.StartsWith("\"") && Arguments.EndsWith("\"")) return $"\"{ItemFilePath}\" {Arguments}";
+                return $"\"{ItemFilePath}\" \"{Arguments}\"";
             }
         }
 
@@ -50,7 +52,7 @@ namespace ContextMenuManager.Controls
             AutoSize = true
         };
         protected readonly TextBox txtText = new TextBox();
-        protected readonly TextBox txtCommand = new TextBox();
+        protected readonly TextBox txtFilePath = new TextBox();
         protected readonly TextBox txtArguments = new TextBox();
         protected readonly Button btnBrowse = new Button
         {
@@ -74,12 +76,12 @@ namespace ContextMenuManager.Controls
         protected virtual void InitializeComponents()
         {
             this.Controls.AddRange(new Control[] { lblText, lblCommand, lblArguments,
-                txtText, txtCommand, txtArguments, btnBrowse, btnOk, btnCancel });
+                txtText, txtFilePath, txtArguments, btnBrowse, btnOk, btnCancel });
             int a = 20.DpiZoom();
             btnBrowse.Anchor = btnOk.Anchor = btnCancel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             txtText.Top = lblText.Top = lblText.Left = lblCommand.Left = lblArguments.Left = a;
-            btnBrowse.Top = txtCommand.Top = lblCommand.Top = txtText.Bottom + a;
-            lblArguments.Top = txtArguments.Top = txtCommand.Bottom + a;
+            btnBrowse.Top = txtFilePath.Top = lblCommand.Top = txtText.Bottom + a;
+            lblArguments.Top = txtArguments.Top = txtFilePath.Bottom + a;
             btnOk.Top = btnCancel.Top = txtArguments.Bottom + a;
             btnCancel.Left = btnBrowse.Left = this.ClientSize.Width - btnCancel.Width - a;
             btnOk.Left = btnCancel.Left - btnOk.Width - a;
@@ -88,8 +90,8 @@ namespace ContextMenuManager.Controls
             this.MinimumSize = this.Size;
             this.Resize += (sender, e) =>
             {
-                txtText.Width = txtCommand.Width = txtArguments.Width = this.ClientSize.Width - b;
-                txtText.Left = txtCommand.Left = txtArguments.Left = btnBrowse.Left - txtCommand.Width - a;
+                txtText.Width = txtFilePath.Width = txtArguments.Width = this.ClientSize.Width - b;
+                txtText.Left = txtFilePath.Left = txtArguments.Left = btnBrowse.Left - txtFilePath.Width - a;
                 LastSize = this.Size;
             };
             if(LastSize != null) this.Size = LastSize;

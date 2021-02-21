@@ -1,9 +1,10 @@
-﻿using BulePointLilac.Controls;
-using BulePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using static BulePointLilac.Methods.ObjectPath;
+using static BluePointLilac.Methods.ObjectPath;
 
 namespace ContextMenuManager.Controls.Interfaces
 {
@@ -11,6 +12,7 @@ namespace ContextMenuManager.Controls.Interfaces
     {
         FoldButton BtnFold { get; set; }
         bool IsFold { get; set; }
+        string Text { get; set; }
     }
 
     interface IFoldSubItem
@@ -30,10 +32,12 @@ namespace ContextMenuManager.Controls.Interfaces
                 this.BaseImage = ReplaceImage(value);
                 Control list = ((MyListItem)FoldGroup).Parent;
                 if(list == null) return;
+                list.SuspendLayout();
                 foreach(Control ctr in list.Controls)
                 {
                     if(ctr is IFoldSubItem item && item.FoldGroupItem == FoldGroup) ctr.Visible = !value;
                 }
+                list.ResumeLayout();
             }
         }
 
@@ -53,7 +57,7 @@ namespace ContextMenuManager.Controls.Interfaces
         }
     }
 
-    sealed class GroupPathItem : MyListItem, IFoldGroupItem, IBtnOpenPathItem
+    class GroupPathItem : MyListItem, IFoldGroupItem, IBtnOpenPathItem
     {
         public bool IsFold
         {
@@ -70,6 +74,10 @@ namespace ContextMenuManager.Controls.Interfaces
             BtnFold = new FoldButton(this);
             BtnOpenPath = new ObjectPathButton(this);
             this.Font = new Font(base.Font, FontStyle.Bold);
+            if(pathType == PathType.File || pathType == PathType.Directory)
+            {
+                targetPath = Environment.ExpandEnvironmentVariables(targetPath);
+            }
             this.TargetPath = targetPath;
             this.PathType = pathType;
             string tip = null;
@@ -90,7 +98,6 @@ namespace ContextMenuManager.Controls.Interfaces
                     break;
             }
             MyToolTip.SetToolTip(BtnOpenPath, tip);
-            this.SetNoClickEvent();
         }
 
         public void HideWhenNoSubItem()
@@ -101,6 +108,12 @@ namespace ContextMenuManager.Controls.Interfaces
                 if(ctr is IFoldSubItem item && item.FoldGroupItem == this) count++;
             }
             if(count == 0) this.Visible = false;
+        }
+
+        protected override void OnDoubleClick(EventArgs e)
+        {
+            base.OnDoubleClick(e);
+            IsFold = !IsFold;
         }
     }
 }
