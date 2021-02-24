@@ -20,11 +20,14 @@ namespace BluePointLilac.Methods
             }
         }
 
+        private static readonly Regex GuidRegex = new Regex(@"[A-F0-9]{8}(\-[A-F0-9]{4}){3}\-[A-F0-9]{12}", RegexOptions.IgnoreCase);
+
         public static bool IsGuid(string str)
         {
             if(string.IsNullOrEmpty(str)) return false;
-            Regex guidRegEx = new Regex(@"[a-fA-F0-9]{8}(\-[a-fA-F0-9]{4}){3}\-[a-fA-F0-9]{12}");
-            return guidRegEx.IsMatch(str);
+            if(str.Length == 38 && str.StartsWith("{") && str.EndsWith("}") && GuidRegex.IsMatch(str)) return true;
+            if(str.Length == 36 && GuidRegex.IsMatch(str)) return true;
+            return false;
         }
     }
 }

@@ -444,7 +444,7 @@ namespace ContextMenuManager.Controls
             }
             set
             {
-                IniWriter.SetValue(Rule.Section, Rule.KeyName, value.ToString());
+                IniWriter.SetValue(Rule.Section, Rule.KeyName, value);
             }
         }
     }

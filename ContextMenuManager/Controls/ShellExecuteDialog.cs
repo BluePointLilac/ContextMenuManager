@@ -131,7 +131,7 @@ namespace ContextMenuManager.Controls
         {
             this.Text = "ShellExecute";
             this.AutoSize = true;
-            this.Font = new Font(SystemFonts.DialogFont.FontFamily, 8F);
+            this.Font = new Font(SystemFonts.DialogFont.FontFamily, 8F / 1F.DpiZoom());
         }
 
         public string Verb { get; set; }

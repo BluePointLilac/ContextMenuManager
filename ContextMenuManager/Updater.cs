@@ -16,11 +16,16 @@ namespace ContextMenuManager
 
         public static void PeriodicUpdate()
         {
+            Version appVersion = new Version(Application.ProductVersion);
             //如果上次检测更新时间为一个月以前就进行更新操作
-            if(AppConfig.LastCheckUpdateTime.AddMonths(1).CompareTo(DateTime.Today) < 0)
+            bool flag1 = AppConfig.LastCheckUpdateTime.AddMonths(1).CompareTo(DateTime.Today) < 0;
+            //如果配置文件中的版本号低于程序版本号也进行更新操作
+            bool flag2 = appVersion.CompareTo(AppConfig.Version) > 0;
+            if(flag1 || flag2)
             {
                 CheckUpdate();
                 AppConfig.LastCheckUpdateTime = DateTime.Today;
+                AppConfig.Version = appVersion;
             }
         }
 
@@ -35,7 +40,15 @@ namespace ContextMenuManager
         private static bool UpdateApp()
         {
             IniReader reader = new IniReader(new StringBuilder(GetWebString(UpdateUrl)));
-            Version version1 = new Version(reader.GetValue("Update", "Version"));
+            Version version1;
+            try
+            {
+                version1 = new Version(reader.GetValue("Update", "Version"));
+            }
+            catch
+            {
+                version1 = new Version(Application.ProductVersion);
+            }
             Version version2 = new Version(Application.ProductVersion);
             if(version1.CompareTo(version2) > 0)
             {

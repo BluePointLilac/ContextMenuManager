@@ -279,7 +279,7 @@ namespace ContextMenuManager.Controls
             MyToolTip.SetToolTip(cmbConfigDir, AppString.Tip.ConfigPath);
             MyToolTip.SetToolTip(btnConfigDir, AppString.Other.OpenConfigDir);
             MyToolTip.SetToolTip(btnBackupDir, AppString.Other.OpenBackupDir);
-            MyToolTip.SetToolTip(lblUpdate, AppString.Tip.CheckUpdate + Environment.NewLine
+            MyToolTip.SetToolTip(mliUpdate, AppString.Tip.CheckUpdate + Environment.NewLine
                 + AppString.Tip.LastCheckUpdateTime + AppConfig.LastCheckUpdateTime.ToLongDateString());
             cmbConfigDir.Items.AddRange(new[] { AppString.Other.AppDataDir, AppString.Other.AppDir });
             cmbEngine.Items.AddRange(new[] { "Baidu", "Bing", "Google", "DogeDoge", "Sogou", "360", AppString.Other.CustomEngine });

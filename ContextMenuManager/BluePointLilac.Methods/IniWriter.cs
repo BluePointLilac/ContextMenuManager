@@ -152,6 +152,11 @@ namespace BluePointLilac.Methods
             }
         }
 
+        public void SetValue(string section, string key, object value)
+        {
+            SetValue(section, key, value.ToString());
+        }
+
         public void SetValue(string section, string key, string value)
         {
             SetValue(section, key, ref value, false);

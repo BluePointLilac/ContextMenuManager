@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -36,19 +37,24 @@ namespace BluePointLilac.Methods
                     Thread.Sleep(50);
                     SendMessage(hTree, WM_KEYDOWN, VK_RIGHT, null);
                 }
-                else SendMessage(hTree, WM_CHAR, Convert.ToInt16(chr), null);
+                else
+                {
+                    SendMessage(hTree, WM_CHAR, Convert.ToInt16(chr), null);
+                }
             }
 
-            if(!string.IsNullOrEmpty(valueName))
+            if(string.IsNullOrEmpty(valueName)) return;
+            using(RegistryKey key = RegistryEx.GetRegistryKey(regPath))
             {
-                Thread.Sleep(50);
-                SetForegroundWindow(hList);
-                SetFocus(hList);
-                SendMessage(hList, WM_KEYDOWN, VK_HOME, null);
-                foreach(char chr in Encoding.Default.GetBytes(valueName))
-                {
-                    SendMessage(hList, WM_CHAR, Convert.ToInt16(chr), null);
-                }
+                if(key?.GetValue(valueName) == null) return;
+            }
+            Thread.Sleep(50);
+            SetForegroundWindow(hList);
+            SetFocus(hList);
+            SendMessage(hList, WM_KEYDOWN, VK_HOME, null);
+            foreach(char chr in Encoding.Default.GetBytes(valueName))
+            {
+                SendMessage(hList, WM_CHAR, Convert.ToInt16(chr), null);
             }
         }
 
@@ -118,7 +124,7 @@ namespace BluePointLilac.Methods
         {
             using(Process process = Process.Start("notepad.exe"))
             {
-                Thread.Sleep(200);
+                process.WaitForInputIdle();
                 IntPtr handle = FindWindowEx(process.MainWindowHandle, IntPtr.Zero, "Edit", null);
                 SendMessage(handle, WM_SETTEXT, 0, text);
             }

@@ -59,7 +59,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        public string ValueName => DefaultValue;
+        public string ValueName => null;
         public Guid Guid { get; set; }
         public string SearchText => Text;
         public string ItemFilePath => GuidInfo.GetFilePath(Guid);

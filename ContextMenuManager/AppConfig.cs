@@ -78,7 +78,7 @@ namespace ContextMenuManager
         public static bool AutoBackup
         {
             get => ConfigWriter.GetValue("General", "AutoBackup") != "0";
-            set => ConfigWriter.SetValue("General", "AutoBackup", (value ? 1 : 0).ToString());
+            set => ConfigWriter.SetValue("General", "AutoBackup", value ? 1 : 0);
         }
 
         public static DateTime LastCheckUpdateTime
@@ -99,14 +99,14 @@ namespace ContextMenuManager
             }
             set
             {
-                ConfigWriter.SetValue("General", "LastCheckUpdateTime", value.ToBinary().ToString());
+                ConfigWriter.SetValue("General", "LastCheckUpdateTime", value.ToBinary());
             }
         }
 
         public static bool ProtectOpenItem
         {
             get => ConfigWriter.GetValue("General", "ProtectOpenItem") != "0";
-            set => ConfigWriter.SetValue("General", "ProtectOpenItem", (value ? 1 : 0).ToString());
+            set => ConfigWriter.SetValue("General", "ProtectOpenItem", value ? 1 : 0);
         }
 
         public static string EngineUrl
@@ -126,19 +126,34 @@ namespace ContextMenuManager
         public static bool ShowFilePath
         {
             get => ConfigWriter.GetValue("General", "ShowFilePath") == "1";
-            set => ConfigWriter.SetValue("General", "ShowFilePath", (value ? 1 : 0).ToString());
+            set => ConfigWriter.SetValue("General", "ShowFilePath", value ? 1 : 0);
         }
 
         public static bool WinXSortable
         {
             get => ConfigWriter.GetValue("General", "WinXSortable") == "1";
-            set => ConfigWriter.SetValue("General", "WinXSortable", (value ? 1 : 0).ToString());
+            set => ConfigWriter.SetValue("General", "WinXSortable", value ? 1 : 0);
         }
 
         public static bool OpenMoreRegedit
         {
             get => ConfigWriter.GetValue("General", "OpenMoreRegedit") == "1";
-            set => ConfigWriter.SetValue("General", "OpenMoreRegedit", (value ? 1 : 0).ToString());
+            set => ConfigWriter.SetValue("General", "OpenMoreRegedit", value ? 1 : 0);
+        }
+
+        public static Version Version
+        {
+            get
+            {
+                Version version = new Version();
+                try { version = new Version(ConfigWriter.GetValue("General", "Version")); }
+                catch { }
+                return version;
+            }
+            set
+            {
+                ConfigWriter.SetValue("General", "Version", value);
+            }
         }
     }
 }
