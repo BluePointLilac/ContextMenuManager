@@ -33,15 +33,18 @@ namespace ContextMenuManager
         public static string UserDicsDir = $@"{DicsDir}\User";
         public static string WebGuidInfosDic = $@"{WebDicsDir}\{GUIDINFOSDICINI}";
         public static string UserGuidInfosDic = $@"{UserDicsDir}\{GUIDINFOSDICINI}";
-        public static string WebThirdRulesDic = $@"{WebDicsDir}\{ThIRDRULESDICXML}";
-        public static string UserThirdRulesDic = $@"{UserDicsDir}\{ThIRDRULESDICXML}";
+        public static string WebThirdRulesDic = $@"{WebDicsDir}\{THIRDRULESDICXML}";
+        public static string UserThirdRulesDic = $@"{UserDicsDir}\{THIRDRULESDICXML}";
         public static string WebEnhanceMenusDic = $@"{WebDicsDir}\{ENHANCEMENUSICXML}";
         public static string UserEnhanceMenusDic = $@"{UserDicsDir}\{ENHANCEMENUSICXML}";
+        public static string WebUwpModeItemsDic = $@"{UserDicsDir}\{UWPMODEITEMSDICXML}";
+        public static string UserUwpModeItemsDic = $@"{UserDicsDir}\{UWPMODEITEMSDICXML}";
         public static string HashLnkExePath = $@"{ProgramsDir}\HashLnk.exe";
         public const string ZH_CNINI = "zh-CN.ini";
         public const string GUIDINFOSDICINI = "GuidInfosDic.ini";
-        public const string ThIRDRULESDICXML = "ThirdRulesDic.xml";
+        public const string THIRDRULESDICXML = "ThirdRulesDic.xml";
         public const string ENHANCEMENUSICXML = "EnhanceMenusDic.xml";
+        public const string UWPMODEITEMSDICXML = "UwpModeItemsDic.xml";
 
         public static readonly string[] EngineUrls =
         {

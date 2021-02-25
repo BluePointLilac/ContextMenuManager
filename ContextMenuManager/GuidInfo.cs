@@ -24,15 +24,6 @@ namespace ContextMenuManager
             public int IconIndex { get; set; }
         }
 
-        static GuidInfo()
-        {
-            //将Skype添加到字典
-            Guid skypeGuid = new Guid(VisibleRegRuleItem.SkypeGuid);
-            FilePathDic.Add(skypeGuid, null);
-            ItemTextDic.Add(skypeGuid, AppString.Item.ShareWithSkype);
-            ItemImageDic.Add(skypeGuid, AppImage.Skype);
-        }
-
         private static readonly IniReader AppDic = new IniReader(new StringBuilder(Properties.Resources.GuidInfosDic));
         public static readonly IniReader UserDic = new IniReader(AppConfig.UserGuidInfosDic);
         public static readonly IniReader WebDic = new IniReader(AppConfig.WebGuidInfosDic);
@@ -40,10 +31,12 @@ namespace ContextMenuManager
         private static readonly Dictionary<Guid, string> FilePathDic = new Dictionary<Guid, string>();
         public static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
         public static readonly Dictionary<Guid, Image> ItemImageDic = new Dictionary<Guid, Image>();
+        public static readonly Dictionary<Guid, string> UwpNameDic = new Dictionary<Guid, string>();
 
-        private static bool TryGetValue(string section, string key, out string value)
+        private static bool TryGetValue(Guid guid, string key, out string value)
         {
             //用户自定义字典优先
+            string section = guid.ToString();
             if(UserDic.TryGetValue(section, key, out value)) return true;
             if(WebDic.TryGetValue(section, key, out value)) return true;
             if(AppDic.TryGetValue(section, key, out value)) return true;
@@ -57,30 +50,38 @@ namespace ContextMenuManager
             if(FilePathDic.ContainsKey(guid)) filePath = FilePathDic[guid];
             else
             {
-                foreach(string clsidPath in ClsidPaths)
+                string uwpName = GetUwpName(guid);
+                if(!string.IsNullOrEmpty(uwpName))
                 {
-                    using(RegistryKey guidKey = RegistryEx.GetRegistryKey($@"{clsidPath}\{guid:B}"))
+                    filePath = UwpModeItem.GetFilePath(uwpName, guid);
+                }
+                else
+                {
+                    foreach(string clsidPath in ClsidPaths)
                     {
-                        if(guidKey == null) continue;
-                        foreach(string keyName in new[] { "InprocServer32", "LocalServer32" })
+                        using(RegistryKey guidKey = RegistryEx.GetRegistryKey($@"{clsidPath}\{guid:B}"))
                         {
-                            using(RegistryKey key = guidKey.OpenSubKey(keyName))
+                            if(guidKey == null) continue;
+                            foreach(string keyName in new[] { "InprocServer32", "LocalServer32" })
                             {
-                                if(key == null) continue;
-                                string value1 = key.GetValue("CodeBase")?.ToString()?.Replace("file:///", "")?.Replace('/', '\\');
-                                if(File.Exists(value1))
+                                using(RegistryKey key = guidKey.OpenSubKey(keyName))
                                 {
-                                    filePath = value1; break;
-                                }
-                                string value2 = key.GetValue("")?.ToString();
-                                value2 = ObjectPath.ExtractFilePath(value2);
-                                if(File.Exists(value2))
-                                {
-                                    filePath = value2; break;
+                                    if(key == null) continue;
+                                    string value1 = key.GetValue("CodeBase")?.ToString()?.Replace("file:///", "")?.Replace('/', '\\');
+                                    if(File.Exists(value1))
+                                    {
+                                        filePath = value1; break;
+                                    }
+                                    string value2 = key.GetValue("")?.ToString();
+                                    value2 = ObjectPath.ExtractFilePath(value2);
+                                    if(File.Exists(value2))
+                                    {
+                                        filePath = value2; break;
+                                    }
                                 }
                             }
+                            if(File.Exists(filePath)) break;
                         }
-                        if(File.Exists(filePath)) break;
                     }
                 }
                 FilePathDic.Add(guid, filePath);
@@ -95,7 +96,7 @@ namespace ContextMenuManager
             if(ItemTextDic.ContainsKey(guid)) itemText = ItemTextDic[guid];
             else
             {
-                if(TryGetValue(guid.ToString(), "Text", out itemText))
+                if(TryGetValue(guid, "Text", out itemText))
                 {
                     itemText = GetAbsStr(guid, itemText, true);
                     itemText = ResourceString.GetDirectString(itemText);
@@ -116,7 +117,7 @@ namespace ContextMenuManager
                 if(itemText.IsNullOrWhiteSpace())
                 {
                     string filePath = GetFilePath(guid);
-                    if(filePath != null)
+                    if(File.Exists(filePath))
                     {
                         itemText = FileVersionInfo.GetVersionInfo(filePath).FileDescription;
                         if(itemText.IsNullOrWhiteSpace())
@@ -151,7 +152,7 @@ namespace ContextMenuManager
             if(IconLocationDic.ContainsKey(guid)) location = IconLocationDic[guid];
             else
             {
-                if(TryGetValue(guid.ToString(), "Icon", out string value))
+                if(TryGetValue(guid, "Icon", out string value))
                 {
                     value = GetAbsStr(guid, value, false);
                     int index = value.LastIndexOf(',');
@@ -166,6 +167,19 @@ namespace ContextMenuManager
                 IconLocationDic.Add(guid, location);
             }
             return location;
+        }
+
+        public static string GetUwpName(Guid guid)
+        {
+            string uwpName = null;
+            if(guid.Equals(Guid.Empty)) return uwpName;
+            if(UwpNameDic.ContainsKey(guid)) uwpName = UwpNameDic[guid];
+            else
+            {
+                TryGetValue(guid, "UwpName", out uwpName);
+                UwpNameDic.Add(guid, uwpName);
+            }
+            return uwpName;
         }
 
         private static string GetAbsStr(Guid guid, string relStr, bool isName)

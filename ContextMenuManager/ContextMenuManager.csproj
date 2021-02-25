@@ -33,7 +33,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
+    <Compile Include="AppDic.cs" />
     <Compile Include="BluePointLilac.Controls\MyToolTip.cs" />
     <Compile Include="BluePointLilac.Controls\ReadOnlyRichTextBox.cs">
       <SubType>Component</SubType>
@@ -153,6 +154,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Interfaces\ITsiAdministratorItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\ITsiGuidItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Interfaces\ITsiShortcutCommandItem.cs">
@@ -263,6 +267,9 @@
     <Compile Include="Controls\ThirdRulesList.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\UwpModeItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WinXGroupItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -331,6 +338,7 @@
     <None Include="Properties\App.manifest" />
     <None Include="Properties\Resources\Texts\AppLanguageDic.ini" />
     <None Include="Properties\Resources\Texts\GuidInfosDic.ini" />
+    <Content Include="Properties\Resources\Texts\UwpModeItemsDic.xml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -361,7 +369,6 @@
     <Content Include="Properties\Resources\Images\Custom.png" />
     <Content Include="Properties\Resources\Images\NewFolder.png" />
     <Content Include="Properties\Resources\Images\Refresh.png" />
-    <Content Include="Properties\Resources\Images\Skype.png" />
     <Content Include="Properties\Resources\Texts\EnhanceMenusDic.xml" />
     <Content Include="Properties\Resources\Images\About.png" />
     <Content Include="Properties\Resources\Images\Add.png" />

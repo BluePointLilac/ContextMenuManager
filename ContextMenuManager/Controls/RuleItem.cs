@@ -149,7 +149,6 @@ namespace ContextMenuManager.Controls
         const string CU_SMWCE = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer";
         const string LM_SPMWE = @"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer";
         const string CU_SPMWE = @"HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer";
-        public const string SkypeGuid = "{776dbc8d-7347-478c-8d71-791e12ef49d8}";
 
         public static RuleAndInfo CustomFolder = new RuleAndInfo
         {
@@ -235,21 +234,6 @@ namespace ContextMenuManager.Controls
             {
                 Text = AppString.Item.UseStoreOpenWith,
                 Image = AppImage.MicrosoftStore
-            }
-        };
-
-        public static RuleAndInfo ShareWithSkype = new RuleAndInfo
-        {
-            Rules = new[]
-            {
-                new RegRule(GuidBlockedItem.HKLMBLOCKED, SkypeGuid, null, "", RegistryValueKind.String),
-                new RegRule(GuidBlockedItem.HKCUBLOCKED, SkypeGuid, null, "", RegistryValueKind.String)
-            },
-            ItemInfo = new ItemInfo
-            {
-                Text = AppString.Item.ShareWithSkype,
-                Image = AppImage.Skype,
-                RestartExplorer = true
             }
         };
     }

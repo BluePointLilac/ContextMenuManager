@@ -77,10 +77,10 @@ namespace ContextMenuManager.Controls
 
         readonly TabPage[] pages = new TabPage[] {
             new TabPage(AppString.Other.DictionaryDescription),
-            new TabPage(AppString.Other.LanguageDictionary),
+            new TabPage(AppString.SideBar.AppLanguage),
             new TabPage(AppString.Other.GuidInfosDictionary),
-            new TabPage(AppString.Other.ThridRulesDictionary),
-            new TabPage(AppString.Other.CommonItemsDictionary)
+            new TabPage(AppString.SideBar.ThirdRules),
+            new TabPage(AppString.SideBar.EnhanceMenu)
         };
         readonly ReadOnlyRichTextBox[] boxs = new ReadOnlyRichTextBox[5];
         readonly PictureButton btnOpenDir = new PictureButton(AppImage.Open)
@@ -110,7 +110,7 @@ namespace ContextMenuManager.Controls
                         dlg.FileName = AppConfig.GUIDINFOSDICINI;
                         break;
                     case 3:
-                        dlg.FileName = AppConfig.ThIRDRULESDICXML;
+                        dlg.FileName = AppConfig.THIRDRULESDICXML;
                         break;
                     case 4:
                         dlg.FileName = AppConfig.ENHANCEMENUSICXML;
@@ -437,8 +437,8 @@ namespace ContextMenuManager.Controls
 
         public void LoadItems()
         {
-            this.AddItems(new[] { mliUpdate, mliConfigDir, mliBackup, mliProtect,
-                mliEngine, mliWinXSortable, mliShowFilePath, mliOpenMoreRegedit });
+            this.AddItems(new[] { mliUpdate, mliConfigDir, mliEngine, mliBackup,
+                mliProtect, mliWinXSortable, mliShowFilePath, mliOpenMoreRegedit });
             cmbConfigDir.SelectedIndex = AppConfig.SaveToAppDir ? 1 : 0;
             chkBackup.Checked = AppConfig.AutoBackup;
             chkProtect.Checked = AppConfig.ProtectOpenItem;

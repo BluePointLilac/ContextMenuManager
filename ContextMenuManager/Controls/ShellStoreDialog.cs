@@ -121,6 +121,8 @@ namespace ContextMenuManager.Controls
             if(isSelect)
             {
                 this.AddCtr(chkSelected, 40.DpiZoom());
+                this.ContextMenuStrip = null;
+                this.SetNoClickEvent();
                 ChkVisible.Visible = BtnShowMenu.Visible = BtnSubItems.Visible = false;
             }
             RegTrustedInstaller.TakeRegTreeOwnerShip(regPath);

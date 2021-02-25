@@ -14,7 +14,9 @@ namespace ContextMenuManager.Controls
         {
             try
             {
-                foreach(XmlNode xn in ReadXml().DocumentElement.ChildNodes)
+                XmlDocument doc = AppDic.ReadXml(AppConfig.WebEnhanceMenusDic, 
+                    AppConfig.UserEnhanceMenusDic, Properties.Resources.EnhanceMenusDic);
+                foreach(XmlNode xn in doc.DocumentElement.ChildNodes)
                 {
 
                     GroupPathItem groupItem = GetGroupPathItem(xn);
@@ -95,34 +97,6 @@ namespace ContextMenuManager.Controls
             }
             GroupPathItem groupItem = new GroupPathItem(path, ObjectPath.PathType.Registry) { Image = image, Text = text };
             return groupItem;
-        }
-
-        private XmlDocument ReadXml()
-        {
-            XmlDocument doc1 = new XmlDocument();
-            try
-            {
-                if(File.Exists(AppConfig.WebEnhanceMenusDic))
-                {
-                    doc1.LoadXml(File.ReadAllText(AppConfig.WebEnhanceMenusDic, EncodingType.GetType(AppConfig.WebEnhanceMenusDic)));
-                }
-                else
-                {
-                    doc1.LoadXml(Properties.Resources.EnhanceMenusDic);
-                }
-                if(File.Exists(AppConfig.UserEnhanceMenusDic))
-                {
-                    XmlDocument doc2 = new XmlDocument();
-                    doc2.LoadXml(File.ReadAllText(AppConfig.UserEnhanceMenusDic, EncodingType.GetType(AppConfig.UserEnhanceMenusDic)));
-                    foreach(XmlNode xn in doc2.DocumentElement.ChildNodes)
-                    {
-                        XmlNode node = doc1.ImportNode(xn, true);
-                        doc1.DocumentElement.AppendChild(node);
-                    }
-                }
-            }
-            catch { }
-            return doc1;
         }
 
         private void LoadShellItems(XmlElement shellXE, GroupPathItem groupItem)

@@ -14,7 +14,9 @@ namespace ContextMenuManager.Controls
         {
             try
             {
-                foreach(XmlElement groupXE in ReadXml().DocumentElement.ChildNodes)
+                XmlDocument doc = AppDic.ReadXml(AppConfig.WebThirdRulesDic,
+                    AppConfig.UserThirdRulesDic, Properties.Resources.ThirdRulesDic);
+                foreach(XmlElement groupXE in doc.DocumentElement.ChildNodes)
                 {
                     Guid guid = Guid.Empty;
                     if(groupXE.HasAttribute("Guid"))
@@ -162,34 +164,6 @@ namespace ContextMenuManager.Controls
                 }
             }
             catch { }
-        }
-
-        private XmlDocument ReadXml()
-        {
-            XmlDocument doc1 = new XmlDocument();
-            try
-            {
-                if(File.Exists(AppConfig.WebThirdRulesDic))
-                {
-                    doc1.LoadXml(File.ReadAllText(AppConfig.WebThirdRulesDic, EncodingType.GetType(AppConfig.WebThirdRulesDic)));
-                }
-                else
-                {
-                    doc1.LoadXml(Properties.Resources.ThirdRulesDic);
-                }
-                if(File.Exists(AppConfig.UserThirdRulesDic))
-                {
-                    XmlDocument doc2 = new XmlDocument();
-                    doc2.LoadXml(File.ReadAllText(AppConfig.UserThirdRulesDic, EncodingType.GetType(AppConfig.UserThirdRulesDic)));
-                    foreach(XmlNode xn in doc2.DocumentElement.ChildNodes)
-                    {
-                        XmlNode node = doc1.ImportNode(xn, true);
-                        doc1.DocumentElement.AppendChild(node);
-                    }
-                }
-            }
-            catch { }
-            return doc1;
         }
 
         private static RegistryValueKind GetValueKind(string data)

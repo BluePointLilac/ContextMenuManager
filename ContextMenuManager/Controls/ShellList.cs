@@ -5,8 +5,10 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace ContextMenuManager.Controls
 {
@@ -155,19 +157,9 @@ namespace ContextMenuManager.Controls
             }
             this.AddNewItem(scenePath);
             this.LoadItems(scenePath);
+            if(WindowsOsVersion.ISAfterOrEqual10) this.AddUwpModeItem();
             switch(Scene)
             {
-                case Scenes.File:
-                    bool flag = WindowsOsVersion.ISAfterOrEqual10;
-                    if(flag)
-                    {
-                        using(RegistryKey key = RegistryEx.GetRegistryKey(@"HKEY_CLASSES_ROOT\PackagedCom\Package"))
-                        {
-                            flag = key != null && key.GetSubKeyNames().ToList().Any(name => name.StartsWith("Microsoft.SkypeApp", StringComparison.OrdinalIgnoreCase));
-                        }
-                    }
-                    if(flag) this.AddItem(new VisibleRegRuleItem(VisibleRegRuleItem.ShareWithSkype));
-                    break;
                 case Scenes.Background:
                     this.AddItem(new VisibleRegRuleItem(VisibleRegRuleItem.CustomFolder));
                     break;
@@ -281,13 +273,14 @@ namespace ContextMenuManager.Controls
             newItem.AddNewItem += (sender, e) =>
             {
                 bool isShell;
-                if(Scene == Scenes.DragDrop) isShell = false;
+                if(Scene == Scenes.CommandStore) isShell = true;
+                else if(Scene == Scenes.DragDrop) isShell = false;
                 else
                 {
                     using(SelectDialog dlg = new SelectDialog())
                     {
                         dlg.Items = new[] { "Shell", "ShellEx" };
-                        dlg.Title = "请选择新建菜单类型";
+                        dlg.Title = AppString.Dialog.SelectNewItemType;
                         dlg.Selected = dlg.Items[0];
                         if(dlg.ShowDialog() != DialogResult.OK) return;
                         isShell = dlg.SelectedIndex == 0;
@@ -310,7 +303,10 @@ namespace ContextMenuManager.Controls
                 {
                     if(this.Controls[i] is NewItem)
                     {
-                        this.InsertItem(new ShellItem(dlg.NewItemRegPath), i + 1);
+                        ShellItem item;
+                        if(Scene != Scenes.CommandStore) item = new ShellItem(dlg.NewItemRegPath);
+                        else item = new StoreShellItem(dlg.NewItemRegPath, true, false);
+                        this.InsertItem(item, i + 1);
                         break;
                     }
                 }
@@ -399,9 +395,33 @@ namespace ContextMenuManager.Controls
             {
                 Array.ForEach(Array.FindAll(shellKey.GetSubKeyNames(), itemName =>
                     !ShellItem.SysStoreItemNames.Contains(itemName, StringComparer.OrdinalIgnoreCase)), itemName =>
+                        this.AddItem(new StoreShellItem($@"{ShellItem.CommandStorePath}\{itemName}", true, false)));
+            }
+        }
+
+        private void AddUwpModeItem()
+        {
+            XmlDocument doc = AppDic.ReadXml(AppConfig.WebUwpModeItemsDic,
+                AppConfig.UserUwpModeItemsDic, Properties.Resources.UwpModeItemsDic);
+            List<Guid> guids = new List<Guid>();
+            foreach(XmlElement sceneXE in doc.DocumentElement.ChildNodes)
+            {
+                if(sceneXE.Name == Scene.ToString())
+                {
+                    foreach(XmlElement itemXE in sceneXE.ChildNodes)
                     {
-                        this.AddItem(new StoreShellItem($@"{ShellItem.CommandStorePath}\{itemName}", true, false));
-                    });
+                        if(GuidEx.TryParse(itemXE.GetAttribute("Guid"), out Guid guid))
+                        {
+                            if(guids.Contains(guid)) continue;
+                            string uwpName = GuidInfo.GetUwpName(guid);
+                            if(!string.IsNullOrEmpty(uwpName))
+                            {
+                                this.AddItem(new UwpModeItem(uwpName, guid));
+                                guids.Add(guid);
+                            }
+                        }
+                    }
+                }
             }
         }
 

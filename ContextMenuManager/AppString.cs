@@ -166,7 +166,6 @@ namespace ContextMenuManager
             public static string RemovableDrive => GetValue("RemovableDrive");
             public static string BuildSendtoMenu => GetValue("BuildSendtoMenu");
             public static string UseStoreOpenWith => GetValue("UseStoreOpenWith");
-            public static string ShareWithSkype => GetValue("ShareWithSkype");
             public static string NewItem => GetValue("NewItem");
             public static string AddGuidBlockedItem => GetValue("AddGuidBlockedItem");
             public static string SelectExtension => GetValue("SelectExtension");
@@ -200,7 +199,6 @@ namespace ContextMenuManager
             public static string MultiMenu => GetValue("MultiMenu");
             public static string Public => GetValue("Public");
             public static string Private => GetValue("Private");
-            public static string Administrator => GetValue("Administrator");
             public static string InputGuid => GetValue("InputGuid");
             public static string AddGuidDic => GetValue("AddGuidDic");
             public static string DeleteGuidDic => GetValue("DeleteGuidDic");
@@ -218,6 +216,7 @@ namespace ContextMenuManager
             public static string CheckReference => GetValue("CheckReference");
             public static string CheckCopy => GetValue("CheckCopy");
             public static string SelectSubMenuMode => GetValue("SelectSubMenuMode");
+            public static string SelectNewItemType => GetValue("SelectNewItemType");
             public static string RegistryFile => GetValue("RegistryFile");
             public static string SelectGroup => GetValue("SelectGroup");
         }
@@ -263,13 +262,9 @@ namespace ContextMenuManager
             private static string GetValue(string key) => GetStringValue("Other", key);
             public static string RestartExplorer => GetValue("RestartExplorer");
             public static string DictionaryDescription => GetValue("DictionaryDescription");
-            public static string LanguageDictionary => GetValue("LanguageDictionary");
             public static string GuidInfosDictionary => GetValue("GuidInfosDictionary");
-            public static string ThridRulesDictionary => GetValue("ThridRulesDictionary");
-            public static string CommonItemsDictionary => GetValue("CommonItemsDictionary");
             public static string Translators => GetValue("Translators");
             public static string OtherLanguages => GetValue("OtherLanguages");
-            public static string SelectSubMenuMode => GetValue("SelectSubMenuMode");
             public static string AboutApp => GetValue("AboutApp");
             public static string Dictionaries => GetValue("Dictionaries");
             public static string Donate => GetValue("Donate");

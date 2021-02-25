@@ -10,6 +10,10 @@ namespace ContextMenuManager.Controls
 {
     sealed class GuidBlockedList : MyList
     {
+        public const string HKLMBLOCKED = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked";
+        public const string HKCUBLOCKED = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked";
+        public static readonly string[] BlockedPaths = { HKLMBLOCKED, HKCUBLOCKED };
+
         public void LoadItems()
         {
             this.AddNewItem();
@@ -19,15 +23,14 @@ namespace ContextMenuManager.Controls
         private void LoadBlockedItems()
         {
             List<string> values = new List<string>();
-            Array.ForEach(GuidBlockedItem.BlockedPaths, path =>
+            Array.ForEach(BlockedPaths, path =>
             {
                 using(RegistryKey key = RegistryEx.GetRegistryKey(path))
                     if(key != null) values.AddRange(key.GetValueNames());
             });
             Array.ForEach(values.Distinct(StringComparer.OrdinalIgnoreCase).ToArray(), value =>
-            {
-                this.AddItem(new GuidBlockedItem(value));
-            });
+                this.AddItem(new GuidBlockedItem(value))
+            );
         }
 
         private void AddNewItem()
@@ -42,10 +45,8 @@ namespace ContextMenuManager.Controls
                     if(dlg.ShowDialog() != DialogResult.OK) return;
                     if(GuidEx.TryParse(dlg.Text, out guid))
                     {
-                        Array.ForEach(GuidBlockedItem.BlockedPaths, path =>
-                        {
-                            Registry.SetValue(path, guid.ToString("B"), string.Empty);
-                        });
+                        string value = guid.ToString("B");
+                        Array.ForEach(BlockedPaths, path => Registry.SetValue(path, value, ""));
                         for(int i = 1; i < Controls.Count; i++)
                         {
                             if(((GuidBlockedItem)Controls[i]).Guid.Equals(guid))
@@ -54,7 +55,7 @@ namespace ContextMenuManager.Controls
                                 return;
                             }
                         }
-                        this.InsertItem(new GuidBlockedItem(dlg.Text), 1);
+                        this.InsertItem(new GuidBlockedItem(value), 1);
                         ExplorerRestarter.Show();
                     }
                     else MessageBoxEx.Show(AppString.MessageBox.MalformedGuid);

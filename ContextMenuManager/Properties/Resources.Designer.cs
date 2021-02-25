@@ -315,16 +315,6 @@ namespace ContextMenuManager.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap Skype {
-            get {
-                object obj = ResourceManager.GetObject("Skype", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
         internal static System.Drawing.Bitmap Star {
             get {
                 object obj = ResourceManager.GetObject("Star", resourceCulture);
@@ -394,6 +384,21 @@ namespace ContextMenuManager.Properties {
             get {
                 object obj = ResourceManager.GetObject("Up", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 [Microsoft.SkypeApp]
+        ///Guid=776dbc8d-7347-478c-8d71-791e12ef49d8
+        ///Scene=File
+        ///
+        ///[Microsoft.WindowsTerminal]
+        ///Guid=9f156763-7844-4dc4-b2b1-901f640f5155
+        ///Scene=Directory|Background 的本地化字符串。
+        /// </summary>
+        internal static string UwpModeItemsDic {
+            get {
+                return ResourceManager.GetString("UwpModeItemsDic", resourceCulture);
             }
         }
     }

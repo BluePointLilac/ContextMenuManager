@@ -9,7 +9,7 @@ namespace ContextMenuManager.Controls
     sealed class AddGuidDicDialog : CommonDialog
     {
         public Image ItemIcon { get; set; }
-        public string ItemName { get; set; }
+        public string ItemText { get; set; }
         public bool IsDelete { get; private set; }
         public string ItemIconPath { get; set; }
         public int ItemIconIndex { get; set; }
@@ -28,14 +28,14 @@ namespace ContextMenuManager.Controls
         {
             using(AddGuidDicForm frm = new AddGuidDicForm())
             {
-                frm.ItemName = this.ItemName;
+                frm.ItemText = this.ItemText;
                 frm.ItemIcon = this.ItemIcon;
                 frm.ItemIconPath = this.ItemIconPath;
                 frm.ItemIconIndex = this.ItemIconIndex;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag)
                 {
-                    this.ItemName = frm.ItemName;
+                    this.ItemText = frm.ItemText;
                     this.ItemIcon = frm.ItemIcon;
                     this.ItemIconPath = frm.ItemIconPath;
                     this.ItemIconIndex = frm.ItemIconIndex;
@@ -60,7 +60,7 @@ namespace ContextMenuManager.Controls
                 InitializeComponents();
             }
 
-            public string ItemName
+            public string ItemText
             {
                 get => txtName.Text;
                 set => txtName.Text = value;

@@ -178,9 +178,6 @@
   <data name="Setting" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\setting.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Skype" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\images\skype.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Star" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\star.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -201,5 +198,8 @@
   </data>
   <data name="Up" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UwpModeItemsDic" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\texts\uwpmodeitemsdic.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

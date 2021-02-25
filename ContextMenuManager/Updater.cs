@@ -13,6 +13,7 @@ namespace ContextMenuManager
         const string GuidInfosDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/GuidInfosDic.ini";
         const string ThirdRulesDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/ThirdRulesDic.xml";
         const string EnhanceMenusDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/EnhanceMenusDic.xml";
+        const string UwpModeItemsDicUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts/UwpModeItemsDic.xml";
 
         public static void PeriodicUpdate()
         {
@@ -34,6 +35,7 @@ namespace ContextMenuManager
             UpdateText(AppConfig.WebGuidInfosDic, GuidInfosDicUrl);
             UpdateText(AppConfig.WebThirdRulesDic, ThirdRulesDicUrl);
             UpdateText(AppConfig.WebEnhanceMenusDic, EnhanceMenusDicUrl);
+            UpdateText(AppConfig.WebUwpModeItemsDic, UwpModeItemsDicUrl);
             try { return UpdateApp(); } catch { return false; }
         }
 

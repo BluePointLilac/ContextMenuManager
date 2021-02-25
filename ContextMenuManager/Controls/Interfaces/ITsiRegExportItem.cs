@@ -8,7 +8,7 @@ namespace ContextMenuManager.Controls.Interfaces
     interface ITsiRegExportItem
     {
         string Text { get; set; }
-        string RegPath { get; set; }
+        string RegPath { get; }
         ContextMenuStrip ContextMenuStrip { get; set; }
         RegExportMenuItem TsiRegExport { get; set; }
     }

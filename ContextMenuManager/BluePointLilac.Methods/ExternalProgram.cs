@@ -12,29 +12,39 @@ namespace BluePointLilac.Methods
     {
         public static void JumpRegEdit(string regPath, string valueName = null, bool moreOpen = false)
         {
+            Process process;
             IntPtr hMain = FindWindow("RegEdit_RegEdit", null);
-            if(moreOpen || hMain == IntPtr.Zero)
+            if(hMain != IntPtr.Zero && !moreOpen)
             {
-                using(Process process = Process.Start("regedit.exe", "-m"))
-                {
-                    process.WaitForInputIdle();
-                    hMain = process.MainWindowHandle;
-                }
+                GetWindowThreadProcessId(hMain, out int id);
+                process = Process.GetProcessById(id);
+
+            }
+            else
+            {
+                process = Process.Start("regedit.exe", "-m");
+                process.WaitForInputIdle();
+                hMain = process.MainWindowHandle;
             }
 
+            ShowWindowAsync(hMain, SW_SHOWNORMAL);
+            SetForegroundWindow(hMain);
             IntPtr hTree = FindWindowEx(hMain, IntPtr.Zero, "SysTreeView32", null);
             IntPtr hList = FindWindowEx(hMain, IntPtr.Zero, "SysListView32", null);
 
             SetForegroundWindow(hTree);
             SetFocus(hTree);
+            process.WaitForInputIdle();
             SendMessage(hTree, WM_KEYDOWN, VK_HOME, null);
-            Thread.Sleep(50);
+            Thread.Sleep(100);
+            process.WaitForInputIdle();
             SendMessage(hTree, WM_KEYDOWN, VK_RIGHT, null);
             foreach(char chr in Encoding.Default.GetBytes(regPath))
             {
+                process.WaitForInputIdle();
                 if(chr == '\\')
                 {
-                    Thread.Sleep(50);
+                    Thread.Sleep(100);
                     SendMessage(hTree, WM_KEYDOWN, VK_RIGHT, null);
                 }
                 else
@@ -48,14 +58,17 @@ namespace BluePointLilac.Methods
             {
                 if(key?.GetValue(valueName) == null) return;
             }
-            Thread.Sleep(50);
+            Thread.Sleep(100);
             SetForegroundWindow(hList);
             SetFocus(hList);
+            process.WaitForInputIdle();
             SendMessage(hList, WM_KEYDOWN, VK_HOME, null);
             foreach(char chr in Encoding.Default.GetBytes(valueName))
             {
+                process.WaitForInputIdle();
                 SendMessage(hList, WM_CHAR, Convert.ToInt16(chr), null);
             }
+            process.Dispose();
         }
 
         public static void JumpExplorer(string filePath)
@@ -130,6 +143,7 @@ namespace BluePointLilac.Methods
             }
         }
 
+        private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOW = 5;
         private const uint SEE_MASK_INVOKEIDLIST = 12;
         private const int WM_SETTEXT = 0xC;
@@ -139,10 +153,16 @@ namespace BluePointLilac.Methods
         private const int VK_RIGHT = 0x27;
 
         [DllImport("User32.dll")]
+        private static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
+
+        [DllImport("User32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("User32.dll")]
         private static extern bool SetFocus(IntPtr hWnd);
+
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetWindowThreadProcessId(IntPtr hwnd, out int ID);
 
         [DllImport("user32.dll")]
         private static extern IntPtr FindWindow(string lpszClass, string lpszWindow);
