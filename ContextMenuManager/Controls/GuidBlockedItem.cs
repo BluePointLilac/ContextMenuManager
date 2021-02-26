@@ -70,7 +70,7 @@ namespace ContextMenuManager.Controls
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiHandleGuid,
                 new ToolStripSeparator(), TsiDetails });
-            TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, 
+            TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch,
                 new ToolStripSeparator(), TsiFileProperties, TsiFileLocation});
 
             MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);

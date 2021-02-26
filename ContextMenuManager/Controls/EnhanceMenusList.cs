@@ -14,7 +14,7 @@ namespace ContextMenuManager.Controls
         {
             try
             {
-                XmlDocument doc = AppDic.ReadXml(AppConfig.WebEnhanceMenusDic, 
+                XmlDocument doc = AppDic.ReadXml(AppConfig.WebEnhanceMenusDic,
                     AppConfig.UserEnhanceMenusDic, Properties.Resources.EnhanceMenusDic);
                 foreach(XmlNode xn in doc.DocumentElement.ChildNodes)
                 {

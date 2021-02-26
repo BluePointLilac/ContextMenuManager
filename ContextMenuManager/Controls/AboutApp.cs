@@ -284,7 +284,7 @@ namespace ContextMenuManager.Controls
             cmbConfigDir.Items.AddRange(new[] { AppString.Other.AppDataDir, AppString.Other.AppDir });
             cmbEngine.Items.AddRange(new[] { "Baidu", "Bing", "Google", "DogeDoge", "Sogou", "360", AppString.Other.CustomEngine });
             btnConfigDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.ConfigDir);
-            btnBackupDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.ConfigDir);
+            btnBackupDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.BackupDir);
             lblGithub.Click += (sender, e) => ExternalProgram.OpenUrl(GithubUrl);
             lblGitee.Click += (sender, e) => ExternalProgram.OpenUrl(GiteeUrl);
             lblUpdate.Click += (sender, e) =>

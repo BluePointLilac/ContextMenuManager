@@ -388,13 +388,22 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找类似 [Microsoft.SkypeApp]
-        ///Guid=776dbc8d-7347-478c-8d71-791e12ef49d8
-        ///Scene=File
+        ///   查找类似 &lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;
+        ///&lt;!-- 微软在Win10右键菜单中新增的UWP模块, 非Shell、ShellEx类型,
+        ///但是可通过GUID锁定屏蔽来禁用右键菜单项目,
+        ///GUID查找位置：HKEY_CLASSES_ROOT\PackagedCom\Package\[包名]\Class\[GUID],
+        ///Scene的各子节点为菜单项目出现位置, Item必须有Guid属性，
+        ///UwpName、Text、Icon、Tip等属性可写在GuidInfosDic.ini里面，这里就可省略不写--&gt;
         ///
-        ///[Microsoft.WindowsTerminal]
-        ///Guid=9f156763-7844-4dc4-b2b1-901f640f5155
-        ///Scene=Directory|Background 的本地化字符串。
+        ///&lt;Scene&gt;
+        ///	&lt;File&gt;
+        ///		&lt;Item Guid=&apos;776dbc8d-7347-478c-8d71-791e12ef49d8&apos;/&gt;
+        ///	&lt;/File&gt;
+        ///	&lt;Directory&gt;
+        ///		&lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/&gt;
+        ///	&lt;/Directory&gt;
+        ///	&lt;Background&gt;
+        ///		&lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/ [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string UwpModeItemsDic {
             get {
