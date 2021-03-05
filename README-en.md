@@ -16,7 +16,7 @@
 * localization support, contributions are welcome
 
 ## Screenshots
-![](Screenshot-en.png)
+![](./Screenshot-en.png)
 
 ## Third-party resources
 * Main program icon from [Easyicon][1]<br>![](https://raw.githubusercontent.com/BluePointLilac/ContextMenuManager/master/ContextMenuManager/Properties/AppIcon.ico)
