@@ -43,7 +43,7 @@ This program is completely free of charge; if you find this program useful, you 
 <br>Any amount is welcome，thank you for your understanding and support！Please also don't forget to star this repo (It means a lot to me!）<br>![](https://raw.githubusercontent.com/BluePointLilac/ContextMenuManager/master/ContextMenuManager/Properties/Resources/Images/Donate.png)
 
   [1]: https://www.easyicon.net/1208132-mouse_icon.html
-  [2]: https://github.com/BluePointLilac/ContextMenuManager/tree/master/ContextMenuManager/Properties/Resources/Images
+  [2]: ContextMenuManager/Properties/Resources/Images
   [3]: https://www.iconfont.cn/
   [4]: https://github.com/riverar/hashlnk
   [5]: https://github.com/BluePointLilac/ContextMenuManager/releases
