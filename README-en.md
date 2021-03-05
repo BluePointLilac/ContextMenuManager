@@ -35,7 +35,7 @@
 * This program is not designed to perform clean uninstalls; however, it can help you find the registry and file locations of menu items so that they can be modified. If you are not familar with such operations, it is recommended you use the enable/disable functions only.
 
 ## Author contact
-* This program was developed independently by me (BluePointLilac), thought I would like to thank [PcMoe][7] admin @坑晨 for answering my questions. There will inevitably be bugs, so any reports and suggestions are welcome.
+* This program was developed independently by me (BluePointLilac), though I would like to thank [PcMoe][7] admin @坑晨 for answering my questions. There will inevitably be bugs, so any reports and suggestions are welcome.
 * My Bilibili page: [蓝点lilac][8]（Follow me!）
 * My e-mail: 1617859183@qq.com
 
