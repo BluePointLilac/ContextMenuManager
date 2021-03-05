@@ -1,5 +1,4 @@
 ﻿using BluePointLilac.Methods;
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -7,7 +6,7 @@ namespace BluePointLilac.Controls
 {
     public sealed class MyStatusBar : Panel
     {
-        public static readonly string DefaultText = $"Ver: {new Version(Application.ProductVersion).ToString(2)}    {Application.CompanyName}";
+        public static readonly string DefaultText = $"Ver: {Application.ProductVersion}    {Application.CompanyName}";
 
         public MyStatusBar()
         {

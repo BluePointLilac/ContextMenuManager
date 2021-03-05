@@ -112,7 +112,7 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="AppDic.cs" />
     <Compile Include="BluePointLilac.Controls\MyToolTip.cs" />
-    <Compile Include="BluePointLilac.Controls\ReadOnlyRichTextBox.cs">
+    <Compile Include="BluePointLilac.Controls\ReadOnlyTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BluePointLilac.Controls\ResizbleForm.cs">

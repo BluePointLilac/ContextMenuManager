@@ -393,7 +393,7 @@ namespace ContextMenuManager.Properties {
         ///但是可通过GUID锁定屏蔽来禁用右键菜单项目,
         ///GUID查找位置：HKEY_CLASSES_ROOT\PackagedCom\Package\[包名]\Class\[GUID],
         ///Scene的各子节点为菜单项目出现位置, Item必须有Guid属性，
-        ///UwpName、Text、Icon、Tip等属性可写在GuidInfosDic.ini里面，这里就可省略不写--&gt;
+        ///UwpName、Text、Icon、Tip等属性写在GuidInfosDic.ini里面--&gt;
         ///
         ///&lt;Scene&gt;
         ///	&lt;File&gt;
@@ -403,7 +403,8 @@ namespace ContextMenuManager.Properties {
         ///		&lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/&gt;
         ///	&lt;/Directory&gt;
         ///	&lt;Background&gt;
-        ///		&lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/ [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///		&lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/&gt;
+        ///	&lt;/Back [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string UwpModeItemsDic {
             get {

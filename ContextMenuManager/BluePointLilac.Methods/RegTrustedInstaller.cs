@@ -225,11 +225,18 @@ namespace BluePointLilac.Methods
         {
             if(regPath.IsNullOrWhiteSpace()) return;
             TakeRegKeyOwnerShip(regPath);
-            using(RegistryKey key = RegistryEx.GetRegistryKey(regPath))
-                if(key != null)
+            try
+            {
+                using(RegistryKey key = RegistryEx.GetRegistryKey(regPath))
+                {
+                    if(key == null) return;
                     foreach(string subKeyName in key.GetSubKeyNames())
+                    {
                         TakeRegTreeOwnerShip($@"{key.Name}\{subKeyName}");
-
+                    }
+                }
+            }
+            catch { }
         }
     }
 }

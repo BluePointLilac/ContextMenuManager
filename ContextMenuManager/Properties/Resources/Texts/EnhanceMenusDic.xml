@@ -278,6 +278,15 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <Command Default='osk.exe'/>
         </SubKey>
       </Item>
+      <Item KeyName='OpenEdge'>
+        <OSVersion Compare=">=">10.0</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='打开Edge' Icon='%SystemRoot%\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe'/>
+        </Value>
+        <SubKey>
+          <Command Default='explorer.exe shell:Appsfolder\Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge'/>
+        </SubKey>
+      </Item>
       <Item KeyName='ShutDownMenu'>
         <Value>
           <REG_SZ MUIVerb='关机选项' Icon='shell32.dll,-28' SubCommands='' Position='bottom'/>

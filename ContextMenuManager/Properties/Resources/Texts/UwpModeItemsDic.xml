@@ -3,7 +3,7 @@
 但是可通过GUID锁定屏蔽来禁用右键菜单项目,
 GUID查找位置：HKEY_CLASSES_ROOT\PackagedCom\Package\[包名]\Class\[GUID],
 Scene的各子节点为菜单项目出现位置, Item必须有Guid属性，
-UwpName、Text、Icon、Tip等属性可写在GuidInfosDic.ini里面，这里就可省略不写-->
+UwpName、Text、Icon、Tip等属性写在GuidInfosDic.ini里面-->
 
 <Scene>
 	<File>

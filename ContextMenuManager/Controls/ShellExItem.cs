@@ -22,13 +22,17 @@ namespace ContextMenuManager.Controls
                     if(cmKey == null) continue;
                     foreach(string keyName in cmKey.GetSubKeyNames())
                     {
-                        using(RegistryKey key = cmKey.OpenSubKey(keyName))
+                        try
                         {
-                            if(!GuidEx.TryParse(key.GetValue("")?.ToString(), out Guid guid))
-                                GuidEx.TryParse(keyName, out guid);
-                            if(!guid.Equals(Guid.Empty))
-                                dic.Add(key.Name, guid);
+                            using(RegistryKey key = cmKey.OpenSubKey(keyName))
+                            {
+                                if(!GuidEx.TryParse(key.GetValue("")?.ToString(), out Guid guid))
+                                    GuidEx.TryParse(keyName, out guid);
+                                if(!guid.Equals(Guid.Empty))
+                                    dic.Add(key.Name, guid);
+                            }
                         }
+                        catch { continue; }
                     }
                 }
             }
@@ -69,7 +73,6 @@ namespace ContextMenuManager.Controls
         private string ParentKeyName => RegistryEx.GetKeyName(ParentPath);
         private string DefaultValue => Registry.GetValue(RegPath, "", null)?.ToString();
         public string ItemText => GuidInfo.GetText(Guid) ?? (KeyName.Equals(Guid.ToString("B"), StringComparison.OrdinalIgnoreCase) ? DefaultValue : KeyName);
-        private GuidInfo.IconLocation IconLocation => GuidInfo.GetIconLocation(Guid);
         private bool IsOpenLnkItem => Guid.ToString() == LnkOpenGuid;
         public bool IsDragDropItem => ParentKeyName.EndsWith(DdhParts[0], StringComparison.OrdinalIgnoreCase);
 

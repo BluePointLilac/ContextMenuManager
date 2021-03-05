@@ -45,8 +45,8 @@ namespace BluePointLilac.Methods
 
         public static RegistryKey CreateSubKey(this RegistryKey key, string subKeyName, bool writable)
         {
-            key.CreateSubKey(subKeyName).Close();
-            return key.OpenSubKey(subKeyName, writable);
+            using(key.CreateSubKey(subKeyName))
+                return key.OpenSubKey(subKeyName, writable);
         }
 
         /// <summary>获取指定路径注册表项的上一级路径</summary>
@@ -128,7 +128,11 @@ namespace BluePointLilac.Methods
             using(root)
             {
                 if(create) return root.CreateSubKey(keyPath, writable);
-                else return root.OpenSubKey(keyPath, writable);
+                else
+                {
+                    RegTrustedInstaller.TakeRegTreeOwnerShip(keyPath);
+                    return root.OpenSubKey(keyPath, writable);
+                }
             }
         }
 
