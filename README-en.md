@@ -1,3 +1,4 @@
+[中文](./README.md)
 # ContextMenuManager
 ------
 > A program to manage the Windows right-click context menu.
