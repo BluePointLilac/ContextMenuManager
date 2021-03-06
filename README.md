@@ -1,3 +1,4 @@
+**[English](README-en.md)**
 # ContextMenuManager
 ------
 > 一个纯粹的Windows右键菜单管理程序
