@@ -13,7 +13,7 @@
 ## Supported systems and features 
 * Windows 7, 8, 8.1, 10, Vista
 * 32 and 64 bit systems
-* Support for display scaling, optimal at 150%
+* Support for display scaling, optimally at 150%
 * localization support, contributions are welcome
 
 ## Screenshots
@@ -29,7 +29,7 @@
 * Due to limitations with Github and Gitee Raw, the program can only check for updates once a month. <br> The latest updates can always be found on [Github Releases][5] or [Gitee Releases][6].
 
 ## Notices
-* Some special menu items (Shell extensions，file encryption(&Y)) may not be displayed in the context menu，but will still show as enabled within the program; this is normal.
+* Some special menu items (Shell extensions, file encryption(&Y)) may not be displayed in the context menu, but will still show as enabled within the program; this is normal.
 * Different context menu manager programs may use different methods for disabling menu options. Using multiple managers at once is not recommended. While other programs may use destructive methods, this program will utilize the registry keys provided by the system to hide menu items when possible.
 <br>If you have used other context menu managers in the past, it is recommended that you use that program to restore the menu items before using this one, in order to avoid any potential issues.
 * This program is not designed to perform clean uninstalls; however, it can help you find the registry and file locations of menu items so that they can be modified. If you are not familar with such operations, it is recommended you use the enable/disable functions only.
@@ -41,7 +41,7 @@
 
 ## Donations
 This program is completely free of charge; if you find this program useful, you can donate by scanning the QR codes below（WeChat, Alipay, QQ) 
-<br>Any amount is welcome，thank you for your understanding and support！Please also don't forget to star this repo (It means a lot to me!）<br>![](https://raw.githubusercontent.com/BluePointLilac/ContextMenuManager/master/ContextMenuManager/Properties/Resources/Images/Donate.png)
+<br>Any amount is welcome，thank you for your understanding and support! Please also don't forget to star this repo (It means a lot to me!）<br>![](https://raw.githubusercontent.com/BluePointLilac/ContextMenuManager/master/ContextMenuManager/Properties/Resources/Images/Donate.png)
 
   [1]: https://www.easyicon.net/1208132-mouse_icon.html
   [2]: ContextMenuManager/Properties/Resources/Images
