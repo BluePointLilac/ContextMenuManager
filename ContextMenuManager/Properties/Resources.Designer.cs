@@ -165,6 +165,16 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap DownLoad {
+            get {
+                object obj = ResourceManager.GetObject("DownLoad", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;
         ///&lt;!--此文件为常用右键菜单字典,
         ///Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型，
@@ -344,6 +354,16 @@ namespace ContextMenuManager.Properties {
         internal static string ThirdRulesDic {
             get {
                 return ResourceManager.GetString("ThirdRulesDic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Translate {
+            get {
+                object obj = ResourceManager.GetObject("Translate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

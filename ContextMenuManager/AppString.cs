@@ -6,7 +6,7 @@ namespace ContextMenuManager
     public static class AppString
     {
         public static readonly IniReader UserLanguage = new IniReader(AppConfig.LanguageIniPath);
-        private static readonly IniReader DefaultLanguage = new IniReader(new StringBuilder(Properties.Resources.AppLanguageDic));
+        public static readonly IniReader DefaultLanguage = new IniReader(new StringBuilder(Properties.Resources.AppLanguageDic));
 
         private static string GetStringValue(string section, string key)
         {
@@ -61,6 +61,7 @@ namespace ContextMenuManager
             public static string DirectoryType => GetValue("DirectoryType");
             public static string EnhanceMenu => GetValue("EnhanceMenu");
             public static string ThirdRules => GetValue("ThirdRules");
+            public static string OtherAccounts => GetValue("OtherAccounts");
             public static string GuidBlocked => GetValue("GuidBlocked");
             public static string DragDrop => GetValue("DragDrop");
             public static string PublicReferences => GetValue("PublicReferences");
@@ -99,6 +100,7 @@ namespace ContextMenuManager
             public static string DirectoryType => GetValue("DirectoryType");
             public static string EnhanceMenu => GetValue("EnhanceMenu");
             public static string ThirdRules => GetValue("ThirdRules");
+            public static string OtherAccounts => GetValue("OtherAccounts");
             public static string GuidBlocked => GetValue("GuidBlocked");
             public static string DragDrop => GetValue("DragDrop");
             public static string PublicReferences => GetValue("PublicReferences");
@@ -147,42 +149,6 @@ namespace ContextMenuManager
             public static string Save => GetValue("Save");
         }
 
-        /// <summary>特殊项目文本</summary>
-        public static class Item
-        {
-            private static string GetValue(string key) => GetStringValue("Item", key);
-            public static string Open => GetValue("Open");
-            public static string Edit => GetValue("Edit");
-            public static string Explore => GetValue("Explore");
-            public static string ExploreOld => GetValue("ExploreOld");
-            public static string Play => GetValue("Play");
-            public static string Print => GetValue("Print");
-            public static string Find => GetValue("Find");
-            public static string Runas => GetValue("Runas");
-            public static string CustomFolder => GetValue("CustomFolder");
-            public static string MapNetworkDrive => GetValue("MapNetworkDrive");
-            public static string DisconnectNetworkDrive => GetValue("DisconnectNetworkDrive");
-            public static string RecycleBinProperties => GetValue("RecycleBinProperties");
-            public static string RemovableDrive => GetValue("RemovableDrive");
-            public static string BuildSendtoMenu => GetValue("BuildSendtoMenu");
-            public static string UseStoreOpenWith => GetValue("UseStoreOpenWith");
-            public static string NewItem => GetValue("NewItem");
-            public static string AddGuidBlockedItem => GetValue("AddGuidBlockedItem");
-            public static string SelectExtension => GetValue("SelectExtension");
-            public static string SelectPerceivedType => GetValue("SelectPerceivedType");
-            public static string SelectDirectoryType => GetValue("SelectDirectoryType");
-            public static string CurrentExtension => GetValue("CurrentExtension");
-            public static string CurrentPerceivedType => GetValue("CurrentPerceivedType");
-            public static string CurrentDirectoryType => GetValue("CurrentDirectoryType");
-            public static string EditSubItems => GetValue("EditSubItems");
-            public static string InvalidItem => GetValue("InvalidItem");
-            public static string Separator => GetValue("Separator");
-            public static string LockNewMenu => GetValue("LockNewMenu");
-            public static string WinXSortable => GetValue("WinXSortable");
-            public static string ShowFilePath => GetValue("ShowFilePath");
-            public static string OpenMoreRegedit => GetValue("OpenMoreRegedit");
-        }
-
         public static class Dialog
         {
             private static string GetValue(string key) => GetStringValue("Dialog", key);
@@ -215,6 +181,9 @@ namespace ContextMenuManager
             public static string AudioDirectory => GetValue("AudioDirectory");
             public static string CheckReference => GetValue("CheckReference");
             public static string CheckCopy => GetValue("CheckCopy");
+            public static string SelectExtension => GetValue("SelectExtension");
+            public static string SelectPerceivedType => GetValue("SelectPerceivedType");
+            public static string SelectDirectoryType => GetValue("SelectDirectoryType");
             public static string SelectSubMenuMode => GetValue("SelectSubMenuMode");
             public static string SelectNewItemType => GetValue("SelectNewItemType");
             public static string RegistryFile => GetValue("RegistryFile");
@@ -260,11 +229,34 @@ namespace ContextMenuManager
         public static class Other
         {
             private static string GetValue(string key) => GetStringValue("Other", key);
+            public static string Open => GetValue("Open");
+            public static string Edit => GetValue("Edit");
+            public static string Explore => GetValue("Explore");
+            public static string ExploreOld => GetValue("ExploreOld");
+            public static string Play => GetValue("Play");
+            public static string Print => GetValue("Print");
+            public static string Find => GetValue("Find");
+            public static string Runas => GetValue("Runas");
+            public static string CustomFolder => GetValue("CustomFolder");
+            public static string MapNetworkDrive => GetValue("MapNetworkDrive");
+            public static string DisconnectNetworkDrive => GetValue("DisconnectNetworkDrive");
+            public static string RecycleBinProperties => GetValue("RecycleBinProperties");
+            public static string RemovableDrive => GetValue("RemovableDrive");
+            public static string BuildSendtoMenu => GetValue("BuildSendtoMenu");
+            public static string UseStoreOpenWith => GetValue("UseStoreOpenWith");
+            public static string NewItem => GetValue("NewItem");
+            public static string AddGuidBlockedItem => GetValue("AddGuidBlockedItem");
+            public static string CurrentExtension => GetValue("CurrentExtension");
+            public static string CurrentPerceivedType => GetValue("CurrentPerceivedType");
+            public static string CurrentDirectoryType => GetValue("CurrentDirectoryType");
+            public static string EditSubItems => GetValue("EditSubItems");
+            public static string InvalidItem => GetValue("InvalidItem");
+            public static string Separator => GetValue("Separator");
+            public static string LockNewMenu => GetValue("LockNewMenu");
             public static string RestartExplorer => GetValue("RestartExplorer");
             public static string DictionaryDescription => GetValue("DictionaryDescription");
             public static string GuidInfosDictionary => GetValue("GuidInfosDictionary");
             public static string Translators => GetValue("Translators");
-            public static string OtherLanguages => GetValue("OtherLanguages");
             public static string AboutApp => GetValue("AboutApp");
             public static string Dictionaries => GetValue("Dictionaries");
             public static string Donate => GetValue("Donate");
@@ -281,6 +273,9 @@ namespace ContextMenuManager
             public static string WebSearchEngine => GetValue("WebSearchEngine");
             public static string CustomEngine => GetValue("CustomEngine");
             public static string SetCustomEngine => GetValue("SetCustomEngine");
+            public static string WinXSortable => GetValue("WinXSortable");
+            public static string ShowFilePath => GetValue("ShowFilePath");
+            public static string OpenMoreRegedit => GetValue("OpenMoreRegedit");
         }
 
         /// <summary>提示文本</summary>
@@ -301,6 +296,7 @@ namespace ContextMenuManager
             public static string CheckUpdate => GetValue("CheckUpdate");
             public static string LastCheckUpdateTime => GetValue("LastCheckUpdateTime");
             public static string OpenLanguagesDir => GetValue("OpenLanguagesDir");
+            public static string OtherLanguages => GetValue("OtherLanguages");
             public static string OpenDictionariesDir => GetValue("OpenDictionariesDir");
             public static string ConfigPath => GetValue("ConfigPath");
             public static string CommandFiles => GetValue("CommandFiles");

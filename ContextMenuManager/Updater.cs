@@ -20,13 +20,13 @@ namespace ContextMenuManager
             Version appVersion = new Version(Application.ProductVersion);
             //如果上次检测更新时间为一个月以前就进行更新操作
             bool flag1 = AppConfig.LastCheckUpdateTime.AddMonths(1).CompareTo(DateTime.Today) < 0;
-            //如果配置文件中的版本号低于程序版本号也进行更新操作
-            bool flag2 = appVersion.CompareTo(AppConfig.Version) > 0;
+            //如果配置文件中的版本号与程序版本号不同也进行更新操作
+            bool flag2 = appVersion.CompareTo(AppConfig.Version) != 0;
             if(flag1 || flag2)
             {
                 CheckUpdate();
-                AppConfig.LastCheckUpdateTime = DateTime.Today;
                 AppConfig.Version = appVersion;
+                AppConfig.LastCheckUpdateTime = DateTime.Today;
             }
         }
 

@@ -188,7 +188,7 @@ namespace ContextMenuManager.Controls
         {
             this.Owner = list;
             this.Image = AppImage.Lock;
-            this.Text = AppString.Item.LockNewMenu;
+            this.Text = AppString.Other.LockNewMenu;
             this.SetNoClickEvent();
             BtnShowMenu = new MenuButton(this);
             ChkVisible = new VisibleCheckBox(this) { Checked = IsLocked };
@@ -276,7 +276,7 @@ namespace ContextMenuManager.Controls
     {
         public ShellNewSeparator()
         {
-            this.Text = AppString.Item.Separator;
+            this.Text = AppString.Other.Separator;
             this.HasImage = false;
         }
     }

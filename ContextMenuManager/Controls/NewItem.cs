@@ -6,7 +6,7 @@ namespace ContextMenuManager.Controls
 {
     class NewItem : MyListItem
     {
-        public NewItem() : this(AppString.Item.NewItem) { }
+        public NewItem() : this(AppString.Other.NewItem) { }
 
         public NewItem(string text)
         {

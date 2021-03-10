@@ -457,29 +457,29 @@ namespace ContextMenuManager.Controls
                     case Scenes.CustomExtension:
                         if(CurrentExtension == null)
                         {
-                            return AppString.Item.SelectExtension;
+                            return AppString.Dialog.SelectExtension;
                         }
                         else
                         {
-                            return AppString.Item.CurrentExtension.Replace("%s", CurrentExtension);
+                            return AppString.Other.CurrentExtension.Replace("%s", CurrentExtension);
                         }
                     case Scenes.PerceivedType:
                         if(CurrentPerceivedType == null)
                         {
-                            return AppString.Item.SelectPerceivedType;
+                            return AppString.Dialog.SelectPerceivedType;
                         }
                         else
                         {
-                            return AppString.Item.CurrentPerceivedType.Replace("%s", GetPerceivedTypeName());
+                            return AppString.Other.CurrentPerceivedType.Replace("%s", GetPerceivedTypeName());
                         }
                     case Scenes.DirectoryType:
                         if(CurrentDirectoryType == null)
                         {
-                            return AppString.Item.SelectDirectoryType;
+                            return AppString.Dialog.SelectDirectoryType;
                         }
                         else
                         {
-                            return AppString.Item.CurrentDirectoryType.Replace("%s", GetDirectoryTypeName());
+                            return AppString.Other.CurrentDirectoryType.Replace("%s", GetDirectoryTypeName());
                         }
                     default:
                         return null;
@@ -501,7 +501,7 @@ namespace ContextMenuManager.Controls
                         dlg = new SelectDialog
                         {
                             Items = PerceivedTypeNames,
-                            Title = AppString.Item.SelectPerceivedType,
+                            Title = AppString.Dialog.SelectPerceivedType,
                             Selected = GetPerceivedTypeName() ?? PerceivedTypeNames[0]
                         };
                         break;
@@ -509,7 +509,7 @@ namespace ContextMenuManager.Controls
                         dlg = new SelectDialog
                         {
                             Items = DirectoryTypeNames,
-                            Title = AppString.Item.SelectDirectoryType,
+                            Title = AppString.Dialog.SelectDirectoryType,
                             Selected = GetDirectoryTypeName() ?? DirectoryTypeNames[0]
                         };
                         break;

@@ -31,12 +31,14 @@ namespace BluePointLilac.Methods
             }
         }
 
-        public static void Restart()
+        public static void Restart(bool isElevated = false, string[] args = null)
         {
             using(Process process = new Process())
             {
                 process.StartInfo.FileName = Application.ExecutablePath;
                 process.StartInfo.Arguments = "Restart";
+                if(args != null) process.StartInfo.Arguments += string.Join(" ", args);
+                if(isElevated) process.StartInfo.Verb = "Runas";
                 process.Start();
             }
             Application.Exit();

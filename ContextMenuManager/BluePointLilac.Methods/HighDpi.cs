@@ -20,6 +20,8 @@ namespace BluePointLilac.Methods
 
         public static RectangleF DpiZoom(this RectangleF r) => new RectangleF(DpiZoom(r.Location), DpiZoom(r.Size));
 
+        public static Padding DpiZoom(this Padding p) => new Padding(DpiZoom(p.Left), DpiZoom(p.Top), DpiZoom(p.Right), DpiZoom(p.Bottom));
+
         public static int DpiZoom(this int num) => (int)(num * DpiScale);
 
         public static float DpiZoom(this float num) => (float)(num * DpiScale);

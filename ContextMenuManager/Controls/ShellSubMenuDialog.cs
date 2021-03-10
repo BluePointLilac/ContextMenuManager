@@ -326,7 +326,7 @@ namespace ContextMenuManager.Controls
                     public InvalidItem(PulicMultiItemsList list, string keyName)
                     {
                         this.Owner = list;
-                        this.Text = $"{AppString.Item.InvalidItem} {keyName}";
+                        this.Text = $"{AppString.Other.InvalidItem} {keyName}";
                         this.Image = AppImage.NotFound.ToTransparent();
                         BtnDelete = new DeleteButton(this);
                         BtnMoveDown = new MoveButton(this, false);
@@ -558,7 +558,7 @@ namespace ContextMenuManager.Controls
             {
                 public SubSeparatorItem()
                 {
-                    this.Text = AppString.Item.Separator;
+                    this.Text = AppString.Other.Separator;
                     this.HasImage = false;
                     BtnDelete = new DeleteButton(this);
                     BtnMoveDown = new MoveButton(this, false);

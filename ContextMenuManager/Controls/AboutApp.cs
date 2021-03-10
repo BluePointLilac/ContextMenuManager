@@ -17,6 +17,7 @@ namespace ContextMenuManager.Controls
         {
             this.Dock = DockStyle.Fill;
             this.BackColor = Color.White;
+            this.AutoScroll = true;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
             this.Controls.AddRange(new Control[] { lblInfo, picQR, llbDonationList });
             llbDonationList.LinkClicked += (sender, e) => ExternalProgram.OpenUrl(DonateListUrl);
@@ -156,7 +157,7 @@ namespace ContextMenuManager.Controls
         }
     }
 
-    sealed class LanguagesBox : Panel
+    sealed class LanguagesBox : FlowLayoutPanel
     {
         const string OtherLanguagesUrl = "https://github.com/BluePointLilac/ContextMenuManager/tree/master/languages";
 
@@ -164,12 +165,14 @@ namespace ContextMenuManager.Controls
         {
             this.Dock = DockStyle.Fill;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
-            this.Controls.AddRange(new Control[] { cmbLanguages, btnOpenDir, llbOtherLanguages, txtTranslators });
-            this.OnResize(null);
+            this.Controls.AddRange(new Control[] { cmbLanguages, btnOpenDir, btnDownLoad, txtTranslators });
             cmbLanguages.SelectionChangeCommitted += (sender, e) => ChangeLanguage();
-            llbOtherLanguages.LinkClicked += (sender, e) => ExternalProgram.OpenUrl(OtherLanguagesUrl);
+            btnDownLoad.MouseDown += (sender, e) => ExternalProgram.OpenUrl(OtherLanguagesUrl);
             btnOpenDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.LangsDir);
+            btnTranslate.MouseDown += (sender, e) => new TranslateDialog().ShowDialog();
             MyToolTip.SetToolTip(btnOpenDir, AppString.Tip.OpenLanguagesDir);
+            MyToolTip.SetToolTip(btnDownLoad, AppString.Tip.OtherLanguages);
+            this.OnResize(null);
         }
 
         readonly ComboBox cmbLanguages = new ComboBox
@@ -178,34 +181,24 @@ namespace ContextMenuManager.Controls
             DropDownStyle = ComboBoxStyle.DropDownList
         };
 
-        readonly LinkLabel llbOtherLanguages = new LinkLabel
-        {
-            Text = AppString.Other.OtherLanguages,
-            AutoSize = true
-        };
-
         readonly ReadOnlyTextBox txtTranslators = new ReadOnlyTextBox
         {
             Multiline = true,
             ScrollBars = ScrollBars.Vertical
         };
-
         readonly PictureButton btnOpenDir = new PictureButton(AppImage.Open);
-
+        readonly PictureButton btnDownLoad = new PictureButton(AppImage.DownLoad);
+        readonly PictureButton btnTranslate = new PictureButton(AppImage.Translate);
         readonly List<string> languages = new List<string>();
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             int a = 20.DpiZoom();
-            txtTranslators.Left = cmbLanguages.Left = cmbLanguages.Top = llbOtherLanguages.Top = a;
-            btnOpenDir.Left = cmbLanguages.Right + a;
-            btnOpenDir.Top = cmbLanguages.Top + (cmbLanguages.Height - btnOpenDir.Height) / 2;
-            txtTranslators.Top = cmbLanguages.Bottom + a;
             txtTranslators.Width = this.ClientSize.Width - 2 * a;
             txtTranslators.Height = this.ClientSize.Height - txtTranslators.Top - a;
-            txtTranslators.BackColor = this.BackColor;
-            llbOtherLanguages.Left = txtTranslators.Right - llbOtherLanguages.Width;
+            cmbLanguages.Margin = txtTranslators.Margin = btnOpenDir.Margin 
+                = btnDownLoad.Margin = btnTranslate.Margin = new Padding(a, a, 0, 0);
         }
 
         public void LoadLanguages()
@@ -243,7 +236,7 @@ namespace ContextMenuManager.Controls
             else
             {
                 AppConfig.Language = language;
-                SingleInstance.Restart();
+                SingleInstance.Restart(true);
             }
         }
 
@@ -301,7 +294,7 @@ namespace ContextMenuManager.Controls
                 {
                     DirectoryEx.CopyTo(AppConfig.ConfigDir, newPath);
                     Directory.Delete(AppConfig.ConfigDir, true);
-                    SingleInstance.Restart();
+                    SingleInstance.Restart(true);
                 }
             };
             cmbEngine.SelectionChangeCommitted += (sender, e) =>
@@ -337,7 +330,7 @@ namespace ContextMenuManager.Controls
                 if(MessageBoxEx.Show(AppString.MessageBox.RestartApp, MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
                     AppConfig.ShowFilePath = chkShowFilePath.Checked;
-                    SingleInstance.Restart();
+                    SingleInstance.Restart(true);
                 }
                 else
                 {
@@ -413,7 +406,7 @@ namespace ContextMenuManager.Controls
 
         readonly MyListItem mliWinXSortable = new MyListItem
         {
-            Text = AppString.Item.WinXSortable,
+            Text = AppString.Other.WinXSortable,
             Visible = WindowsOsVersion.ISAfterOrEqual8,
             HasImage = false
         };
@@ -421,17 +414,23 @@ namespace ContextMenuManager.Controls
 
         readonly MyListItem mliShowFilePath = new MyListItem
         {
-            Text = AppString.Item.ShowFilePath,
+            Text = AppString.Other.ShowFilePath,
             HasImage = false
         };
         readonly MyCheckBox chkShowFilePath = new MyCheckBox();
 
         readonly MyListItem mliOpenMoreRegedit = new MyListItem
         {
-            Text = AppString.Item.OpenMoreRegedit,
+            Text = AppString.Other.OpenMoreRegedit,
             HasImage = false
         };
         readonly MyCheckBox chkOpenMoreRegedit = new MyCheckBox();
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            this.Enabled = this.Visible;
+        }
 
         public void LoadItems()
         {

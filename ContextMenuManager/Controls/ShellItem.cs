@@ -91,10 +91,10 @@ namespace ContextMenuManager.Controls
         /// <summary>Shell类型菜单特殊注册表项名默认名称</summary>
         private static readonly Dictionary<string, string> DefaultNames
             = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-            {"open", AppString.Item.Open }, {"edit", AppString.Item.Edit }, {"print", AppString.Item.Print },
-            {"find", AppString.Item.Find }, {"play", AppString.Item.Play }, {"runas", AppString.Item.Runas },
+            {"open", AppString.Other.Open }, {"edit", AppString.Other.Edit }, {"print", AppString.Other.Print },
+            {"find", AppString.Other.Find }, {"play", AppString.Other.Play }, {"runas", AppString.Other.Runas },
             //Win10为“浏览(&X)”，Win10之前为“资源管理器(&X)”
-            {"explore", WindowsOsVersion.IsBefore10 ? AppString.Item.ExploreOld : AppString.Item.Explore }
+            {"explore", WindowsOsVersion.IsBefore10 ? AppString.Other.ExploreOld : AppString.Other.Explore }
         };
 
         /// <summary>菜单项目在菜单中出现的位置</summary>
@@ -274,6 +274,10 @@ namespace ContextMenuManager.Controls
                     else
                     {
                         if(TryProtectOpenItem()) return;
+                        if(WindowsOsVersion.IsAfterOrEqualWin10_1703)
+                        {
+                            Registry.SetValue(RegPath, "HideBasedOnVelocityId", 0x639bc8);
+                        }
                         if(!IsSubItem)
                         {
                             //当LegaryDisable键值作用于文件夹-"在新窗口中打开"时
@@ -284,15 +288,11 @@ namespace ContextMenuManager.Controls
                             }
                             Registry.SetValue(RegPath, "ProgrammaticAccessOnly", "");
                         }
-                        if(WindowsOsVersion.IsAfterOrEqualWin10_1703)
-                        {
-                            Registry.SetValue(RegPath, "HideBasedOnVelocityId", 0x639bc8);
-                            if(ShowAsDisabledIfHidden) DeleteSomeValues();
-                        }
                         else
                         {
                             MessageBoxEx.Show(AppString.MessageBox.CannotHideSubItem);
                         }
+                        if(ShowAsDisabledIfHidden) DeleteSomeValues();
                     }
                 }
                 catch
@@ -577,7 +577,7 @@ namespace ContextMenuManager.Controls
             }
             using(ShellSubMenuDialog dlg = new ShellSubMenuDialog())
             {
-                dlg.Text = AppString.Item.EditSubItems.Replace("%s", this.Text);
+                dlg.Text = AppString.Other.EditSubItems.Replace("%s", this.Text);
                 dlg.Icon = ResourceIcon.GetIcon(IconPath, IconIndex);
                 dlg.ShowDialog(this.RegPath);
             }

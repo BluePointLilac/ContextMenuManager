@@ -1,6 +1,5 @@
 ﻿using BluePointLilac.Methods;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -108,40 +107,6 @@ namespace ContextMenuManager.Controls
                 btnCancel.Left = btnOk.Right + a;
                 this.ClientSize = new Size(btnCancel.Right + a, btnCancel.Bottom + a);
             }
-        }
-    }
-
-    sealed class FileExtensionDialog : SelectDialog
-    {
-        public string Extension
-        {
-            get => Selected;
-            set => Selected = value;
-        }
-
-        public FileExtensionDialog()
-        {
-            this.Title = AppString.Item.SelectExtension;
-            this.DropDownStyle = ComboBoxStyle.DropDown;
-            List<string> items = new List<string>();
-            foreach(string keyName in Microsoft.Win32.Registry.ClassesRoot.GetSubKeyNames())
-            {
-                if(keyName.StartsWith(".")) items.Add(keyName.Substring(1));
-            }
-            this.Items = items.ToArray();
-        }
-
-        protected override bool RunDialog(IntPtr hwndOwner)
-        {
-            bool flag = base.RunDialog(hwndOwner);
-            if(flag)
-            {
-                string extension = ObjectPath.RemoveIllegalChars(this.Extension);
-                int index = extension.LastIndexOf('.');
-                if(index >= 0) this.Extension = extension.Substring(index);
-                else this.Extension = $".{extension}";
-            }
-            return flag;
         }
     }
 }

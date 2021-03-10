@@ -35,6 +35,10 @@ namespace ContextMenuManager
         public static readonly Image AddSeparator = Resources.AddSeparator.ResizeImage(Scale);
         ///<summary>打开图标</summary>
         public static readonly Image Open = Resources.Open.ResizeImage(Scale);
+        ///<summary>下载图标</summary>
+        public static readonly Image DownLoad = Resources.DownLoad.ResizeImage(Scale);
+        ///<summary>翻译图标</summary>
+        public static readonly Image Translate = Resources.Translate.ResizeImage(Scale);
         ///<summary>上图标</summary>
         public static readonly Image Up = Resources.Up.ResizeImage(Scale);
         ///<summary>下图标</summary>

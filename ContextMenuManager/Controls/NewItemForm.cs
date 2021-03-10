@@ -12,7 +12,7 @@ namespace ContextMenuManager.Controls
         {
             this.AcceptButton = btnOk;
             this.CancelButton = btnCancel;
-            this.Text = AppString.Item.NewItem;
+            this.Text = AppString.Other.NewItem;
             this.Font = SystemFonts.MenuFont;
             this.MaximizeBox = this.MinimizeBox = false;
             this.ShowIcon = this.ShowInTaskbar = false;

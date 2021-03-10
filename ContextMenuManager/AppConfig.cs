@@ -57,14 +57,15 @@ namespace ContextMenuManager
         };
 
         private static readonly IniWriter ConfigWriter = new IniWriter(ConfigIni);
+        private static string GetGeneralValue(string key) => ConfigWriter.GetValue("General", key);
+        private static void SetGeneralValue(string key, object value) => ConfigWriter.SetValue("General", key, value);
 
         public static string LanguageIniPath => $@"{LangsDir}\{Language}.ini";
-
         public static string Language
         {
             get
             {
-                string language = ConfigWriter.GetValue("General", "Language");
+                string language = GetGeneralValue("Language");
                 if(language == string.Empty)
                 {
                     language = new CultureInfo(GetUserDefaultUILanguage()).Name;
@@ -75,13 +76,13 @@ namespace ContextMenuManager
                 }
                 return language;
             }
-            set => ConfigWriter.SetValue("General", "Language", value);
+            set => SetGeneralValue("Language", value);
         }
 
         public static bool AutoBackup
         {
-            get => ConfigWriter.GetValue("General", "AutoBackup") != "0";
-            set => ConfigWriter.SetValue("General", "AutoBackup", value ? 1 : 0);
+            get => GetGeneralValue("AutoBackup") != "0";
+            set => SetGeneralValue("AutoBackup", value ? 1 : 0);
         }
 
         public static DateTime LastCheckUpdateTime
@@ -90,7 +91,7 @@ namespace ContextMenuManager
             {
                 try
                 {
-                    string time = ConfigWriter.GetValue("General", "LastCheckUpdateTime");
+                    string time = GetGeneralValue("LastCheckUpdateTime");
                     //二进制数据时间不会受系统时间格式影响
                     return DateTime.FromBinary(Convert.ToInt64(time));
                 }
@@ -102,60 +103,60 @@ namespace ContextMenuManager
             }
             set
             {
-                ConfigWriter.SetValue("General", "LastCheckUpdateTime", value.ToBinary());
+                SetGeneralValue("LastCheckUpdateTime", value.ToBinary());
             }
         }
 
         public static bool ProtectOpenItem
         {
-            get => ConfigWriter.GetValue("General", "ProtectOpenItem") != "0";
-            set => ConfigWriter.SetValue("General", "ProtectOpenItem", value ? 1 : 0);
+            get => GetGeneralValue("ProtectOpenItem") != "0";
+            set => SetGeneralValue("ProtectOpenItem", value ? 1 : 0);
         }
 
         public static string EngineUrl
         {
             get
             {
-                string url = ConfigWriter.GetValue("General", "EngineUrl");
+                string url = GetGeneralValue("EngineUrl");
                 if(url.IsNullOrWhiteSpace()) url = EngineUrls[0];
                 return url;
             }
             set
             {
-                ConfigWriter.SetValue("General", "EngineUrl", value);
+                SetGeneralValue("EngineUrl", value);
             }
         }
 
         public static bool ShowFilePath
         {
-            get => ConfigWriter.GetValue("General", "ShowFilePath") == "1";
-            set => ConfigWriter.SetValue("General", "ShowFilePath", value ? 1 : 0);
+            get => GetGeneralValue("ShowFilePath") == "1";
+            set => SetGeneralValue("ShowFilePath", value ? 1 : 0);
         }
 
         public static bool WinXSortable
         {
-            get => ConfigWriter.GetValue("General", "WinXSortable") == "1";
-            set => ConfigWriter.SetValue("General", "WinXSortable", value ? 1 : 0);
+            get => GetGeneralValue("WinXSortable") == "1";
+            set => SetGeneralValue("WinXSortable", value ? 1 : 0);
         }
 
         public static bool OpenMoreRegedit
         {
-            get => ConfigWriter.GetValue("General", "OpenMoreRegedit") == "1";
-            set => ConfigWriter.SetValue("General", "OpenMoreRegedit", value ? 1 : 0);
+            get => GetGeneralValue("OpenMoreRegedit") == "1";
+            set => SetGeneralValue("OpenMoreRegedit", value ? 1 : 0);
         }
 
         public static Version Version
         {
             get
             {
-                Version version = new Version();
-                try { version = new Version(ConfigWriter.GetValue("General", "Version")); }
+                Version version = new Version(0, 0, 0, 0);
+                try { version = new Version(GetGeneralValue("Version")); }
                 catch { }
                 return version;
             }
             set
             {
-                ConfigWriter.SetValue("General", "Version", value);
+                SetGeneralValue("Version", value);
             }
         }
     }

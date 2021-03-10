@@ -33,7 +33,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -93,6 +93,9 @@
   <PropertyGroup />
   <PropertyGroup />
   <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
   </PropertyGroup>
@@ -136,6 +139,9 @@
     <Compile Include="BluePointLilac.Methods\WindowsOsVersion.cs" />
     <Compile Include="BluePointLilac.Methods\WshShortcut.cs" />
     <Compile Include="Controls\AddGuidDicDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FileExtensionDialog.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\EnhanceMenusItem.cs">
@@ -267,6 +273,9 @@
     <Compile Include="Controls\ThirdRulesList.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TranslateDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\UwpModeItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -338,6 +347,8 @@
     <None Include="Properties\App.manifest" />
     <None Include="Properties\Resources\Texts\AppLanguageDic.ini" />
     <None Include="Properties\Resources\Texts\GuidInfosDic.ini" />
+    <Content Include="Properties\Resources\Images\DownLoad.png" />
+    <Content Include="Properties\Resources\Images\Translate.png" />
     <Content Include="Properties\Resources\Texts\UwpModeItemsDic.xml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

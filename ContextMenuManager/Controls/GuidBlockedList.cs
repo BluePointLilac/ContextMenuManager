@@ -35,7 +35,7 @@ namespace ContextMenuManager.Controls
 
         private void AddNewItem()
         {
-            NewItem newItem = new NewItem(AppString.Item.AddGuidBlockedItem);
+            NewItem newItem = new NewItem(AppString.Other.AddGuidBlockedItem);
             this.AddItem(newItem);
             newItem.AddNewItem += (sender, e) =>
             {
