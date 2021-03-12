@@ -9,8 +9,11 @@ namespace BluePointLilac.Controls
         public ReadOnlyTextBox()
         {
             this.ReadOnly = true;
+            this.Multiline = true;
+            this.ShortcutsEnabled = false;
             this.BackColor = Color.White;
             this.ForeColor = Color.FromArgb(80, 80, 80);
+            this.ScrollBars = ScrollBars.Vertical;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
         }
 
@@ -41,6 +44,7 @@ namespace BluePointLilac.Controls
 
         const int WM_SETFOCUS = 0x0007;
         const int WM_KILLFOCUS = 0x0008;
+
         protected override void WndProc(ref Message m)
         {
             switch(m.Msg)

@@ -181,11 +181,7 @@ namespace ContextMenuManager.Controls
             DropDownStyle = ComboBoxStyle.DropDownList
         };
 
-        readonly ReadOnlyTextBox txtTranslators = new ReadOnlyTextBox
-        {
-            Multiline = true,
-            ScrollBars = ScrollBars.Vertical
-        };
+        readonly ReadOnlyTextBox txtTranslators = new ReadOnlyTextBox();
         readonly PictureButton btnOpenDir = new PictureButton(AppImage.Open);
         readonly PictureButton btnDownLoad = new PictureButton(AppImage.DownLoad);
         readonly PictureButton btnTranslate = new PictureButton(AppImage.Translate);
@@ -197,7 +193,7 @@ namespace ContextMenuManager.Controls
             int a = 20.DpiZoom();
             txtTranslators.Width = this.ClientSize.Width - 2 * a;
             txtTranslators.Height = this.ClientSize.Height - txtTranslators.Top - a;
-            cmbLanguages.Margin = txtTranslators.Margin = btnOpenDir.Margin 
+            cmbLanguages.Margin = txtTranslators.Margin = btnOpenDir.Margin
                 = btnDownLoad.Margin = btnTranslate.Margin = new Padding(a, a, 0, 0);
         }
 
