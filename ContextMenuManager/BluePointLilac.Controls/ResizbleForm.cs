@@ -15,60 +15,28 @@ namespace BluePointLilac.Controls
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
-            switch(m.Msg)
+            if(m.Msg == HitTestMessage.WM_NCHITTEST && this.WindowState == FormWindowState.Normal)
             {
-                case WM_NCHITTEST:
-                    IntPtr hNowhere = new IntPtr((int)HitTest.Nowhere);
-                    HitTest value = (HitTest)m.Result;
-                    switch(value)
-                    {
-                        case HitTest.Top:
-                        case HitTest.Bottom:
-                            if(!VerticalResizable) m.Result = hNowhere;
-                            break;
-                        case HitTest.Left:
-                        case HitTest.Right:
-                            if(!HorizontalResizable) m.Result = hNowhere;
-                            break;
-                        case HitTest.TopLeft:
-                        case HitTest.TopRight:
-                        case HitTest.BottomLeft:
-                        case HitTest.BottomRight:
-                            if(!VerticalResizable || !HorizontalResizable) m.Result = hNowhere;
-                            break;
-                    }
-                    break;
+                IntPtr hNowhere = new IntPtr((int)HitTestMessage.HitTest.Nowhere);
+                HitTestMessage.HitTest value = (HitTestMessage.HitTest)m.Result;
+                switch(value)
+                {
+                    case HitTestMessage.HitTest.Top:
+                    case HitTestMessage.HitTest.Bottom:
+                        if(!VerticalResizable) m.Result = hNowhere;
+                        break;
+                    case HitTestMessage.HitTest.Left:
+                    case HitTestMessage.HitTest.Right:
+                        if(!HorizontalResizable) m.Result = hNowhere;
+                        break;
+                    case HitTestMessage.HitTest.TopLeft:
+                    case HitTestMessage.HitTest.TopRight:
+                    case HitTestMessage.HitTest.BottomLeft:
+                    case HitTestMessage.HitTest.BottomRight:
+                        if(!VerticalResizable || !HorizontalResizable) m.Result = hNowhere;
+                        break;
+                }
             }
-        }
-
-        /// <summary>光标移动或鼠标按下、释放时的消息</summary>
-        private const int WM_NCHITTEST = 0x84;
-        /// <summary>鼠标击中位置</summary>
-        private enum HitTest : int
-        {
-            Error = -2,
-            Transparent = -1,
-            Nowhere = 0,
-            Client = 1,
-            TitleBar = 2,
-            SysMenu = 3,
-            Size = 4,
-            GrowBox = 5,
-            Hscroll = 6,
-            Vscroll = 7,
-            MinButton = 8,
-            MaxButton = 9,
-            Left = 10,
-            Right = 11,
-            Top = 12,
-            TopLeft = 13,
-            TopRight = 14,
-            Bottom = 15,
-            BottomLeft = 16,
-            BottomRight = 17,
-            Border = 18,
-            Close = 20,
-            Help = 21
         }
     }
 }
