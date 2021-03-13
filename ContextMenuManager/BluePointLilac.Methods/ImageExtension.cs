@@ -22,6 +22,7 @@ namespace BluePointLilac.Methods
 
         public static Image ResizeImage(this Image image, int width, int height)
         {
+            if(image.Width == width && image.Height == height) return image;
             Bitmap destImage = new Bitmap(width, height);
             destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
             using(Graphics g = Graphics.FromImage(destImage))
@@ -44,6 +45,7 @@ namespace BluePointLilac.Methods
 
         public static Image ResizeImage(this Image image, double scale)
         {
+            if(scale == 1) return image;
             int width = (int)(image.Width * scale);
             int height = (int)(image.Height * scale);
             return image.ResizeImage(width, height);
@@ -51,6 +53,7 @@ namespace BluePointLilac.Methods
 
         public static Image ResizeImage(this Image image, Size newSize)
         {
+            if(newSize == image.Size) return image;
             return image.ResizeImage(newSize.Width, newSize.Height);
         }
 

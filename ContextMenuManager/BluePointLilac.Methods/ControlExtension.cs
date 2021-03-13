@@ -8,19 +8,27 @@ namespace BluePointLilac.Methods
     {
         [DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
         [DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
 
         /// <summary>使控件能够移动所属窗体</summary>
-        /// <remarks>副作用：使用此方法将无法触发Click等事件</remarks>
         /// <param name="ctr">目标控件</param>
         public static void CanMoveForm(this Control ctr)
         {
-            ctr.MouseDown += (sender, e) =>
+            DateTime downTime = DateTime.MinValue;
+            DateTime upTime = DateTime.MinValue;
+            ctr.MouseDown += (sender, e) => downTime = DateTime.Now;
+            ctr.MouseUp += (sender, e) => upTime = DateTime.Now;
+            ctr.MouseMove += (sender, e) =>
             {
-                if(e.Button == MouseButtons.Left && ctr.FindForm().WindowState == FormWindowState.Normal)
+                foreach(DateTime time in new[] { downTime, upTime })
+                {
+                    if((DateTime.Now - time).TotalMilliseconds < 20) return;
+                }
+                if(e.Button == MouseButtons.Left)
                 {
                     ReleaseCapture();
                     SendMessage(ctr.FindForm().Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);

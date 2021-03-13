@@ -103,8 +103,9 @@ namespace ContextMenuManager.Controls
             {
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
-                    dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.pif;*.com;*.vbs;*.vbe;*.js;*.jse;*.wsf";
+                    dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.vbs;*.vbe;*.js;*.jse;*.wsf";
                     if(dlg.ShowDialog() != DialogResult.OK) return;
+                    Arguments = string.Empty;
                     ItemText = Path.GetFileNameWithoutExtension(dlg.FileName);
                     string extension = Path.GetExtension(dlg.FileName).ToLower();
                     switch(extension)
@@ -114,6 +115,7 @@ namespace ContextMenuManager.Controls
                         case ".js":
                         case ".jse":
                         case ".wsf":
+                            chkSE.Checked = true;
                             ItemFilePath = "wscript.exe";
                             Arguments = dlg.FileName;
                             break;
