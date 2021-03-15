@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8' ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，不设置Guid则为常驻菜单，RegPath为程序相关注册表主路径;
 其相关菜单项目设置作为一个Item子元素，Item的Text为该Item项显示文本，Tip属性为鼠标悬浮在开关上时的提示信息，需要重启资源管理器生效则添加属性RestartExplorer;
 Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；

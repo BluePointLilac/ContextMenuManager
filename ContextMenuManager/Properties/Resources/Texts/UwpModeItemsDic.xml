@@ -1,4 +1,4 @@
-﻿<?xml version='1.0' encoding='utf-8' ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- 微软在Win10右键菜单中新增的UWP模块, 非Shell、ShellEx类型,
 但是可通过GUID锁定屏蔽来禁用右键菜单项目,
 GUID查找位置：HKEY_CLASSES_ROOT\PackagedCom\Package\[包名]\Class\[GUID],
