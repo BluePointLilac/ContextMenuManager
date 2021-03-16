@@ -12,18 +12,17 @@ namespace BluePointLilac.Methods
         public IniWriter(string filePath)
         {
             this.FilePath = filePath;
-            if(File.Exists(FilePath)) this.Encoding = EncodingType.GetType(FilePath);
         }
 
         public string FilePath { get; set; }
-        public Encoding Encoding { get; set; } = Encoding.Unicode;
+
         public bool DeleteFileWhenEmpty { get; set; }
 
         private List<string> GetLines()
         {
             List<string> lines = new List<string>();
             if(!File.Exists(FilePath)) return lines;
-            using(StreamReader reader = new StreamReader(FilePath, Encoding))
+            using(StreamReader reader = new StreamReader(FilePath, EncodingType.GetType(FilePath)))
             {
                 while(!reader.EndOfStream)
                 {
@@ -142,12 +141,14 @@ namespace BluePointLilac.Methods
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
                 FileAttributes attributes = FileAttributes.Normal;
+                Encoding encoding = Encoding.Unicode;
                 if(File.Exists(FilePath))
                 {
+                    encoding = EncodingType.GetType(FilePath);
                     attributes = File.GetAttributes(FilePath);
                     File.SetAttributes(FilePath, FileAttributes.Normal);
                 }
-                File.WriteAllLines(FilePath, lines.ToArray(), Encoding);
+                File.WriteAllLines(FilePath, lines.ToArray(), encoding);
                 File.SetAttributes(FilePath, attributes);
             }
         }

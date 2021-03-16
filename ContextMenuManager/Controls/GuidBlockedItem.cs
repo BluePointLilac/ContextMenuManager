@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    class GuidBlockedItem : MyListItem, IBtnDeleteItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiGuidItem
+    class GuidBlockedItem : MyListItem, IBtnDeleteItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiGuidItem, ITsiRegPathItem
     {
         public GuidBlockedItem(string value)
         {
@@ -28,6 +28,8 @@ namespace ContextMenuManager.Controls
 
         public string Value { get; set; }
         public Guid Guid { get; set; }
+        public string ValueName => Value;
+        public string RegPath => GuidBlockedList.HKLMBLOCKED;
 
         public string ItemText
         {
@@ -56,6 +58,7 @@ namespace ContextMenuManager.Controls
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public FilePropertiesMenuItem TsiFileProperties { get; set; }
         public HandleGuidMenuItem TsiHandleGuid { get; set; }
+        public RegLocationMenuItem TsiRegLocation { get; set; }
 
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
 
@@ -66,12 +69,13 @@ namespace ContextMenuManager.Controls
             TsiSearch = new WebSearchMenuItem(this);
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiFileLocation = new FileLocationMenuItem(this);
+            TsiRegLocation = new RegLocationMenuItem(this);
             TsiHandleGuid = new HandleGuidMenuItem(this, false);
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiHandleGuid,
                 new ToolStripSeparator(), TsiDetails });
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch,
-                new ToolStripSeparator(), TsiFileProperties, TsiFileLocation});
+                new ToolStripSeparator(), TsiFileProperties, TsiFileLocation, TsiRegLocation});
 
             MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
         }

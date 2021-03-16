@@ -143,7 +143,7 @@ namespace ContextMenuManager.Controls
                 {
                     if(!tip.IsNullOrWhiteSpace()) tip += "\n";
                     tip += AppString.Tip.CommandFiles;
-                    if(System.Diagnostics.Debugger.IsAttached) item.ChkVisible.Checked = item.ItemVisible = true;
+                    if(System.Diagnostics.Debugger.IsAttached) item.ChkVisible.Checked = item.ItemVisible = true;//调试状态
                 }
                 MyToolTip.SetToolTip(item.ChkVisible, tip);
                 this.AddItem(item);
@@ -175,7 +175,7 @@ namespace ContextMenuManager.Controls
 
         public static bool JudgeOSVersion(XmlElement itemXE)
         {
-            if(System.Diagnostics.Debugger.IsAttached) return true;//调试状态
+            //if(System.Diagnostics.Debugger.IsAttached) return true;//调试状态
             bool JudgeOne(XmlElement osXE)
             {
                 Version ver = new Version(osXE.InnerText);
@@ -208,7 +208,7 @@ namespace ContextMenuManager.Controls
 
         private static bool FileExists(XmlElement itemXE)
         {
-            if(System.Diagnostics.Debugger.IsAttached) return true;//调试状态
+            //if(System.Diagnostics.Debugger.IsAttached) return true;//调试状态
             foreach(XmlElement feXE in itemXE.SelectNodes("FileExists"))
             {
                 string path = Environment.ExpandEnvironmentVariables(feXE.InnerText);

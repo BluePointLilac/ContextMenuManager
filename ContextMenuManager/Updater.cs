@@ -54,8 +54,8 @@ namespace ContextMenuManager
             Version version2 = new Version(Application.ProductVersion);
             if(version1.CompareTo(version2) > 0)
             {
-                string info = reader.GetValue("Update", "Info").Replace("\\n", "\n");
-                if(MessageBoxEx.Show($"{AppString.MessageBox.UpdateApp}{version1}\n{info}",
+                string info = reader.GetValue("Update", "Info").Replace("\\n", Environment.NewLine);
+                if(MessageBoxEx.Show($"{AppString.MessageBox.UpdateApp}{version1}{Environment.NewLine}{info}",
                     MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
                     string url = reader.GetValue("Update", "Url");
@@ -70,7 +70,7 @@ namespace ContextMenuManager
         {
             string contents = GetWebString(url);
             if(!contents.IsNullOrWhiteSpace())
-                File.WriteAllText(filePath, contents.Replace("\n", "\r\n"), Encoding.Unicode);
+                File.WriteAllText(filePath, contents.Replace("\n", Environment.NewLine), Encoding.Unicode);
         }
 
         private static string GetWebString(string url)

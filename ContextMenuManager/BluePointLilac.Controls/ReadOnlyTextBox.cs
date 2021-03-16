@@ -13,7 +13,6 @@ namespace BluePointLilac.Controls
             this.ShortcutsEnabled = false;
             this.BackColor = Color.White;
             this.ForeColor = Color.FromArgb(80, 80, 80);
-            this.ScrollBars = ScrollBars.Vertical;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
         }
 

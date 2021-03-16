@@ -23,14 +23,19 @@ namespace ContextMenuManager.Controls
         private void LoadBlockedItems()
         {
             List<string> values = new List<string>();
-            Array.ForEach(BlockedPaths, path =>
+            foreach(string path in BlockedPaths)
             {
                 using(RegistryKey key = RegistryEx.GetRegistryKey(path))
-                    if(key != null) values.AddRange(key.GetValueNames());
-            });
-            Array.ForEach(values.Distinct(StringComparer.OrdinalIgnoreCase).ToArray(), value =>
-                this.AddItem(new GuidBlockedItem(value))
-            );
+                {
+                    if(key == null) continue;
+                    foreach(string value in key.GetValueNames())
+                    {
+                        if(values.Contains(value, StringComparer.OrdinalIgnoreCase)) continue;
+                        this.AddItem(new GuidBlockedItem(value));
+                        values.Add(value);
+                    }
+                }
+            }
         }
 
         private void AddNewItem()

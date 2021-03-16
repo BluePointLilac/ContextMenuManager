@@ -165,13 +165,15 @@ namespace ContextMenuManager.Controls
         {
             this.Dock = DockStyle.Fill;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
-            this.Controls.AddRange(new Control[] { cmbLanguages, btnOpenDir, btnDownLoad, txtTranslators });
+            this.Controls.AddRange(new Control[] { cmbLanguages, btnOpenDir, btnDownLoad, btnTranslate, txtTranslators });
             cmbLanguages.SelectionChangeCommitted += (sender, e) => ChangeLanguage();
             btnDownLoad.MouseDown += (sender, e) => ExternalProgram.OpenUrl(OtherLanguagesUrl);
             btnOpenDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.LangsDir);
             btnTranslate.MouseDown += (sender, e) => new TranslateDialog().ShowDialog();
             MyToolTip.SetToolTip(btnOpenDir, AppString.Tip.OpenLanguagesDir);
             MyToolTip.SetToolTip(btnDownLoad, AppString.Tip.OtherLanguages);
+            MyToolTip.SetToolTip(btnTranslate, AppString.Dialog.TranslateTool);
+            txtTranslators.SetAutoShowScroll(ScrollBars.Vertical);
             this.OnResize(null);
         }
 
@@ -207,12 +209,14 @@ namespace ContextMenuManager.Controls
                 languages.Clear();
                 foreach(string fileName in Directory.GetFiles(AppConfig.LangsDir, "*.ini"))
                 {
-                    languages.Add(Path.GetFileNameWithoutExtension(fileName));
+                    string langName = Path.GetFileNameWithoutExtension(fileName);
                     IniReader reader = new IniReader(fileName);
                     string language = reader.GetValue("General", "Language");
+                    if(language.IsNullOrWhiteSpace()) language = langName;
                     string translator = reader.GetValue("General", "Translator");
                     str += Environment.NewLine + language + new string('\t', 5) + translator;
                     cmbLanguages.Items.Add(language);
+                    languages.Add(langName);
                 }
             }
             txtTranslators.Text = str;

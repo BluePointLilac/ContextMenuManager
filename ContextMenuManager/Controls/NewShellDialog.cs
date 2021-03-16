@@ -73,11 +73,15 @@ namespace ContextMenuManager.Controls
 
                 rdoMulti.CheckedChanged += (sender, e) =>
                 {
-                    if(WindowsOsVersion.IsEqualVista && rdoMulti.Checked)
+                    if(rdoMulti.Checked)
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.VistaUnsupportedMulti);
-                        rdoSingle.Checked = true;
-                        return;
+                        chkSE.Checked = false;
+                        if(WindowsOsVersion.IsEqualVista)
+                        {
+                            MessageBoxEx.Show(AppString.MessageBox.VistaUnsupportedMulti);
+                            rdoSingle.Checked = true;
+                            return;
+                        }
                     }
                     lblCommand.Enabled = txtFilePath.Enabled = lblArguments.Enabled
                     = txtArguments.Enabled = btnBrowse.Enabled = chkSE.Enabled = !rdoMulti.Checked;
@@ -126,9 +130,11 @@ namespace ContextMenuManager.Controls
                     if(Array.FindIndex(DirScenePaths, path
                        => ScenePath.StartsWith(path, StringComparison.OrdinalIgnoreCase)) != -1)
                     {
-                        if(!Arguments.IsNullOrWhiteSpace()) Arguments += " ";
                         if(ScenePath != ShellList.MENUPATH_BACKGROUND)
+                        {
+                            if(!Arguments.IsNullOrWhiteSpace()) Arguments += " ";
                             Arguments += "\"%V\"";//自动加目录后缀
+                        }
                     }
                     else if(Array.FindIndex(FileObjectsScenePaths, path
                        => ScenePath.StartsWith(path, StringComparison.OrdinalIgnoreCase)) != -1)

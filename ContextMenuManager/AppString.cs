@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Methods;
+using System;
 using System.Text;
 
 namespace ContextMenuManager
@@ -12,14 +13,13 @@ namespace ContextMenuManager
         {
             string value = UserLanguage.GetValue(section, key);
             if(string.IsNullOrEmpty(value)) value = DefaultLanguage.GetValue(section, key);
-            return value.Replace("\\n", "\n");
+            return value.Replace("\\n", Environment.NewLine);
         }
 
         /// <summary>常规</summary>
         public static class General
         {
             private static string GetValue(string key) => GetStringValue("General", key);
-            public static string Language => GetValue("Language");
             public static string AppName => GetValue("AppName");
         }
 
@@ -188,6 +188,10 @@ namespace ContextMenuManager
             public static string SelectNewItemType => GetValue("SelectNewItemType");
             public static string RegistryFile => GetValue("RegistryFile");
             public static string SelectGroup => GetValue("SelectGroup");
+            public static string TranslateTool => GetValue("TranslateTool");
+            public static string DefaultText => GetValue("DefaultText");
+            public static string OldTranslation => GetValue("OldTranslation");
+            public static string NewTranslation => GetValue("NewTranslation");
         }
 
         /// <summary>消息框</summary>

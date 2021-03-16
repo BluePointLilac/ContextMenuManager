@@ -17,5 +17,49 @@ namespace BluePointLilac.Methods
                 box.Font = new Font(box.Font.FontFamily, size + (e.Delta > 0 ? 1 : -1));
             };
         }
+
+        /// <summary>TextBox在文字未超出边界时隐藏滚动条，超出时显示</summary>
+        public static void SetAutoShowScroll(this TextBox box, ScrollBars scrollBars)
+        {
+
+            void SetScrollVisible()
+            {
+                Size szBox = box.ClientSize;
+                Size szText = TextRenderer.MeasureText(box.Text, box.Font);
+                if((scrollBars | ScrollBars.Vertical) == ScrollBars.Vertical)
+                {
+                    if(szText.Height > szBox.Height)
+                    {
+                        box.ScrollBars = scrollBars | ScrollBars.Vertical;
+                    }
+                    else
+                    {
+                        box.ScrollBars = scrollBars & ~ScrollBars.Vertical;
+                    }
+                }
+                if((scrollBars | ScrollBars.Horizontal) == ScrollBars.Horizontal)
+                {
+                    if(szText.Width > szBox.Width)
+                    {
+                        box.ScrollBars = scrollBars | ScrollBars.Horizontal;
+                    }
+                    else
+                    {
+                        box.ScrollBars = scrollBars & ~ScrollBars.Horizontal;
+                    }
+                }
+            };
+            box.TextChanged += (sender, e) => SetScrollVisible();
+            box.FontChanged += (sender, e) => SetScrollVisible();
+            box.ClientSizeChanged += (sender, e) => SetScrollVisible();
+        }
+
+        public static void CanSelectAllWhenReadOnly(this TextBox box)
+        {
+            box.KeyDown += (sender, e) =>
+            {
+                if(box.ReadOnly && e.Control && e.KeyCode == Keys.A) box.SelectAll();
+            };
+        }
     }
 }

@@ -114,10 +114,6 @@
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
     <Compile Include="AppDic.cs" />
-    <Compile Include="BluePointLilac.Controls\HitTestMessage.cs" />
-    <Compile Include="BluePointLilac.Controls\MyBorderForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="BluePointLilac.Controls\MyToolTip.cs" />
     <Compile Include="BluePointLilac.Controls\ReadOnlyTextBox.cs">
       <SubType>Component</SubType>

@@ -26,6 +26,7 @@ namespace BluePointLilac.Methods
             {
                 foreach(DateTime time in new[] { downTime, upTime })
                 {
+                    //避免ReleaseCapture影响控件的其他鼠标事件
                     if((DateTime.Now - time).TotalMilliseconds < 20) return;
                 }
                 if(e.Button == MouseButtons.Left)

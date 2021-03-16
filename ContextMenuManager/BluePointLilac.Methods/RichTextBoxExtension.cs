@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -14,18 +13,17 @@ namespace BluePointLilac.Methods
         /// <param name="xmlStr">要显示的xml文本</param>
         public static void LoadXml(this RichTextBox box, string xmlStr)
         {
-            try
-            {
-                xmlStr = XDocument.Parse(xmlStr).ToString().Trim();
-                if(string.IsNullOrEmpty(xmlStr)) return;
-            }
-            catch(Exception e) { throw e; }
-
             XmlStateMachine machine = new XmlStateMachine();
             if(xmlStr.StartsWith("<?"))
             {
                 string declaration = machine.GetXmlDeclaration(xmlStr);
-                if(declaration != string.Empty) xmlStr = declaration + Environment.NewLine + xmlStr;
+                try
+                {
+                    xmlStr = XDocument.Parse(xmlStr, LoadOptions.PreserveWhitespace).ToString().Trim();
+                    if(string.IsNullOrEmpty(xmlStr) && declaration == string.Empty) return;
+                }
+                catch(Exception e) { throw e; }
+                xmlStr = declaration + Environment.NewLine + xmlStr;
             }
 
             int location = 0;
@@ -33,7 +31,7 @@ namespace BluePointLilac.Methods
             int tokenTryCount = 0;
             while(location < xmlStr.Length)
             {
-                string token = machine.GetNextToken(xmlStr, location, out XmlTokenType ttype);
+                string token = machine.GetNextToken(xmlStr.Substring(location), out XmlTokenType ttype);
                 Color color = machine.GetTokenColor(ttype);
                 bool isBold = ttype == XmlTokenType.DocTypeName || ttype == XmlTokenType.NodeName;
                 box.AppendText(token, color, isBold);
@@ -45,7 +43,7 @@ namespace BluePointLilac.Methods
                 if(failCount > 10 || tokenTryCount > xmlStr.Length)
                 {
                     string theRestOfIt = xmlStr.Substring(location, xmlStr.Length - location);
-                    //this.AppendText(Environment.NewLine + Environment.NewLine + theRestOfIt); // DEBUG
+                    //box.AppendText(Environment.NewLine + Environment.NewLine + theRestOfIt); // DEBUG
                     box.AppendText(theRestOfIt);
                     break;
                 }
@@ -100,13 +98,12 @@ namespace BluePointLilac.Methods
             private string subString = string.Empty;
             private string token = string.Empty;
 
-            public string GetNextToken(string s, int location, out XmlTokenType ttype)
+            public string GetNextToken(string s, out XmlTokenType ttype)
             {
                 ttype = XmlTokenType.Unknown;
                 // skip past any whitespace (token added to it at the end of method)
-                string whitespace = GetWhitespace(s, location);
-                if(!string.IsNullOrEmpty(whitespace)) location += whitespace.Length;
-                subString = s.Substring(location, s.Length - location);
+                string whitespace = GetWhitespace(s);
+                subString = s.TrimStart();
                 token = string.Empty;
                 if(CurrentState == XmlTokenType.CDataStart)
                 {
@@ -459,22 +456,16 @@ namespace BluePointLilac.Methods
                 return commentValue;
             }
 
-            private string GetWhitespace(string s, int location)
+            private string GetWhitespace(string s)
             {
-                bool foundWhitespace = false;
-                StringBuilder sb = new StringBuilder();
-                for(int i = 0; (location + i) < s.Length; i++)
+                string whitespace = "";
+                for(int i = 0; i < s.Length; i++)
                 {
-                    char c = s[location + i];
-                    if(char.IsWhiteSpace(c))
-                    {
-                        foundWhitespace = true;
-                        sb.Append(c);
-                    }
+                    char c = s[i];
+                    if(char.IsWhiteSpace(c)) whitespace += c;
                     else break;
                 }
-                if(foundWhitespace) return sb.ToString();
-                return string.Empty;
+                return whitespace;
             }
         }
 
