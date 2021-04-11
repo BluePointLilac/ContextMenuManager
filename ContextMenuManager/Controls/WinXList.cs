@@ -2,7 +2,6 @@
 using BluePointLilac.Methods;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -76,7 +75,6 @@ namespace ContextMenuManager.Controls
                     {
                         dlg2.Title = AppString.Dialog.SelectGroup;
                         dlg2.Items = GetGroupNames();
-                        dlg2.Selected = dlg2.Items[0];
                         if(dlg2.ShowDialog() != DialogResult.OK) return;
                         string dirPath = $@"{WinXPath}\{dlg2.Selected}";
                         string extension = Path.GetExtension(dlg1.ItemFilePath).ToLower();
@@ -85,26 +83,24 @@ namespace ContextMenuManager.Controls
                         string index = (count + 1).ToString().PadLeft(2, '0');
                         string lnkName = $"{index} - {fileName}.lnk";
                         string lnkPath = $@"{dirPath}\{lnkName}";
-                        WshShortcut shortcut;
+                        ShellLink shellLink;
                         if(extension == ".lnk")
                         {
                             File.Copy(dlg1.ItemFilePath, lnkPath);
-                            shortcut = new WshShortcut(lnkPath);
+                            shellLink = new ShellLink(lnkPath);
                         }
                         else
                         {
-                            shortcut = new WshShortcut(lnkPath)
+                            shellLink = new ShellLink(lnkPath)
                             {
                                 TargetPath = dlg1.ItemFilePath,
                                 Arguments = dlg1.Arguments,
-                                WorkingDirectory = Path.GetDirectoryName(dlg1.ItemFilePath)
                             };
+                            shellLink.WorkingDirectory = Path.GetDirectoryName(shellLink.TargetPath);
                         }
-                        shortcut.Description = dlg1.ItemText;
-                        shortcut.Save();
-                        shortcut.Dispose();
+                        shellLink.Description = dlg1.ItemText;
+                        shellLink.Save();
                         DesktopIni.SetLocalizedFileNames(lnkPath, dlg1.ItemText);
-                        HashLnk(lnkPath);
                         foreach(MyListItem ctr in this.Controls)
                         {
                             if(ctr is WinXGroupItem groupItem && groupItem.Text == dlg2.Selected)
@@ -115,6 +111,7 @@ namespace ContextMenuManager.Controls
                                 break;
                             }
                         }
+                        WinXHasher.HashLnk(lnkPath);
                         ExplorerRestarter.Show();
                     }
                 }
@@ -130,38 +127,6 @@ namespace ContextMenuManager.Controls
             File.SetAttributes(dirPath, File.GetAttributes(dirPath) | FileAttributes.ReadOnly);
             File.SetAttributes(iniPath, File.GetAttributes(iniPath) | FileAttributes.Hidden | FileAttributes.System);
             this.InsertItem(new WinXGroupItem(dirPath), 1);
-        }
-
-        public static void HashLnk(string lnkPath)
-        {
-            using(FileStream fs = new FileStream(AppConfig.HashLnkExePath, FileMode.OpenOrCreate))
-            {
-                byte[] buffer;
-                //Any CPU编译条件下，64bit操作系统IntPtr.Size = 8
-                if(IntPtr.Size == 8 && !lnkPath.StartsWith(Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%")))
-                {
-                    buffer = Properties.Resources.HashLnk_64;
-                }
-                else
-                {
-                    buffer = Properties.Resources.HashLnk_32;
-                }
-                fs.Write(buffer, 0, buffer.Length);
-            }
-
-            using(Process process = new Process())
-            {
-                process.StartInfo = new ProcessStartInfo
-                {
-                    FileName = AppConfig.HashLnkExePath,
-                    Arguments = $"\"{lnkPath}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                };
-                process.Start();
-                process.WaitForExit();
-            }
         }
 
         public static string[] GetGroupNames()

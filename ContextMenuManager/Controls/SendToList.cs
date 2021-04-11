@@ -36,12 +36,12 @@ namespace ContextMenuManager.Controls
                     if(dlg.ShowDialog() != DialogResult.OK) return;
                     string lnkPath = $@"{SendToPath}\{ObjectPath.RemoveIllegalChars(dlg.ItemText)}.lnk";
                     lnkPath = ObjectPath.GetNewPathWithIndex(lnkPath, ObjectPath.PathType.File);
-                    using(WshShortcut shortcut = new WshShortcut(lnkPath))
+                    using(ShellLink shellLink = new ShellLink(lnkPath))
                     {
-                        shortcut.TargetPath = dlg.ItemFilePath;
-                        shortcut.WorkingDirectory = Path.GetDirectoryName(dlg.ItemFilePath);
-                        shortcut.Arguments = dlg.Arguments;
-                        shortcut.Save();
+                        shellLink.TargetPath = dlg.ItemFilePath;
+                        shellLink.WorkingDirectory = Path.GetDirectoryName(dlg.ItemFilePath);
+                        shellLink.Arguments = dlg.Arguments;
+                        shellLink.Save();
                     }
                     DesktopIni.SetLocalizedFileNames(lnkPath, dlg.ItemText);
                     this.InsertItem(new SendToItem(lnkPath), 2);
@@ -60,7 +60,6 @@ namespace ContextMenuManager.Controls
             MyToolTip.SetToolTip(btnPath, AppString.Menu.FileLocation);
             btnPath.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(SendToPath);
             item.AddCtr(btnPath);
-            item.SetNoClickEvent();
             this.InsertItem(item, 1);
         }
     }

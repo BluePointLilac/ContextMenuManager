@@ -22,6 +22,7 @@ namespace BluePointLilac.Methods
 
         public static Image ResizeImage(this Image image, int width, int height)
         {
+            //return image.GetThumbnailImage(width, height, null, System.IntPtr.Zero);//质量稍微低一点
             if(image.Width == width && image.Height == height) return image;
             Bitmap destImage = new Bitmap(width, height);
             destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);

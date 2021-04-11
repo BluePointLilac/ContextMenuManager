@@ -175,7 +175,7 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找类似 &lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;!--此文件为常用右键菜单字典,
         ///Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型，
         ///子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突
@@ -185,7 +185,7 @@ namespace ContextMenuManager.Properties {
         ///    &lt;Shell&gt;
         ///      &lt;Item KeyName=&apos;CopyContent&apos; Tip=&apos;不需打开文件直接复制文件文本内容&amp;#x000A;非UTF-16 LE(或带BOM)编码会乱码&apos;&gt;
         ///        &lt;Value&gt;
-        ///          &lt;REG [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///          &lt;REG_ [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string EnhanceMenusDic {
             get {
@@ -223,31 +223,21 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static byte[] HashLnk_32 {
+        internal static System.Drawing.Bitmap Home {
             get {
-                object obj = ResourceManager.GetObject("HashLnk_32", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] HashLnk_64 {
-            get {
-                object obj = ResourceManager.GetObject("HashLnk_64", resourceCulture);
-                return ((byte[])(obj));
+                object obj = ResourceManager.GetObject("Home", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap Home {
+        internal static System.Drawing.Bitmap Jump {
             get {
-                object obj = ResourceManager.GetObject("Home", resourceCulture);
+                object obj = ResourceManager.GetObject("Jump", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -343,13 +333,13 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找类似 &lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，不设置Guid则为常驻菜单，RegPath为程序相关注册表主路径;
         ///其相关菜单项目设置作为一个Item子元素，Item的Text为该Item项显示文本，Tip属性为鼠标悬浮在开关上时的提示信息，需要重启资源管理器生效则添加属性RestartExplorer;
         ///Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；
         ///ValueName为相关键名，On为启用键值，Off为禁用键值；不设置On或Off属性时，其值为null，对应注册表键值不存在；
         ///每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；判定规则：当有多条规则时，前面的规则注册表键值匹配On则为On，匹配Off则为Off，并终止判断，都不匹配时继续往下判断，若所有规则都不匹配则为On
-        ///ValueKind为键值类型，默认键值类型ValueKind为REG_D [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///ValueKind为键值类型，默认键值类型ValueKind为REG_DW [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string ThirdRulesDic {
             get {
@@ -408,7 +398,7 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找类似 &lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;!-- 微软在Win10右键菜单中新增的UWP模块, 非Shell、ShellEx类型,
         ///但是可通过GUID锁定屏蔽来禁用右键菜单项目,
         ///GUID查找位置：HKEY_CLASSES_ROOT\PackagedCom\Package\[包名]\Class\[GUID],
@@ -424,7 +414,7 @@ namespace ContextMenuManager.Properties {
         ///	&lt;/Directory&gt;
         ///	&lt;Background&gt;
         ///		&lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/&gt;
-        ///	&lt;/Back [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///	&lt;/Backg [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string UwpModeItemsDic {
             get {

@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using ContextMenuManager.Controls;
 using ContextMenuManager.Controls.Interfaces;
 using System;
@@ -13,20 +14,26 @@ namespace ContextMenuManager
     {
         public MainForm()
         {
-            SetSideBarWidth();
+            this.SetSideBarWidth();
             this.Text = AppString.General.AppName;
             this.ForeColor = Color.FromArgb(80, 80, 80);
             this.Controls.Add(new ExplorerRestarter());
             appSettingBox.Owner = shellList.Owner = shellNewList.Owner = sendToList.Owner = openWithList.Owner
                 = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner = thirdRuleList.Owner = iEList.Owner = MainBody;
             donateBox.Parent = aboutMeBox.Parent = dictionariesBox.Parent = languagesBox.Parent = MainBody;
-            SideBar.SelectIndexChanged += (sender, e) => SwitchItem();
+            ToolBar.SelectedButtonChanged += (sender, e) => SwitchTab(ToolBar.SelectedIndex);
             SideBar.HoverIndexChanged += (sender, e) => ShowItemInfo();
-            ToolBar.SelectedButtonChanged += (sender, e) => SwitchTab();
+            SideBar.SelectIndexChanged += (sender, e) => SwitchItem();
             ToolBarButtons[3].MouseDown += (sender, e) => SwitchItem();
             ToolBar.AddButtons(ToolBarButtons);
             ToolBar.SelectedIndex = 0;
             if(AppConfig.ShowFilePath) ShowFilePath();
+            var droper = new ElevatedFileDroper(this);
+            this.DragDrop += (sender, e) =>
+            {
+                ShellList.CurrentFileObjectPath = droper.DropFilePaths[0];
+                SwitchTab(1, 9);
+            };
         }
 
         readonly MyToolBarButton[] ToolBarButtons = new MyToolBarButton[] {
@@ -100,7 +107,8 @@ namespace ContextMenuManager
             AppString.SideBar.PerceivedType,
             AppString.SideBar.DirectoryType,
             null,
-            AppString.SideBar.UnknownType
+            AppString.SideBar.UnknownType,
+            AppString.SideBar.MenuAnalysis
         };
         static readonly string[] TypeItemInfos = {
             AppString.StatusBar.LnkFile,
@@ -111,7 +119,8 @@ namespace ContextMenuManager
             AppString.StatusBar.PerceivedType,
             AppString.StatusBar.DirectoryType,
             null,
-            AppString.StatusBar.UnknownType
+            AppString.StatusBar.UnknownType,
+            AppString.StatusBar.MenuAnalysis
         };
 
         static readonly string[] OtherRuleItems = {
@@ -120,8 +129,9 @@ namespace ContextMenuManager
             null,
             AppString.SideBar.DragDrop,
             AppString.SideBar.PublicReferences,
-            AppString.SideBar.GuidBlocked,
+            AppString.SideBar.CustomRegPath,
             null,
+            AppString.SideBar.GuidBlocked,
             AppString.SideBar.IEMenu
         };
         static readonly string[] OtherRuleItemInfos = {
@@ -130,8 +140,9 @@ namespace ContextMenuManager
             null,
             AppString.StatusBar.DragDrop,
             AppString.StatusBar.PublicReferences,
-            AppString.StatusBar.GuidBlocked,
+            AppString.StatusBar.CustomRegPath,
             null,
+            AppString.StatusBar.GuidBlocked,
             AppString.StatusBar.IEMenu
         };
 
@@ -167,25 +178,14 @@ namespace ContextMenuManager
             ShellList.Scenes.PerceivedType,
             ShellList.Scenes.DirectoryType,
             null,
-            ShellList.Scenes.UnknownType
+            ShellList.Scenes.UnknownType,
+            ShellList.Scenes.MenuAnalysis
         };
 
-        private void HideAllParts()
+        public void SwitchTab(int toolbarIndex, int sidebarIndex = 0)
         {
-            foreach(Control ctr in MainBody.Controls)
-            {
-                ctr.Visible = false;
-                if(ctr.GetType().BaseType == typeof(MyList))
-                {
-                    if(ctr == appSettingBox) continue;
-                    ((MyList)ctr).ClearItems();
-                }
-            }
-        }
-
-        private void SwitchTab()
-        {
-            switch(ToolBar.SelectedIndex)
+            ToolBar.SelectedIndex = toolbarIndex;
+            switch(toolbarIndex)
             {
                 case 0:
                     SideBar.ItemNames = GeneralItems; break;
@@ -196,12 +196,16 @@ namespace ContextMenuManager
                 case 4:
                     SideBar.ItemNames = AboutItems; break;
             }
-            SideBar.SelectIndex = 0;
+            SideBar.SelectIndex = sidebarIndex;
         }
 
         private void SwitchItem()
         {
-            HideAllParts();
+            foreach(Control ctr in MainBody.Controls)
+            {
+                ctr.Visible = false;
+                if(ctr is MyList list && list != appSettingBox) list.ClearItems();
+            }
             if(SideBar.SelectIndex == -1) return;
             switch(ToolBar.SelectedIndex)
             {
@@ -250,7 +254,19 @@ namespace ContextMenuManager
                     {
                         StatusBar.Text = guidItem.Value; return;
                     }
-                    StatusBar.Text = item.Text;
+                    else if(item is ShellList.SelectItem selectItem)
+                    {
+                        switch(shellList.Scene)
+                        {
+                            case ShellList.Scenes.CustomRegPath:
+                                StatusBar.Text = ShellList.CurrentCustomRegPath ?? item.Text; return;
+                            case ShellList.Scenes.MenuAnalysis:
+                                StatusBar.Text = ShellList.CurrentFileObjectPath ?? item.Text; return;
+                        }
+                    }
+                    string regPath = item.GetType().GetProperty("RegPath")?.GetValue(item, null)?.ToString();
+                    if(regPath != null) StatusBar.Text = regPath;
+                    else StatusBar.Text = item.Text;
                 };
             }
         }
@@ -298,8 +314,10 @@ namespace ContextMenuManager
                 case 4:
                     shellList.Scene = ShellList.Scenes.CommandStore; shellList.LoadItems(); shellList.Visible = true; break;
                 case 5:
-                    guidBlockedList.LoadItems(); guidBlockedList.Visible = true; break;
+                    shellList.Scene = ShellList.Scenes.CustomRegPath; shellList.LoadItems(); shellList.Visible = true; break;
                 case 7:
+                    guidBlockedList.LoadItems(); guidBlockedList.Visible = true; break;
+                case 8:
                     iEList.LoadItems(); iEList.Visible = true; break;
             }
         }

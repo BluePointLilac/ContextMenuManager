@@ -44,6 +44,6 @@ namespace BluePointLilac.Methods
         public static readonly bool ISAfterOrEqualVista = ShortVersion >= Vista;
         public static readonly bool ISBeforeOrEqualVista = ShortVersion <= Vista;
 
-        public static readonly bool IsAfterOrEqualWin10_1703 = OsVersion.CompareTo(new Version(10, 0, 15063)) >= 0;
+        public static readonly bool IsAfterOrEqualWin10_1703 = OsVersion > new Version(10, 0, 15063);
     }
 }

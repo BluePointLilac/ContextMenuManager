@@ -1,7 +1,6 @@
 ﻿using BluePointLilac.Methods;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
@@ -9,18 +8,24 @@ namespace ContextMenuManager.Controls
     {
         public string Extension
         {
-            get => Selected;
-            set => Selected = value;
+            get => Selected.Trim();
+            set => Selected = value?.Trim();
         }
 
         public FileExtensionDialog()
         {
+            this.CanEdit = true;
             this.Title = AppString.Dialog.SelectExtension;
-            this.DropDownStyle = ComboBoxStyle.DropDown;
             List<string> items = new List<string>();
-            foreach(string keyName in Microsoft.Win32.Registry.ClassesRoot.GetSubKeyNames())
+            using(var key = RegistryEx.GetRegistryKey(FileExtension.FileExtsPath))
             {
-                if(keyName.StartsWith(".")) items.Add(keyName.Substring(1));
+                if(key != null)
+                {
+                    foreach(string keyName in key.GetSubKeyNames())
+                    {
+                        if(keyName.StartsWith(".")) items.Add(keyName.Substring(1));
+                    }
+                }
             }
             this.Items = items.ToArray();
         }

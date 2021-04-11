@@ -8,7 +8,7 @@ namespace ContextMenuManager.Controls.Interfaces
     {
         ContextMenuStrip ContextMenuStrip { get; set; }
         RunAsAdministratorItem TsiAdministrator { get; set; }
-        WshShortcut Shortcut { get; }
+        ShellLink ShellLink { get; }
     }
 
     sealed class RunAsAdministratorItem : ToolStripMenuItem
@@ -17,12 +17,12 @@ namespace ContextMenuManager.Controls.Interfaces
         {
             item.ContextMenuStrip.Opening += (sender, e) =>
             {
-                if(item.Shortcut == null)
+                if(item.ShellLink == null)
                 {
                     this.Enabled = false;
                     return;
                 }
-                string filePath = item.Shortcut.TargetPath;
+                string filePath = item.ShellLink.TargetPath;
                 string extension = Path.GetExtension(filePath)?.ToLower();
                 switch(extension)
                 {
@@ -35,11 +35,12 @@ namespace ContextMenuManager.Controls.Interfaces
                         this.Enabled = false;
                         break;
                 }
-                this.Checked = item.Shortcut.RunAsAdministrator;
+                this.Checked = item.ShellLink.RunAsAdministrator;
             };
             this.Click += (sender, e) =>
             {
-                item.Shortcut.RunAsAdministrator = !this.Checked;
+                item.ShellLink.RunAsAdministrator = !this.Checked;
+                item.ShellLink.Save();
             };
         }
     }

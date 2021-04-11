@@ -21,28 +21,26 @@ namespace ContextMenuManager.Controls.Interfaces
         {
             this.Click += (sender, e) =>
             {
-                string iconPath = item.IconPath;
-                int iconIndex = item.IconIndex;
-                using(Icon icon = ChangeIcon(ref iconPath, ref iconIndex))
+                using(IconDialog dlg = new IconDialog())
                 {
-                    if(icon == null) return;
-                    item.IconPath = iconPath;
-                    item.IconIndex = iconIndex;
-                    item.IconLocation = $"{iconPath},{iconIndex}";
-                    item.Image = icon.ToBitmap();
+                    dlg.IconPath = item.IconPath;
+                    dlg.IconIndex = item.IconIndex;
+                    if(dlg.ShowDialog() != DialogResult.OK) return;
+                    item.IconPath = dlg.IconPath;
+                    item.IconIndex = dlg.IconIndex;
+                    item.IconLocation = $"{dlg.IconPath},{dlg.IconIndex}";
+                    using(Icon icon = ResourceIcon.GetIcon(dlg.IconPath, dlg.IconIndex))
+                    {
+                        item.Image = icon.ToBitmap();
+                    }
                 }
             };
-        }
-
-        public static Icon ChangeIcon(ref string iconPath, ref int iconIndex)
-        {
-            using(IconDialog dlg = new IconDialog { IconPath = iconPath, IconIndex = iconIndex })
+            MyListItem listItem = (MyListItem)item;
+            listItem.Disposed += (sender, e) => item.ItemIcon?.Dispose();
+            listItem.ImageDoubleClick += (sender, e) =>
             {
-                if(dlg.ShowDialog() != DialogResult.OK) return null;
-                iconPath = dlg.IconPath;
-                iconIndex = dlg.IconIndex;
-            }
-            return ResourceIcon.GetIcon(iconPath, iconIndex);
+                if(this.Enabled) this.OnClick(null);
+            };
         }
     }
 }

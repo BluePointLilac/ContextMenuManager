@@ -140,10 +140,12 @@ namespace ContextMenuManager.Controls
                 {
                     if(dlg.ShowDialog() != DialogResult.OK) return;
                     string extension = dlg.Extension;
+                    if(extension == ".") return;
                     string openMode = FileExtension.GetOpenMode(extension);
                     if(string.IsNullOrEmpty(openMode))
                     {
                         MessageBoxEx.Show(AppString.MessageBox.NoOpenModeExtension);
+                        ExternalProgram.ShowOpenWithDialog(extension);
                         return;
                     }
                     foreach(Control ctr in this.Controls)
@@ -158,7 +160,8 @@ namespace ContextMenuManager.Controls
                         }
                     }
 
-                    using(RegistryKey exKey = Registry.ClassesRoot.OpenSubKey(extension, true))
+                    using(RegistryKey root = Registry.ClassesRoot)
+                    using(RegistryKey exKey = root.OpenSubKey(extension, true))
                     using(RegistryKey snKey = exKey.CreateSubKey("ShellNew", true))
                     {
                         string defaultOpenMode = exKey.GetValue("")?.ToString();
@@ -173,111 +176,114 @@ namespace ContextMenuManager.Controls
                         item.Focus();
                         if(item.ItemText.IsNullOrWhiteSpace())
                         {
-                            item.ItemText = $"{extension.Substring(1)} file";
+                            item.ItemText = FileExtension.GetFriendlyDocName(extension);
                         }
                         if(ShellNewLockItem.IsLocked) this.SaveSorting();
                     }
                 }
             };
         }
-    }
 
-    sealed class ShellNewLockItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiWebSearchItem
-    {
-        public ShellNewLockItem(ShellNewList list)
+        public sealed class ShellNewLockItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiWebSearchItem, ITsiRegPathItem
         {
-            this.Owner = list;
-            this.Image = AppImage.Lock;
-            this.Text = AppString.Other.LockNewMenu;
-            this.SetNoClickEvent();
-            BtnShowMenu = new MenuButton(this);
-            ChkVisible = new VisibleCheckBox(this) { Checked = IsLocked };
-            MyToolTip.SetToolTip(ChkVisible, AppString.Tip.LockNewMenu);
-            TsiSearch = new WebSearchMenuItem(this);
-            this.ContextMenuStrip = new ContextMenuStrip();
-            this.ContextMenuStrip.Items.Add(TsiSearch);
-        }
-
-        public MenuButton BtnShowMenu { get; set; }
-        public WebSearchMenuItem TsiSearch { get; set; }
-        public VisibleCheckBox ChkVisible { get; set; }
-        public ShellNewList Owner { get; private set; }
-
-        public bool ItemVisible
-        {
-            get => IsLocked;
-            set
+            public ShellNewLockItem(ShellNewList list)
             {
-                if(value) Owner.SaveSorting();
-                else UnLock();
-                foreach(Control ctr in Owner.Controls)
+                this.Owner = list;
+                this.Image = AppImage.Lock;
+                this.Text = AppString.Other.LockNewMenu;
+                BtnShowMenu = new MenuButton(this);
+                ChkVisible = new VisibleCheckBox(this) { Checked = IsLocked };
+                MyToolTip.SetToolTip(ChkVisible, AppString.Tip.LockNewMenu);
+                TsiSearch = new WebSearchMenuItem(this);
+                TsiRegLocation = new RegLocationMenuItem(this);
+                this.ContextMenuStrip.Items.AddRange(new ToolStripItem[]
+                    { TsiSearch, new ToolStripSeparator(), TsiRegLocation });
+            }
+
+            public MenuButton BtnShowMenu { get; set; }
+            public WebSearchMenuItem TsiSearch { get; set; }
+            public RegLocationMenuItem TsiRegLocation { get; set; }
+            public VisibleCheckBox ChkVisible { get; set; }
+            public ShellNewList Owner { get; private set; }
+
+            public bool ItemVisible
+            {
+                get => IsLocked;
+                set
                 {
-                    if(ctr is ShellNewItem item)
+                    if(value) Owner.SaveSorting();
+                    else UnLock();
+                    foreach(Control ctr in Owner.Controls)
                     {
-                        item.SetSortabled(value);
+                        if(ctr is ShellNewItem item)
+                        {
+                            item.SetSortabled(value);
+                        }
                     }
                 }
             }
-        }
 
-        public string SearchText => Text;
+            public string SearchText => Text;
+            public string RegPath => ShellNewPath;
+            public string ValueName => "Classes";
 
-        public static bool IsLocked
-        {
-            get
+            public static bool IsLocked
             {
-                using(RegistryKey key = RegistryEx.GetRegistryKey(ShellNewList.ShellNewPath))
+                get
+                {
+                    using(RegistryKey key = RegistryEx.GetRegistryKey(ShellNewPath))
+                    {
+                        RegistrySecurity rs = key.GetAccessControl();
+                        foreach(RegistryAccessRule rar in rs.GetAccessRules(true, true, typeof(NTAccount)))
+                        {
+                            if(rar.AccessControlType.ToString().Equals("Deny", StringComparison.OrdinalIgnoreCase))
+                            {
+                                if(rar.IdentityReference.ToString().Equals("Everyone", StringComparison.OrdinalIgnoreCase)) return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+
+            public static void Lock()
+            {
+                using(RegistryKey key = RegistryEx.GetRegistryKey(ShellNewPath, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ChangePermissions))
+                {
+                    RegistrySecurity rs = new RegistrySecurity();
+                    RegistryAccessRule rar = new RegistryAccessRule("Everyone", RegistryRights.Delete | RegistryRights.WriteKey, AccessControlType.Deny);
+                    rs.AddAccessRule(rar);
+                    key.SetAccessControl(rs);
+                }
+            }
+
+            public static void UnLock()
+            {
+                using(RegistryKey key = RegistryEx.GetRegistryKey(ShellNewPath, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ChangePermissions))
                 {
                     RegistrySecurity rs = key.GetAccessControl();
                     foreach(RegistryAccessRule rar in rs.GetAccessRules(true, true, typeof(NTAccount)))
                     {
                         if(rar.AccessControlType.ToString().Equals("Deny", StringComparison.OrdinalIgnoreCase))
                         {
-                            if(rar.IdentityReference.ToString().Equals("Everyone", StringComparison.OrdinalIgnoreCase)) return true;
+                            if(rar.IdentityReference.ToString().Equals("Everyone", StringComparison.OrdinalIgnoreCase))
+                            {
+                                rs.RemoveAccessRule(rar);
+                            }
                         }
                     }
+                    key.SetAccessControl(rs);
                 }
-                return false;
             }
         }
 
-        public static void Lock()
+        public sealed class ShellNewSeparator : MyListItem
         {
-            using(RegistryKey key = RegistryEx.GetRegistryKey(ShellNewList.ShellNewPath, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ChangePermissions))
+            public ShellNewSeparator()
             {
-                RegistrySecurity rs = new RegistrySecurity();
-                RegistryAccessRule rar = new RegistryAccessRule("Everyone", RegistryRights.Delete | RegistryRights.WriteKey, AccessControlType.Deny);
-                rs.AddAccessRule(rar);
-                key.SetAccessControl(rs);
+                this.Text = AppString.Other.Separator;
+                this.HasImage = false;
             }
-        }
-
-        public static void UnLock()
-        {
-            using(RegistryKey key = RegistryEx.GetRegistryKey(ShellNewList.ShellNewPath, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ChangePermissions))
-            {
-                RegistrySecurity rs = key.GetAccessControl();
-                foreach(RegistryAccessRule rar in rs.GetAccessRules(true, true, typeof(NTAccount)))
-                {
-                    if(rar.AccessControlType.ToString().Equals("Deny", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if(rar.IdentityReference.ToString().Equals("Everyone", StringComparison.OrdinalIgnoreCase))
-                        {
-                            rs.RemoveAccessRule(rar);
-                        }
-                    }
-                }
-                key.SetAccessControl(rs);
-            }
-        }
-    }
-
-    sealed class ShellNewSeparator : MyListItem
-    {
-        public ShellNewSeparator()
-        {
-            this.Text = AppString.Other.Separator;
-            this.HasImage = false;
         }
     }
 }

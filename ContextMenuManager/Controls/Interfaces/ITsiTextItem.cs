@@ -20,9 +20,16 @@ namespace ContextMenuManager.Controls.Interfaces
                 string name = ChangeText(item.Text);
                 if(name != null) item.ItemText = name;
             };
+            if(item is IFoldGroupItem == false)
+            {
+                ((MyListItem)item).TextDoubleClick += (sender, e) =>
+                {
+                    if(this.Enabled) this.OnClick(null);
+                };
+            }
         }
 
-        public static string ChangeText(string text)
+        private string ChangeText(string text)
         {
             using(InputDialog dlg = new InputDialog { Text = text, Title = AppString.Menu.ChangeText })
             {

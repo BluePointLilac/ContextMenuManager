@@ -26,7 +26,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        sealed class ShellStoreForm : Form
+        public sealed class ShellStoreForm : Form
         {
             public string ShellPath { get; private set; }
             public List<string> IgnoredKeyNames { get; private set; }
@@ -122,7 +122,6 @@ namespace ContextMenuManager.Controls
             {
                 this.AddCtr(chkSelected, 40.DpiZoom());
                 this.ContextMenuStrip = null;
-                this.SetNoClickEvent();
                 ChkVisible.Visible = BtnShowMenu.Visible = BtnSubItems.Visible = false;
             }
             RegTrustedInstaller.TakeRegTreeOwnerShip(regPath);

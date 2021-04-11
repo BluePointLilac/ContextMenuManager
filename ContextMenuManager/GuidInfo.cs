@@ -138,9 +138,9 @@ namespace ContextMenuManager
             IconLocation location = GetIconLocation(guid);
             string iconPath = location.IconPath;
             int iconIndex = location.IconIndex;
-            if(iconPath == null && iconIndex == 0) image = AppImage.DllDefaultIcon;
-            else if(Path.GetFileName(iconPath).ToLower() == "shell32.dll" && iconIndex == 0) image = AppImage.DllDefaultIcon;
-            else image = ResourceIcon.GetIcon(iconPath, iconIndex)?.ToBitmap() ?? AppImage.DllDefaultIcon;
+            if(iconPath == null && iconIndex == 0) image = AppImage.SystemFile;
+            else if(Path.GetFileName(iconPath).ToLower() == "shell32.dll" && iconIndex == 0) image = AppImage.SystemFile;
+            else image = ResourceIcon.GetIcon(iconPath, iconIndex)?.ToBitmap() ?? AppImage.SystemFile;
             ItemImageDic.Add(guid, image);
             return image;
         }

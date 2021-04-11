@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Methods;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -49,10 +50,26 @@ namespace BluePointLilac.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            string txt = this.Text;
             int left = this.Height / 3;
-            int top = (this.Height - TextRenderer.MeasureText(this.Text, this.Font).Height) / 2;
-            e.Graphics.Clear(this.BackColor);
-            e.Graphics.DrawString(this.Text, this.Font, new SolidBrush(this.ForeColor), left, top);
+            for(int i = Text.Length - 1; i >= 0; i--)
+            {
+                Size size = TextRenderer.MeasureText(txt, Font);
+                if(size.Width < ClientSize.Width - 2 * left)
+                {
+                    int top = (this.Height - size.Height) / 2;
+                    e.Graphics.Clear(BackColor);
+                    e.Graphics.DrawString(txt, Font, new SolidBrush(ForeColor), left, top);
+                    break;
+                }
+                txt = Text.Substring(0, i) + "...";
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            this.Refresh();
         }
     }
 }

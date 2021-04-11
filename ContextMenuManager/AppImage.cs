@@ -7,87 +7,96 @@ namespace ContextMenuManager
     public static class AppImage
     {
         private static readonly double Scale = HighDpi.DpiScale / 1.5;
-        ///<summary>主页图标</summary>
+        ///<summary>主页</summary>
         public static readonly Image Home = Resources.Home.ResizeImage(Scale);
-        ///<summary>文件类型图标</summary>
+        ///<summary>文件类型</summary>
         public static readonly Image Type = Resources.Type.ResizeImage(Scale);
-        ///<summary>五角星图标</summary>
+        ///<summary>五角星</summary>
         public static readonly Image Star = Resources.Star.ResizeImage(Scale);
-        ///<summary>刷新图标</summary>
+        ///<summary>刷新</summary>
         public static readonly Image Refresh = Resources.Refresh.ResizeImage(Scale);
-        ///<summary>关于问号图标</summary>
+        ///<summary>关于问号</summary>
         public static readonly Image About = Resources.About.ResizeImage(Scale);
-        ///<summary>设置按钮图标</summary>
+        ///<summary>设置按钮</summary>
         public static readonly Image Setting = Resources.Setting.ResizeImage(Scale);
-        ///<summary>开关打开状态图片</summary>
+        ///<summary>开关打开状态</summary>
         public static readonly Image TurnOn = Resources.TurnOn.ResizeImage(Scale);
-        ///<summary>开关关闭状态图片</summary>
+        ///<summary>开关关闭状态</summary>
         public static readonly Image TurnOff = Resources.TurnOff.ResizeImage(Scale);
-        ///<summary>编辑子项图标</summary>
+        ///<summary>编辑子项</summary>
         public static readonly Image SubItems = Resources.SubItems.ResizeImage(Scale);
-        ///<summary>删除图标</summary>
+        ///<summary>删除</summary>
         public static readonly Image Delete = Resources.Delete.ResizeImage(Scale);
-        ///<summary>添加图标</summary>
+        ///<summary>添加</summary>
         public static readonly Image AddNewItem = Resources.Add.ResizeImage(Scale);
-        ///<summary>添加已有项目图标</summary>
+        ///<summary>添加已有项目</summary>
         public static readonly Image AddExisting = Resources.AddExisting.ResizeImage(Scale);
-        ///<summary>添加分割线图标</summary>
+        ///<summary>添加分割线</summary>
         public static readonly Image AddSeparator = Resources.AddSeparator.ResizeImage(Scale);
-        ///<summary>打开图标</summary>
+        ///<summary>打开</summary>
         public static readonly Image Open = Resources.Open.ResizeImage(Scale);
-        ///<summary>下载图标</summary>
+        ///<summary>下载</summary>
         public static readonly Image DownLoad = Resources.DownLoad.ResizeImage(Scale);
-        ///<summary>翻译图标</summary>
+        ///<summary>翻译</summary>
         public static readonly Image Translate = Resources.Translate.ResizeImage(Scale);
-        ///<summary>上图标</summary>
+        ///<summary>上</summary>
         public static readonly Image Up = Resources.Up.ResizeImage(Scale);
-        ///<summary>下图标</summary>
+        ///<summary>下</summary>
         public static readonly Image Down = Up.RotateImage(RotateFlipType.Rotate180FlipNone);
-        ///<summary>新建项目图标</summary>
+        ///<summary>新建项目</summary>
         public static readonly Image NewItem = Resources.NewItem.ResizeImage(Scale);
-        ///<summary>新建文件夹图标</summary>
+        ///<summary>新建文件夹</summary>
         public static readonly Image NewFolder = Resources.NewFolder.ResizeImage(Scale);
-        ///<summary>自定义图标</summary>
+        ///<summary>自定义</summary>
         public static readonly Image Custom = Resources.Custom.ResizeImage(Scale);
-        ///<summary>选择图标</summary>
+        ///<summary>选择</summary>
         public static readonly Image Select = Resources.Select.ResizeImage(Scale);
-        ///<summary>Microsoft Store图标</summary>
+        ///<summary>跳转</summary>
+        public static readonly Image Jump = Resources.Jump.ResizeImage(Scale);
+        ///<summary>Microsoft Store</summary>
         public static readonly Image MicrosoftStore = Resources.MicrosoftStore.ResizeImage(Scale);
-        ///<summary>dll文件默认图标</summary>
-        public static readonly Image DllDefaultIcon = ResourceIcon.GetExtensionIcon(".dll").ToBitmap();
-        ///<summary>资源不存在图标</summary>
-        public static readonly Image NotFound = ResourceIcon.GetIcon("imageres.dll", -2).ToBitmap();
+        ///<summary>系统文件</summary>
+        public static readonly Image SystemFile = GetIconImage("imageres.dll", -67);
+        ///<summary>资源不存在</summary>
+        public static readonly Image NotFound = GetIconImage("imageres.dll", -2);
         ///<summary>管理员小盾牌</summary>
-        public static readonly Image Shield = ResourceIcon.GetIcon("imageres.dll", -78).ToBitmap();
-        ///<summary>资源管理器图标</summary>
-        public static readonly Image Explorer = ResourceIcon.GetIcon("explorer.exe", 0).ToBitmap();
-        ///<summary>命令提示符图标</summary>
-        public static readonly Image Cmd = ResourceIcon.GetIcon("cmd.exe", 0).ToBitmap();
-        ///<summary>重启Explorer图标</summary>
-        public static readonly Image RestartExplorer = ResourceIcon.GetIcon("shell32.dll", 238).ToBitmap();
-        ///<summary>网络驱动器图标</summary>
-        public static readonly Image NetworkDrive = ResourceIcon.GetIcon("imageres.dll", -33).ToBitmap();
-        ///<summary>发送到图标</summary>
-        public static readonly Image SendTo = ResourceIcon.GetIcon("imageres.dll", -185).ToBitmap();
-        ///<summary>回收站图标</summary>
-        public static readonly Image RecycleBin = ResourceIcon.GetIcon("imageres.dll", -55).ToBitmap();
-        ///<summary>此电脑图标</summary>
-        public static readonly Image Computer = ResourceIcon.GetIcon("imageres.dll", -109).ToBitmap();
-        ///<summary>磁盘图标</summary>
-        public static readonly Image Drive = ResourceIcon.GetIcon("imageres.dll", -30).ToBitmap();
-        ///<summary>文件图标</summary>
-        public static readonly Image File = ResourceIcon.GetIcon("imageres.dll", -19).ToBitmap();
-        ///<summary>文件夹图标</summary>
-        public static readonly Image Folder = ResourceIcon.GetIcon("imageres.dll", -3).ToBitmap();
-        ///<summary>目录图标</summary>
-        public static readonly Image Directory = ResourceIcon.GetIcon("imageres.dll", -162).ToBitmap();
-        ///<summary目录背景图标</summary>
-        public static readonly Image Background = ResourceIcon.GetIcon("imageres.dll", 0).ToBitmap();
-        ///<summary>桌面图标</summary>
-        public static readonly Image Desktop = ResourceIcon.GetIcon("imageres.dll", -183).ToBitmap();
-        ///<summary>所有对象图标</summary>
-        public static readonly Image AllObjects = ResourceIcon.GetIcon("imageres.dll", -117).ToBitmap();
-        ///<summary>锁定图标</summary>
-        public static readonly Image Lock = ResourceIcon.GetIcon("imageres.dll", -59).ToBitmap();
+        public static readonly Image Shield = GetIconImage("imageres.dll", -78);
+        ///<summary>资源管理器</summary>
+        public static readonly Image Explorer = GetIconImage("explorer.exe", 0);
+        ///<summary>命令提示符</summary>
+        public static readonly Image Cmd = GetIconImage("cmd.exe", 0);
+        ///<summary>重启Explorer</summary>
+        public static readonly Image RestartExplorer = GetIconImage("shell32.dll", 238);
+        ///<summary>网络驱动器</summary>
+        public static readonly Image NetworkDrive = GetIconImage("imageres.dll", -33);
+        ///<summary>发送到</summary>
+        public static readonly Image SendTo = GetIconImage("imageres.dll", -185);
+        ///<summary>回收站</summary>
+        public static readonly Image RecycleBin = GetIconImage("imageres.dll", -55);
+        ///<summary>此电脑</summary>
+        public static readonly Image Computer = GetIconImage("imageres.dll", -109);
+        ///<summary>磁盘</summary>
+        public static readonly Image Drive = GetIconImage("imageres.dll", -30);
+        ///<summary>文件</summary>
+        public static readonly Image File = GetIconImage("imageres.dll", -19);
+        ///<summary>文件夹</summary>
+        public static readonly Image Folder = GetIconImage("imageres.dll", -3);
+        ///<summary>目录</summary>
+        public static readonly Image Directory = GetIconImage("imageres.dll", -162);
+        ///<summary目录背景</summary>
+        public static readonly Image Background = GetIconImage("imageres.dll", 0);
+        ///<summary>桌面</summary>
+        public static readonly Image Desktop = GetIconImage("imageres.dll", -183);
+        ///<summary>所有对象</summary>
+        public static readonly Image AllObjects = GetIconImage("imageres.dll", -117);
+        ///<summary>锁定</summary>
+        public static readonly Image Lock = GetIconImage("imageres.dll", -59);
+        ///<summary>快捷方式图标</summary>
+        public static readonly Image LnkFile = GetIconImage("shell32.dll", -16769);
+
+        private static Image GetIconImage(string dllName, int iconIndex)
+        {
+            using(Icon icon = ResourceIcon.GetIcon(dllName, iconIndex)) return icon?.ToBitmap();
+        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -8,8 +7,7 @@ using System.Security.Principal;
 namespace BluePointLilac.Methods
 {
     /// 获取TrustedInstaller权限注册表项的所有权
-    /// 代码主要为转载，仅做简单改动
-    /// 代码作者：JPBlanc
+    /// 代码作者：JPBlanc（原作者）、蓝点lilac（转载、修改）
     /// 代码原文：https://gist.github.com/JPBlanc/ca0e4f1830e4ca18a526#file-write_a_registry_own_by_trustedinstaller-cs
     public class RegTrustedInstaller
     {
@@ -119,6 +117,9 @@ namespace BluePointLilac.Methods
             [DllImport("kernel32.dll", SetLastError = true)]
             private static extern int GetLastError();
 
+            [DllImport("kernel32.dll", SetLastError = true)]
+            private static extern IntPtr GetCurrentProcess();
+
             public static bool TrySetPrivilege(string sPrivilege, bool enablePrivilege)
             {
                 bool blRc;
@@ -129,7 +130,7 @@ namespace BluePointLilac.Methods
                 IntPtr processToken = IntPtr.Zero;
 
                 //本地进程令牌恢复
-                blRc = OpenProcessToken(Process.GetCurrentProcess().Handle, TokenAccessRights.AllAccess, ref processToken);
+                blRc = OpenProcessToken(GetCurrentProcess(), TokenAccessRights.AllAccess, ref processToken);
                 if(blRc == false) return false;
 
                 //恢复特权的唯一标识符空间

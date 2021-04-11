@@ -92,7 +92,11 @@ namespace ContextMenuManager.Controls
                     path = xe.GetAttribute("RegPath");
                     text = ResourceString.GetDirectString(xe.GetAttribute("Text"));
                     if(string.IsNullOrEmpty(path) || string.IsNullOrEmpty(text)) return null;
-                    image = ResourceIcon.GetIcon(xe.GetAttribute("Icon"))?.ToBitmap() ?? AppImage.NotFound;
+                    using(Icon icon = ResourceIcon.GetIcon(xe.GetAttribute("Icon")))
+                    {
+                        if(icon != null) image = icon.ToBitmap();
+                        else image = AppImage.NotFound;
+                    }
                     break;
             }
             GroupPathItem groupItem = new GroupPathItem(path, ObjectPath.PathType.Registry) { Image = image, Text = text };
@@ -143,7 +147,7 @@ namespace ContextMenuManager.Controls
                 {
                     if(!tip.IsNullOrWhiteSpace()) tip += "\n";
                     tip += AppString.Tip.CommandFiles;
-                    if(System.Diagnostics.Debugger.IsAttached) item.ChkVisible.Checked = item.ItemVisible = true;//调试状态
+                    //if(System.Diagnostics.Debugger.IsAttached) item.ChkVisible.Checked = item.ItemVisible = true;//调试状态
                 }
                 MyToolTip.SetToolTip(item.ChkVisible, tip);
                 this.AddItem(item);
@@ -160,7 +164,7 @@ namespace ContextMenuManager.Controls
                 {
                     FoldGroupItem = groupItem,
                     ShellExPath = $@"{groupItem.TargetPath}\ShellEx",
-                    Image = ResourceIcon.GetIcon(itemXE.GetAttribute("Icon"))?.ToBitmap() ?? AppImage.DllDefaultIcon,
+                    Image = ResourceIcon.GetIcon(itemXE.GetAttribute("Icon"))?.ToBitmap() ?? AppImage.SystemFile,
                     Text = ResourceString.GetDirectString(itemXE.GetAttribute("Text")),
                     DefaultKeyName = itemXE.GetAttribute("KeyName"),
                     Guid = guid

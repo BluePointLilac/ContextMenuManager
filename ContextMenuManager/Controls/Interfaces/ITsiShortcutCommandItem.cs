@@ -8,7 +8,7 @@ namespace ContextMenuManager.Controls.Interfaces
 {
     interface ITsiShortcutCommandItem
     {
-        WshShortcut Shortcut { get; }
+        ShellLink ShellLink { get; }
         ShortcutCommandMenuItem TsiChangeCommand { get; set; }
         ContextMenuStrip ContextMenuStrip { get; set; }
     }
@@ -19,20 +19,20 @@ namespace ContextMenuManager.Controls.Interfaces
         {
             item.ContextMenuStrip.Opening += (sender, e) =>
             {
-                this.Visible = !string.IsNullOrEmpty(item.Shortcut?.TargetPath);
+                this.Visible = !string.IsNullOrEmpty(item.ShellLink?.TargetPath);
             };
         }
 
-        public bool ChangeCommand(WshShortcut shortcut)
+        public bool ChangeCommand(ShellLink shellLink)
         {
             using(CommandDialog dlg = new CommandDialog())
             {
-                dlg.Command = shortcut.TargetPath;
-                dlg.Arguments = shortcut.Arguments;
+                dlg.Command = shellLink.TargetPath;
+                dlg.Arguments = shellLink.Arguments;
                 if(dlg.ShowDialog() != DialogResult.OK) return false;
-                shortcut.TargetPath = dlg.Command;
-                shortcut.Arguments = dlg.Arguments;
-                shortcut.Save();
+                shellLink.TargetPath = dlg.Command;
+                shellLink.Arguments = dlg.Arguments;
+                shellLink.Save();
                 return true;
             }
         }

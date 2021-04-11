@@ -19,8 +19,7 @@
 
 ## 资源引用
 * 程序主图标来自 [EasyIcon][EasyIcon]<br>![][AppIcon]
-* [程序按钮图标][AppImage] 主要来自于 [阿里巴巴矢量图标资源库][IconFont]
-* WinX HashLnk 作者: [Rafael Rivera][HashLnk]
+* [程序按钮图标][AppImage] 主要来自于 [阿里巴巴矢量图标资源库][IconFont]<br>![](AppImage.png)
 
 ## 下载更新
 * 程序有检查更新功能，除了更新程序本身还会更新程序字典，下载完成后直接覆盖原文件即可

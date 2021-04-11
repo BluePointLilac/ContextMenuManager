@@ -71,14 +71,14 @@ namespace BluePointLilac.Methods
             process.Dispose();
         }
 
-        public static void JumpExplorer(string filePath)
+        public static void JumpExplorer(string filePath, bool moreOpen = false)
         {
             using(Process process = new Process())
             {
                 if(File.Exists(filePath))
                 {
                     process.StartInfo.FileName = "explorer.exe";
-                    process.StartInfo.Arguments = $"/select,{filePath}";
+                    process.StartInfo.Arguments = $"/select, {filePath}";
                     process.Start();
                 }
                 else if(Directory.Exists(filePath))
@@ -101,6 +101,27 @@ namespace BluePointLilac.Methods
                 cbSize = Marshal.SizeOf(typeof(SHELLEXECUTEINFO))
             };
             return ShellExecuteEx(ref info);
+        }
+
+        public static void ShowOpenWithDialog(string extension)
+        {
+            //Win10 调用 SHOpenWithDialog API 或调用 OpenWith.exe -override "%1"
+            //或调用 rundll32.exe shell32.dll,OpenAs_RunDLL %1 能显示打开方式对话框，但都不能设置默认应用
+            //以下方法只针对未关联打开方式的扩展名显示系统打开方式对话框，对于已关联打开方式的扩展名会报错
+            string tempPath = $"{Path.GetTempPath()}{extension}";
+            tempPath = ObjectPath.GetNewPathWithIndex(tempPath, ObjectPath.PathType.File);
+            File.WriteAllText(tempPath, "");
+            using(Process process = new Process())
+            {
+                process.StartInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    FileName = tempPath,
+                    Verb = "openas"
+                };
+                process.Start();
+            }
+            File.Delete(tempPath);
         }
 
         public static void RestartExplorer()
@@ -152,16 +173,16 @@ namespace BluePointLilac.Methods
         private const int VK_HOME = 0x24;
         private const int VK_RIGHT = 0x27;
 
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         private static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
 
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         private static extern bool SetFocus(IntPtr hWnd);
 
-        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowThreadProcessId(IntPtr hwnd, out int ID);
 
         [DllImport("user32.dll")]
@@ -172,6 +193,7 @@ namespace BluePointLilac.Methods
 
         [DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
+
         [DllImport("shell32.dll", CharSet = CharSet.Auto)]
         private static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
 

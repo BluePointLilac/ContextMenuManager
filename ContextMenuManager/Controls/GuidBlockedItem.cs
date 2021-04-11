@@ -21,7 +21,7 @@ namespace ContextMenuManager.Controls
             else
             {
                 this.Guid = Guid.Empty;
-                this.Image = AppImage.DllDefaultIcon;
+                this.Image = AppImage.SystemFile;
             }
             this.Text = this.ItemText;
         }
@@ -61,6 +61,7 @@ namespace ContextMenuManager.Controls
         public RegLocationMenuItem TsiRegLocation { get; set; }
 
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
+        readonly ToolStripMenuItem TsiDelete = new ToolStripMenuItem(AppString.Menu.Delete);
 
         private void InitializeComponents()
         {
@@ -73,11 +74,15 @@ namespace ContextMenuManager.Controls
             TsiHandleGuid = new HandleGuidMenuItem(this, false);
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiHandleGuid,
-                new ToolStripSeparator(), TsiDetails });
+                new ToolStripSeparator(), TsiDetails, new ToolStripSeparator(), TsiDelete });
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch,
                 new ToolStripSeparator(), TsiFileProperties, TsiFileLocation, TsiRegLocation});
 
             MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
+            TsiDelete.Click += (sender, e) =>
+            {
+                if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDelete, MessageBoxButtons.YesNo) == DialogResult.Yes) DeleteMe();
+            };
         }
 
         public void DeleteMe()

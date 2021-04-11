@@ -36,7 +36,7 @@ namespace ContextMenuManager
         public static string WebThirdRulesDic = $@"{WebDicsDir}\{THIRDRULESDICXML}";
         public static string UserThirdRulesDic = $@"{UserDicsDir}\{THIRDRULESDICXML}";
         public static string WebEnhanceMenusDic = $@"{WebDicsDir}\{ENHANCEMENUSICXML}";
-        public static string UserEnhanceMenusDic = $@"{UserDicsDir}\{ENHANCEMENUSICXML}";
+        public static string UserEnhanceMenusDic = $@"{WebDicsDir}\{ENHANCEMENUSICXML}";
         public static string WebUwpModeItemsDic = $@"{UserDicsDir}\{UWPMODEITEMSDICXML}";
         public static string UserUwpModeItemsDic = $@"{UserDicsDir}\{UWPMODEITEMSDICXML}";
         public static string HashLnkExePath = $@"{ProgramsDir}\HashLnk.exe";
@@ -158,6 +158,12 @@ namespace ContextMenuManager
             {
                 SetGeneralValue("Version", value);
             }
+        }
+
+        public static bool HideDisabledItems
+        {
+            get => GetGeneralValue("HideDisabledItems") == "1";
+            set => SetGeneralValue("HideDisabledItems", value ? 1 : 0);
         }
     }
 }

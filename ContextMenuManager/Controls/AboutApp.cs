@@ -174,6 +174,7 @@ namespace ContextMenuManager.Controls
             MyToolTip.SetToolTip(btnDownLoad, AppString.Tip.OtherLanguages);
             MyToolTip.SetToolTip(btnTranslate, AppString.Dialog.TranslateTool);
             txtTranslators.SetAutoShowScroll(ScrollBars.Vertical);
+            cmbLanguages.AutosizeDropDownWidth();
             this.OnResize(null);
         }
 
@@ -267,6 +268,9 @@ namespace ContextMenuManager.Controls
             mliWinXSortable.AddCtr(chkWinXSortable);
             mliShowFilePath.AddCtr(chkShowFilePath);
             mliOpenMoreRegedit.AddCtr(chkOpenMoreRegedit);
+            mliHideDisabledItems.AddCtr(chkHideDisabledItems);
+            cmbConfigDir.AutosizeDropDownWidth();
+            cmbEngine.AutosizeDropDownWidth();
             MyToolTip.SetToolTip(cmbConfigDir, AppString.Tip.ConfigPath);
             MyToolTip.SetToolTip(btnConfigDir, AppString.Other.OpenConfigDir);
             MyToolTip.SetToolTip(btnBackupDir, AppString.Other.OpenBackupDir);
@@ -324,6 +328,7 @@ namespace ContextMenuManager.Controls
             chkProtect.MouseDown += (sender, e) => AppConfig.ProtectOpenItem = chkProtect.Checked = !chkProtect.Checked;
             chkWinXSortable.MouseDown += (sender, e) => AppConfig.WinXSortable = chkWinXSortable.Checked = !chkWinXSortable.Checked;
             chkOpenMoreRegedit.MouseDown += (sender, e) => AppConfig.OpenMoreRegedit = chkOpenMoreRegedit.Checked = !chkOpenMoreRegedit.Checked;
+            chkHideDisabledItems.MouseDown += (sender, e) => AppConfig.HideDisabledItems = chkHideDisabledItems.Checked = !chkHideDisabledItems.Checked;
             chkShowFilePath.MouseDown += (sender, e) =>
             {
                 chkShowFilePath.Checked = !chkShowFilePath.Checked;
@@ -341,8 +346,7 @@ namespace ContextMenuManager.Controls
 
         readonly MyListItem mliConfigDir = new MyListItem
         {
-            Text = AppString.Other.ConfigPath,
-            HasImage = false
+            Text = AppString.Other.ConfigPath
         };
         readonly ComboBox cmbConfigDir = new ComboBox
         {
@@ -353,16 +357,14 @@ namespace ContextMenuManager.Controls
 
         readonly MyListItem mliBackup = new MyListItem
         {
-            Text = AppString.Other.AutoBackup,
-            HasImage = false
+            Text = AppString.Other.AutoBackup
         };
         readonly MyCheckBox chkBackup = new MyCheckBox();
         readonly PictureButton btnBackupDir = new PictureButton(AppImage.Open);
 
         readonly MyListItem mliUpdate = new MyListItem
         {
-            Text = AppString.Other.CheckUpdate,
-            HasImage = false
+            Text = AppString.Other.CheckUpdate
         };
         readonly Label lblUpdate = new Label
         {
@@ -388,15 +390,13 @@ namespace ContextMenuManager.Controls
 
         readonly MyListItem mliProtect = new MyListItem
         {
-            Text = AppString.Other.ProtectOpenItem,
-            HasImage = false
+            Text = AppString.Other.ProtectOpenItem
         };
         readonly MyCheckBox chkProtect = new MyCheckBox();
 
         readonly MyListItem mliEngine = new MyListItem
         {
-            Text = AppString.Other.WebSearchEngine,
-            HasImage = false
+            Text = AppString.Other.WebSearchEngine
         };
         readonly ComboBox cmbEngine = new ComboBox
         {
@@ -414,17 +414,21 @@ namespace ContextMenuManager.Controls
 
         readonly MyListItem mliShowFilePath = new MyListItem
         {
-            Text = AppString.Other.ShowFilePath,
-            HasImage = false
+            Text = AppString.Other.ShowFilePath
         };
         readonly MyCheckBox chkShowFilePath = new MyCheckBox();
 
         readonly MyListItem mliOpenMoreRegedit = new MyListItem
         {
-            Text = AppString.Other.OpenMoreRegedit,
-            HasImage = false
+            Text = AppString.Other.OpenMoreRegedit
         };
         readonly MyCheckBox chkOpenMoreRegedit = new MyCheckBox();
+
+        readonly MyListItem mliHideDisabledItems = new MyListItem
+        {
+            Text = AppString.Other.HideDisabledItems
+        };
+        readonly MyCheckBox chkHideDisabledItems = new MyCheckBox();
 
         protected override void OnVisibleChanged(EventArgs e)
         {
@@ -434,14 +438,16 @@ namespace ContextMenuManager.Controls
 
         public void LoadItems()
         {
-            this.AddItems(new[] { mliUpdate, mliConfigDir, mliEngine, mliBackup,
-                mliProtect, mliWinXSortable, mliShowFilePath, mliOpenMoreRegedit });
+            this.AddItems(new[] { mliUpdate, mliConfigDir, mliEngine, mliBackup, mliProtect,
+                mliWinXSortable, mliShowFilePath, mliOpenMoreRegedit, mliHideDisabledItems });
+            foreach(MyListItem item in this.Controls) item.HasImage = false;
             cmbConfigDir.SelectedIndex = AppConfig.SaveToAppDir ? 1 : 0;
             chkBackup.Checked = AppConfig.AutoBackup;
             chkProtect.Checked = AppConfig.ProtectOpenItem;
             chkWinXSortable.Checked = AppConfig.WinXSortable;
             chkShowFilePath.Checked = AppConfig.ShowFilePath;
             chkOpenMoreRegedit.Checked = AppConfig.OpenMoreRegedit;
+            chkHideDisabledItems.Checked = AppConfig.HideDisabledItems;
 
             string url = AppConfig.EngineUrl;
             for(int i = 0; i <= AppConfig.EngineUrls.Length; i++)

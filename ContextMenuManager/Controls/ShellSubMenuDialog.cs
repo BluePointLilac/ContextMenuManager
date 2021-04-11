@@ -39,6 +39,7 @@ namespace ContextMenuManager.Controls
                 this.ShowInTaskbar = this.MaximizeBox = this.MinimizeBox = false;
                 this.MinimumSize = this.Size = new Size(646, 369).DpiZoom();
                 this.Controls.AddRange(new Control[] { MlbSubItems, StatusBar });
+                StatusBar.CanMoveForm();
                 this.OnResize(null);
             }
 
@@ -335,7 +336,6 @@ namespace ContextMenuManager.Controls
                         BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
                         MyToolTip.SetToolTip(this, AppString.Tip.InvalidItem);
                         MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
-                        this.SetNoClickEvent();
                     }
 
                     public DeleteButton BtnDelete { get; set; }
@@ -380,7 +380,7 @@ namespace ContextMenuManager.Controls
                     string sckValue = GetValue(parentPath, "ExtendedSubCommandsKey", null)?.ToString();
                     if(!sckValue.IsNullOrWhiteSpace())
                     {
-                        this.ShellPath = $@"HKEY_CLASSES_ROOT\{sckValue}\shell";
+                        this.ShellPath = $@"{RegistryEx.CLASSESROOT}\{sckValue}";
                     }
                     else
                     {
@@ -564,7 +564,6 @@ namespace ContextMenuManager.Controls
                     BtnMoveDown = new MoveButton(this, false);
                     BtnMoveUp = new MoveButton(this, true);
                     MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
-                    this.SetNoClickEvent();
                 }
 
                 public DeleteButton BtnDelete { get; set; }

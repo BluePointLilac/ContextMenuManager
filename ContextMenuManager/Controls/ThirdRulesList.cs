@@ -156,7 +156,6 @@ namespace ContextMenuManager.Controls
                             }
                         }
                         this.AddItem(ruleItem);
-                        ruleItem.HasImage = false;
                         ruleItem.FoldGroupItem = groupItem;
                     }
                     groupItem.IsFold = true;

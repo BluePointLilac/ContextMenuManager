@@ -98,6 +98,8 @@ namespace ContextMenuManager.Controls.Interfaces
                     break;
             }
             MyToolTip.SetToolTip(BtnOpenPath, tip);
+            this.ImageDoubleClick += (sender, e) => this.OnDoubleClick(null);
+            this.TextDoubleClick += (sender, e) => this.OnDoubleClick(null);
         }
 
         public void HideWhenNoSubItem()

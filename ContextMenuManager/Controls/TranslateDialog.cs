@@ -131,6 +131,8 @@ namespace ContextMenuManager.Controls
                 txtNew.SetAutoShowScroll(ScrollBars.Vertical);
                 txtDefault.CanSelectAllWhenReadOnly();
                 txtOld.CanSelectAllWhenReadOnly();
+                cmbSections.AutosizeDropDownWidth();
+                cmbKeys.AutosizeDropDownWidth();
 
                 int a = 20.DpiZoom();
 

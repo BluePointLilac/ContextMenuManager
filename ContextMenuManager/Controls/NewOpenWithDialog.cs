@@ -27,7 +27,7 @@ namespace ContextMenuManager.Controls
 
             private string FilePath;
             private string FileName => Path.GetFileName(FilePath);
-            private string AppRegPath => $@"HKEY_CLASSES_ROOT\Applications\{FileName}";
+            private string AppRegPath => $@"{RegistryEx.CLASSESROOT}\Applications\{FileName}";
             private string CommandPath => $@"{AppRegPath}\shell\open\command";
 
             protected override void InitializeComponents()

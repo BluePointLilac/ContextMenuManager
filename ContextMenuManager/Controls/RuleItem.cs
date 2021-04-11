@@ -269,8 +269,16 @@ namespace ContextMenuManager.Controls
             NudValue.Minimum = rule.MinValue;
             NudValue.ValueChanged += (sender, e) =>
             {
-                if(NudValue.Value == Rule.DefaultValue) NudValue.ForeColor = Color.Red;
-                else NudValue.ForeColor = Color.Black;
+                if(NudValue.Value == Rule.DefaultValue)
+                {
+                    NudValue.ForeColor = Color.FromArgb(0, 138, 217);
+                    NudValue.Font = new Font(NudValue.Font, FontStyle.Bold);
+                }
+                else
+                {
+                    NudValue.ForeColor = Color.Black;
+                    NudValue.Font = new Font(NudValue.Font, FontStyle.Regular);
+                }
                 this.ItemValue = (int)NudValue.Value;
             };
             NudValue.Value = ItemValue;
@@ -310,6 +318,7 @@ namespace ContextMenuManager.Controls
         {
             Font = new Font(SystemFonts.MenuFont.FontFamily, 12F),
             BorderStyle = BorderStyle.FixedSingle,
+            Cursor = Cursors.Hand,
             AutoSize = true
         };
 
@@ -398,8 +407,16 @@ namespace ContextMenuManager.Controls
             NudValue.Minimum = rule.MinValue;
             NudValue.ValueChanged += (sender, e) =>
             {
-                if(NudValue.Value == Rule.DefaultValue) NudValue.ForeColor = Color.Red;
-                else NudValue.ForeColor = Color.Black;
+                if(NudValue.Value == Rule.DefaultValue)
+                {
+                    NudValue.ForeColor = Color.FromArgb(0, 138, 217);
+                    NudValue.Font = new Font(NudValue.Font, FontStyle.Bold);
+                }
+                else
+                {
+                    NudValue.ForeColor = Color.Black;
+                    NudValue.Font = new Font(NudValue.Font, FontStyle.Regular);
+                }
                 this.ItemValue = (int)NudValue.Value;
             };
             NudValue.Value = ItemValue;
@@ -447,6 +464,7 @@ namespace ContextMenuManager.Controls
         {
             Font = new Font(SystemFonts.MenuFont.FontFamily, 12F),
             BorderStyle = BorderStyle.FixedSingle,
+            Cursor = Cursors.Hand,
             AutoSize = true
         };
 

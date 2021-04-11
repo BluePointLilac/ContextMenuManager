@@ -84,7 +84,7 @@ namespace ContextMenuManager.Controls
                 {
                     if(Path.GetExtension(ItemFilePath).ToLower() == ".lnk")
                     {
-                        using(WshShortcut shortcut = new WshShortcut(ItemFilePath))
+                        using(ShellLink shortcut = new ShellLink(ItemFilePath))
                         {
                             if(File.Exists(shortcut.TargetPath))
                             {
@@ -108,11 +108,12 @@ namespace ContextMenuManager.Controls
                         string extension = Path.GetExtension(dlg.FileName).ToLower();
                         if(extension == ".lnk")
                         {
-                            using(WshShortcut shortcut = new WshShortcut(dlg.FileName))
+                            using(ShellLink shortcut = new ShellLink(dlg.FileName))
                             {
                                 if(File.Exists(shortcut.TargetPath))
                                 {
                                     ItemFilePath = shortcut.TargetPath;
+                                    Arguments = shortcut.Arguments;
                                 }
                             }
                         }

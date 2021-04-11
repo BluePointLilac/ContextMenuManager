@@ -8,7 +8,7 @@ namespace BluePointLilac.Methods
     public static class RichTextBoxExtension
     {
         /// 代码原文：https://archive.codeplex.com/?p=xmlrichtextbox
-        /// 本人仅作简单修改，将原继承类改写为扩展方法
+        /// 本人（蓝点lilac）仅作简单修改，将原继承类改写为扩展方法
         /// <summary>RichTextBox中XML语法高亮</summary>
         /// <param name="xmlStr">要显示的xml文本</param>
         public static void LoadXml(this RichTextBox box, string xmlStr)

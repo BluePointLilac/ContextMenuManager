@@ -4,6 +4,7 @@ using ContextMenuManager.Controls.Interfaces;
 using Microsoft.Win32;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -30,7 +31,7 @@ namespace ContextMenuManager.Controls
             this.Owner = list;
             InitializeComponents();
             this.RegPath = regPath;
-            SetSortabled(ShellNewLockItem.IsLocked);
+            SetSortabled(ShellNewList.ShellNewLockItem.IsLocked);
         }
 
         private string regPath;
@@ -51,12 +52,10 @@ namespace ContextMenuManager.Controls
         public string Extension => RegPath.Split('\\')[1];
         private string SnKeyName => RegistryEx.GetKeyName(RegPath);
         private string BackupPath => $@"{RegistryEx.GetParentPath(RegPath)}\{(ItemVisible ? SnParts[1] : SnParts[0])}";
-
-        private const string HKCR = "HKEY_CLASSES_ROOT";
         private string OpenMode => FileExtension.GetOpenMode(Extension);//关联打开方式
-        private string OpenModePath => $@"{HKCR}\{OpenMode}";//关联打开方式注册表路径
-        private string DefaultOpenMode => Registry.GetValue($@"{HKCR}\{Extension}", "", null)?.ToString();//默认关联打开方式
-        private string DefaultOpenModePath => $@"{HKCR}\{DefaultOpenMode}";//默认关联打开方式注册表路径
+        private string OpenModePath => $@"{RegistryEx.CLASSESROOT}\{OpenMode}";//关联打开方式注册表路径
+        private string DefaultOpenMode => Registry.GetValue($@"{RegistryEx.CLASSESROOT}\{Extension}", "", null)?.ToString();//默认关联打开方式
+        private string DefaultOpenModePath => $@"{RegistryEx.CLASSESROOT}\{DefaultOpenMode}";//默认关联打开方式注册表路径
         private string ConfigPath => $@"{RegPath}\Config";
 
         public bool CanSort => !UnableSortExtensions.Contains(Extension, StringComparer.OrdinalIgnoreCase);//能够排序的
@@ -68,15 +67,11 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                string filePath = null;
-                using(RegistryKey key = RegistryEx.GetRegistryKey(OpenModePath))
+                string filePath = FileExtension.GetExecutablePath(Extension);
+                if(File.Exists(filePath)) return filePath;
+                using(RegistryKey key = RegistryEx.GetRegistryKey($@"{OpenModePath}\CLSID"))
                 {
-                    if(key == null) return filePath;
-                    string value = key.OpenSubKey(@"shell\open\command")?.GetValue("")?.ToString();
-                    filePath = ObjectPath.ExtractFilePath(value);
-                    if(filePath != null) return filePath;
-
-                    value = key.OpenSubKey("CLSID")?.GetValue("")?.ToString();
+                    string value = key?.GetValue("")?.ToString();
                     if(GuidEx.TryParse(value, out Guid guid))
                     {
                         filePath = GuidInfo.GetFilePath(guid);
@@ -107,7 +102,6 @@ namespace ContextMenuManager.Controls
                 name = Registry.GetValue(DefaultOpenModePath, "FriendlyTypeName", null)?.ToString();
                 name = ResourceString.GetDirectString(name);
                 if(!string.IsNullOrEmpty(name)) return name;
-
                 name = Registry.GetValue(DefaultOpenModePath, "", null)?.ToString();
                 if(!string.IsNullOrEmpty(name)) return name;
                 return null;
@@ -287,7 +281,7 @@ namespace ContextMenuManager.Controls
             ShellNewList list = (ShellNewList)this.Parent;
             int index = list.GetItemIndex(list.Separator);
             list.SetItemIndex(this, index);
-            if(ShellNewLockItem.IsLocked) list.SaveSorting();
+            if(ShellNewList.ShellNewLockItem.IsLocked) list.SaveSorting();
         }
 
         public void DeleteMe()
@@ -295,7 +289,7 @@ namespace ContextMenuManager.Controls
             RegistryEx.DeleteKeyTree(this.RegPath);
             RegistryEx.DeleteKeyTree(this.BackupPath);
             this.Dispose();
-            if(ShellNewLockItem.IsLocked) Owner.SaveSorting();
+            if(ShellNewList.ShellNewLockItem.IsLocked) Owner.SaveSorting();
         }
     }
 }

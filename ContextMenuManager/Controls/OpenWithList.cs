@@ -25,7 +25,8 @@ namespace ContextMenuManager.Controls
 
         private void LoadOpenWithItems()
         {
-            using(RegistryKey appKey = Registry.ClassesRoot.OpenSubKey("Applications"))
+            using(RegistryKey root = Registry.ClassesRoot)
+            using(RegistryKey appKey = root.OpenSubKey("Applications"))
             {
                 foreach(string appName in appKey.GetSubKeyNames())
                 {

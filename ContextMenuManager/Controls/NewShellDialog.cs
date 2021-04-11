@@ -107,11 +107,22 @@ namespace ContextMenuManager.Controls
             {
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
+                    dlg.DereferenceLinks = false;
                     dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.vbs;*.vbe;*.js;*.jse;*.wsf";
                     if(dlg.ShowDialog() != DialogResult.OK) return;
-                    Arguments = string.Empty;
-                    ItemText = Path.GetFileNameWithoutExtension(dlg.FileName);
-                    string extension = Path.GetExtension(dlg.FileName).ToLower();
+                    string filePath = dlg.FileName;
+                    string arguments = "";
+                    ItemText = Path.GetFileNameWithoutExtension(filePath);
+                    string extension = Path.GetExtension(filePath).ToLower();
+                    if(extension == ".lnk")
+                    {
+                        using(ShellLink shellLink = new ShellLink(filePath))
+                        {
+                            filePath = shellLink.TargetPath;
+                            arguments = shellLink.Arguments;
+                            extension = Path.GetExtension(filePath);
+                        }
+                    }
                     switch(extension)
                     {
                         case ".vbs":
@@ -121,10 +132,12 @@ namespace ContextMenuManager.Controls
                         case ".wsf":
                             chkSE.Checked = true;
                             ItemFilePath = "wscript.exe";
-                            Arguments = dlg.FileName;
+                            Arguments = filePath;
+                            if(!arguments.IsNullOrWhiteSpace()) Arguments += " " + arguments;
                             break;
                         default:
-                            ItemFilePath = dlg.FileName;
+                            Arguments = arguments;
+                            ItemFilePath = filePath;
                             break;
                     }
                     if(Array.FindIndex(DirScenePaths, path

@@ -24,7 +24,7 @@ namespace ContextMenuManager.Controls
             set
             {
                 filePath = value;
-                this.Shortcut = new WshShortcut(value);
+                this.ShellLink = new ShellLink(value);
                 this.Text = this.ItemText;
                 this.Image = this.ItemIcon.ToBitmap();
                 ChkVisible.Checked = this.ItemVisible;
@@ -35,15 +35,15 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                string name = Shortcut.Description?.Trim();
+                string name = ShellLink.Description?.Trim();
                 if(name.IsNullOrWhiteSpace()) name = DesktopIni.GetLocalizedFileNames(FilePath, true);
                 if(name == string.Empty) name = Path.GetFileNameWithoutExtension(FilePath);
                 return name;
             }
             set
             {
-                Shortcut.Description = value;
-                Shortcut.Save();
+                ShellLink.Description = value;
+                ShellLink.Save();
                 this.Text = ResourceString.GetDirectString(value);
                 ExplorerRestarter.Show();
             }
@@ -66,7 +66,11 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                Icon icon = ResourceIcon.GetIcon(Shortcut.IconLocation);
+                ShellLink.ICONLOCATION iconLocation = ShellLink.IconLocation;
+                string iconPath = iconLocation.IconPath;
+                int iconIndex = iconLocation.IconIndex;
+                if(string.IsNullOrEmpty(iconPath)) iconPath = FilePath;
+                Icon icon = ResourceIcon.GetIcon(iconPath, iconIndex);
                 if(icon == null)
                 {
                     string path = ItemFilePath;
@@ -81,13 +85,13 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                string path = Shortcut.TargetPath;
+                string path = ShellLink.TargetPath;
                 if(!File.Exists(path) && !Directory.Exists(path)) path = FilePath;
                 return path;
             }
         }
 
-        public WshShortcut Shortcut { get; private set; }
+        public ShellLink ShellLink { get; private set; }
         public string SearchText => $"{AppString.SideBar.WinX} {Text}";
         private string FileName => Path.GetFileName(FilePath);
 
@@ -132,17 +136,12 @@ namespace ContextMenuManager.Controls
             TsiChangeGroup.Click += (sender, e) => ChangeGroup();
             BtnMoveDown.MouseDown += (sender, e) => MoveItem(false);
             BtnMoveUp.MouseDown += (sender, e) => MoveItem(true);
-            TsiAdministrator.Click += (sender, e) =>
-            {
-                WinXList.HashLnk(this.FilePath);
-                ExplorerRestarter.Show();
-            };
             TsiChangeCommand.Click += (sender, e) =>
             {
-                if(TsiChangeCommand.ChangeCommand(Shortcut))
+                if(TsiChangeCommand.ChangeCommand(ShellLink))
                 {
                     Image = ItemIcon.ToBitmap();
-                    WinXList.HashLnk(this.FilePath);
+                    WinXHasher.HashLnk(FilePath);
                 }
             };
         }
@@ -221,7 +220,7 @@ namespace ContextMenuManager.Controls
             File.Delete(FilePath);
             DesktopIni.DeleteLocalizedFileNames(FilePath);
             ExplorerRestarter.Show();
-            this.Shortcut.Dispose();
+            this.ShellLink.Dispose();
             this.Dispose();
         }
     }

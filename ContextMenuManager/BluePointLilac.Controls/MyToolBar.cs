@@ -57,7 +57,9 @@ namespace BluePointLilac.Controls
 
         public void AddButtons(MyToolBarButton[] buttons)
         {
-            Array.ForEach(buttons, button => AddButton(button));
+            int maxWidth = 72.DpiZoom();
+            Array.ForEach(buttons, button => maxWidth = Math.Max(maxWidth, TextRenderer.MeasureText(button.Text, button.Font).Width));
+            Array.ForEach(buttons, button => { button.Width = maxWidth; AddButton(button); });
         }
     }
 
@@ -68,14 +70,12 @@ namespace BluePointLilac.Controls
             this.DoubleBuffered = true;
             this.Size = new Size(72, 72).DpiZoom();
             this.Controls.AddRange(new Control[] { picImage, lblText });
-            picImage.Location = new Point(16, 6).DpiZoom();
+            lblText.Resize += (sender, e) => this.OnResize(null);
+            picImage.Top = 6.DpiZoom();
             lblText.Top = 52.DpiZoom();
-            lblText.Resize += (sender, e) => lblText.Left = (Width - lblText.Width) / 2;
+            lblText.SetEnabled(false);
             this.Image = image;
             this.Text = text;
-            this.CanBeSelected = true;
-            MyToolTip.SetToolTip(this, text);
-            lblText.SetEnabled(false);
         }
 
         readonly PictureBox picImage = new PictureBox
@@ -88,10 +88,10 @@ namespace BluePointLilac.Controls
 
         readonly Label lblText = new Label
         {
-            AutoSize = true,
-            Font = SystemFonts.MenuFont,
             BackColor = Color.Transparent,
-            ForeColor = Color.White
+            Font = SystemFonts.MenuFont,
+            ForeColor = Color.White,
+            AutoSize = true,
         };
 
         public Image Image
@@ -109,11 +109,18 @@ namespace BluePointLilac.Controls
             get => BackColor.A / 255;
             set => BackColor = Color.FromArgb((int)(value * 255), Color.White);
         }
-        public bool CanBeSelected { get; set; }
+        public bool CanBeSelected { get; set; } = true;
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left) base.OnMouseDown(e);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            lblText.Left = (this.Width - lblText.Width) / 2;
+            picImage.Left = (this.Width - picImage.Width) / 2;
         }
     }
 }

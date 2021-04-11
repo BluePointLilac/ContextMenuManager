@@ -9,9 +9,9 @@ namespace ContextMenuManager.Controls
     {
         public string Title { get; set; }
         public string Selected { get; set; }
-        public int SelectedIndex { get; private set; }
+        public int SelectedIndex { get; set; }
         public string[] Items { get; set; }
-        public ComboBoxStyle DropDownStyle { get; set; } = ComboBoxStyle.DropDownList;
+        public bool CanEdit { get; set; }
 
         public override void Reset() { }
 
@@ -21,8 +21,9 @@ namespace ContextMenuManager.Controls
             {
                 frm.Text = this.Title;
                 frm.Items = this.Items;
-                frm.Selected = this.Selected;
-                frm.DropDownStyle = this.DropDownStyle;
+                if(this.Selected != null) frm.Selected = this.Selected;
+                else frm.SelectedIndex = this.SelectedIndex;
+                frm.CanEdit = this.CanEdit;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag)
                 {
@@ -68,13 +69,17 @@ namespace ContextMenuManager.Controls
                 }
             }
 
-            public ComboBoxStyle DropDownStyle
+            public bool CanEdit
             {
-                get => cmbItems.DropDownStyle;
-                set => cmbItems.DropDownStyle = value;
+                get => cmbItems.DropDownStyle == ComboBoxStyle.DropDown;
+                set => cmbItems.DropDownStyle = value ? ComboBoxStyle.DropDown : ComboBoxStyle.DropDownList;
             }
 
-            public int SelectedIndex => cmbItems.SelectedIndex;
+            public int SelectedIndex
+            {
+                get => cmbItems.SelectedIndex;
+                set => cmbItems.SelectedIndex = value;
+            }
 
             readonly Button btnOk = new Button
             {
@@ -106,6 +111,7 @@ namespace ContextMenuManager.Controls
                 btnOk.Left = cmbItems.Right + a;
                 btnCancel.Left = btnOk.Right + a;
                 this.ClientSize = new Size(btnCancel.Right + a, btnCancel.Bottom + a);
+                cmbItems.AutosizeDropDownWidth();
             }
         }
     }

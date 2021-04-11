@@ -102,7 +102,7 @@ namespace BluePointLilac.Controls
 
         public void ClearItems()
         {
-            foreach(Control control in Controls) control.Dispose();
+            foreach(Control control in Controls) BeginInvoke(new Action(control.Dispose));
             this.Controls.Clear();
         }
 
@@ -136,16 +136,18 @@ namespace BluePointLilac.Controls
             this.DoubleBuffered = true;
             this.Height = 50.DpiZoom();
             this.Margin = new Padding(0);
+            this.Font = SystemFonts.IconTitleFont;
             this.ForeColor = Color.FromArgb(80, 80, 80);
             this.BackColor = Color.FromArgb(250, 250, 250);
-            this.Font = SystemFonts.IconTitleFont;
             this.Controls.AddRange(new Control[] { lblSeparator, flpControls, lblText, picImage });
+            this.Resize += (Sender, e) => pnlScrollbar.Height = this.ClientSize.Height;
+            picImage.DoubleClick += (sender, e) => ImageDoubleClick?.Invoke(null, null);
+            lblText.DoubleClick += (sender, e) => TextDoubleClick?.Invoke(null, null);
             flpControls.MouseEnter += (sender, e) => this.OnMouseEnter(null);
-            flpControls.MouseDown += (sender, e) => this.OnMouseEnter(null);
-            flpControls.Left = this.ClientSize.Width;
-            lblText.SetEnabled(false);
+            flpControls.MouseDown += (sender, e) => this.OnMouseDown(null);
             CenterControl(lblText);
             CenterControl(picImage);
+            AddCtr(pnlScrollbar, 0);
         }
 
         public Image Image
@@ -181,9 +183,12 @@ namespace BluePointLilac.Controls
             {
                 hasImage = value;
                 picImage.Visible = value;
-                lblText.Left = value ? 60.DpiZoom() : 20.DpiZoom();
+                lblText.Left = (value ? 60 : 20).DpiZoom();
             }
         }
+
+        public event EventHandler TextDoubleClick;
+        public event EventHandler ImageDoubleClick;
 
         private readonly Label lblText = new Label
         {
@@ -192,57 +197,52 @@ namespace BluePointLilac.Controls
         private readonly PictureBox picImage = new PictureBox
         {
             SizeMode = PictureBoxSizeMode.AutoSize,
-            Left = 20.DpiZoom(),
-            Enabled = false
+            Left = 20.DpiZoom()
         };
         private readonly FlowLayoutPanel flpControls = new FlowLayoutPanel
         {
-            FlowDirection = FlowDirection.RightToLeft,
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            FlowDirection = FlowDirection.RightToLeft,
             Anchor = AnchorStyles.Right,
-            AutoSize = true,
-            Top = 0
+            AutoSize = true
         };
         private readonly Label lblSeparator = new Label
         {
             BackColor = Color.FromArgb(220, 220, 220),
             Dock = DockStyle.Bottom,
             Height = 1
-        };
+        };//分割线
+        private readonly Panel pnlScrollbar = new Panel
+        {
+            Width = SystemInformation.VerticalScrollBarWidth,
+            Enabled = false
+        };//预留滚动条宽度
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e); OnMouseEnter(null);
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e); flpControls.Height = this.Height;
-        }
-
         private void CenterControl(Control ctr)
         {
-            void reSize(Control c)
+            void reSize()
             {
-                if(c.Parent == null) return;
-                int top = (c.Parent.Height - c.Height) / 2;
-                if(c.Parent == this) c.Top = top;
-                else if(c.Parent == flpControls)
+                if(ctr.Parent == null) return;
+                int top = (this.ClientSize.Height - ctr.Height) / 2;
+                ctr.Top = top;
+                if(ctr.Parent == flpControls)
                 {
-                    c.Margin = new Padding(0, top, c.Margin.Right, top);
+                    ctr.Margin = new Padding(0, top, ctr.Margin.Right, top);
                 }
             }
-            ctr.Parent.Resize += (sender, e) => reSize(ctr);
-            ctr.Resize += (sender, e) => reSize(ctr);
-            reSize(ctr);
+            ctr.Parent.Resize += (sender, e) => reSize();
+            ctr.Resize += (sender, e) => reSize();
+            reSize();
         }
 
         public void AddCtr(Control ctr)
         {
-            int space = 20.DpiZoom();
-            //为第一个ctr预留垂直滚动条的宽度
-            if(flpControls.Controls.Count == 0) space += SystemInformation.VerticalScrollBarWidth;
-            AddCtr(ctr, space);
+            AddCtr(ctr, 20.DpiZoom());
         }
 
         public void AddCtr(Control ctr, int space)
@@ -259,24 +259,19 @@ namespace BluePointLilac.Controls
             Array.ForEach(ctrs, ctr => AddCtr(ctr));
         }
 
-        public void RemoveCtr(Control ctr)
-        {
-            if(ctr.Parent == flpControls) flpControls.Controls.Remove(ctr);
-        }
-
         public void RemoveCtrAt(int index)
         {
-            if(flpControls.Controls.Count > index) flpControls.Controls.RemoveAt(index);
+            if(flpControls.Controls.Count > index) flpControls.Controls.RemoveAt(index + 1);
         }
 
         public int GetCtrIndex(Control ctr)
         {
-            return flpControls.Controls.GetChildIndex(ctr, true);
+            return flpControls.Controls.GetChildIndex(ctr, true) - 1;
         }
 
         public void SetCtrIndex(Control ctr, int newIndex)
         {
-            flpControls.Controls.SetChildIndex(ctr, newIndex);
+            flpControls.Controls.SetChildIndex(ctr, newIndex + 1);
         }
     }
 }

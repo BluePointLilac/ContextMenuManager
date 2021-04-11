@@ -8,6 +8,12 @@ namespace BluePointLilac.Methods
 {
     public static class RegistryEx
     {
+        public const string CLASSESROOT = "HKEY_CLASSES_ROOT";
+        public const string CURRENTUSER = "HKEY_CURRENT_USER";
+        public const string LOCALMACHINE = "HKEY_LOCAL_MACHINE";
+        public const string CURRENTCONFIG = "HKEY_CURRENT_CONFIG";
+        public const string USERS = "HKEY_USERS";
+
         public static void CopyTo(this RegistryKey srcKey, RegistryKey dstKey)
         {
             foreach(string name in srcKey.GetValueNames())
@@ -93,28 +99,37 @@ namespace BluePointLilac.Methods
         /// <param name="subRegPath">不包含根项的注册表路径</param>
         public static void GetRootAndSubRegPath(string regPath, out RegistryKey root, out string subRegPath)
         {
+            string rootPath;
             int index = regPath.IndexOf('\\');
-            subRegPath = regPath.Substring(index + 1);
-            string rootPath = regPath.Substring(0, index).ToUpper();
+            if(index > 0)
+            {
+                rootPath = regPath.Substring(0, index).ToUpper();
+                subRegPath = regPath.Substring(index + 1);
+            }
+            else
+            {
+                rootPath = regPath;
+                subRegPath = string.Empty;
+            }
             switch(rootPath)
             {
-                case "HKEY_CLASSES_ROOT":
+                case CLASSESROOT:
                     root = Registry.ClassesRoot;
                     break;
-                case "HKEY_CURRENT_USER":
+                case CURRENTUSER:
                     root = Registry.CurrentUser;
                     break;
-                case "HKEY_LOCAL_MACHINE":
+                case LOCALMACHINE:
                     root = Registry.LocalMachine;
                     break;
-                case "HKEY_USERS":
+                case USERS:
                     root = Registry.Users;
                     break;
-                case "HKEY_CURRENT_CONFIG":
+                case CURRENTCONFIG:
                     root = Registry.CurrentConfig;
                     break;
                 default:
-                    throw new ArgumentNullException("非法的根项!");
+                    throw new ArgumentNullException("The root key resolution failed!");
             }
         }
 

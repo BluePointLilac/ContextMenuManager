@@ -34,7 +34,6 @@ namespace ContextMenuManager.Controls
         public EnhanceShellItem()
         {
             ChkVisible = new VisibleCheckBox(this);
-            this.SetNoClickEvent();
         }
 
         private static void WriteAttributesValue(XmlNode valueXN, string regPath)
@@ -98,6 +97,9 @@ namespace ContextMenuManager.Controls
             if(string.IsNullOrEmpty(arguments)) arguments = CreateCommandFile(argXE);
             fileName = Environment.ExpandEnvironmentVariables(fileName);
             arguments = Environment.ExpandEnvironmentVariables(arguments);
+            string prefix = argXE?.GetAttribute("Prefix");
+            string suffix = argXE?.GetAttribute("Suffix");
+            arguments = prefix + arguments + suffix;
             if(seXE != null)
             {
                 string verb = seXE.HasAttribute("Verb") ? seXE.GetAttribute("Verb") : "open";

@@ -21,8 +21,7 @@
 
 ## Third-party resources
 * Main program icon from [EasyIcon][EasyIcon]<br>![][AppIcon]
-* [Button icons][AppImage] from [Alibaba Iconfont][IconFont]
-* WinX HashLnk author: [Rafael Rivera][HashLnk]
+* [Button icons][AppImage] from [Alibaba Iconfont][IconFont]![](AppImage.png)
 
 ## Updates
 * Program and dictionary updates can be installed within the program, overwritting the original files.

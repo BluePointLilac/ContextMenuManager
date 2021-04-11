@@ -278,6 +278,14 @@ namespace ContextMenuManager.Controls
                         {
                             Registry.SetValue(RegPath, "HideBasedOnVelocityId", 0x639bc8);
                         }
+                        else
+                        {
+                            if(IsSubItem)
+                            {
+                                MessageBoxEx.Show(AppString.MessageBox.CannotHideSubItem);
+                                return;
+                            }
+                        }
                         if(!IsSubItem)
                         {
                             //当LegaryDisable键值作用于文件夹-"在新窗口中打开"时
@@ -287,10 +295,6 @@ namespace ContextMenuManager.Controls
                                 Registry.SetValue(RegPath, "LegacyDisable", "");
                             }
                             Registry.SetValue(RegPath, "ProgrammaticAccessOnly", "");
-                        }
-                        else
-                        {
-                            MessageBoxEx.Show(AppString.MessageBox.CannotHideSubItem);
                         }
                         if(ShowAsDisabledIfHidden) DeleteSomeValues();
                     }
@@ -577,7 +581,7 @@ namespace ContextMenuManager.Controls
             }
             using(ShellSubMenuDialog dlg = new ShellSubMenuDialog())
             {
-                dlg.Text = AppString.Other.EditSubItems.Replace("%s", this.Text);
+                dlg.Text = AppString.Dialog.EditSubItems.Replace("%s", this.Text);
                 dlg.Icon = ResourceIcon.GetIcon(IconPath, IconIndex);
                 dlg.ShowDialog(this.RegPath);
             }

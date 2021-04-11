@@ -56,6 +56,7 @@ namespace ContextMenuManager
             public static string UwpLnk => GetValue("UwpLnk");
             public static string ExeFile => GetValue("ExeFile");
             public static string UnknownType => GetValue("UnknownType");
+            public static string MenuAnalysis => GetValue("MenuAnalysis");
             public static string CustomExtension => GetValue("CustomExtension");
             public static string PerceivedType => GetValue("PerceivedType");
             public static string DirectoryType => GetValue("DirectoryType");
@@ -65,6 +66,7 @@ namespace ContextMenuManager
             public static string GuidBlocked => GetValue("GuidBlocked");
             public static string DragDrop => GetValue("DragDrop");
             public static string PublicReferences => GetValue("PublicReferences");
+            public static string CustomRegPath => GetValue("CustomRegPath");
             public static string IEMenu => GetValue("IEMenu");
             public static string AppSetting => GetValue("AppSetting");
             public static string AboutApp => GetValue("AboutApp");
@@ -95,15 +97,16 @@ namespace ContextMenuManager
             public static string UwpLnk => GetValue("UwpLnk");
             public static string ExeFile => GetValue("ExeFile");
             public static string UnknownType => GetValue("UnknownType");
+            public static string MenuAnalysis => GetValue("MenuAnalysis");
             public static string CustomExtension => GetValue("CustomExtension");
             public static string PerceivedType => GetValue("PerceivedType");
             public static string DirectoryType => GetValue("DirectoryType");
             public static string EnhanceMenu => GetValue("EnhanceMenu");
             public static string ThirdRules => GetValue("ThirdRules");
-            public static string OtherAccounts => GetValue("OtherAccounts");
             public static string GuidBlocked => GetValue("GuidBlocked");
             public static string DragDrop => GetValue("DragDrop");
             public static string PublicReferences => GetValue("PublicReferences");
+            public static string CustomRegPath => GetValue("CustomRegPath");
             public static string IEMenu => GetValue("IEMenu");
         }
 
@@ -149,6 +152,7 @@ namespace ContextMenuManager
             public static string Save => GetValue("Save");
         }
 
+        /// <summary>对话框子窗口</summary>
         public static class Dialog
         {
             private static string GetValue(string key) => GetStringValue("Dialog", key);
@@ -159,8 +163,6 @@ namespace ContextMenuManager
             public static string ItemText => GetValue("ItemText");
             public static string ItemCommand => GetValue("ItemCommand");
             public static string CommandArguments => GetValue("CommandArguments");
-            public static string ItemName => GetValue("ItemName");
-            public static string ItemIcon => GetValue("ItemIcon");
             public static string SingleMenu => GetValue("SingleMenu");
             public static string MultiMenu => GetValue("MultiMenu");
             public static string Public => GetValue("Public");
@@ -168,6 +170,7 @@ namespace ContextMenuManager
             public static string InputGuid => GetValue("InputGuid");
             public static string AddGuidDic => GetValue("AddGuidDic");
             public static string DeleteGuidDic => GetValue("DeleteGuidDic");
+            public static string NoPerceivedType => GetValue("NoPerceivedType");
             public static string TextFile => GetValue("TextFile");
             public static string DocumentFile => GetValue("DocumentFile");
             public static string ImageFile => GetValue("ImageFile");
@@ -179,6 +182,7 @@ namespace ContextMenuManager
             public static string ImageDirectory => GetValue("ImageDirectory");
             public static string VideoDirectory => GetValue("VideoDirectory");
             public static string AudioDirectory => GetValue("AudioDirectory");
+            public static string EditSubItems => GetValue("EditSubItems");
             public static string CheckReference => GetValue("CheckReference");
             public static string CheckCopy => GetValue("CheckCopy");
             public static string SelectExtension => GetValue("SelectExtension");
@@ -188,6 +192,7 @@ namespace ContextMenuManager
             public static string SelectNewItemType => GetValue("SelectNewItemType");
             public static string RegistryFile => GetValue("RegistryFile");
             public static string SelectGroup => GetValue("SelectGroup");
+            public static string SelectObjectType => GetValue("SelectObjectType");
             public static string TranslateTool => GetValue("TranslateTool");
             public static string DefaultText => GetValue("DefaultText");
             public static string OldTranslation => GetValue("OldTranslation");
@@ -218,6 +223,7 @@ namespace ContextMenuManager
             public static string HasBeenAdded => GetValue("HasBeenAdded");
             public static string EditInitialData => GetValue("EditInitialData");
             public static string PromptIsOpenItem => GetValue("PromptIsOpenItem");
+            public static string SelectRegPath => GetValue("SelectRegPath");
             public static string RestartApp => GetValue("RestartApp");
             public static string UpdateApp => GetValue("UpdateApp");
             public static string FileNotExists => GetValue("FileNotExists");
@@ -253,7 +259,9 @@ namespace ContextMenuManager
             public static string CurrentExtension => GetValue("CurrentExtension");
             public static string CurrentPerceivedType => GetValue("CurrentPerceivedType");
             public static string CurrentDirectoryType => GetValue("CurrentDirectoryType");
-            public static string EditSubItems => GetValue("EditSubItems");
+            public static string CurrentFilePath => GetValue("CurrentFilePath");
+            public static string CurrentRegPath => GetValue("CurrentRegPath");
+            public static string SelectRegPath => GetValue("SelectRegPath");
             public static string InvalidItem => GetValue("InvalidItem");
             public static string Separator => GetValue("Separator");
             public static string LockNewMenu => GetValue("LockNewMenu");
@@ -280,6 +288,8 @@ namespace ContextMenuManager
             public static string WinXSortable => GetValue("WinXSortable");
             public static string ShowFilePath => GetValue("ShowFilePath");
             public static string OpenMoreRegedit => GetValue("OpenMoreRegedit");
+            public static string HideDisabledItems => GetValue("HideDisabledItems");
+            public static string SetPerceivedType => GetValue("SetPerceivedType");
         }
 
         /// <summary>提示文本</summary>
@@ -305,6 +315,7 @@ namespace ContextMenuManager
             public static string ConfigPath => GetValue("ConfigPath");
             public static string CommandFiles => GetValue("CommandFiles");
             public static string CreateGroup => GetValue("CreateGroup");
+            public static string DropOrSelectObject => GetValue("DropOrSelectObject");
         }
     }
 }

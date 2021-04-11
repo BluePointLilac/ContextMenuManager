@@ -60,7 +60,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='Windows.NewFolder'>
         <OSVersion Compare=">=">6.1</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-31236' Icon='shell32.dll,-319' Position='top' CommandStateSync='' 
+          <REG_SZ MUIVerb='@shell32.dll,-31236' Icon='shell32.dll,-319' Position='top' CommandStateSync=''
                   CommandStateHandler='{3756e7f5-e514-4776-a32b-eb24bc1efe7a}' CanonicalName='{E44616AD-6DF1-4B94-85A4-E465AE8A19DB}'/>
           <REG_DWORD ImpliedSelectionModel='4' InvokeCommandOnSelection='0'/>
         </Value>
@@ -105,8 +105,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               <CreateFile
                 FileName='ShowHiddenFiles.vbs'
                 Content='
+                Dim wsh
                 On Error Resume Next
-                Dim wsh, path, value
                 Set wsh = CreateObject("WScript.Shell")
                 path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Hidden"
                 value = 1
@@ -130,8 +130,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               <CreateFile
                 FileName='ShowFileExtensions.vbs'
                 Content='
+                Dim wsh
                 On Error Resume Next
-                Dim wsh, path, value
                 Set wsh = CreateObject("WScript.Shell")
                 path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\HideFileExt"
                 value = 1
@@ -154,8 +154,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               <CreateFile
                 FileName='ShowSuperHidden.vbs'
                 Content='
+                Dim wsh
                 On Error Resume Next
-                Dim wsh, path, value
                 Set wsh = CreateObject("WScript.Shell")
                 path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ShowSuperHidden"
                 value = 1
@@ -445,7 +445,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                       <CreateFile
                         FileName='HyperVMode.vbs'
                         Content='
-                        Dim sap, wsh, msg
+                        Dim sap, wsh
                         Set sap = CreateObject("Shell.Application")
                         sap.ShellExecute "bcdedit", "/set hypervisorlaunchtype auto", "" ,"runas", 0
                         msg = "你当前切换的模式为 Hyper-V，" &amp; VbCrlf
@@ -474,7 +474,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                       <CreateFile
                         FileName='VirtualBoxMode.vbs'
                         Content='
-                        Dim sap, wsh, msg
+                        Dim sap, wsh
                         Set sap = CreateObject("Shell.Application")
                         sap.ShellExecute "bcdedit", "/set hypervisorlaunchtype off", "", "runas", 0
                         msg = "你当前切换的模式为 VirtualBox，" &amp; VbCrlf
@@ -507,8 +507,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               <CreateFile
                 FileName='WallPaperLocation.vbs'
                 Content='
+                Dim wsh
                 On Error Resume Next
-                Dim wsh, path
                 Set wsh = CreateObject("WScript.Shell")
                 path = wsh.RegRead("HKCU\Control Panel\Desktop\WallPaper")
                 wsh.Run("explorer /select, " &amp; path)
@@ -558,7 +558,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <!--磁盘清理-->
       <Item KeyName='Windows.CleanUp'>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-22026' Icon='cleanmgr.exe,-104' CommandStateSync='' 
+          <REG_SZ MUIVerb='@shell32.dll,-22026' Icon='cleanmgr.exe,-104' CommandStateSync=''
                   ExplorerCommandHandler='{9cca66bb-9c78-4e59-a76f-a5e9990b8aa0}'/>
           <REG_DWORD ImpliedSelectionModel='0x1'/>
         </Value>
@@ -574,8 +574,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               <CreateFile
                 FileName='ShowDriveLetters.vbs'
                 Content='
+                Dim wsh
                 On Error Resume Next
-                Dim wsh, path, value
                 Set wsh = CreateObject("WScript.Shell")
                 path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ShowDriveLettersFirst"
                 value = 2
@@ -599,8 +599,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               <CreateFile
                 FileName='ShowVolumeStrips.vbs'
                 Content='
+                Dim wsh
                 On Error Resume Next
-                Dim wsh, path, value
                 Set wsh = CreateObject("WScript.Shell")
                 path = "HKLM\SOFTWARE\Classes\Drive\TileInfo"
                 value = "prop:*System.PercentFull;System.Computer.DecoratedFreeSpace;System.Volume.FileSystem"
@@ -623,7 +623,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='Windows.PermanentDelete' Tip='不能用于删除lnk快捷方式文件,&#x000A;或通过快捷方式删除其目标对象'>
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-37394' Icon='shell32.dll,-240' Position='bottom' CommandStateSync='' 
+          <REG_SZ MUIVerb='@shell32.dll,-37394' Icon='shell32.dll,-240' Position='bottom' CommandStateSync=''
                   ExplorerCommandHandler='{E9571AB2-AD92-4ec6-8924-4E5AD33790F5}'/>
         </Value>
       </Item>
@@ -639,8 +639,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='Windows.CopyAsPath' Tip='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示, 路径带双引号'>
         <OSVersion Compare=">=">6.2</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-30329' Icon='imageres.dll,-5302' CommandStateHandler='{3B1599F9-E00A-4BBF-AD3E-B3F99FA87779}' 
-                  CanonicalName='{707C7BC6-685A-4A4D-A275-3966A5A3EFAA}' CommandStateSync='' VerbHandler='{f3d06e7c-1e45-4a26-847e-f9fcdee59be0}' 
+          <REG_SZ MUIVerb='@shell32.dll,-30329' Icon='imageres.dll,-5302' CommandStateHandler='{3B1599F9-E00A-4BBF-AD3E-B3F99FA87779}'
+                  CanonicalName='{707C7BC6-685A-4A4D-A275-3966A5A3EFAA}' CommandStateSync='' VerbHandler='{f3d06e7c-1e45-4a26-847e-f9fcdee59be0}'
                   VerbName='copyaspath' Description='@shell32.dll,-30336'/>
           <REG_DWORD InvokeCommandOnSelection='1'/>
         </Value>
@@ -648,7 +648,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <!--幻灯片放映-->
       <Item KeyName='Windows.SlideShow'>
         <Value>
-          <REG_SZ MUIVerb='@shell32.dll,-31287' Icon='imageres.dll,-5347' CommandStateHandler='{880ac964-2e34-4425-8cf2-86ada2c3a019}' 
+          <REG_SZ MUIVerb='@shell32.dll,-31287' Icon='imageres.dll,-5347' CommandStateHandler='{880ac964-2e34-4425-8cf2-86ada2c3a019}'
                   CanonicalName='{73BCE053-3BBC-4AD7-9FE7-7A7C212C98E6}' CommandStateSync='' Description='@shell32.dll,-31288' VerbToInvoke='slideshow'/>
           <REG_DWORD MediaTypeFlags='5'/>
         </Value>
@@ -693,6 +693,49 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               </Item2>
             </SubKey>
           </Shell>
+        </SubKey>
+      </Item>
+      <Item KeyName='CreateDesktopShortcut'>
+        <Value>
+          <REG_SZ MUIVerb='创建桌面快捷方式' Icon='imageres.dll,-110'/>
+        </Value>
+        <SubKey>
+          <Command>
+            <FileName>Wscript.exe</FileName>
+            <Arguments Suffix=' "%1"'>
+              <CreateFile
+                FileName='CreateDesktopShortcut.vbs'
+                Content='
+                Dim wsh, fso, shortcut
+                Set paths = WScript.Arguments
+                Set wsh = CreateObject("WScript.Shell")
+                Set fso = CreateObject("Scripting.FileSystemObject")
+                desktop = wsh.SpecialFolders("Desktop")
+                For i = 0 To paths.Count - 1
+	              path = paths(i)
+	              index1 = InstrRev(path, "\")
+	              dir = Mid(path, 1, index1 - 1)
+	              name = Mid(path, index1 + 1)
+	              index2 = InstrRev(name, ".")
+	              If index2 > 0 Then name = Mid(name, 1, index2 - 1)
+	              lnkPath = ""
+	              j = 1
+	              Do
+	                  lnkPath = desktop &amp; "\" &amp; name
+	                  If j > 1 Then lnkPath = lnkPath &amp; " (" &amp; j &amp; ")"
+	                  lnkPath = lnkPath &amp; ".lnk"
+	                  j = j + 1
+	              Loop While fso.FileExists(lnkPath)
+	              Set shortcut = wsh.CreateShortcut(lnkPath)  
+	              shortcut.TargetPath = path 
+	              shortcut.WorkingDirectory = dir
+	              shortcut.Save
+                Next
+                Set shortcut = Nothing
+                Set wsh = Nothing
+                Set fso = Nothing'/>
+            </Arguments>
+          </Command>
         </SubKey>
       </Item>
     </Shell>
@@ -771,8 +814,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               <CreateFile
                 FileName='BatteryReport.vbs'
                 Content='
+                Dim wsh, fso
                 On Error Resume Next
-                Dim wsh, fso, path
                 Set wsh = CreateObject("WScript.Shell")
                 Set fso = CreateObject("Scripting.FileSystemObject")
                 path = fso.GetSpecialFolder(2) &amp; "\BatteryReport.html"
@@ -801,8 +844,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               <CreateFile
                 FileName='EditSignInInfo.vbs'
                 Content='
+                Dim wsh
                 On Error Resume Next
-                Dim wsh, path, value
                 Set wsh = CreateObject("WScript.Shell")
                 path = "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\LegalnoticeCaption"
                 value = wsh.RegRead(path)

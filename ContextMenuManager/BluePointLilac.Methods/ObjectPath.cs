@@ -11,7 +11,6 @@ namespace BluePointLilac.Methods
         /// <summary>路径类型</summary>
         public enum PathType { File, Directory, Registry }
         private const string RegAppPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
-        private const string RegLastPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit";
         private const string ShellExecuteCommand = "mshta vbscript:createobject(\"shell.application\").shellexecute(\"";
 
         private static readonly char[] IllegalChars = { '/', '*', '?', '\"', '<', '>', '|' };
@@ -31,75 +30,93 @@ namespace BluePointLilac.Methods
                 //右键菜单仅支持%SystemRoot%\System32和%SystemRoot%两个环境变量，不考虑其他系统环境变量和用户环境变量，和Win+R命令有区别
                 foreach(string dir in new[] { "", @"%SystemRoot%\System32\", @"%SystemRoot%\" })
                 {
+                    if(dir != "" && (name.Contains('\\') || name.Contains(':'))) return false;
                     fullPath = Environment.ExpandEnvironmentVariables($@"{dir}{name}");
                     if(File.Exists(fullPath)) return true;
                 }
 
-                if(!name.Contains("\\"))
-                {
-                    fullPath = Registry.GetValue($@"{RegAppPath}\{name}", "", null)?.ToString();
-                    if(File.Exists(fullPath)) return true;
-                }
+                fullPath = Registry.GetValue($@"{RegAppPath}\{name}", "", null)?.ToString();
+                if(File.Exists(fullPath)) return true;
             }
             fullPath = null;
             return false;
         }
 
+
+        private static readonly Dictionary<string, string> FilePathDic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         /// <summary>从包含现有文件路径的命令语句中提取文件路径</summary>
         /// <param name="command">命令语句</param>
         /// <returns>成功提取返回现有文件路径，否则返回值为null</returns>
         public static string ExtractFilePath(string command)
         {
             if(command.IsNullOrWhiteSpace()) return null;
-            command = Environment.ExpandEnvironmentVariables(command).Replace(@"\\", @"\");
-            if(File.Exists(command)) return command;
-
-            if(command.StartsWith(ShellExecuteCommand, StringComparison.OrdinalIgnoreCase))
+            if(FilePathDic.ContainsKey(command)) return FilePathDic[command];
+            else
             {
-                command = command.Remove(0, ShellExecuteCommand.Length);
-                string[] arr = command.Split(new[] { "\",\"" }, StringSplitOptions.None);
-                if(arr.Length > 0)
+                string filePath = null;
+                string partCmd = Environment.ExpandEnvironmentVariables(command).Replace(@"\\", @"\");
+                if(partCmd.StartsWith(ShellExecuteCommand, StringComparison.OrdinalIgnoreCase))
                 {
-                    string filePath = null;
-                    string fileName = arr[0];
-                    if(arr.Length > 1)
+                    partCmd = partCmd.Substring(ShellExecuteCommand.Length);
+                    string[] arr = partCmd.Split(new[] { "\",\"" }, StringSplitOptions.None);
+                    if(arr.Length > 0)
                     {
-                        string arguments = arr[1];
-                        filePath = ExtractFilePath(arguments);
-                        if(filePath != null) return filePath;
+                        string fileName = arr[0];
+                        if(arr.Length > 1)
+                        {
+                            string arguments = arr[1];
+                            filePath = ExtractFilePath(arguments);
+                            if(filePath != null) return filePath;
+                        }
+                        if(GetFullFilePath(fileName, out filePath))
+                        {
+                            FilePathDic.Add(command, filePath);
+                            return filePath;
+                        }
                     }
-                    if(GetFullFilePath(fileName, out filePath)) return filePath;
                 }
-            }
 
-            string[] strs = Array.FindAll(command.Split(IllegalChars), str
-                => IgnoreCommandParts.Any(part => !part.Equals(str.Trim()))).Reverse().ToArray();
-            foreach(string str1 in strs)
-            {
-                string str2 = str1;
-                int index = -1;
-                do
+                string[] strs = Array.FindAll(partCmd.Split(IllegalChars), str
+                    => IgnoreCommandParts.Any(part => !part.Equals(str.Trim()))).Reverse().ToArray();
+
+                foreach(string str1 in strs)
                 {
-                    List<string> paths = new List<string>();
-                    string path1 = str2.Substring(index + 1);
-                    paths.Add(path1);
-                    if(path1.Contains(",")) paths.AddRange(path1.Split(','));
-                    if(index > 0)
+                    string str2 = str1;
+                    int index = -1;
+                    do
                     {
-                        string path2 = str2.Substring(0, index);
-                        paths.Add(path2);
-                        if(path2.Contains(",")) paths.AddRange(path2.Split(','));
+                        List<string> paths = new List<string>();
+                        string path1 = str2.Substring(index + 1);
+                        paths.Add(path1);
+                        if(index > 0)
+                        {
+                            string path2 = str2.Substring(0, index);
+                            paths.Add(path2);
+                        }
+                        int count = paths.Count;
+                        for(int i = 0; i < count; i++)
+                        {
+                            foreach(char c in new[] { ',', '-' })
+                            {
+                                if(paths[i].Contains(c)) paths.AddRange(paths[i].Split(c));
+                            }
+                        }
+                        foreach(string path in paths)
+                        {
+                            if(GetFullFilePath(path, out filePath))
+                            {
+                                FilePathDic.Add(command, filePath);
+                                return filePath;
+                            }
+                        }
+                        str2 = path1;
+                        index = str2.IndexOf(' ');
                     }
-                    foreach(string path in paths)
-                    {
-                        if(GetFullFilePath(path, out string fullPath)) return fullPath;
-                    }
-                    str2 = path1;
-                    index = str2.IndexOf(' ');
+                    while(index != -1);
                 }
-                while(index != -1);
+                FilePathDic.Add(command, null);
+                return null;
             }
-            return null;
         }
 
         /// <summary>移除文件或文件夹名称中的非法字符</summary>

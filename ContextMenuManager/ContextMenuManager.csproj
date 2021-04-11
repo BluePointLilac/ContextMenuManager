@@ -8,13 +8,13 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ContextMenuManager</RootNamespace>
     <AssemblyName>ContextMenuManager</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>C:\Users\Lilac\Desktop\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -27,13 +27,14 @@
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -41,6 +42,8 @@
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -56,7 +59,7 @@
     <ApplicationIcon>Properties\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetZone>LocalIntranet</TargetZone>
+    <TargetZone>Custom</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>false</GenerateManifests>
@@ -96,6 +99,14 @@
   <PropertyGroup />
   <PropertyGroup />
   <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>BEFE3AE42DB8F7604D715C01388001CABFF0FABF</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>ContextMenuManager_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
   </PropertyGroup>
@@ -124,8 +135,10 @@
     <Compile Include="BluePointLilac.Controls\MyToolBar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="BluePointLilac.Methods\ComboBoxExtension.cs" />
     <Compile Include="BluePointLilac.Methods\DesktopIni.cs" />
     <Compile Include="BluePointLilac.Methods\DirectoryEx.cs" />
+    <Compile Include="BluePointLilac.Methods\ElevatedFileDroper.cs" />
     <Compile Include="BluePointLilac.Methods\FileExtension.cs" />
     <Compile Include="BluePointLilac.Methods\GuidEx.cs" />
     <Compile Include="BluePointLilac.Methods\IniReader.cs" />
@@ -137,10 +150,8 @@
     <Compile Include="BluePointLilac.Methods\StringExtension.cs" />
     <Compile Include="BluePointLilac.Methods\TextBoxExtension.cs" />
     <Compile Include="BluePointLilac.Methods\WindowsOsVersion.cs" />
-    <Compile Include="BluePointLilac.Methods\WshShortcut.cs" />
-    <Compile Include="Controls\AddGuidDicDialog.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="BluePointLilac.Methods\ShellLink.cs" />
+    <Compile Include="BluePointLilac.Methods\WinXHasher.cs" />
     <Compile Include="Controls\FileExtensionDialog.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -348,6 +359,7 @@
     <None Include="Properties\Resources\Texts\AppLanguageDic.ini" />
     <None Include="Properties\Resources\Texts\GuidInfosDic.ini" />
     <Content Include="Properties\Resources\Images\DownLoad.png" />
+    <Content Include="Properties\Resources\Images\Jump.png" />
     <Content Include="Properties\Resources\Images\Translate.png" />
     <Content Include="Properties\Resources\Texts\UwpModeItemsDic.xml" />
     <None Include="Properties\Settings.settings">
@@ -375,8 +387,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\AppIcon.ico" />
-    <Content Include="Properties\Resources\HashLnk\HashLnk_32.exe" />
-    <Content Include="Properties\Resources\HashLnk\HashLnk_64.exe" />
     <Content Include="Properties\Resources\Images\Custom.png" />
     <Content Include="Properties\Resources\Images\NewFolder.png" />
     <Content Include="Properties\Resources\Images\Refresh.png" />
@@ -413,12 +423,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>mkdir $(TargetDir)\Config\languages
-mkdir $(TargetDir)\Config\Dictionaries\Web
-cd $(ProjectDir)\Properties\Resources\Texts
-xcopy AppLanguageDic.ini $(SolutionDir)\languages\zh-CN.ini /y
-xcopy EnhanceMenusDic.xml $(TargetDir)\Config\Dictionaries\Web /y
-xcopy ThirdRulesDic.xml $(TargetDir)\Config\Dictionaries\Web /y
-xcopy GuidInfosDic.ini $(TargetDir)\Config\Dictionaries\Web /y
+xcopy $(ProjectDir)\Properties\Resources\Texts\AppLanguageDic.ini $(SolutionDir)\languages\zh-CN.ini /y
 xcopy $(SolutionDir)\languages $(TargetDir)\config\languages /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

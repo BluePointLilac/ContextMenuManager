@@ -19,9 +19,9 @@ namespace ContextMenuManager
         {
             Version appVersion = new Version(Application.ProductVersion);
             //如果上次检测更新时间为一个月以前就进行更新操作
-            bool flag1 = AppConfig.LastCheckUpdateTime.AddMonths(1).CompareTo(DateTime.Today) < 0;
+            bool flag1 = AppConfig.LastCheckUpdateTime.AddMonths(1) < DateTime.Today;
             //如果配置文件中的版本号与程序版本号不同也进行更新操作
-            bool flag2 = appVersion.CompareTo(AppConfig.Version) != 0;
+            bool flag2 = appVersion != AppConfig.Version;
             if(flag1 || flag2)
             {
                 CheckUpdate();
@@ -52,7 +52,7 @@ namespace ContextMenuManager
                 version1 = new Version(Application.ProductVersion);
             }
             Version version2 = new Version(Application.ProductVersion);
-            if(version1.CompareTo(version2) > 0)
+            if(version1 > version2)
             {
                 string info = reader.GetValue("Update", "Info").Replace("\\n", Environment.NewLine);
                 if(MessageBoxEx.Show($"{AppString.MessageBox.UpdateApp}{version1}{Environment.NewLine}{info}",

@@ -44,10 +44,10 @@ namespace BluePointLilac.Methods
             Application.Exit();
         }
 
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         private static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
 
-        [DllImport("User32.dll")]
+        [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }

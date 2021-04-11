@@ -10,10 +10,11 @@ namespace BluePointLilac.Controls
         public MyMainForm()
         {
             this.Text = Application.ProductName;
-            this.MinimumSize = this.Size = new Size(866, 649).DpiZoom();
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             this.Controls.AddRange(new Control[] { MainBody, SideBar, StatusBar, ToolBar });
             SideBar.Resize += (sender, e) => this.OnResize(null);
+            this.ClientSize = new Size(850, 610).DpiZoom();
+            this.MinimumSize = this.Size;
             ToolBar.CanMoveForm();
             StatusBar.CanMoveForm();
             this.CenterToScreen();
