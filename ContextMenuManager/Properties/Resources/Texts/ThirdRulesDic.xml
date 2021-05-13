@@ -4,44 +4,56 @@
 Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；
 ValueName为相关键名，On为启用键值，Off为禁用键值；不设置On或Off属性时，其值为null，对应注册表键值不存在；
 每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；判定规则：当有多条规则时，前面的规则注册表键值匹配On则为On，匹配Off则为Off，并终止判断，都不匹配时继续往下判断，若所有规则都不匹配则为On
-ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认值时可省略，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型-->
+ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认值时可省略，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ、REG_BINARY的键值类型-->
 <Data>
   <Group Text='System'>
     <Item Text='系统 右键菜单' RestartExplorer=''>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoViewContextMenu' Off='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoViewContextMenu' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoViewContextMenu' Off='1'/>
     </Item>
     <Item Text='系统 使用经典紧凑右键菜单' RestartExplorer=''>
       <OSVersion Compare='>='>10.0.14393</OSVersion>
       <OSVersion Compare='&lt;'>10.0.17763</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\FlightedFeatures' ValueName='ImmersiveContextMenu' On='0'/>
     </Item>
+    <Item Text='Shell类型菜单同时操作文件对象数量限制' Tip='系统默认值为15，超过15为无限制' IsNumberItem=''>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' ValueName='MultipleInvokePromptMinimum' Max='32767' Min='1' Default='15'/>
+    </Item>
+    <Item Text='创建快捷方式时去除 "快捷方式" 后缀' RestartExplorer=''>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates' ValueName='ShortcutNameTemplate' On='%s' ValueKind='REG_SZ'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates' ValueName='ShortcutNameTemplate' On='%s' ValueKind='REG_SZ'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' ValueName='Link' On='00 00 00 00' ValueKind='REG_BINARY'/>
+    </Item>
+    <Item Text='文件(夹) 复制粘贴去除 "副本" 后缀'>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates' ValueName='CopyNameTemplate' On='%s' ValueKind='REG_SZ'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates' ValueName='CopyNameTemplate' On='%s' ValueKind='REG_SZ'/>
+    </Item>
     <Item Text='文件(夹) 加密 解密' Tip='本设备加密后的文件需解密后才能在其他设备中打开'>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='EncryptionContextMenu' On='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='EncryptionContextMenu' On='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='EncryptionContextMenu' On='1'/>
     </Item>
     <Item Text='任务栏 右键菜单' RestartExplorer=''>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoTrayContextMenu' Off='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoTrayContextMenu' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoTrayContextMenu' Off='1'/>
     </Item>
     <Item Text='任务栏 任务栏设置 锁定任务栏' RestartExplorer=''>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='TaskbarLockAll' Off='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='TaskbarLockAll' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='TaskbarLockAll' Off='1'/>
     </Item>
     <Item Text='任务栏 工具栏' RestartExplorer='' Tip='禁用后已启用工具栏将被禁用, 请谨慎操作'>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoToolbarsOnTaskbar' Off='1'/>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoCloseDragDropBands' Off='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoToolbarsOnTaskbar' Off='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoCloseDragDropBands' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoToolbarsOnTaskbar' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoCloseDragDropBands' Off='1'/>
     </Item>
     <Item Text='任务栏 固定到任务栏' RestartExplorer='' Tip='禁用时已固定图标会被隐藏，重新启用会重现&#x000A;文件右键菜单“固定到任务栏”会同时消失&#x000A;且无法拖拽文件到任务栏进行固定'>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='TaskbarNoPinnedList' Off='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer' ValueName='TaskbarNoPinnedList' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='TaskbarNoPinnedList' Off='1'/>
     </Item>
     <Item Text='任务栏 人脉' RestartExplorer=''>
       <OSVersion Compare='>='>10.0.16199</OSVersion>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People' ValueName='PeopleBand' Off='0'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer' ValueName='HidePeopleBar' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='HidePeopleBar' Off='1'/>
     </Item>
     <Item Text='任务栏 Windows lnk 工作区' Tip='禁用此项将同时禁用 Win+W 快捷键'>
       <OSVersion Compare='>='>10.0</OSVersion>
@@ -55,24 +67,24 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <Item Text='开始 程序右键菜单 卸载' RestartExplorer=''>
       <OSVersion Compare='>='>6.2</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='NoUninstallFromStart' Off='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer' ValueName='NoUninstallFromStart' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='NoUninstallFromStart' Off='1'/>
     </Item>
     <Item Text='开始 程序右键菜单 以其他用户身份运行' RestartExplorer=''>
       <OSVersion Compare='>='>10.0</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='ShowRunAsDifferentUserInStart' On='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Explorer' ValueName='ShowRunAsDifferentUserInStart' On='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='ShowRunAsDifferentUserInStart' On='1'/>
     </Item>
     <Item Text='开始 磁贴调整大小、布局、固定、卸载' RestartExplorer=''>
       <OSVersion Compare='>='>6.2</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoChangeStartMenu' Off='1'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoChangeStartMenu' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoChangeStartMenu' Off='1'/>
     </Item>
     <Item Text='开始 任务栏 程序右键显示最近打开文件跳转列表'>
       <OSVersion Compare='>='>10.0</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='Start_TrackDocs' Off='0'/>
-      <Rule RegPath='HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='Start_TrackDocs' Off='0'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='Start_TrackDocs' Off='0'/>
     </Item>
-    <Item Text='开始 任务栏 程序右键最近打开文件跳转列表数量限制' IsNumberItem=''>
+    <Item Text='开始 任务栏 程序右键最近打开文件跳转列表数量限制' Tip='系统默认值为13' IsNumberItem=''>
       <OSVersion Compare='>='>10.0</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='JumpListItems_Maximum' Max='60' Min='0' Default='13'/>
     </Item>
@@ -95,7 +107,7 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <Item Text='预览压缩文件'>
       <Rule ValueName='shell_Preview' On='1' Off='0'/>
     </Item>
-    <Item Text='预览文件数量限制' IsNumberItem=''>
+    <Item Text='预览文件数量限制' Tip='默认值为6' IsNumberItem=''>
       <Rule ValueName='shell_PreviewSize' Max='20' Min='1' Default='6'/>
     </Item>
     <Item Text='新建文件夹'>
@@ -229,7 +241,7 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
   </Group>
 
-  <Group Text='NVIDIA' Guid='3d1975af-48c6-4f8e-a182-be0e08fa86a9' RegPath='HKEY_CURRENT_USER\Software\NVIDIA Corporation'>
+  <Group Text='NVIDIA' Guid='3d1975af-48c6-4f8e-a182-be0e08fa86a9' RegPath='HKEY_CURRENT_USER\SOFTWARE\NVIDIA Corporation'>
     <Item Text='显示桌面上下文菜单'>
       <Rule RegPath='\Global\NvCplApi\Policies' ValueName='ContextUIPolicy' On='1' Off='0'/>
     </Item>

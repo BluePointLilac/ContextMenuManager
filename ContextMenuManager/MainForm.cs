@@ -248,7 +248,13 @@ namespace ContextMenuManager
                     if(item is ITsiFilePathItem pathItem)
                     {
                         string path = pathItem.ItemFilePath;
-                        if(File.Exists(path)) { StatusBar.Text = path; return; }
+                        if(path != null)
+                        {
+                            if(File.Exists(path) || path.StartsWith("shell:AppsFolder"))
+                            {
+                                StatusBar.Text = path; return;
+                            }
+                        }
                     }
                     if(item is GuidBlockedItem guidItem)
                     {
@@ -335,7 +341,6 @@ namespace ContextMenuManager
                     languagesBox.Visible = true;
                     break;
                 case 2:
-                    dictionariesBox.LoadTexts();
                     dictionariesBox.Visible = true;
                     break;
                 case 3:

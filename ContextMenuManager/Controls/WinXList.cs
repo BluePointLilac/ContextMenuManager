@@ -54,7 +54,7 @@ namespace ContextMenuManager.Controls
             if(sorted)
             {
                 ExplorerRestarter.Show();
-                MessageBoxEx.Show(AppString.MessageBox.WinXSorted);
+                MessageBoxEx.Show(AppString.Message.WinXSorted);
             }
         }
 

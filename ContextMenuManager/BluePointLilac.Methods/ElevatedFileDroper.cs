@@ -74,13 +74,12 @@ namespace BluePointLilac.Methods
         public string[] DropFilePaths { get; private set; }
         public Point DropPoint { get; private set; }
 
-        public ElevatedFileDroper(Control containerControl)
+        public ElevatedFileDroper(Control ctr)
         {
-            this.ContainerControl = containerControl ?? throw new ArgumentNullException();
-            if(containerControl.IsDisposed) throw new ObjectDisposedException(containerControl.Name);
-            containerControl.DragDrop += (sender, e) => DropFilePaths = (string[])e.Data.GetData(typeof(string[]));
-            containerControl.DragEnter += (sender, e) => e.Effect = DragDropEffects.All;
-            containerControl.Disposed += (sender, e) => Application.RemoveMessageFilter(this);
+            this.ContainerControl = ctr;
+            ctr.DragDrop += (sender, e) => DropFilePaths = (string[])e.Data.GetData(typeof(string[]));
+            ctr.DragEnter += (sender, e) => e.Effect = DragDropEffects.All;
+            ctr.Disposed += (sender, e) => Application.RemoveMessageFilter(this);
 
             Version ver = Environment.OSVersion.Version;
             bool isVistaOrHigher = ver >= new Version(6, 0);
@@ -93,7 +92,7 @@ namespace BluePointLilac.Methods
                     bool error = false;
                     if(isWin7OrHigher)
                     {
-                        error = !ChangeWindowMessageFilterEx(containerControl.Handle, msg, ChangeFilterAction.MSGFLT_ALLOW, in status);
+                        error = !ChangeWindowMessageFilterEx(ctr.Handle, msg, ChangeFilterAction.MSGFLT_ALLOW, in status);
                     }
                     else
                     {
@@ -102,38 +101,36 @@ namespace BluePointLilac.Methods
                     if(error) throw new Win32Exception(Marshal.GetLastWin32Error());
                 }
             }
-            DragAcceptFiles(containerControl.Handle, true);
+            DragAcceptFiles(ctr.Handle, true);
             Application.AddMessageFilter(this);
         }
 
         public bool PreFilterMessage(ref Message m)
         {
-            if(ContainerControl == null || ContainerControl.IsDisposed) return false;
+            if(m.Msg != WM_DROPFILES) return false;
             if(ContainerControl.AllowDrop)
             {
                 DropPoint = ContainerControl.PointToClient(Cursor.Position);
-                ContainerControl.AllowDrop = false;
-                return false;
             }
-            if(m.Msg == WM_DROPFILES)
+            else
             {
                 IntPtr handle = m.WParam;
                 uint fileCount = DragQueryFile(handle, uint.MaxValue, null, 0);
                 string[] fileNames = new string[fileCount];
-                StringBuilder sb = new StringBuilder(260);
-                int charLength = sb.Capacity;
                 for(uint i = 0; i < fileCount; i++)
                 {
-                    if(DragQueryFile(handle, i, sb, charLength) > 0) fileNames[i] = sb.ToString();
+                    StringBuilder sb = new StringBuilder(260);
+                    uint result = DragQueryFile(handle, i, sb, sb.Capacity);
+                    if(result > 0) fileNames[i] = sb.ToString();
                 }
                 DragQueryPoint(handle, out Point point);
                 DragFinish(handle);
                 DropPoint = point;
                 ContainerControl.AllowDrop = true;
                 ContainerControl.DoDragDrop(fileNames, DragDropEffects.All);
-                return true;
             }
-            return false;
+            ContainerControl.AllowDrop = false;
+            return true;
         }
     }
 }

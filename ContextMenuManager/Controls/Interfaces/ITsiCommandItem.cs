@@ -30,7 +30,7 @@ namespace ContextMenuManager.Controls.Interfaces
                 if(dlg.ShowDialog() != DialogResult.OK) return null;
                 if(!CommandCanBeEmpty && string.IsNullOrEmpty(dlg.Text))
                 {
-                    MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
+                    MessageBoxEx.Show(AppString.Message.CommandCannotBeEmpty);
                     return ChangeCommand(command);
                 }
                 else return dlg.Text;

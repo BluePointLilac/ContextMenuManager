@@ -113,21 +113,20 @@ namespace ContextMenuManager.Controls
                     this.FormBorderStyle = FormBorderStyle.FixedSingle;
                     this.StartPosition = FormStartPosition.CenterParent;
                     this.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 9F);
-                    this.Controls.AddRange(new Control[] { pnlTop, btnPrivate, btnPublic });
-                    pnlTop.Controls.Add(lblInfo);
+                    this.Controls.AddRange(new Control[] { pnlInfo, btnPrivate, btnPublic });
+                    pnlInfo.Controls.Add(lblInfo);
                     int a = 20.DpiZoom();
                     this.ClientSize = new Size(lblInfo.Width + 2 * a, lblInfo.Height + btnPrivate.Height + 3 * a);
                     lblInfo.Location = new Point(a, a);
-                    pnlTop.Height = lblInfo.Bottom + a;
-                    btnPrivate.Top = btnPublic.Top = pnlTop.Bottom + a / 2;
-                    btnPublic.Left = pnlTop.Width - btnPublic.Width - a;
+                    pnlInfo.Height = lblInfo.Bottom + a;
+                    btnPrivate.Top = btnPublic.Top = pnlInfo.Bottom + a / 2;
+                    btnPublic.Left = pnlInfo.Width - btnPublic.Width - a;
                     btnPrivate.Left = btnPublic.Left - btnPrivate.Width - a;
                     btnPrivate.Click += (sender, e) => Mode = SubMode.Private;
                     btnPublic.Click += (sender, e) => Mode = SubMode.Public;
                 }
 
                 public enum SubMode { Public, Private, None }
-
                 public SubMode Mode { get; private set; } = SubMode.None;
 
                 readonly Label lblInfo = new Label
@@ -135,20 +134,17 @@ namespace ContextMenuManager.Controls
                     Text = AppString.Dialog.SelectSubMenuMode,
                     AutoSize = true
                 };
-
-                readonly Panel pnlTop = new Panel
+                readonly Panel pnlInfo = new Panel
                 {
                     BackColor = Color.White,
                     Dock = DockStyle.Top
                 };
-
                 readonly Button btnPrivate = new Button
                 {
                     Text = AppString.Dialog.Private,
                     DialogResult = DialogResult.OK,
                     AutoSize = true
                 };
-
                 readonly Button btnPublic = new Button
                 {
                     Text = AppString.Dialog.Public,
@@ -297,7 +293,7 @@ namespace ContextMenuManager.Controls
 
                     private void DeleteReference()
                     {
-                        if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDeleteReference,
+                        if(MessageBoxEx.Show(AppString.Message.ConfirmDeleteReference,
                             MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             Owner.DeleteItem(this);
@@ -380,7 +376,7 @@ namespace ContextMenuManager.Controls
                     string sckValue = GetValue(parentPath, "ExtendedSubCommandsKey", null)?.ToString();
                     if(!sckValue.IsNullOrWhiteSpace())
                     {
-                        this.ShellPath = $@"{RegistryEx.CLASSESROOT}\{sckValue}";
+                        this.ShellPath = $@"{RegistryEx.CLASSESROOT}\{sckValue}\shell";
                     }
                     else
                     {
@@ -596,7 +592,7 @@ namespace ContextMenuManager.Controls
                         if(item.GetType().BaseType == typeof(SubShellTypeItem)) count++;
                     }
                     bool flag = count < 16;
-                    if(!flag) MessageBoxEx.Show(AppString.MessageBox.CannotAddNewItem);
+                    if(!flag) MessageBoxEx.Show(AppString.Message.CannotAddNewItem);
                     return flag;
                 }
             }

@@ -2,7 +2,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace ContextMenuManager
@@ -17,9 +16,6 @@ namespace ContextMenuManager
             }
         }
 
-        [DllImport("kernel32.dll")]
-        private static extern ushort GetUserDefaultUILanguage();
-
         public static readonly string AppConfigDir = $@"{Application.StartupPath}\Config";
         public static readonly string AppDataConfigDir = Environment.ExpandEnvironmentVariables(@"%AppData%\ContextMenuManager\Config");
         public static readonly string ConfigDir = Directory.Exists(AppConfigDir) ? AppConfigDir : AppDataConfigDir;
@@ -31,15 +27,17 @@ namespace ContextMenuManager
         public static string DicsDir = $@"{ConfigDir}\Dictionaries";
         public static string WebDicsDir = $@"{DicsDir}\Web";
         public static string UserDicsDir = $@"{DicsDir}\User";
+
         public static string WebGuidInfosDic = $@"{WebDicsDir}\{GUIDINFOSDICINI}";
-        public static string UserGuidInfosDic = $@"{UserDicsDir}\{GUIDINFOSDICINI}";
         public static string WebThirdRulesDic = $@"{WebDicsDir}\{THIRDRULESDICXML}";
-        public static string UserThirdRulesDic = $@"{UserDicsDir}\{THIRDRULESDICXML}";
         public static string WebEnhanceMenusDic = $@"{WebDicsDir}\{ENHANCEMENUSICXML}";
-        public static string UserEnhanceMenusDic = $@"{WebDicsDir}\{ENHANCEMENUSICXML}";
-        public static string WebUwpModeItemsDic = $@"{UserDicsDir}\{UWPMODEITEMSDICXML}";
+        public static string WebUwpModeItemsDic = $@"{WebDicsDir}\{UWPMODEITEMSDICXML}";
+
+        public static string UserGuidInfosDic = $@"{UserDicsDir}\{GUIDINFOSDICINI}";
+        public static string UserThirdRulesDic = $@"{UserDicsDir}\{THIRDRULESDICXML}";
+        public static string UserEnhanceMenusDic = $@"{UserDicsDir}\{ENHANCEMENUSICXML}";
         public static string UserUwpModeItemsDic = $@"{UserDicsDir}\{UWPMODEITEMSDICXML}";
-        public static string HashLnkExePath = $@"{ProgramsDir}\HashLnk.exe";
+
         public const string ZH_CNINI = "zh-CN.ini";
         public const string GUIDINFOSDICINI = "GuidInfosDic.ini";
         public const string THIRDRULESDICXML = "ThirdRulesDic.xml";
@@ -48,9 +46,10 @@ namespace ContextMenuManager
 
         public static readonly string[] EngineUrls =
         {
-            "https://www.baidu.com/s?wd=%s",          //百度搜索
             "https://www.bing.com/search?q=%s",       //必应搜索
+            "https://www.baidu.com/s?wd=%s",          //百度搜索
             "https://www.google.com/search?q=%s",     //谷歌搜索
+            "https://duckduckgo.com/?q=%s",           //DuckDuckGo
             "https://www.dogedoge.com/results?q=%s",  //多吉搜索
             "https://www.sogou.com/web?query=%s",     //搜狗搜索
             "https://www.so.com/s?q=%s",              //360搜索
@@ -68,7 +67,7 @@ namespace ContextMenuManager
                 string language = GetGeneralValue("Language");
                 if(language == string.Empty)
                 {
-                    language = new CultureInfo(GetUserDefaultUILanguage()).Name;
+                    language = CultureInfo.CurrentUICulture.Name;
                 }
                 if(!File.Exists($@"{LangsDir}\{language}.ini"))
                 {
@@ -97,14 +96,11 @@ namespace ContextMenuManager
                 }
                 catch
                 {
-                    //将上次检测更新时间推前到两个月前
-                    return DateTime.Today.AddMonths(-2);
+                    //返回文件上次修改时间
+                    return new FileInfo(Application.ExecutablePath).LastWriteTime;
                 }
             }
-            set
-            {
-                SetGeneralValue("LastCheckUpdateTime", value.ToBinary());
-            }
+            set => SetGeneralValue("LastCheckUpdateTime", value.ToBinary());
         }
 
         public static bool ProtectOpenItem
@@ -121,10 +117,7 @@ namespace ContextMenuManager
                 if(url.IsNullOrWhiteSpace()) url = EngineUrls[0];
                 return url;
             }
-            set
-            {
-                SetGeneralValue("EngineUrl", value);
-            }
+            set => SetGeneralValue("EngineUrl", value);
         }
 
         public static bool ShowFilePath
@@ -145,25 +138,35 @@ namespace ContextMenuManager
             set => SetGeneralValue("OpenMoreRegedit", value ? 1 : 0);
         }
 
-        public static Version Version
-        {
-            get
-            {
-                Version version = new Version(0, 0, 0, 0);
-                try { version = new Version(GetGeneralValue("Version")); }
-                catch { }
-                return version;
-            }
-            set
-            {
-                SetGeneralValue("Version", value);
-            }
-        }
-
         public static bool HideDisabledItems
         {
             get => GetGeneralValue("HideDisabledItems") == "1";
             set => SetGeneralValue("HideDisabledItems", value ? 1 : 0);
+        }
+
+        public static bool RequestUseGithub
+        {
+            get
+            {
+                if(GetGeneralValue("RequestUseGithub") == "1") return true;
+                if(CultureInfo.CurrentCulture.Name == "zh-CN") return false;
+                return true;
+            }
+            set => SetGeneralValue("RequestUseGithub", value ? 1 : 0);
+        }
+
+        public static int UpdateFrequency
+        {
+            get
+            {
+                string value = GetGeneralValue("UpdateFrequency");
+                if(int.TryParse(value, out int day))
+                {
+                    if(day == -1 || day == 7 || day == 90) return day;
+                }
+                return 30;
+            }
+            set => SetGeneralValue("UpdateFrequency", value);
         }
     }
 }

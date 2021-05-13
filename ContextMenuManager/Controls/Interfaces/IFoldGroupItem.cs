@@ -35,7 +35,8 @@ namespace ContextMenuManager.Controls.Interfaces
                 list.SuspendLayout();
                 foreach(Control ctr in list.Controls)
                 {
-                    if(ctr is IFoldSubItem item && item.FoldGroupItem == FoldGroup) ctr.Visible = !value;
+                    if(ctr is IFoldSubItem item1 && item1.FoldGroupItem == FoldGroup) ctr.Visible = !value;
+                    else if(ctr is SubGroupItem item2 && item2.FoldGroupItem == FoldGroup) { item2.IsFold = true; item2.Visible = !value; }
                 }
                 list.ResumeLayout();
             }
@@ -62,13 +63,19 @@ namespace ContextMenuManager.Controls.Interfaces
         public bool IsFold
         {
             get => BtnFold.IsFold;
-            set => BtnFold.IsFold = value;
+            set
+            {
+                if(BtnFold.IsFold == value) return;
+                BtnFold.IsFold = value;
+                IsFoldChanegd?.Invoke(null, null);
+            }
         }
+
+        public event EventHandler IsFoldChanegd;
         public string TargetPath { get; set; }
         public PathType PathType { get; set; }
         public ObjectPathButton BtnOpenPath { get; set; }
         public FoldButton BtnFold { get; set; }
-
         public GroupPathItem(string targetPath, PathType pathType)
         {
             BtnFold = new FoldButton(this);
@@ -100,6 +107,7 @@ namespace ContextMenuManager.Controls.Interfaces
             MyToolTip.SetToolTip(BtnOpenPath, tip);
             this.ImageDoubleClick += (sender, e) => this.OnDoubleClick(null);
             this.TextDoubleClick += (sender, e) => this.OnDoubleClick(null);
+            this.DoubleClick += (sender, e) => this.IsFold = !this.IsFold;
         }
 
         public void HideWhenNoSubItem()
@@ -107,15 +115,16 @@ namespace ContextMenuManager.Controls.Interfaces
             int count = 0;
             foreach(var ctr in this.Parent.Controls)
             {
-                if(ctr is IFoldSubItem item && item.FoldGroupItem == this) count++;
+                if(ctr is IFoldSubItem item1 && item1.FoldGroupItem == this) count++;
+                else if(ctr is SubGroupItem item2 && item2.FoldGroupItem == this) count++;
             }
             if(count == 0) this.Visible = false;
         }
+    }
 
-        protected override void OnDoubleClick(EventArgs e)
-        {
-            base.OnDoubleClick(e);
-            IsFold = !IsFold;
-        }
+    class SubGroupItem : GroupPathItem
+    {
+        public SubGroupItem(string targetPath, PathType pathType) : base(targetPath, pathType) { }
+        public GroupPathItem FoldGroupItem { get; set; }
     }
 }

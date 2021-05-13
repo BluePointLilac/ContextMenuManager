@@ -144,7 +144,7 @@ namespace ContextMenuManager.Controls
                     string openMode = FileExtension.GetOpenMode(extension);
                     if(string.IsNullOrEmpty(openMode))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.NoOpenModeExtension);
+                        MessageBoxEx.Show(AppString.Message.NoOpenModeExtension);
                         ExternalProgram.ShowOpenWithDialog(extension);
                         return;
                     }
@@ -154,7 +154,7 @@ namespace ContextMenuManager.Controls
                         {
                             if(item.Extension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                             {
-                                MessageBoxEx.Show(AppString.MessageBox.HasBeenAdded);
+                                MessageBoxEx.Show(AppString.Message.HasBeenAdded);
                                 return;
                             }
                         }

@@ -1,9 +1,10 @@
 ﻿using BluePointLilac.Methods;
+using ContextMenuManager;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ContextMenuManager.Controls
+namespace BluePointLilac.Controls
 {
     class SelectDialog : CommonDialog
     {

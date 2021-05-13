@@ -18,7 +18,6 @@ namespace BluePointLilac.Methods
             {
                 GetWindowThreadProcessId(hMain, out int id);
                 process = Process.GetProcessById(id);
-
             }
             else
             {
@@ -71,17 +70,17 @@ namespace BluePointLilac.Methods
             process.Dispose();
         }
 
-        public static void JumpExplorer(string filePath, bool moreOpen = false)
+        public static void JumpExplorer(string filePath)
         {
             using(Process process = new Process())
             {
-                if(File.Exists(filePath))
+                if(File.Exists(filePath) || filePath.StartsWith("shell:AppsFolder"))
                 {
                     process.StartInfo.FileName = "explorer.exe";
                     process.StartInfo.Arguments = $"/select, {filePath}";
                     process.Start();
                 }
-                else if(Directory.Exists(filePath))
+                if(Directory.Exists(filePath))
                 {
                     process.StartInfo.FileName = filePath;
                     process.Start();

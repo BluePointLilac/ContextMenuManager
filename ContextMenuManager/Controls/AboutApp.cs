@@ -11,8 +11,6 @@ namespace ContextMenuManager.Controls
 {
     sealed class DonateBox : Panel
     {
-        private const string DonateListUrl = "https://github.com/BluePointLilac/ContextMenuManager/blob/master/Donate.md";
-
         public DonateBox()
         {
             this.Dock = DockStyle.Fill;
@@ -20,7 +18,7 @@ namespace ContextMenuManager.Controls
             this.AutoScroll = true;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
             this.Controls.AddRange(new Control[] { lblInfo, picQR, llbDonationList });
-            llbDonationList.LinkClicked += (sender, e) => ExternalProgram.OpenUrl(DonateListUrl);
+            llbDonationList.LinkClicked += (sender, e) => Updater.ShowDonateDialog();
         }
 
         readonly Label lblInfo = new Label
@@ -63,7 +61,7 @@ namespace ContextMenuManager.Controls
             this.Controls.AddRange(pages);
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
             cms.Items.AddRange(items);
-            for(int i = 0; i < 5; i++)
+            for(int i = 0; i < 6; i++)
             {
                 boxs[i] = new ReadOnlyRichTextBox { Parent = pages[i] };
                 if(i > 0) boxs[i].ContextMenuStrip = cms;
@@ -71,9 +69,11 @@ namespace ContextMenuManager.Controls
             items[0].Click += (sender, e) => ExternalProgram.OpenNotepadWithText(GetInitialText());
             items[2].Click += (sender, e) => SaveFile();
             boxs[0].Controls.Add(btnOpenDir);
+            boxs[0].Text = AppString.Other.Dictionaries;
             btnOpenDir.Top = boxs[0].Height - btnOpenDir.Height;
-            MyToolTip.SetToolTip(btnOpenDir, AppString.Tip.OpenDictionariesDir);
+            MyToolTip.SetToolTip(btnOpenDir, AppString.Menu.FileLocation);
             btnOpenDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.DicsDir);
+            this.SelectedIndexChanged += (sender, e) => LoadText();
         }
 
         readonly TabPage[] pages = new TabPage[] {
@@ -81,9 +81,10 @@ namespace ContextMenuManager.Controls
             new TabPage(AppString.SideBar.AppLanguage),
             new TabPage(AppString.Other.GuidInfosDictionary),
             new TabPage(AppString.SideBar.ThirdRules),
-            new TabPage(AppString.SideBar.EnhanceMenu)
+            new TabPage(AppString.SideBar.EnhanceMenu),
+            new TabPage(AppString.Other.UWPMode)
         };
-        readonly ReadOnlyRichTextBox[] boxs = new ReadOnlyRichTextBox[5];
+        readonly ReadOnlyRichTextBox[] boxs = new ReadOnlyRichTextBox[6];
         readonly PictureButton btnOpenDir = new PictureButton(AppImage.Open)
         {
             Anchor = AnchorStyles.Left | AnchorStyles.Bottom,
@@ -116,6 +117,9 @@ namespace ContextMenuManager.Controls
                     case 4:
                         dlg.FileName = AppConfig.ENHANCEMENUSICXML;
                         break;
+                    case 5:
+                        dlg.FileName = AppConfig.UWPMODEITEMSDICXML;
+                        break;
                 }
                 dlg.Filter = $"{dlg.FileName}|*{Path.GetExtension(dlg.FileName)}";
                 Directory.CreateDirectory(dirPath);
@@ -131,6 +135,8 @@ namespace ContextMenuManager.Controls
         {
             switch(this.SelectedIndex)
             {
+                case 0:
+                    return AppString.Other.Dictionaries;
                 case 1:
                     return Properties.Resources.AppLanguageDic;
                 case 2:
@@ -139,39 +145,45 @@ namespace ContextMenuManager.Controls
                     return Properties.Resources.ThirdRulesDic;
                 case 4:
                     return Properties.Resources.EnhanceMenusDic;
+                case 5:
+                    return Properties.Resources.UwpModeItemsDic;
                 default:
                     return string.Empty;
             }
         }
 
-        bool hadLoaded = false;
-        public void LoadTexts()
+        private void LoadText()
         {
-            if(hadLoaded) return;
-            hadLoaded = true;
-            boxs[0].Text = AppString.Other.Dictionaries;
-            this.BeginInvoke(new Action<string>(boxs[1].LoadIni), new[] { Properties.Resources.AppLanguageDic });
-            this.BeginInvoke(new Action<string>(boxs[2].LoadIni), new[] { Properties.Resources.GuidInfosDic });
-            this.BeginInvoke(new Action<string>(boxs[3].LoadXml), new[] { Properties.Resources.ThirdRulesDic });
-            this.BeginInvoke(new Action<string>(boxs[4].LoadXml), new[] { Properties.Resources.EnhanceMenusDic });
+            int index = this.SelectedIndex;
+            if(boxs[index].Text.Length > 0) return;
+            Action<string> action = null;
+            switch(index)
+            {
+                case 1:
+                case 2:
+                    action = boxs[index].LoadIni; break;
+                case 3:
+                case 4:
+                case 5:
+                    action = boxs[index].LoadXml; break;
+            }
+            this.BeginInvoke(action, new[] { GetInitialText() });
         }
     }
 
     sealed class LanguagesBox : FlowLayoutPanel
     {
-        const string OtherLanguagesUrl = "https://github.com/BluePointLilac/ContextMenuManager/tree/master/languages";
-
         public LanguagesBox()
         {
             this.Dock = DockStyle.Fill;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
             this.Controls.AddRange(new Control[] { cmbLanguages, btnOpenDir, btnDownLoad, btnTranslate, txtTranslators });
             cmbLanguages.SelectionChangeCommitted += (sender, e) => ChangeLanguage();
-            btnDownLoad.MouseDown += (sender, e) => ExternalProgram.OpenUrl(OtherLanguagesUrl);
+            btnDownLoad.MouseDown += (sender, e) => { if(Updater.ShowLanguageDialog()) LoadLanguages(); };
             btnOpenDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.LangsDir);
             btnTranslate.MouseDown += (sender, e) => new TranslateDialog().ShowDialog();
-            MyToolTip.SetToolTip(btnOpenDir, AppString.Tip.OpenLanguagesDir);
-            MyToolTip.SetToolTip(btnDownLoad, AppString.Tip.OtherLanguages);
+            MyToolTip.SetToolTip(btnOpenDir, AppString.Menu.FileLocation);
+            MyToolTip.SetToolTip(btnDownLoad, AppString.Dialog.DownloadLanguages);
             MyToolTip.SetToolTip(btnTranslate, AppString.Dialog.TranslateTool);
             txtTranslators.SetAutoShowScroll(ScrollBars.Vertical);
             cmbLanguages.AutosizeDropDownWidth();
@@ -211,7 +223,7 @@ namespace ContextMenuManager.Controls
                 foreach(string fileName in Directory.GetFiles(AppConfig.LangsDir, "*.ini"))
                 {
                     string langName = Path.GetFileNameWithoutExtension(fileName);
-                    IniReader reader = new IniReader(fileName);
+                    IniWriter reader = new IniWriter(fileName);
                     string language = reader.GetValue("General", "Language");
                     if(language.IsNullOrWhiteSpace()) language = langName;
                     string translator = reader.GetValue("General", "Translator");
@@ -230,14 +242,14 @@ namespace ContextMenuManager.Controls
             int index = GetSelectIndex();
             if(cmbLanguages.SelectedIndex == index) return;
             if(cmbLanguages.SelectedIndex > 0) language = languages[cmbLanguages.SelectedIndex - 1];
-            if(MessageBoxEx.Show(AppString.MessageBox.RestartApp, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            if(MessageBoxEx.Show(AppString.Message.RestartApp, MessageBoxButtons.OKCancel) != DialogResult.OK)
             {
                 cmbLanguages.SelectedIndex = index;
             }
             else
             {
                 AppConfig.Language = language;
-                SingleInstance.Restart(true);
+                SingleInstance.Restart();
             }
         }
 
@@ -254,15 +266,13 @@ namespace ContextMenuManager.Controls
 
     sealed class AppSettingBox : MyList
     {
-        private const string GithubUrl = "https://github.com/BluePointLilac/ContextMenuManager/releases";
-        private const string GiteeUrl = "https://gitee.com/BluePointLilac/ContextMenuManager/releases";
-
         public AppSettingBox()
         {
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
             mliConfigDir.AddCtrs(new Control[] { cmbConfigDir, btnConfigDir });
             mliBackup.AddCtrs(new Control[] { chkBackup, btnBackupDir });
-            mliUpdate.AddCtrs(new Control[] { lblGitee, lblGithub, lblUpdate });
+            mliUpdate.AddCtrs(new Control[] { cmbUpdate, lblUpdate });
+            mliRepo.AddCtr(cmbRepo);
             mliProtect.AddCtr(chkProtect);
             mliEngine.AddCtr(cmbEngine);
             mliWinXSortable.AddCtr(chkWinXSortable);
@@ -271,26 +281,27 @@ namespace ContextMenuManager.Controls
             mliHideDisabledItems.AddCtr(chkHideDisabledItems);
             cmbConfigDir.AutosizeDropDownWidth();
             cmbEngine.AutosizeDropDownWidth();
+            cmbRepo.AutosizeDropDownWidth();
             MyToolTip.SetToolTip(cmbConfigDir, AppString.Tip.ConfigPath);
-            MyToolTip.SetToolTip(btnConfigDir, AppString.Other.OpenConfigDir);
-            MyToolTip.SetToolTip(btnBackupDir, AppString.Other.OpenBackupDir);
-            MyToolTip.SetToolTip(mliUpdate, AppString.Tip.CheckUpdate + Environment.NewLine
-                + AppString.Tip.LastCheckUpdateTime + AppConfig.LastCheckUpdateTime.ToLongDateString());
+            MyToolTip.SetToolTip(btnConfigDir, AppString.Menu.FileLocation);
+            MyToolTip.SetToolTip(btnBackupDir, AppString.Menu.FileLocation);
+
+            cmbRepo.Items.AddRange(new[] { "Github", "Gitee" });
             cmbConfigDir.Items.AddRange(new[] { AppString.Other.AppDataDir, AppString.Other.AppDir });
-            cmbEngine.Items.AddRange(new[] { "Baidu", "Bing", "Google", "DogeDoge", "Sogou", "360", AppString.Other.CustomEngine });
+            cmbEngine.Items.AddRange(new[] { "Bing", "Baidu", "Google", "DuckDuckGo", "DogeDoge", "Sogou", "360", AppString.Other.CustomEngine });
+            cmbUpdate.Items.AddRange(new[] { AppString.Other.OnceAWeek, AppString.Other.OnceAMonth, AppString.Other.OnceASeason, AppString.Other.NeverCheck });
+
             btnConfigDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.ConfigDir);
             btnBackupDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.BackupDir);
-            lblGithub.Click += (sender, e) => ExternalProgram.OpenUrl(GithubUrl);
-            lblGitee.Click += (sender, e) => ExternalProgram.OpenUrl(GiteeUrl);
             lblUpdate.Click += (sender, e) =>
             {
-                if(!Updater.CheckUpdate()) MessageBoxEx.Show(AppString.MessageBox.NoUpdateDetected);
+                if(!Updater.Update()) MessageBoxEx.Show(AppString.Message.VersionIsLatest);
             };
             cmbConfigDir.SelectionChangeCommitted += (sender, e) =>
             {
                 string newPath = (cmbConfigDir.SelectedIndex == 0) ? AppConfig.AppDataConfigDir : AppConfig.AppConfigDir;
                 if(newPath == AppConfig.ConfigDir) return;
-                if(MessageBoxEx.Show(AppString.MessageBox.RestartApp, MessageBoxButtons.OKCancel) != DialogResult.OK)
+                if(MessageBoxEx.Show(AppString.Message.RestartApp, MessageBoxButtons.OKCancel) != DialogResult.OK)
                 {
                     cmbConfigDir.SelectedIndex = AppConfig.SaveToAppDir ? 1 : 0;
                 }
@@ -298,7 +309,7 @@ namespace ContextMenuManager.Controls
                 {
                     DirectoryEx.CopyTo(AppConfig.ConfigDir, newPath);
                     Directory.Delete(AppConfig.ConfigDir, true);
-                    SingleInstance.Restart(true);
+                    SingleInstance.Restart();
                 }
             };
             cmbEngine.SelectionChangeCommitted += (sender, e) =>
@@ -324,6 +335,22 @@ namespace ContextMenuManager.Controls
                     }
                 }
             };
+            cmbUpdate.SelectionChangeCommitted += (sender, e) =>
+            {
+                int day = 30;
+                switch(cmbUpdate.SelectedIndex)
+                {
+                    case 0:
+                        day = 7; break;
+                    case 2:
+                        day = 90; break;
+                    case 3:
+                        day = -1; break;
+                }
+                AppConfig.UpdateFrequency = day;
+            };
+            this.VisibleChanged += (sender, e) => this.Enabled = this.Visible;
+            cmbRepo.SelectionChangeCommitted += (sender, e) => AppConfig.RequestUseGithub = cmbRepo.SelectedIndex == 0;
             chkBackup.MouseDown += (sender, e) => AppConfig.AutoBackup = chkBackup.Checked = !chkBackup.Checked;
             chkProtect.MouseDown += (sender, e) => AppConfig.ProtectOpenItem = chkProtect.Checked = !chkProtect.Checked;
             chkWinXSortable.MouseDown += (sender, e) => AppConfig.WinXSortable = chkWinXSortable.Checked = !chkWinXSortable.Checked;
@@ -332,10 +359,10 @@ namespace ContextMenuManager.Controls
             chkShowFilePath.MouseDown += (sender, e) =>
             {
                 chkShowFilePath.Checked = !chkShowFilePath.Checked;
-                if(MessageBoxEx.Show(AppString.MessageBox.RestartApp, MessageBoxButtons.OKCancel) == DialogResult.OK)
+                if(MessageBoxEx.Show(AppString.Message.RestartApp, MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
                     AppConfig.ShowFilePath = chkShowFilePath.Checked;
-                    SingleInstance.Restart(true);
+                    SingleInstance.Restart();
                 }
                 else
                 {
@@ -355,6 +382,16 @@ namespace ContextMenuManager.Controls
         };
         readonly PictureButton btnConfigDir = new PictureButton(AppImage.Open);
 
+        readonly MyListItem mliRepo = new MyListItem
+        {
+            Text = AppString.Other.SetRequestRepo
+        };
+        readonly ComboBox cmbRepo = new ComboBox
+        {
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Width = 120.DpiZoom()
+        };
+
         readonly MyListItem mliBackup = new MyListItem
         {
             Text = AppString.Other.AutoBackup
@@ -364,25 +401,16 @@ namespace ContextMenuManager.Controls
 
         readonly MyListItem mliUpdate = new MyListItem
         {
-            Text = AppString.Other.CheckUpdate
+            Text = AppString.Other.SetUpdateFrequency
+        };
+        readonly ComboBox cmbUpdate = new ComboBox
+        {
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Width = 120.DpiZoom()
         };
         readonly Label lblUpdate = new Label
         {
-            Text = AppString.Other.ImmediatelyCheckUpdate,
-            BorderStyle = BorderStyle.FixedSingle,
-            Cursor = Cursors.Hand,
-            AutoSize = true
-        };
-        readonly Label lblGithub = new Label
-        {
-            Text = "Github",
-            BorderStyle = BorderStyle.FixedSingle,
-            Cursor = Cursors.Hand,
-            AutoSize = true
-        };
-        readonly Label lblGitee = new Label
-        {
-            Text = "Gitee",
+            Text = AppString.Other.ImmediatelyCheck,
             BorderStyle = BorderStyle.FixedSingle,
             Cursor = Cursors.Hand,
             AutoSize = true
@@ -430,24 +458,31 @@ namespace ContextMenuManager.Controls
         };
         readonly MyCheckBox chkHideDisabledItems = new MyCheckBox();
 
-        protected override void OnVisibleChanged(EventArgs e)
-        {
-            base.OnVisibleChanged(e);
-            this.Enabled = this.Visible;
-        }
-
         public void LoadItems()
         {
-            this.AddItems(new[] { mliUpdate, mliConfigDir, mliEngine, mliBackup, mliProtect,
+            this.AddItems(new[] { mliUpdate, mliConfigDir, mliRepo, mliEngine, mliBackup, mliProtect,
                 mliWinXSortable, mliShowFilePath, mliOpenMoreRegedit, mliHideDisabledItems });
             foreach(MyListItem item in this.Controls) item.HasImage = false;
             cmbConfigDir.SelectedIndex = AppConfig.SaveToAppDir ? 1 : 0;
+            cmbRepo.SelectedIndex = AppConfig.RequestUseGithub ? 0 : 1;
             chkBackup.Checked = AppConfig.AutoBackup;
             chkProtect.Checked = AppConfig.ProtectOpenItem;
             chkWinXSortable.Checked = AppConfig.WinXSortable;
             chkShowFilePath.Checked = AppConfig.ShowFilePath;
             chkOpenMoreRegedit.Checked = AppConfig.OpenMoreRegedit;
             chkHideDisabledItems.Checked = AppConfig.HideDisabledItems;
+
+            int index = 1;
+            switch(AppConfig.UpdateFrequency)
+            {
+                case 7:
+                    index = 0; break;
+                case 90:
+                    index = 2; break;
+                case -1:
+                    index = 3; break;
+            }
+            cmbUpdate.SelectedIndex = index;
 
             string url = AppConfig.EngineUrl;
             for(int i = 0; i <= AppConfig.EngineUrls.Length; i++)

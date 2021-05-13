@@ -10,21 +10,16 @@
 
 ## 兼容性能
 * 适用于Win7、8、8.1、10、Vista
-* 适用于 x64、x32 CPU 操作系统
+* 适用于 64bit、32bit CPU 操作系统
 * 适用于高分屏，最佳显示缩放比为150%
 * 程序支持国际化多语言显示，欢迎为此程序制作语言字典
 
 ## 运行截图
-![](Screenshot.png)
+![](Screenshot/Screenshot.png)
 
 ## 资源引用
 * 程序主图标来自 [EasyIcon][EasyIcon]<br>![][AppIcon]
-* [程序按钮图标][AppImage] 主要来自于 [阿里巴巴矢量图标资源库][IconFont]<br>![](AppImage.png)
-
-## 下载更新
-* 程序有检查更新功能，除了更新程序本身还会更新程序字典，下载完成后直接覆盖原文件即可
-* 由于Github Raw被墙，Gitee Raw有月访问次数上限，故将程序设置为每月自动检测一次更新，<br>
-大家也可以自行浏览 [Github Releases][GitHub Releases] 或 [Gitee 发行版][Gitee Releases] 检查程序是否有更新。
+* [程序按钮图标][AppImage] 主要来自于 [阿里巴巴矢量图标资源库][IconFont]<br>![](Screenshot/AppImage.png)
 
 ## 温馨提示
 * 一些特殊菜单项目(ShellEx类型，比如文件的加密(&Y))可能会受到其他因素影响，导致不会显示<br>在右键菜单中，但是按照程序使用的通用规则在此程序中仍会显示为启用，这是正常现象。

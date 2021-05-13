@@ -177,7 +177,7 @@ namespace ContextMenuManager.Properties {
         /// <summary>
         ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;!--此文件为常用右键菜单字典,
-        ///Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型，
+        ///Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ、REG_BINARY的键值类型，
         ///子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突
         ///由于Shell项太过复杂，程序只根据注册表项名判断存在即启用，故同一场景下不允许有相同KeyName属性的Shell项目，ShellEx项只要Guid符合则为启用--&gt;
         ///&lt;Data&gt;
@@ -185,7 +185,7 @@ namespace ContextMenuManager.Properties {
         ///    &lt;Shell&gt;
         ///      &lt;Item KeyName=&apos;CopyContent&apos; Tip=&apos;不需打开文件直接复制文件文本内容&amp;#x000A;非UTF-16 LE(或带BOM)编码会乱码&apos;&gt;
         ///        &lt;Value&gt;
-        ///          &lt;REG_ [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///     [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string EnhanceMenusDic {
             get {
@@ -200,21 +200,18 @@ namespace ContextMenuManager.Properties {
         ///;&lt;GUID&gt;可通过右键程序内ShellEx项目&quot;复制guid&quot;获取
         ///;不带括号的&lt;GUID&gt;为字典索引
         ///
-        ///;&lt;Text&gt;:
-        ///;Text为菜单项目名称
-        ///;可以赋值为引用资源文件字符串资源的本地化字符串,
+        ///;&lt;Text&gt;、&lt;ResText&gt;、&lt;[地区文化代码]-Text&gt;
+        ///;菜单项目名称
+        ///;优先级为 &lt;ResText&gt;，&lt;[地区文化代码]-Text&gt;，&lt;Text&gt;
+        ///;&lt;ResText&gt;为引用资源文件字符串资源的本地化字符串,
         ///;格式为&quot;@&lt;资源文件路径&gt;,-&lt;字符串资源索引&gt;&quot;,如赋值为&quot;@shell32.dll,-3576&quot;
-        ///;也可以赋值为直接显示名称,如赋值为&quot;使用XXX打开&quot;
+        ///;[地区文化代码]-Text为系统UI语言直接显示文本，比如zh-CN为中国简体中文，en-US为美国英语
+        ///;Text默认为中国简体中文显示文本
         ///
         ///;&lt;Icon&gt;:
         ///;Icon为菜单项目图标资源位置
         ///;格式为&quot;&lt;资源文件路径&gt;,&lt;图标序号&gt;&quot;，如赋值为&quot;C:Windows\System32\imageres.dll,203&quot;
-        ///;&lt;图标序号&gt;为负数则为图标资源索引,为非负数则为图标资源顺序序号
-        ///;Icon为空时默认提取文件第一个图标，没有图标则使用dll文件默认图标
-        ///
-        ///;&lt;资源文件路径&gt;:
-        ///;&lt;Text&gt;和&lt;Icon&gt;中的&lt;资源文件路径&gt;一般使用相对路径
-        ///;如果资源文件所在 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///;&lt;图标序号&gt;为负数则为图标资源索引, [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string GuidInfosDic {
             get {
@@ -393,6 +390,16 @@ namespace ContextMenuManager.Properties {
         internal static System.Drawing.Bitmap Up {
             get {
                 object obj = ResourceManager.GetObject("Up", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap User {
+            get {
+                object obj = ResourceManager.GetObject("User", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

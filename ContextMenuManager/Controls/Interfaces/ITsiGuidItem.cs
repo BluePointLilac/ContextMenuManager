@@ -55,7 +55,7 @@ namespace ContextMenuManager.Controls.Interfaces
         private void CopyGuid()
         {
             Clipboard.SetText(Item.Guid.ToString());
-            MessageBoxEx.Show($"{AppString.MessageBox.CopiedToClipboard}\n{Item.Guid}",
+            MessageBoxEx.Show($"{AppString.Message.CopiedToClipboard}\n{Item.Guid}",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -120,7 +120,7 @@ namespace ContextMenuManager.Controls.Interfaces
                 }
                 else
                 {
-                    MessageBoxEx.Show(AppString.MessageBox.StringParsingFailed);
+                    MessageBoxEx.Show(AppString.Message.StringParsingFailed);
                     return;
                 }
                 if(dlg.ItemIconLocation != null)

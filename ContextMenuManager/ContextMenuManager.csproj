@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ContextMenuManager</RootNamespace>
     <AssemblyName>ContextMenuManager</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -34,7 +34,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -118,13 +118,15 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
-    <Compile Include="AppDic.cs" />
     <Compile Include="BluePointLilac.Controls\MyToolTip.cs" />
     <Compile Include="BluePointLilac.Controls\ReadOnlyTextBox.cs">
       <SubType>Component</SubType>
@@ -152,6 +154,12 @@
     <Compile Include="BluePointLilac.Methods\WindowsOsVersion.cs" />
     <Compile Include="BluePointLilac.Methods\ShellLink.cs" />
     <Compile Include="BluePointLilac.Methods\WinXHasher.cs" />
+    <Compile Include="BluePointLilac.Controls\DownloadDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DonateListDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\FileExtensionDialog.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -188,7 +196,7 @@
     <Compile Include="Controls\NewLnkFileDialog.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\SelectDialog.cs">
+    <Compile Include="BluePointLilac.Controls\SelectDialog.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ShellExecuteDialog.cs">
@@ -361,6 +369,7 @@
     <Content Include="Properties\Resources\Images\DownLoad.png" />
     <Content Include="Properties\Resources\Images\Jump.png" />
     <Content Include="Properties\Resources\Images\Translate.png" />
+    <Content Include="Properties\Resources\Images\User.png" />
     <Content Include="Properties\Resources\Texts\UwpModeItemsDic.xml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

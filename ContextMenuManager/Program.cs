@@ -13,15 +13,12 @@ namespace ContextMenuManager
     static class Program
     {
         [STAThread]
-        static void Main(string[] args)
+        static void Main()
         {
+            if(SingleInstance.IsRunning()) return;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            bool isRestart = args.Length > 0 && args[0] == "Restart";
-            if(!isRestart && SingleInstance.IsRunning()) return;
-
-            Updater.PeriodicUpdate();
+            new Action(Updater.PeriodicUpdate).BeginInvoke(null, null);
             Application.Run(new MainForm());
         }
     }

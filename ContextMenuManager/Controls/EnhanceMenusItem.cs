@@ -40,6 +40,7 @@ namespace ContextMenuManager.Controls
         {
             if(valueXN == null) return;
             XmlNode szXN = valueXN.SelectSingleNode("REG_SZ");
+            XmlNode binaryXN = valueXN.SelectSingleNode("REG_SZ");
             XmlNode dwordXN = valueXN.SelectSingleNode("REG_DWORD");
             XmlNode expand_szXN = valueXN.SelectSingleNode("REG_EXPAND_SZ");
             using(RegistryKey key = RegistryEx.GetRegistryKey(regPath, true, true))
@@ -50,6 +51,11 @@ namespace ContextMenuManager.Controls
                 if(expand_szXN != null)
                     foreach(XmlAttribute a in expand_szXN.Attributes)
                         key.SetValue(a.Name, a.Value, RegistryValueKind.ExpandString);
+                if(binaryXN != null)
+                {
+                    foreach(XmlAttribute a in binaryXN.Attributes)
+                        key.SetValue(a.Name, EnhanceMenusList.ConvertToBinary(a.Value), RegistryValueKind.Binary);
+                }
                 if(dwordXN != null)
                     foreach(XmlAttribute a in dwordXN.Attributes)
                     {

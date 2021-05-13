@@ -38,12 +38,12 @@ namespace ContextMenuManager.Controls
                 {
                     if(string.IsNullOrEmpty(ItemText))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
                         return;
                     }
                     if(ItemCommand.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.Message.CommandCannotBeEmpty);
                         return;
                     }
                     FilePath = ObjectPath.ExtractFilePath(base.ItemFilePath);
@@ -53,12 +53,12 @@ namespace ContextMenuManager.Controls
                         string name = Path.GetFileName(path);
                         if(FilePath != null && FilePath.Equals(path, StringComparison.OrdinalIgnoreCase))
                         {
-                            MessageBoxEx.Show(AppString.MessageBox.HasBeenAdded);
+                            MessageBoxEx.Show(AppString.Message.HasBeenAdded);
                             return;
                         }
                         if(FileName == null || FileName.Equals(name, StringComparison.OrdinalIgnoreCase))
                         {
-                            MessageBoxEx.Show(AppString.MessageBox.UnsupportedFilename);
+                            MessageBoxEx.Show(AppString.Message.UnsupportedFilename);
                             return;
                         }
                     }

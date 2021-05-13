@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--此文件为常用右键菜单字典,
-Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ的键值类型，
+Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ、REG_BINARY的键值类型，
 子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突
 由于Shell项太过复杂，程序只根据注册表项名判断存在即启用，故同一场景下不允许有相同KeyName属性的Shell项目，ShellEx项只要Guid符合则为启用-->
 <Data>
@@ -42,7 +42,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Shell>
       <Item KeyName='TakeOwnerShip'>
         <Value>
-          <REG_SZ MUIVerb='管理员取得所有权限' HasLUAShield='' NoWorkingDirectory=''/>
+          <REG_SZ MUIVerb='管理员取得所有权限' HasLUAShield='' NoWorkingDirectory=''
+                  AppliesTo='System.ParsingName:&lt;>"::{645FF040-5081-101B-9F08-00AA002F954E}"'/>
         </Value>
         <SubKey>
           <Command>
@@ -697,7 +698,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       </Item>
       <Item KeyName='CreateDesktopShortcut'>
         <Value>
-          <REG_SZ MUIVerb='创建桌面快捷方式' Icon='imageres.dll,-110'/>
+          <REG_SZ MUIVerb='创建桌面快捷方式' Icon='imageres.dll,-110' Position='bottom'/>
         </Value>
         <SubKey>
           <Command>
@@ -917,6 +918,70 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       </Item>
     </Shell>
   </Image>
+
+  <EXE Text='EXE程序' Icon='imageres.dll,-15' RegPath='HKEY_CLASSES_ROOT\SystemFileAssociations\.exe'>
+    <Shell>
+      <Item KeyName='FirewallRules'>
+        <Value>
+          <REG_SZ MUIVerb='防火墙规则' Icon='FirewallControlPanel.dll,0' SubCommands=''/>
+        </Value>
+        <SubKey>
+          <Shell>
+            <SubKey>
+              <Item0>
+                <Value>
+                  <REG_SZ MUIVerb='禁止入站' Icon='imageres.dll,-105'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <ShellExecute Verb='runas' WindowStyle='0'/>
+                    <FileName>netsh.exe</FileName>
+                    <Arguments>advfirewall firewall add rule name = "%1" dir = in program = "%1" action = block</Arguments>
+                  </Command>
+                </SubKey>
+              </Item0>
+              <Item1>
+                <Value>
+                  <REG_SZ MUIVerb='禁止出站' Icon='imageres.dll,-105'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <ShellExecute Verb='runas' WindowStyle='0'/>
+                    <FileName>netsh.exe</FileName>
+                    <Arguments>advfirewall firewall add rule name = "%1" dir = out program = "%1" action = block</Arguments>
+                  </Command>
+                </SubKey>
+              </Item1>
+              <Item2>
+                <Value>
+                  <REG_SZ MUIVerb='允许入站' Icon='imageres.dll,-106'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <ShellExecute Verb='runas' WindowStyle='0'/>
+                    <FileName>netsh.exe</FileName>
+                    <Arguments>advfirewall firewall delete rule name = "%1" dir = in program = "%1"</Arguments>
+                  </Command>
+                </SubKey>
+              </Item2>
+              <Item3>
+                <Value>
+                  <REG_SZ MUIVerb='允许出站' Icon='imageres.dll,-106'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <ShellExecute Verb='runas' WindowStyle='0'/>
+                    <FileName>netsh.exe</FileName>
+                    <Arguments>advfirewall firewall delete rule name = "%1" dir = out program = "%1"</Arguments>
+                  </Command>
+                </SubKey>
+              </Item3>
+            </SubKey>
+          </Shell>
+        </SubKey>
+      </Item>
+    </Shell>
+  </EXE>
 
   <DLL Text='DLL文件' Icon='imageres.dll,-67' RegPath='HKEY_CLASSES_ROOT\SystemFileAssociations\.dll'>
     <Shell>

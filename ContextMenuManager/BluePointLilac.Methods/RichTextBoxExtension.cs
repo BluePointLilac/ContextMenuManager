@@ -34,7 +34,7 @@ namespace BluePointLilac.Methods
                 string token = machine.GetNextToken(xmlStr.Substring(location), out XmlTokenType ttype);
                 Color color = machine.GetTokenColor(ttype);
                 bool isBold = ttype == XmlTokenType.DocTypeName || ttype == XmlTokenType.NodeName;
-                box.AppendText(token, color, isBold);
+                box.AppendText(token, color, null, isBold);
                 location += token.Length;
                 tokenTryCount++;
 
@@ -65,7 +65,7 @@ namespace BluePointLilac.Methods
                     if(str.Contains("]"))
                     {
                         int index = str.IndexOf(']');
-                        box.AppendText(str.Substring(0, index + 1), Color.DarkCyan, true);
+                        box.AppendText(str.Substring(0, index + 1), Color.DarkCyan, null, true);
                         box.AppendText(str.Substring(index + 1), Color.SkyBlue);
                     }
                     else box.AppendText(str, Color.SkyBlue);
@@ -81,13 +81,13 @@ namespace BluePointLilac.Methods
             }
         }
 
-        public static void AppendText(this RichTextBox box, string text, Color color, bool isBold = false)
+        public static void AppendText(this RichTextBox box, string text, Color color = default, Font font = null, bool isBold = false)
         {
             FontStyle fontStyle = isBold ? FontStyle.Bold : FontStyle.Regular;
-            box.SelectionFont = new Font(box.Font, fontStyle);
+            box.SelectionFont = new Font(font ?? box.Font, fontStyle);
+            box.SelectionColor = color != default ? color : box.ForeColor;
             box.SelectionStart = box.TextLength;
             box.SelectionLength = 0;
-            box.SelectionColor = color;
             box.AppendText(text);
             box.SelectionColor = box.ForeColor;
         }

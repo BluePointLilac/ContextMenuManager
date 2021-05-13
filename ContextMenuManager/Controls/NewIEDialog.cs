@@ -31,12 +31,12 @@ namespace ContextMenuManager.Controls
                 {
                     if(ItemText.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
                         return;
                     }
                     if(ItemCommand.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.Message.CommandCannotBeEmpty);
                         return;
                     }
                     AddNewItem();

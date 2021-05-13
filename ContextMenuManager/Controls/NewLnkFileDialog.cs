@@ -63,19 +63,19 @@ namespace ContextMenuManager.Controls
                 {
                     if(ItemText.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
                     }
                     else if(ItemFilePath.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.CommandCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.Message.CommandCannotBeEmpty);
                     }
                     else if(rdoFile.Checked && !ObjectPath.GetFullFilePath(ItemFilePath, out _))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.FileNotExists);
+                        MessageBoxEx.Show(AppString.Message.FileNotExists);
                     }
                     else if(rdoFolder.Checked && !Directory.Exists(ItemFilePath))
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.FolderNotExists);
+                        MessageBoxEx.Show(AppString.Message.FolderNotExists);
                     }
                     else DialogResult = DialogResult.OK;
                 };

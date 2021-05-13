@@ -67,7 +67,7 @@ namespace ContextMenuManager.Controls
             {
                 if(ObjectPath.ExtractFilePath(value) != ItemFilePath)
                 {
-                    MessageBoxEx.Show(AppString.MessageBox.CannotChangePath);
+                    MessageBoxEx.Show(AppString.Message.CannotChangePath);
                 }
                 else Registry.SetValue(RegPath, "", value);
             }

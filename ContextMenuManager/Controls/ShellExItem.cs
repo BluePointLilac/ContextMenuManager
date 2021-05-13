@@ -63,8 +63,8 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        public string ValueName => null;
         public Guid Guid { get; set; }
+        public string ValueName => null;
         public string SearchText => Text;
         public string ItemFilePath => GuidInfo.GetFilePath(Guid);
         private string KeyName => RegistryEx.GetKeyName(RegPath);
@@ -101,7 +101,7 @@ namespace ContextMenuManager.Controls
                 }
                 catch
                 {
-                    MessageBoxEx.Show(AppString.MessageBox.AuthorityProtection);
+                    MessageBoxEx.Show(AppString.Message.AuthorityProtection);
                     return;
                 }
                 RegPath = BackupPath;
@@ -146,7 +146,7 @@ namespace ContextMenuManager.Controls
         {
             if(!IsOpenLnkItem) return false;
             if(!AppConfig.ProtectOpenItem) return false;
-            return MessageBoxEx.Show(AppString.MessageBox.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
+            return MessageBoxEx.Show(AppString.Message.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
         }
 
         public void DeleteMe()
@@ -158,7 +158,7 @@ namespace ContextMenuManager.Controls
             }
             catch
             {
-                MessageBoxEx.Show(AppString.MessageBox.AuthorityProtection);
+                MessageBoxEx.Show(AppString.Message.AuthorityProtection);
                 return;
             }
             this.Dispose();

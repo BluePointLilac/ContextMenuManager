@@ -36,12 +36,12 @@ namespace ContextMenuManager.Controls.Interfaces
                 if(dlg.ShowDialog() != DialogResult.OK) return null;
                 if(dlg.Text.Length == 0)
                 {
-                    MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
+                    MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
                     return ChangeText(text);
                 }
                 else if(ResourceString.GetDirectString(dlg.Text).Length == 0)
                 {
-                    MessageBoxEx.Show(AppString.MessageBox.StringParsingFailed);
+                    MessageBoxEx.Show(AppString.Message.StringParsingFailed);
                     return ChangeText(text);
                 }
                 else return dlg.Text;

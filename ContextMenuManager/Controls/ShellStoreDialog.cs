@@ -132,7 +132,7 @@ namespace ContextMenuManager.Controls
 
         public override void DeleteMe()
         {
-            if(IsPublic && MessageBoxEx.Show(AppString.MessageBox.ConfirmDeleteReferenced,
+            if(IsPublic && MessageBoxEx.Show(AppString.Message.ConfirmDeleteReferenced,
                 MessageBoxButtons.YesNo) != DialogResult.Yes) return;
             base.DeleteMe();
         }

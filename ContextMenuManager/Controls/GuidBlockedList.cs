@@ -56,14 +56,14 @@ namespace ContextMenuManager.Controls
                         {
                             if(((GuidBlockedItem)Controls[i]).Guid.Equals(guid))
                             {
-                                MessageBoxEx.Show(AppString.MessageBox.HasBeenAdded);
+                                MessageBoxEx.Show(AppString.Message.HasBeenAdded);
                                 return;
                             }
                         }
                         this.InsertItem(new GuidBlockedItem(value), 1);
                         ExplorerRestarter.Show();
                     }
-                    else MessageBoxEx.Show(AppString.MessageBox.MalformedGuid);
+                    else MessageBoxEx.Show(AppString.Message.MalformedGuid);
                 }
             };
         }

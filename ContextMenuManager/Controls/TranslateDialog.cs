@@ -163,8 +163,8 @@ namespace ContextMenuManager.Controls
                         = this.ClientSize.Width - (w + 3 * a);
 
                     btnCancel.Left = this.ClientSize.Width - btnCancel.Width - a;
-                    btnSave.Left = btnCancel.Left - btnSave.Width - 2 * a;
-                    btnBrowse.Left = btnSave.Left - btnBrowse.Width - 2 * a;
+                    btnSave.Left = btnCancel.Left - btnSave.Width - a;
+                    btnBrowse.Left = btnSave.Left - btnBrowse.Width - a;
                 };
                 this.ClientSize = new Size(w + 23 * a, h + 3 * 4 * a + 7 * a);
                 this.MinimumSize = this.Size;

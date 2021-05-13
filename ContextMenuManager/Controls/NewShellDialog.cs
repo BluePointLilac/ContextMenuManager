@@ -78,7 +78,7 @@ namespace ContextMenuManager.Controls
                         chkSE.Checked = false;
                         if(WindowsOsVersion.IsEqualVista)
                         {
-                            MessageBoxEx.Show(AppString.MessageBox.VistaUnsupportedMulti);
+                            MessageBoxEx.Show(AppString.Message.VistaUnsupportedMulti);
                             rdoSingle.Checked = true;
                             return;
                         }
@@ -93,7 +93,7 @@ namespace ContextMenuManager.Controls
                 {
                     if(txtText.Text.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.MessageBox.TextCannotBeEmpty);
+                        MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
                     }
                     else
                     {

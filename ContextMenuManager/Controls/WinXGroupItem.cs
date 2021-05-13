@@ -72,7 +72,7 @@ namespace ContextMenuManager.Controls
 
         private void RestoreDefault()
         {
-            if(MessageBoxEx.Show(AppString.MessageBox.RestoreDefault, MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if(MessageBoxEx.Show(AppString.Message.RestoreDefault, MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 File.SetAttributes(TargetPath, File.GetAttributes(DefaultGroupPath));
                 string[] paths = Directory.GetFiles(TargetPath);
@@ -95,7 +95,7 @@ namespace ContextMenuManager.Controls
         public void DeleteMe()
         {
             bool flag = Directory.GetFiles(TargetPath, "*.lnk").Length > 0;
-            if(flag && MessageBoxEx.Show(AppString.MessageBox.DeleteGroup, MessageBoxButtons.OKCancel) != DialogResult.OK) return;
+            if(flag && MessageBoxEx.Show(AppString.Message.DeleteGroup, MessageBoxButtons.OKCancel) != DialogResult.OK) return;
             File.SetAttributes(TargetPath, FileAttributes.Normal);
             Directory.Delete(TargetPath, true);
             if(flag)

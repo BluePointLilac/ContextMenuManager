@@ -17,7 +17,11 @@ namespace ContextMenuManager.Controls.Interfaces
         public FileLocationMenuItem(ITsiFilePathItem item) : base(AppString.Menu.FileLocation)
         {
             item.ContextMenuStrip.Opening += (sender, e) =>
-                this.Visible = File.Exists(item.ItemFilePath) || Directory.Exists(item.ItemFilePath);
+            {
+                string path = item.ItemFilePath;
+                this.Visible = path != null && (Directory.Exists(path)
+                    || File.Exists(path) || path.StartsWith("shell:AppsFolder"));
+            };
             this.Click += (sender, e) => ExternalProgram.JumpExplorer(item.ItemFilePath);
         }
     }
@@ -26,8 +30,11 @@ namespace ContextMenuManager.Controls.Interfaces
     {
         public FilePropertiesMenuItem(ITsiFilePathItem item) : base(AppString.Menu.FileProperties)
         {
-            item.ContextMenuStrip.Opening += (sender, e)
-                => this.Visible = File.Exists(item.ItemFilePath) || Directory.Exists(item.ItemFilePath);
+            item.ContextMenuStrip.Opening += (sender, e) =>
+            {
+                string path = item.ItemFilePath;
+                this.Visible = Directory.Exists(path) || File.Exists(path);
+            };
             this.Click += (sender, e) => ExternalProgram.ShowPropertiesDialog(item.ItemFilePath);
         }
     }

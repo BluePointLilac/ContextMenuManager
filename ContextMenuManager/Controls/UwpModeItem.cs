@@ -11,9 +11,8 @@ namespace ContextMenuManager.Controls
     sealed class UwpModeItem : MyListItem, IChkVisibleItem, ITsiRegPathItem, ITsiFilePathItem,
         IBtnShowMenuItem, ITsiWebSearchItem, ITsiRegExportItem, ITsiRegDeleteItem, ITsiGuidItem
     {
-        private const string PackagePath = @"HKEY_CLASSES_ROOT\PackagedCom\Package";
-        private const string AppXPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx";
-        private static readonly string WindowAppsDir = Registry.GetValue(AppXPath, "PackageRoot", null)?.ToString();
+        private const string PackageRegPath = @"HKEY_CLASSES_ROOT\PackagedCom\Package";
+        private const string PackagesRegPath = @"HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\PackageRepository\Packages";
 
         public UwpModeItem(string uwpName, Guid guid)
         {
@@ -21,7 +20,7 @@ namespace ContextMenuManager.Controls
             this.UwpName = uwpName;
             this.InitializeComponents();
             ChkVisible.Checked = ItemVisible;
-            this.Visible = File.Exists(ItemFilePath);
+            this.Visible = GetPackageName(uwpName) != null;
             this.Image = GuidInfo.GetImage(guid);
             this.Text = this.ItemText;
         }
@@ -66,7 +65,7 @@ namespace ContextMenuManager.Controls
 
         public static string GetPackageName(string uwpName)
         {
-            using(RegistryKey packageKey = RegistryEx.GetRegistryKey(PackagePath))
+            using(RegistryKey packageKey = RegistryEx.GetRegistryKey(PackageRegPath))
             {
                 if(packageKey == null) return null;
                 foreach(string packageName in packageKey.GetSubKeyNames())
@@ -84,17 +83,30 @@ namespace ContextMenuManager.Controls
         {
             string packageName = GetPackageName(uwpName);
             if(packageName == null) return null;
-            else return $@"{PackagePath}\{packageName}\Class\{guid:B}";
+            else return $@"{PackageRegPath}\{packageName}\Class\{guid:B}";
         }
 
         public static string GetFilePath(string uwpName, Guid guid)
         {
             string regPath = GetGuidRegPath(uwpName, guid);
             if(regPath == null) return null;
-            string dirPath = $@"{WindowAppsDir}\{GetPackageName(uwpName)}";
-            string path = Registry.GetValue(regPath, "DllPath", null)?.ToString();
-            if(path.IsNullOrWhiteSpace()) return dirPath;
-            else return $@"{dirPath}\{path}";
+            string packageName = GetPackageName(uwpName);
+            using(RegistryKey pKey = RegistryEx.GetRegistryKey($@"{PackagesRegPath}\{packageName}"))
+            {
+                if(pKey == null) return null;
+                string dirPath = pKey.GetValue("Path")?.ToString();
+                string dllPath = Registry.GetValue(regPath, "DllPath", null)?.ToString();
+                string filePath = $@"{dirPath}\{dllPath}";
+                if(File.Exists(filePath)) return filePath;
+                string[] names = pKey.GetSubKeyNames();
+                if(names.Length == 1)
+                {
+                    filePath = "shell:AppsFolder\\" + names[0];
+                    return filePath;
+                }
+                if(Directory.Exists(dirPath)) return dirPath;
+                return null;
+            }
         }
 
         public string SearchText => Text;

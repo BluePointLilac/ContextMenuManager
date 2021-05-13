@@ -1,6 +1,7 @@
 ﻿using BluePointLilac.Methods;
 using ContextMenuManager.Properties;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace ContextMenuManager
 {
@@ -55,6 +56,10 @@ namespace ContextMenuManager
         public static readonly Image Jump = Resources.Jump.ResizeImage(Scale);
         ///<summary>Microsoft Store</summary>
         public static readonly Image MicrosoftStore = Resources.MicrosoftStore.ResizeImage(Scale);
+        ///<summary>用户</summary>
+        public static readonly Image User = Resources.User.ResizeImage(Scale);
+        ///<summary>程序图标</summary>
+        public static readonly Image App = Icon.ExtractAssociatedIcon(Application.ExecutablePath).ToBitmap();
         ///<summary>系统文件</summary>
         public static readonly Image SystemFile = GetIconImage("imageres.dll", -67);
         ///<summary>资源不存在</summary>

@@ -282,7 +282,7 @@ namespace ContextMenuManager.Controls
                         {
                             if(IsSubItem)
                             {
-                                MessageBoxEx.Show(AppString.MessageBox.CannotHideSubItem);
+                                MessageBoxEx.Show(AppString.Message.CannotHideSubItem);
                                 return;
                             }
                         }
@@ -301,7 +301,7 @@ namespace ContextMenuManager.Controls
                 }
                 catch
                 {
-                    MessageBoxEx.Show(AppString.MessageBox.AuthorityProtection);
+                    MessageBoxEx.Show(AppString.Message.AuthorityProtection);
                 }
             }
         }
@@ -328,7 +328,7 @@ namespace ContextMenuManager.Controls
                 //MUIVerb长度不可超过80,超过80系统会隐藏该菜单项目
                 if(ResourceString.GetDirectString(value).Length >= 80)
                 {
-                    MessageBoxEx.Show(AppString.MessageBox.TextLengthCannotExceed80);
+                    MessageBoxEx.Show(AppString.Message.TextLengthCannotExceed80);
                 }
                 else
                 {
@@ -576,7 +576,7 @@ namespace ContextMenuManager.Controls
         {
             if(WindowsOsVersion.IsEqualVista)
             {
-                MessageBoxEx.Show(AppString.MessageBox.VistaUnsupportedMulti);
+                MessageBoxEx.Show(AppString.Message.VistaUnsupportedMulti);
                 return;
             }
             using(ShellSubMenuDialog dlg = new ShellSubMenuDialog())
@@ -591,7 +591,7 @@ namespace ContextMenuManager.Controls
         {
             if(!IsOpenItem) return false;
             if(!AppConfig.ProtectOpenItem) return false;
-            return MessageBoxEx.Show(AppString.MessageBox.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
+            return MessageBoxEx.Show(AppString.Message.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
         }
 
         public virtual void DeleteMe()
@@ -602,7 +602,7 @@ namespace ContextMenuManager.Controls
             }
             catch
             {
-                MessageBoxEx.Show(AppString.MessageBox.AuthorityProtection);
+                MessageBoxEx.Show(AppString.Message.AuthorityProtection);
                 return;
             }
             this.Dispose();

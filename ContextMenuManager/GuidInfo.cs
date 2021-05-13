@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -24,9 +25,9 @@ namespace ContextMenuManager
             public int IconIndex { get; set; }
         }
 
-        private static readonly IniReader AppDic = new IniReader(new StringBuilder(Properties.Resources.GuidInfosDic));
+        private static readonly IniReader WebDic = new IniReader(AppConfig.WebGuidInfosDic);
         public static readonly IniReader UserDic = new IniReader(AppConfig.UserGuidInfosDic);
-        public static readonly IniReader WebDic = new IniReader(AppConfig.WebGuidInfosDic);
+        private static readonly IniReader AppDic = new IniReader(new StringBuilder(Properties.Resources.GuidInfosDic));
         public static readonly Dictionary<Guid, IconLocation> IconLocationDic = new Dictionary<Guid, IconLocation>();
         private static readonly Dictionary<Guid, string> FilePathDic = new Dictionary<Guid, string>();
         public static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
@@ -36,10 +37,12 @@ namespace ContextMenuManager
         private static bool TryGetValue(Guid guid, string key, out string value)
         {
             //用户自定义字典优先
+            value = string.Empty;
             string section = guid.ToString();
-            if(UserDic.TryGetValue(section, key, out value)) return true;
-            if(WebDic.TryGetValue(section, key, out value)) return true;
-            if(AppDic.TryGetValue(section, key, out value)) return true;
+            foreach(IniReader reader in new[] { UserDic, WebDic, AppDic })
+            {
+                if(reader.TryGetValue(section, key, out value)) return true;
+            }
             return false;
         }
 
@@ -96,10 +99,20 @@ namespace ContextMenuManager
             if(ItemTextDic.ContainsKey(guid)) itemText = ItemTextDic[guid];
             else
             {
-                if(TryGetValue(guid, "Text", out itemText))
+                if(TryGetValue(guid, "ResText", out itemText))
                 {
                     itemText = GetAbsStr(guid, itemText, true);
                     itemText = ResourceString.GetDirectString(itemText);
+                }
+                if(itemText.IsNullOrWhiteSpace())
+                {
+                    string uiText = CultureInfo.CurrentUICulture.Name + "-Text";
+                    TryGetValue(guid, uiText, out itemText);
+                    if(itemText.IsNullOrWhiteSpace())
+                    {
+                        TryGetValue(guid, "Text", out itemText);
+                        itemText = ResourceString.GetDirectString(itemText);
+                    }
                 }
                 if(itemText.IsNullOrWhiteSpace())
                 {

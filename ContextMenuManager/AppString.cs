@@ -1,5 +1,4 @@
 ﻿using BluePointLilac.Methods;
-using System;
 using System.Text;
 
 namespace ContextMenuManager
@@ -13,7 +12,7 @@ namespace ContextMenuManager
         {
             string value = UserLanguage.GetValue(section, key);
             if(string.IsNullOrEmpty(value)) value = DefaultLanguage.GetValue(section, key);
-            return value.Replace("\\n", Environment.NewLine);
+            return value.Replace("\\r\\n", "\r\n").Replace("\\n", "\n");
         }
 
         /// <summary>常规</summary>
@@ -69,6 +68,7 @@ namespace ContextMenuManager
             public static string CustomRegPath => GetValue("CustomRegPath");
             public static string IEMenu => GetValue("IEMenu");
             public static string AppSetting => GetValue("AppSetting");
+            public static string CheckUpdate => GetValue("CheckUpdate");
             public static string AboutApp => GetValue("AboutApp");
             public static string Dictionaries => GetValue("Dictionaries");
             public static string AppLanguage => GetValue("AppLanguage");
@@ -188,21 +188,28 @@ namespace ContextMenuManager
             public static string SelectExtension => GetValue("SelectExtension");
             public static string SelectPerceivedType => GetValue("SelectPerceivedType");
             public static string SelectDirectoryType => GetValue("SelectDirectoryType");
-            public static string SelectSubMenuMode => GetValue("SelectSubMenuMode");
             public static string SelectNewItemType => GetValue("SelectNewItemType");
             public static string RegistryFile => GetValue("RegistryFile");
             public static string SelectGroup => GetValue("SelectGroup");
             public static string SelectObjectType => GetValue("SelectObjectType");
+            public static string SelectDropEffect => GetValue("SelectDropEffect");
+            public static string DefaultDropEffect => GetValue("DefaultDropEffect");
+            public static string CopyDropEffect => GetValue("CopyDropEffect");
+            public static string MoveDropEffect => GetValue("MoveDropEffect");
+            public static string CreateLinkDropEffect => GetValue("CreateLinkDropEffect");
+            public static string DownloadLanguages => GetValue("DownloadLanguages");
             public static string TranslateTool => GetValue("TranslateTool");
             public static string DefaultText => GetValue("DefaultText");
             public static string OldTranslation => GetValue("OldTranslation");
             public static string NewTranslation => GetValue("NewTranslation");
+            public static string SelectSubMenuMode => GetValue("SelectSubMenuMode");
+            public static string DonateInfo => GetValue("DonateInfo");
         }
 
-        /// <summary>消息框</summary>
-        public static class MessageBox
+        /// <summary>消息</summary>
+        public static class Message
         {
-            private static string GetValue(string key) => GetStringValue("MessageBox", key);
+            private static string GetValue(string key) => GetStringValue("Message", key);
             public static string TextCannotBeEmpty => GetValue("TextCannotBeEmpty");
             public static string CommandCannotBeEmpty => GetValue("CommandCannotBeEmpty");
             public static string StringParsingFailed => GetValue("StringParsingFailed");
@@ -225,10 +232,11 @@ namespace ContextMenuManager
             public static string PromptIsOpenItem => GetValue("PromptIsOpenItem");
             public static string SelectRegPath => GetValue("SelectRegPath");
             public static string RestartApp => GetValue("RestartApp");
-            public static string UpdateApp => GetValue("UpdateApp");
+            public static string UpdateInfo => GetValue("UpdateInfo");
+            public static string UpdateSucceeded => GetValue("UpdateSucceeded");
             public static string FileNotExists => GetValue("FileNotExists");
             public static string FolderNotExists => GetValue("FolderNotExists");
-            public static string NoUpdateDetected => GetValue("NoUpdateDetected");
+            public static string VersionIsLatest => GetValue("VersionIsLatest");
             public static string AuthorityProtection => GetValue("AuthorityProtection");
             public static string WinXSorted => GetValue("WinXSorted");
             public static string RestoreDefault => GetValue("RestoreDefault");
@@ -266,8 +274,10 @@ namespace ContextMenuManager
             public static string Separator => GetValue("Separator");
             public static string LockNewMenu => GetValue("LockNewMenu");
             public static string RestartExplorer => GetValue("RestartExplorer");
+            public static string UserDictionaries => GetValue("UserDictionaries");
             public static string DictionaryDescription => GetValue("DictionaryDescription");
             public static string GuidInfosDictionary => GetValue("GuidInfosDictionary");
+            public static string UWPMode => GetValue("UWPMode");
             public static string Translators => GetValue("Translators");
             public static string AboutApp => GetValue("AboutApp");
             public static string Dictionaries => GetValue("Dictionaries");
@@ -276,11 +286,14 @@ namespace ContextMenuManager
             public static string ConfigPath => GetValue("ConfigPath");
             public static string AppDataDir => GetValue("AppDataDir");
             public static string AppDir => GetValue("AppDir");
-            public static string OpenConfigDir => GetValue("OpenConfigDir");
             public static string AutoBackup => GetValue("AutoBackup");
-            public static string OpenBackupDir => GetValue("OpenBackupDir");
-            public static string CheckUpdate => GetValue("CheckUpdate");
-            public static string ImmediatelyCheckUpdate => GetValue("ImmediatelyCheckUpdate");
+            public static string SetUpdateFrequency => GetValue("SetUpdateFrequency");
+            public static string OnceAWeek => GetValue("OnceAWeek");
+            public static string OnceAMonth => GetValue("OnceAMonth");
+            public static string OnceASeason => GetValue("OnceASeason");
+            public static string NeverCheck => GetValue("NeverCheck");
+            public static string SetRequestRepo => GetValue("SetRequestRepo");
+            public static string ImmediatelyCheck => GetValue("ImmediatelyCheck");
             public static string ProtectOpenItem => GetValue("ProtectOpenItem");
             public static string WebSearchEngine => GetValue("WebSearchEngine");
             public static string CustomEngine => GetValue("CustomEngine");
@@ -290,6 +303,7 @@ namespace ContextMenuManager
             public static string OpenMoreRegedit => GetValue("OpenMoreRegedit");
             public static string HideDisabledItems => GetValue("HideDisabledItems");
             public static string SetPerceivedType => GetValue("SetPerceivedType");
+            public static string SetDefaultDropEffect => GetValue("SetDefaultDropEffect");
         }
 
         /// <summary>提示文本</summary>
@@ -307,11 +321,6 @@ namespace ContextMenuManager
             public static string AddFromParentMenu => GetValue("AddFromParentMenu");
             public static string DeleteGuidDic => GetValue("DeleteGuidDic");
             public static string LockNewMenu => GetValue("LockNewMenu");
-            public static string CheckUpdate => GetValue("CheckUpdate");
-            public static string LastCheckUpdateTime => GetValue("LastCheckUpdateTime");
-            public static string OpenLanguagesDir => GetValue("OpenLanguagesDir");
-            public static string OtherLanguages => GetValue("OtherLanguages");
-            public static string OpenDictionariesDir => GetValue("OpenDictionariesDir");
             public static string ConfigPath => GetValue("ConfigPath");
             public static string CommandFiles => GetValue("CommandFiles");
             public static string CreateGroup => GetValue("CreateGroup");

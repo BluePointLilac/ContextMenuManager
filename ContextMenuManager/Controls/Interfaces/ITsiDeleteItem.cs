@@ -25,7 +25,7 @@ namespace ContextMenuManager.Controls.Interfaces
             {
                 if(item is ITsiRegDeleteItem regItem && AppConfig.AutoBackup)
                 {
-                    if(MessageBoxEx.Show(AppString.MessageBox.DeleteButCanRestore,
+                    if(MessageBoxEx.Show(AppString.Message.DeleteButCanRestore,
                      MessageBoxButtons.YesNo) != DialogResult.Yes) return;
                     string date = DateTime.Today.ToString("yyyy-MM-dd");
                     string time = DateTime.Now.ToString("HH.mm.ss");
@@ -33,7 +33,7 @@ namespace ContextMenuManager.Controls.Interfaces
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
                     RegistryEx.Export(regItem.RegPath, filePath);
                 }
-                else if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDeletePermanently,
+                else if(MessageBoxEx.Show(AppString.Message.ConfirmDeletePermanently,
                      MessageBoxButtons.YesNo) != DialogResult.Yes) return;
                 item.DeleteMe();
             };

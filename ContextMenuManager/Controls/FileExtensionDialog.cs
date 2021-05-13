@@ -1,4 +1,5 @@
-﻿using BluePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using System;
 using System.Collections.Generic;
 

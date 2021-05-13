@@ -17,11 +17,11 @@
 * localization support, contributions are welcome
 
 ## Screenshots
-![](Screenshot-en.png)
+![](Screenshot/Screenshot-en.png)
 
 ## Third-party resources
 * Main program icon from [EasyIcon][EasyIcon]<br>![][AppIcon]
-* [Button icons][AppImage] from [Alibaba Iconfont][IconFont]![](AppImage.png)
+* [Button icons][AppImage] from [Alibaba Iconfont][IconFont]![](Screenshot/AppImage.png)
 
 ## Updates
 * Program and dictionary updates can be installed within the program, overwritting the original files.

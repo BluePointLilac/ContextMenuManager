@@ -41,6 +41,7 @@ namespace ContextMenuManager.Controls.Interfaces
             {
                 item.ShellLink.RunAsAdministrator = !this.Checked;
                 item.ShellLink.Save();
+                if(item is WinXItem) ExplorerRestarter.Show();
             };
         }
     }

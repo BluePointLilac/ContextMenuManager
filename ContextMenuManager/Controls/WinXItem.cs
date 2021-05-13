@@ -110,8 +110,6 @@ namespace ContextMenuManager.Controls
 
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
         readonly ToolStripMenuItem TsiChangeGroup = new ToolStripMenuItem(AppString.Menu.ChangeGroup);
-
-
         private void InitializeComponents()
         {
             BtnShowMenu = new MenuButton(this);
@@ -142,6 +140,7 @@ namespace ContextMenuManager.Controls
                 {
                     Image = ItemIcon.ToBitmap();
                     WinXHasher.HashLnk(FilePath);
+                    ExplorerRestarter.Show();
                 }
             };
         }

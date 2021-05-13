@@ -45,7 +45,7 @@ namespace ContextMenuManager.Controls
                 string defaultValue = Registry.GetValue(newPath, "", null)?.ToString();
                 if(!defaultValue.IsNullOrWhiteSpace())
                 {
-                    MessageBoxEx.Show(AppString.MessageBox.HasBeenAdded);
+                    MessageBoxEx.Show(AppString.Message.HasBeenAdded);
                 }
                 else
                 {

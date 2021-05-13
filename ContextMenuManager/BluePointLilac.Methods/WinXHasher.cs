@@ -23,9 +23,6 @@ namespace BluePointLilac.Methods
         private static extern uint SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath,
         IBindCtx pbc, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, out IShellItem ppv);
 
-        [DllImport("ole32.dll", PreserveSig = false)]
-        private extern static void PropVariantClear([In, Out] PropVariant pvar);
-
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern int PSGetPropertyKeyFromName([In][MarshalAs(UnmanagedType.LPWStr)] string pszCanonicalName, out PropertyKey propkey);
 
@@ -292,7 +289,6 @@ namespace BluePointLilac.Methods
 
             Marshal.ReleaseComObject(store);
             Marshal.ReleaseComObject(item);
-            PropVariantClear(pv);
         }
 
         private static readonly Dictionary<string, string> GeneralizePathDic = new Dictionary<string, string>

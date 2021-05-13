@@ -42,7 +42,7 @@ namespace ContextMenuManager.Controls
                 }
                 else
                 {
-                    text = AppString.MessageBox.MalformedGuid;
+                    text = AppString.Message.MalformedGuid;
                 }
                 text += "\n" + Value;
                 return text;
@@ -81,7 +81,7 @@ namespace ContextMenuManager.Controls
             MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
             TsiDelete.Click += (sender, e) =>
             {
-                if(MessageBoxEx.Show(AppString.MessageBox.ConfirmDelete, MessageBoxButtons.YesNo) == DialogResult.Yes) DeleteMe();
+                if(MessageBoxEx.Show(AppString.Message.ConfirmDelete, MessageBoxButtons.YesNo) == DialogResult.Yes) DeleteMe();
             };
         }
 

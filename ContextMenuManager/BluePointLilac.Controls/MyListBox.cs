@@ -67,10 +67,11 @@ namespace BluePointLilac.Controls
         public void AddItem(MyListItem item)
         {
             item.Parent = this;
-            item.Width = Owner.Width - item.Margin.Horizontal;
-            Owner.Resize += (sender, e) => item.Width = Owner.Width - item.Margin.Horizontal;
-            this.MouseWheel += (sender, e) => item.ContextMenuStrip?.Close();
             item.MouseEnter += (sender, e) => HoveredItem = item;
+            this.MouseWheel += (sender, e) => item.ContextMenuStrip?.Close();
+            void ResizeItem() => item.Width = Owner.Width - item.Margin.Horizontal;
+            Owner.Resize += (sender, e) => ResizeItem();
+            ResizeItem();
         }
 
         public void AddItems(MyListItem[] items)

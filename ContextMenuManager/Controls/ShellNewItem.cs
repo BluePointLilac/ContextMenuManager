@@ -57,7 +57,6 @@ namespace ContextMenuManager.Controls
         private string DefaultOpenMode => Registry.GetValue($@"{RegistryEx.CLASSESROOT}\{Extension}", "", null)?.ToString();//默认关联打开方式
         private string DefaultOpenModePath => $@"{RegistryEx.CLASSESROOT}\{DefaultOpenMode}";//默认关联打开方式注册表路径
         private string ConfigPath => $@"{RegPath}\Config";
-
         public bool CanSort => !UnableSortExtensions.Contains(Extension, StringComparer.OrdinalIgnoreCase);//能够排序的
         private bool CanEditData => UnableEditDataValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够编辑初始数据的
         private bool CanChangeCommand => UnableChangeCommandValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够更改菜单命令的
@@ -69,16 +68,24 @@ namespace ContextMenuManager.Controls
             {
                 string filePath = FileExtension.GetExecutablePath(Extension);
                 if(File.Exists(filePath)) return filePath;
-                using(RegistryKey key = RegistryEx.GetRegistryKey($@"{OpenModePath}\CLSID"))
+                using(RegistryKey oKey = RegistryEx.GetRegistryKey(OpenModePath))
                 {
-                    string value = key?.GetValue("")?.ToString();
-                    if(GuidEx.TryParse(value, out Guid guid))
+                    using(RegistryKey aKey = oKey.OpenSubKey("Application"))
                     {
-                        filePath = GuidInfo.GetFilePath(guid);
-                        if(filePath != null) return filePath;
+                        string uwp = aKey?.GetValue("AppUserModelID")?.ToString();
+                        if(uwp != null) return "shell:AppsFolder\\" + uwp;
+                    }
+                    using(RegistryKey cKey = oKey.OpenSubKey("CLSID"))
+                    {
+                        string value = cKey?.GetValue("")?.ToString();
+                        if(GuidEx.TryParse(value, out Guid guid))
+                        {
+                            filePath = GuidInfo.GetFilePath(guid);
+                            if(filePath != null) return filePath;
+                        }
                     }
                 }
-                return filePath;
+                return null;
             }
         }
 
@@ -258,7 +265,7 @@ namespace ContextMenuManager.Controls
 
         private void EditInitialData()
         {
-            if(MessageBoxEx.Show(AppString.MessageBox.EditInitialData,
+            if(MessageBoxEx.Show(AppString.Message.EditInitialData,
                 MessageBoxButtons.YesNo) != DialogResult.Yes) return;
             using(InputDialog dlg = new InputDialog
             {

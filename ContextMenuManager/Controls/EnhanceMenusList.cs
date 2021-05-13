@@ -4,6 +4,7 @@ using ContextMenuManager.Controls.Interfaces;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Xml;
 
 namespace ContextMenuManager.Controls
@@ -12,28 +13,48 @@ namespace ContextMenuManager.Controls
     {
         public void LoadItems()
         {
-            try
-            {
-                XmlDocument doc = AppDic.ReadXml(AppConfig.WebEnhanceMenusDic,
-                    AppConfig.UserEnhanceMenusDic, Properties.Resources.EnhanceMenusDic);
-                foreach(XmlNode xn in doc.DocumentElement.ChildNodes)
-                {
-
-                    GroupPathItem groupItem = GetGroupPathItem(xn);
-                    if(groupItem == null) continue;
-                    this.AddItem(groupItem);
-                    XmlElement shellXE = (XmlElement)xn.SelectSingleNode("Shell");
-                    XmlElement shellExXE = (XmlElement)xn.SelectSingleNode("ShellEx");
-                    if(shellXE != null) LoadShellItems(shellXE, groupItem);
-                    if(shellExXE != null) LoadShellExItems(shellExXE, groupItem);
-                    groupItem.IsFold = true;
-                    groupItem.HideWhenNoSubItem();
-                }
-            }
-            catch { }
+            string webPath = AppConfig.WebEnhanceMenusDic;
+            string userPath = AppConfig.UserEnhanceMenusDic;
+            string contents = Properties.Resources.EnhanceMenusDic;
+            if(!File.Exists(webPath)) File.WriteAllText(webPath, contents, Encoding.Unicode);
+            GroupPathItem webGroupItem = new GroupPathItem(webPath, ObjectPath.PathType.File);
+            GroupPathItem userGroupItem = new GroupPathItem(userPath, ObjectPath.PathType.File);
+            webGroupItem.Text = AppString.SideBar.Dictionaries;
+            userGroupItem.Text = AppString.Other.UserDictionaries;
+            webGroupItem.Image = AppImage.App;
+            userGroupItem.Image = AppImage.User;
+            LoadDocItems(webPath, webGroupItem);
+            LoadDocItems(userPath, userGroupItem);
         }
 
-        private GroupPathItem GetGroupPathItem(XmlNode xn)
+        private void LoadDocItems(string xmlPath, GroupPathItem groupItem)
+        {
+            if(!File.Exists(xmlPath)) return;
+            this.AddItem(groupItem);
+            XmlDocument doc = new XmlDocument();
+            try { doc.LoadXml(File.ReadAllText(xmlPath, EncodingType.GetType(xmlPath))); }
+            catch { return; }
+            foreach(XmlNode xn in doc.DocumentElement.ChildNodes)
+            {
+                try
+                {
+                    SubGroupItem subGroupItem = GetGroupPathItem(xn);
+                    if(subGroupItem == null) continue;
+                    this.AddItem(subGroupItem);
+                    XmlElement shellXE = (XmlElement)xn.SelectSingleNode("Shell");
+                    XmlElement shellExXE = (XmlElement)xn.SelectSingleNode("ShellEx");
+                    if(shellXE != null) LoadShellItems(shellXE, subGroupItem);
+                    if(shellExXE != null) LoadShellExItems(shellExXE, subGroupItem);
+                    subGroupItem.HideWhenNoSubItem();
+                    subGroupItem.FoldGroupItem = groupItem;
+                }
+                catch { continue; }
+            }
+            groupItem.IsFold = true;
+            groupItem.HideWhenNoSubItem();
+        }
+
+        private SubGroupItem GetGroupPathItem(XmlNode xn)
         {
             string path;
             string text;
@@ -99,11 +120,10 @@ namespace ContextMenuManager.Controls
                     }
                     break;
             }
-            GroupPathItem groupItem = new GroupPathItem(path, ObjectPath.PathType.Registry) { Image = image, Text = text };
-            return groupItem;
+            return new SubGroupItem(path, ObjectPath.PathType.Registry) { Image = image, Text = text };
         }
 
-        private void LoadShellItems(XmlElement shellXE, GroupPathItem groupItem)
+        private void LoadShellItems(XmlElement shellXE, SubGroupItem groupItem)
         {
             foreach(XmlElement itemXE in shellXE.SelectNodes("Item"))
             {
@@ -154,7 +174,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        private void LoadShellExItems(XmlElement shellExXE, GroupPathItem groupItem)
+        private void LoadShellExItems(XmlElement shellExXE, SubGroupItem groupItem)
         {
             foreach(XmlElement itemXE in shellExXE.SelectNodes("Item"))
             {
@@ -219,6 +239,17 @@ namespace ContextMenuManager.Controls
                 if(!File.Exists(path)) return false;
             }
             return true;
+        }
+
+        public static byte[] ConvertToBinary(string value)
+        {
+            string[] strs = value.Split(' ');
+            byte[] bs = new byte[strs.Length];
+            for(int i = 0; i < strs.Length; i++)
+            {
+                bs[i] = Convert.ToByte(strs[i], 16);
+            }
+            return bs;
         }
     }
 }
