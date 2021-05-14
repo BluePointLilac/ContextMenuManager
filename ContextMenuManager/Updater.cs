@@ -57,7 +57,7 @@ namespace ContextMenuManager
             {
                 if(isManual)
                 {
-                    MessageBoxEx.Show(AppString.Message.FailedToReadNetworkFile);
+                    MessageBoxEx.Show(AppString.Message.NetworkDtaReadFailed);
                     url = AppConfig.RequestUseGithub ? GithubLatest : GiteeReleases;
                     ExternalProgram.OpenUrl(url);
                 }
@@ -123,7 +123,7 @@ namespace ContextMenuManager
                 contents = contents.Replace("\n", Environment.NewLine);
                 File.WriteAllText(filePath, contents, Encoding.Unicode);
             }
-            if(!flag) MessageBoxEx.Show(AppString.Message.FailedToReadNetworkFile);
+            if(!flag) MessageBoxEx.Show(AppString.Message.NetworkDtaReadFailed);
         }
 
         /// <summary>显示语言下载对话框</summary>
@@ -134,7 +134,7 @@ namespace ContextMenuManager
             XmlDocument doc = GetWebJsonToXml(url);
             if(doc == null)
             {
-                MessageBoxEx.Show(AppString.Message.FailedToReadNetworkFile);
+                MessageBoxEx.Show(AppString.Message.NetworkDtaReadFailed);
                 return false;
             }
             Dictionary<string, string> langs = new Dictionary<string, string>();
@@ -172,7 +172,7 @@ namespace ContextMenuManager
             //contents = File.ReadAllText(@"..\..\..\Donate.md");//用于求和更新Donate.md文件
             if(contents == null)
             {
-                MessageBoxEx.Show(AppString.Message.FailedToReadNetworkFile);
+                MessageBoxEx.Show(AppString.Message.NetworkDtaReadFailed);
                 url = AppConfig.RequestUseGithub ? GithubDonate : GiteeDonate;
                 ExternalProgram.OpenUrl(url);
             }

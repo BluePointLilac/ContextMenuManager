@@ -241,7 +241,7 @@ namespace ContextMenuManager
             public static string WinXSorted => GetValue("WinXSorted");
             public static string RestoreDefault => GetValue("RestoreDefault");
             public static string DeleteGroup => GetValue("DeleteGroup");
-            public static string FailedToReadNetworkFile => GetValue("FailedToReadNetworkFile");
+            public static string NetworkDtaReadFailed => GetValue("NetworkDtaReadFailed");
         }
 
         /// <summary>其他文本</summary>
