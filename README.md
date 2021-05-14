@@ -3,6 +3,13 @@
 ------
 > 一个纯粹的Windows右键菜单管理程序
 
+## 程序下载
+* [最新版本][Latest], [GitHub Releases][GitHub Releases], [Gitee Releases][Gitee Releases]
+* 下载说明：在Assets文件列表里面下载zip（建议）或者直接下载exe
+* .NET版本说明：程序分为.NET3.5版和.NET4.0版，均适用于Win7、8、8.1、10、Vista
+  win7自带.NET3.5, win8、win8.1、win10自带.NET4.0以上版本，Vista系统既不自带.NET3.5也不自带4.0以上版本
+  自带.NET可直接运行程序，不自带则需要安装对应版本的[.NET Framework运行库][.NET Framework]
+
 ## 主要功能
 * 启用或禁用文件、文件夹、新建、发送到、打开方式、自定义文件格式、IE浏览器、WinX等右键菜单项目
 * 对上述场景右键菜单项目进行修改名称、修改图标、导航注册表位置、导航文件位置、永久删除等操作
@@ -35,13 +42,14 @@
 ## 捐赠作者
 此程序完全免费，如果你觉得这个程序对你有所帮助，可以通过扫面下方二维码（微信、支付宝、QQ）<br>进行捐赠，金额请随意，谢谢你的理解和支持！更加期待你为此项目点亮Star（这对我很重要！）<br>![][Donate]
 
+  [Latest]: https://github.com/BluePointLilac/ContextMenuManager/releases/latest
+  [GitHub Releases]: https://github.com/BluePointLilac/ContextMenuManager/releases
+  [Gitee Releases]: https://gitee.com/BluePointLilac/ContextMenuManager/releases
+  [.NET Framework]:https://dotnet.microsoft.com/download/dotnet-framework
   [EasyIcon]: https://www.easyicon.net/1208132-mouse_icon.html
   [AppIcon]: ContextMenuManager/Properties/AppIcon.ico
   [AppImage]: ContextMenuManager/Properties/Resources/Images
   [IconFont]: https://www.iconfont.cn
-  [HashLnk]: https://github.com/riverar/hashlnk
-  [GitHub Releases]: https://github.com/BluePointLilac/ContextMenuManager/releases
-  [Gitee Releases]: https://gitee.com/BluePointLilac/ContextMenuManager/releases
   [PcMoe]: http://www.pcmoe.net
   [Bilibili]: https://space.bilibili.com/34492771
   [Donate]: ContextMenuManager/Properties/Resources/Images/Donate.png
