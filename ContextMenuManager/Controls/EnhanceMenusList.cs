@@ -33,7 +33,7 @@ namespace ContextMenuManager.Controls
             this.AddItem(groupItem);
             XmlDocument doc = new XmlDocument();
             try { doc.LoadXml(File.ReadAllText(xmlPath, EncodingType.GetType(xmlPath))); }
-            catch { throw; }
+            catch { return; }
             foreach(XmlNode xn in doc.DocumentElement.ChildNodes)
             {
                 try
