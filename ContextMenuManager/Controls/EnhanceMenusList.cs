@@ -32,8 +32,8 @@ namespace ContextMenuManager.Controls
             if(!File.Exists(xmlPath)) return;
             this.AddItem(groupItem);
             XmlDocument doc = new XmlDocument();
-            try { doc.LoadXml(File.ReadAllText(xmlPath, EncodingType.GetType(xmlPath))); }
-            catch { return; }
+            try { doc.LoadXml(File.ReadAllText(xmlPath, EncodingType.GetType(xmlPath)).Trim()); }
+            catch(Exception e) { MessageBoxEx.Show(e.Message); return; }
             foreach(XmlNode xn in doc.DocumentElement.ChildNodes)
             {
                 try

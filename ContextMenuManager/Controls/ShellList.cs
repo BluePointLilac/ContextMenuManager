@@ -512,7 +512,7 @@ namespace ContextMenuManager.Controls
         private void LoadUwpModeItem(string xmlPath)
         {
             XmlDocument doc = new XmlDocument();
-            try { doc.LoadXml(File.ReadAllText(xmlPath, EncodingType.GetType(xmlPath))); }
+            try { doc.LoadXml(File.ReadAllText(xmlPath, EncodingType.GetType(xmlPath)).Trim()); }
             catch { return; }
             foreach(XmlElement sceneXE in doc.DocumentElement.ChildNodes)
             {
