@@ -1,4 +1,5 @@
-﻿using BluePointLilac.Methods;
+﻿using BluePointLilac.Controls;
+using BluePointLilac.Methods;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -35,7 +36,12 @@ namespace ContextMenuManager.Controls.Interfaces
                 }
                 else if(MessageBoxEx.Show(AppString.Message.ConfirmDeletePermanently,
                      MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+
+                MyListItem listItem = (MyListItem)item;
+                MyList list = (MyList)listItem.Parent;
+                int index = list.GetItemIndex(listItem);
                 item.DeleteMe();
+                list.HoveredItem = (MyListItem)list.Controls[index - 1];
             };
         }
     }
