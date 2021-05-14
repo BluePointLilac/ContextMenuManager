@@ -291,12 +291,16 @@ namespace ContextMenuManager.Controls
             cmbEngine.Items.AddRange(new[] { "Bing", "Baidu", "Google", "DuckDuckGo", "DogeDoge", "Sogou", "360", AppString.Other.CustomEngine });
             cmbUpdate.Items.AddRange(new[] { AppString.Other.OnceAWeek, AppString.Other.OnceAMonth, AppString.Other.OnceASeason, AppString.Other.NeverCheck });
 
+            lblUpdate.Click += (sender, e) => Updater.Update(true);
+            this.VisibleChanged += (sender, e) => this.Enabled = this.Visible;
             btnConfigDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.ConfigDir);
             btnBackupDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.BackupDir);
-            lblUpdate.Click += (sender, e) =>
-            {
-                if(!Updater.Update()) MessageBoxEx.Show(AppString.Message.VersionIsLatest);
-            };
+            cmbRepo.SelectionChangeCommitted += (sender, e) => AppConfig.RequestUseGithub = cmbRepo.SelectedIndex == 0;
+            chkBackup.MouseDown += (sender, e) => AppConfig.AutoBackup = chkBackup.Checked = !chkBackup.Checked;
+            chkProtect.MouseDown += (sender, e) => AppConfig.ProtectOpenItem = chkProtect.Checked = !chkProtect.Checked;
+            chkWinXSortable.MouseDown += (sender, e) => AppConfig.WinXSortable = chkWinXSortable.Checked = !chkWinXSortable.Checked;
+            chkOpenMoreRegedit.MouseDown += (sender, e) => AppConfig.OpenMoreRegedit = chkOpenMoreRegedit.Checked = !chkOpenMoreRegedit.Checked;
+            chkHideDisabledItems.MouseDown += (sender, e) => AppConfig.HideDisabledItems = chkHideDisabledItems.Checked = !chkHideDisabledItems.Checked;
             cmbConfigDir.SelectionChangeCommitted += (sender, e) =>
             {
                 string newPath = (cmbConfigDir.SelectedIndex == 0) ? AppConfig.AppDataConfigDir : AppConfig.AppConfigDir;
@@ -349,13 +353,6 @@ namespace ContextMenuManager.Controls
                 }
                 AppConfig.UpdateFrequency = day;
             };
-            this.VisibleChanged += (sender, e) => this.Enabled = this.Visible;
-            cmbRepo.SelectionChangeCommitted += (sender, e) => AppConfig.RequestUseGithub = cmbRepo.SelectedIndex == 0;
-            chkBackup.MouseDown += (sender, e) => AppConfig.AutoBackup = chkBackup.Checked = !chkBackup.Checked;
-            chkProtect.MouseDown += (sender, e) => AppConfig.ProtectOpenItem = chkProtect.Checked = !chkProtect.Checked;
-            chkWinXSortable.MouseDown += (sender, e) => AppConfig.WinXSortable = chkWinXSortable.Checked = !chkWinXSortable.Checked;
-            chkOpenMoreRegedit.MouseDown += (sender, e) => AppConfig.OpenMoreRegedit = chkOpenMoreRegedit.Checked = !chkOpenMoreRegedit.Checked;
-            chkHideDisabledItems.MouseDown += (sender, e) => AppConfig.HideDisabledItems = chkHideDisabledItems.Checked = !chkHideDisabledItems.Checked;
             chkShowFilePath.MouseDown += (sender, e) =>
             {
                 chkShowFilePath.Checked = !chkShowFilePath.Checked;

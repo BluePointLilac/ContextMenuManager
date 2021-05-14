@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Methods;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -80,13 +81,11 @@ namespace ContextMenuManager.Controls
                     string[] values = lines[n].Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                     dgvDonate.Rows.Add(values);
                 }
-
-                DateTime date = new DateTime();
+                dgvDonate.Sort(dgvDonate.Columns[0], ListSortDirection.Descending);
+                DateTime date = Convert.ToDateTime(dgvDonate.Rows[0].Cells[0].Value);
                 float money = 0;
                 foreach(DataGridViewRow row in dgvDonate.Rows)
                 {
-                    DateTime temp = Convert.ToDateTime(row.Cells[0].Value);
-                    if(temp > date) date = temp;
                     money += Convert.ToSingle(row.Cells[3].Value);
                 }
                 dgvDonate.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;

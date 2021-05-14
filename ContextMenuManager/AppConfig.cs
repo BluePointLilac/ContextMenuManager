@@ -58,8 +58,8 @@ namespace ContextMenuManager
         private static readonly IniWriter ConfigWriter = new IniWriter(ConfigIni);
         private static string GetGeneralValue(string key) => ConfigWriter.GetValue("General", key);
         private static void SetGeneralValue(string key, object value) => ConfigWriter.SetValue("General", key, value);
-
         public static string LanguageIniPath => $@"{LangsDir}\{Language}.ini";
+
         public static string Language
         {
             get

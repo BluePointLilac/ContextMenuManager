@@ -34,7 +34,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -151,6 +151,9 @@
     <Compile Include="BluePointLilac.Methods\SingleInstance.cs" />
     <Compile Include="BluePointLilac.Methods\StringExtension.cs" />
     <Compile Include="BluePointLilac.Methods\TextBoxExtension.cs" />
+    <Compile Include="BluePointLilac.Methods\UAWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BluePointLilac.Methods\WindowsOsVersion.cs" />
     <Compile Include="BluePointLilac.Methods\ShellLink.cs" />
     <Compile Include="BluePointLilac.Methods\WinXHasher.cs" />

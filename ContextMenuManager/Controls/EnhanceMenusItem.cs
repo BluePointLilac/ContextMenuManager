@@ -40,7 +40,7 @@ namespace ContextMenuManager.Controls
         {
             if(valueXN == null) return;
             XmlNode szXN = valueXN.SelectSingleNode("REG_SZ");
-            XmlNode binaryXN = valueXN.SelectSingleNode("REG_SZ");
+            XmlNode binaryXN = valueXN.SelectSingleNode("REG_BINARY");
             XmlNode dwordXN = valueXN.SelectSingleNode("REG_DWORD");
             XmlNode expand_szXN = valueXN.SelectSingleNode("REG_EXPAND_SZ");
             using(RegistryKey key = RegistryEx.GetRegistryKey(regPath, true, true))

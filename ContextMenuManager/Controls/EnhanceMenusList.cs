@@ -33,7 +33,7 @@ namespace ContextMenuManager.Controls
             this.AddItem(groupItem);
             XmlDocument doc = new XmlDocument();
             try { doc.LoadXml(File.ReadAllText(xmlPath, EncodingType.GetType(xmlPath))); }
-            catch { return; }
+            catch { throw; }
             foreach(XmlNode xn in doc.DocumentElement.ChildNodes)
             {
                 try
@@ -167,7 +167,6 @@ namespace ContextMenuManager.Controls
                 {
                     if(!tip.IsNullOrWhiteSpace()) tip += "\n";
                     tip += AppString.Tip.CommandFiles;
-                    //if(System.Diagnostics.Debugger.IsAttached) item.ChkVisible.Checked = item.ItemVisible = true;//调试状态
                 }
                 MyToolTip.SetToolTip(item.ChkVisible, tip);
                 this.AddItem(item);
@@ -199,7 +198,6 @@ namespace ContextMenuManager.Controls
 
         public static bool JudgeOSVersion(XmlElement itemXE)
         {
-            //if(System.Diagnostics.Debugger.IsAttached) return true;//调试状态
             bool JudgeOne(XmlElement osXE)
             {
                 Version ver = new Version(osXE.InnerText);
@@ -232,7 +230,6 @@ namespace ContextMenuManager.Controls
 
         private static bool FileExists(XmlElement itemXE)
         {
-            //if(System.Diagnostics.Debugger.IsAttached) return true;//调试状态
             foreach(XmlElement feXE in itemXE.SelectNodes("FileExists"))
             {
                 string path = Environment.ExpandEnvironmentVariables(feXE.InnerText);
@@ -243,13 +240,17 @@ namespace ContextMenuManager.Controls
 
         public static byte[] ConvertToBinary(string value)
         {
-            string[] strs = value.Split(' ');
-            byte[] bs = new byte[strs.Length];
-            for(int i = 0; i < strs.Length; i++)
+            try
             {
-                bs[i] = Convert.ToByte(strs[i], 16);
+                string[] strs = value.Split(' ');
+                byte[] bs = new byte[strs.Length];
+                for(int i = 0; i < strs.Length; i++)
+                {
+                    bs[i] = Convert.ToByte(strs[i], 16);
+                }
+                return bs;
             }
-            return bs;
+            catch { return null; }
         }
     }
 }

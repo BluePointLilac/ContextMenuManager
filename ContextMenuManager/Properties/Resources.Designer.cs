@@ -105,7 +105,7 @@ namespace ContextMenuManager.Properties {
         ///;翻译：可帮助作者为此程序提供翻译并提交到Github，以下内容中等号右侧内容替换为翻译文本，
         ///;General-Translator为翻译贡献者，General-Language为语言名称，如en-US 美国英语
         ///;翻译文件保存在Config\languages目录中，文件名保存为en-US.ini
-        ///;翻译说明：暂时不翻译的值保留为空即可，字典内赋值换行请使用\n进行转义
+        ///;翻译说明：暂时不翻译的值保留为空即可，字典内赋值换行使用\r\n或\n进行转义
         ///
         ///[General]
         ///Language = zh-CN 简体中文
@@ -126,7 +126,7 @@ namespace ContextMenuManager.Properties {
         ///Background = 目录背景
         ///Desktop = 桌面背景
         ///Drive = 磁盘分区
-        ///AllObjects  [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///AllObje [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string AppLanguageDic {
             get {
@@ -407,21 +407,20 @@ namespace ContextMenuManager.Properties {
         /// <summary>
         ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;!-- 微软在Win10右键菜单中新增的UWP模块, 非Shell、ShellEx类型,
-        ///但是可通过GUID锁定屏蔽来禁用右键菜单项目,
+        ///但是可通过GUID锁定屏蔽来禁用相关右键菜单项目,
         ///GUID查找位置：HKEY_CLASSES_ROOT\PackagedCom\Package\[包名]\Class\[GUID],
         ///Scene的各子节点为菜单项目出现位置, Item必须有Guid属性，
         ///UwpName、Text、Icon、Tip等属性写在GuidInfosDic.ini里面--&gt;
         ///
         ///&lt;Scene&gt;
-        ///	&lt;File&gt;
-        ///		&lt;Item Guid=&apos;776dbc8d-7347-478c-8d71-791e12ef49d8&apos;/&gt;
-        ///	&lt;/File&gt;
-        ///	&lt;Directory&gt;
-        ///		&lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/&gt;
-        ///	&lt;/Directory&gt;
-        ///	&lt;Background&gt;
-        ///		&lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/&gt;
-        ///	&lt;/Backg [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///  &lt;File&gt;
+        ///    &lt;Item Guid=&apos;776dbc8d-7347-478c-8d71-791e12ef49d8&apos;/&gt;
+        ///  &lt;/File&gt;
+        ///  &lt;Directory&gt;
+        ///    &lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/&gt;
+        ///  &lt;/Directory&gt;
+        ///  &lt;Background&gt;
+        ///    &lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string UwpModeItemsDic {
             get {
