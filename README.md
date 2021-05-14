@@ -4,7 +4,9 @@
 > 一个纯粹的Windows右键菜单管理程序
 
 ## 程序下载
-* [最新版本][Latest], [GitHub Releases][GitHub Releases], [Gitee Releases][Gitee Releases]
+* [最新版本][Latest]
+  [GitHub Releases][GitHub Releases]
+  [Gitee Releases][Gitee Releases]
 * 下载说明：在Assets文件列表里面下载zip（建议）或者直接下载exe
 * .NET版本说明：程序分为.NET3.5版和.NET4.0版，均适用于Win7、8、8.1、10、Vista
   win7自带.NET3.5, win8、win8.1、win10自带.NET4.0以上版本，Vista系统既不自带.NET3.5也不自带4.0以上版本
