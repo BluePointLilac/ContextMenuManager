@@ -1,7 +1,7 @@
 **[简体中文](README.md)** | **English**
 # ContextMenuManager
 ------
-> A program to manage the Windows right-click context menu.
+> 🖱️ A program to manage the Windows right-click context menu.
 
 ## Key features
 * Enable and disable context menu options for files, folders, submenus (e.g. open, send to), Internet Explorer, and Win + X

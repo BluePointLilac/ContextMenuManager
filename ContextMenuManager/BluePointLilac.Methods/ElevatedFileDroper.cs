@@ -12,11 +12,11 @@ namespace BluePointLilac.Methods
     /// 代码来源2：https://github.com/volschin/sdimager/blob/master/ElevatedDragDropManager.cs
     /// 代码作者：雨少主（知乎）、volschin（Github）、蓝点lilac（转载、修改）
     /// 调用方法：var droper = new ElevatedFileDroper(control);
-    /// control.DragDrop += (sender, e) => MessageBox.Show(droper.DropFilePaths[0]);
+    /// droper.DragDrop += (sender, e) => MessageBox.Show(droper.DropFilePaths[0]);
+    /// 备注：此类只能生效一个实例，不能将control.AllowDrop设为true，droper.DragDrop与control.DragDrop不共存
 
     public sealed class ElevatedFileDroper : IMessageFilter
     {
-        #region native members
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint message, ChangeFilterAction action, in ChangeFilterStruct pChangeFilterStruct);
@@ -68,18 +68,31 @@ namespace BluePointLilac.Methods
         const uint WM_COPYGLOBALDATA = 0x0049;
         const uint WM_COPYDATA = 0x004A;
         const uint WM_DROPFILES = 0x0233;
-        #endregion
 
-        public Control ContainerControl { get; private set; }
+        public event EventHandler DragDrop;
         public string[] DropFilePaths { get; private set; }
         public Point DropPoint { get; private set; }
 
         public ElevatedFileDroper(Control ctr)
         {
-            this.ContainerControl = ctr;
-            ctr.DragDrop += (sender, e) => DropFilePaths = (string[])e.Data.GetData(typeof(string[]));
-            ctr.DragEnter += (sender, e) => e.Effect = DragDropEffects.All;
+            ctr.AllowDrop = false;
+            DragAcceptFiles(ctr.Handle, true);
+            Application.AddMessageFilter(this);
             ctr.Disposed += (sender, e) => Application.RemoveMessageFilter(this);
+
+            if(ctr is Form frm)
+            {
+                double opacity = frm.Opacity;
+                frm.Paint += (sender, e) =>
+                {
+                    if(frm.Opacity != opacity)
+                    {
+                        //窗体透明度变化时需要重新注册接受文件拖拽标识符
+                        DragAcceptFiles(ctr.Handle, true);
+                        opacity = frm.Opacity;
+                    }
+                };
+            }
 
             Version ver = Environment.OSVersion.Version;
             bool isVistaOrHigher = ver >= new Version(6, 0);
@@ -101,35 +114,25 @@ namespace BluePointLilac.Methods
                     if(error) throw new Win32Exception(Marshal.GetLastWin32Error());
                 }
             }
-            DragAcceptFiles(ctr.Handle, true);
-            Application.AddMessageFilter(this);
         }
 
         public bool PreFilterMessage(ref Message m)
         {
             if(m.Msg != WM_DROPFILES) return false;
-            if(ContainerControl.AllowDrop)
+            IntPtr handle = m.WParam;
+            uint fileCount = DragQueryFile(handle, uint.MaxValue, null, 0);
+            string[] filePaths = new string[fileCount];
+            for(uint i = 0; i < fileCount; i++)
             {
-                DropPoint = ContainerControl.PointToClient(Cursor.Position);
+                StringBuilder sb = new StringBuilder(260);
+                uint result = DragQueryFile(handle, i, sb, sb.Capacity);
+                if(result > 0) filePaths[i] = sb.ToString();
             }
-            else
-            {
-                IntPtr handle = m.WParam;
-                uint fileCount = DragQueryFile(handle, uint.MaxValue, null, 0);
-                string[] fileNames = new string[fileCount];
-                for(uint i = 0; i < fileCount; i++)
-                {
-                    StringBuilder sb = new StringBuilder(260);
-                    uint result = DragQueryFile(handle, i, sb, sb.Capacity);
-                    if(result > 0) fileNames[i] = sb.ToString();
-                }
-                DragQueryPoint(handle, out Point point);
-                DragFinish(handle);
-                DropPoint = point;
-                ContainerControl.AllowDrop = true;
-                ContainerControl.DoDragDrop(fileNames, DragDropEffects.All);
-            }
-            ContainerControl.AllowDrop = false;
+            DragQueryPoint(handle, out Point point);
+            DragFinish(handle);
+            DropPoint = point;
+            DropFilePaths = filePaths;
+            DragDrop?.Invoke(null, null);
             return true;
         }
     }

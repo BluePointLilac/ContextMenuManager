@@ -144,6 +144,12 @@ namespace ContextMenuManager
             set => SetGeneralValue("HideDisabledItems", value ? 1 : 0);
         }
 
+        public static bool HideSysStoreItems
+        {
+            get => GetGeneralValue("HideSysStoreItems") != "0";
+            set => SetGeneralValue("HideSysStoreItems", value ? 1 : 0);
+        }
+
         public static bool RequestUseGithub
         {
             get

@@ -12,6 +12,7 @@ namespace BluePointLilac.Methods
     {
         public static void JumpRegEdit(string regPath, string valueName = null, bool moreOpen = false)
         {
+            if(regPath == null) return;
             Process process;
             IntPtr hMain = FindWindow("RegEdit_RegEdit", null);
             if(hMain != IntPtr.Zero && !moreOpen)
@@ -72,9 +73,10 @@ namespace BluePointLilac.Methods
 
         public static void JumpExplorer(string filePath)
         {
+            if(filePath == null) return;
             using(Process process = new Process())
             {
-                if(File.Exists(filePath) || filePath.StartsWith("shell:AppsFolder"))
+                if(File.Exists(filePath) || filePath.StartsWith("shell:AppsFolder", StringComparison.OrdinalIgnoreCase))
                 {
                     process.StartInfo.FileName = "explorer.exe";
                     process.StartInfo.Arguments = $"/select, {filePath}";

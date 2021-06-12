@@ -8,15 +8,15 @@ namespace ContextMenuManager.Controls
 {
     sealed class SendToList : MyList
     {
-        public static readonly string SendToPath = Environment.ExpandEnvironmentVariables(@"%AppData%\Microsoft\Windows\SendTo");
+        private static readonly string SendToPath = Environment.ExpandEnvironmentVariables(@"%AppData%\Microsoft\Windows\SendTo");
 
         public void LoadItems()
         {
-            Array.ForEach(Directory.GetFiles(SendToPath), path =>
+            foreach(string path in Directory.GetFileSystemEntries(SendToPath))
             {
-                if(Path.GetFileName(path).ToLower() != "desktop.ini")
-                    this.AddItem(new SendToItem(path));
-            });
+                if(Path.GetFileName(path).ToLower() == "desktop.ini") continue;
+                this.AddItem(new SendToItem(path));
+            }
             this.SortItemByText();
             this.AddNewItem();
             this.AddDirItem();

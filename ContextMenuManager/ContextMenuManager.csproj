@@ -34,7 +34,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -367,12 +367,20 @@
     <Compile Include="Updater.cs" />
     <None Include="App.config" />
     <None Include="Properties\App.manifest" />
+    <None Include="Properties\Resources\ShellNew\0.rar" />
+    <None Include="Properties\Resources\ShellNew\0.reg" />
+    <None Include="Properties\Resources\ShellNew\0.rtf" />
+    <None Include="Properties\Resources\ShellNew\0.xlsx" />
+    <None Include="Properties\Resources\ShellNew\0.zip" />
     <None Include="Properties\Resources\Texts\AppLanguageDic.ini" />
     <None Include="Properties\Resources\Texts\GuidInfosDic.ini" />
     <Content Include="Properties\Resources\Images\DownLoad.png" />
     <Content Include="Properties\Resources\Images\Jump.png" />
     <Content Include="Properties\Resources\Images\Translate.png" />
     <Content Include="Properties\Resources\Images\User.png" />
+    <Content Include="Properties\Resources\ShellNew\0.c" />
+    <Content Include="Properties\Resources\ShellNew\0.html" />
+    <Content Include="Properties\Resources\ShellNew\0.xml" />
     <Content Include="Properties\Resources\Texts\UwpModeItemsDic.xml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -428,14 +436,18 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>mkdir $(TargetDir)\Config\languages
-xcopy $(ProjectDir)\Properties\Resources\Texts\AppLanguageDic.ini $(SolutionDir)\languages\zh-CN.ini /y
-xcopy $(SolutionDir)\languages $(TargetDir)\config\languages /y</PostBuildEvent>
+    <PostBuildEvent>mkdir $(TargetDir)\Config\Languages
+mkdir $(TargetDir)\Config\Dictionaries\Web
+xcopy $(ProjectDir)\Properties\Resources\Texts\AppLanguageDic.ini $(SolutionDir)\Languages\zh-CN.ini /y
+xcopy $(SolutionDir)\Languages $(TargetDir)\config\Languages /y
+xcopy $(ProjectDir)\Properties\Resources\Texts $(TargetDir)\Config\Dictionaries\Web /y
+del $(TargetDir)\Config\Dictionaries\Web\AppLanguageDic.ini</PostBuildEvent>
   </PropertyGroup>
 </Project>

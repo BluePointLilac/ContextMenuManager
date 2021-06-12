@@ -198,6 +198,7 @@ namespace ContextMenuManager.Controls
 
         public static bool JudgeOSVersion(XmlElement itemXE)
         {
+            //return true;//测试用
             bool JudgeOne(XmlElement osXE)
             {
                 Version ver = new Version(osXE.InnerText);
@@ -230,6 +231,7 @@ namespace ContextMenuManager.Controls
 
         private static bool FileExists(XmlElement itemXE)
         {
+            //return true;//测试用
             foreach(XmlElement feXE in itemXE.SelectNodes("FileExists"))
             {
                 string path = Environment.ExpandEnvironmentVariables(feXE.InnerText);

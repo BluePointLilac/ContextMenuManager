@@ -13,32 +13,44 @@ namespace ContextMenuManager.Controls
     {
         public DonateBox()
         {
+            this.AutoScroll = true;
             this.Dock = DockStyle.Fill;
             this.BackColor = Color.White;
-            this.AutoScroll = true;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
-            this.Controls.AddRange(new Control[] { lblInfo, picQR, llbDonationList });
-            llbDonationList.LinkClicked += (sender, e) => Updater.ShowDonateDialog();
+            this.Controls.AddRange(new Control[] { lblInfo, picQR, lblList });
+            lblList.Click += (sender, e) => Updater.ShowDonateDialog();
+            picQR.Resize += (sender, e) => this.OnResize(null);
+            picQR.MouseDown += SwitchQR;
         }
 
         readonly Label lblInfo = new Label
         {
+            BorderStyle = BorderStyle.FixedSingle,
             Text = AppString.Other.Donate,
             AutoSize = true
         };
 
-        readonly LinkLabel llbDonationList = new LinkLabel
+        readonly Label lblList = new Label
         {
+            ForeColor = Color.FromArgb(85, 145, 215),
+            BorderStyle = BorderStyle.FixedSingle,
             Text = AppString.Other.DonationList,
+            Cursor = Cursors.Hand,
             AutoSize = true
         };
 
         readonly PictureBox picQR = new PictureBox
         {
-            Image = Properties.Resources.Donate,
-            SizeMode = PictureBoxSizeMode.Zoom,
-            Size = new Size(600, 200).DpiZoom()
+            SizeMode = PictureBoxSizeMode.AutoSize,
+            BorderStyle = BorderStyle.FixedSingle,
+            Cursor = Cursors.Hand,
+            Image = AllQR,
         };
+
+        static readonly Image AllQR = Properties.Resources.Donate;
+        static readonly Image WechatQR = GetSingleQR(0);
+        static readonly Image AlipayQR = GetSingleQR(1);
+        static readonly Image QQQR = GetSingleQR(2);
 
         protected override void OnResize(EventArgs e)
         {
@@ -46,10 +58,36 @@ namespace ContextMenuManager.Controls
             base.OnResize(e);
             picQR.Left = (this.Width - picQR.Width) / 2;
             lblInfo.Left = (this.Width - lblInfo.Width) / 2;
-            llbDonationList.Left = (this.Width - llbDonationList.Width) / 2;
+            lblList.Left = (this.Width - lblList.Width) / 2;
             lblInfo.Top = a;
             picQR.Top = lblInfo.Bottom + a;
-            llbDonationList.Top = picQR.Bottom + a;
+            lblList.Top = picQR.Bottom + a;
+        }
+
+        private static Image GetSingleQR(int index)
+        {
+            Bitmap bitmap = new Bitmap(200, 200);
+            using(Graphics g = Graphics.FromImage(bitmap))
+            {
+                Rectangle destRect = new Rectangle(0, 0, 200, 200);
+                Rectangle srcRect = new Rectangle(index * 200, 0, 200, 200);
+                g.DrawImage(AllQR, destRect, srcRect, GraphicsUnit.Pixel);
+            }
+            return bitmap;
+        }
+
+        private void SwitchQR(object sender, MouseEventArgs e)
+        {
+            if(picQR.Image == AllQR)
+            {
+                if(e.X < 200) picQR.Image = WechatQR;
+                else if(e.X < 400) picQR.Image = AlipayQR;
+                else picQR.Image = QQQR;
+            }
+            else
+            {
+                picQR.Image = AllQR;
+            }
         }
     }
 
@@ -82,7 +120,7 @@ namespace ContextMenuManager.Controls
             new TabPage(AppString.Other.GuidInfosDictionary),
             new TabPage(AppString.SideBar.ThirdRules),
             new TabPage(AppString.SideBar.EnhanceMenu),
-            new TabPage(AppString.Other.UWPMode)
+            new TabPage(AppString.Other.UwpMode)
         };
         readonly ReadOnlyRichTextBox[] boxs = new ReadOnlyRichTextBox[6];
         readonly PictureButton btnOpenDir = new PictureButton(AppImage.Open)
@@ -279,6 +317,7 @@ namespace ContextMenuManager.Controls
             mliShowFilePath.AddCtr(chkShowFilePath);
             mliOpenMoreRegedit.AddCtr(chkOpenMoreRegedit);
             mliHideDisabledItems.AddCtr(chkHideDisabledItems);
+            mliHideSysStoreItems.AddCtr(chkHideSysStoreItems);
             cmbConfigDir.AutosizeDropDownWidth();
             cmbEngine.AutosizeDropDownWidth();
             cmbRepo.AutosizeDropDownWidth();
@@ -301,6 +340,7 @@ namespace ContextMenuManager.Controls
             chkWinXSortable.MouseDown += (sender, e) => AppConfig.WinXSortable = chkWinXSortable.Checked = !chkWinXSortable.Checked;
             chkOpenMoreRegedit.MouseDown += (sender, e) => AppConfig.OpenMoreRegedit = chkOpenMoreRegedit.Checked = !chkOpenMoreRegedit.Checked;
             chkHideDisabledItems.MouseDown += (sender, e) => AppConfig.HideDisabledItems = chkHideDisabledItems.Checked = !chkHideDisabledItems.Checked;
+            chkHideSysStoreItems.MouseDown += (sender, e) => AppConfig.HideSysStoreItems = chkHideSysStoreItems.Checked = !chkHideSysStoreItems.Checked;
             cmbConfigDir.SelectionChangeCommitted += (sender, e) =>
             {
                 string newPath = (cmbConfigDir.SelectedIndex == 0) ? AppConfig.AppDataConfigDir : AppConfig.AppConfigDir;
@@ -429,14 +469,6 @@ namespace ContextMenuManager.Controls
             Width = 120.DpiZoom()
         };
 
-        readonly MyListItem mliWinXSortable = new MyListItem
-        {
-            Text = AppString.Other.WinXSortable,
-            Visible = WindowsOsVersion.ISAfterOrEqual8,
-            HasImage = false
-        };
-        readonly MyCheckBox chkWinXSortable = new MyCheckBox();
-
         readonly MyListItem mliShowFilePath = new MyListItem
         {
             Text = AppString.Other.ShowFilePath
@@ -455,10 +487,24 @@ namespace ContextMenuManager.Controls
         };
         readonly MyCheckBox chkHideDisabledItems = new MyCheckBox();
 
+        readonly MyListItem mliWinXSortable = new MyListItem
+        {
+            Text = AppString.Other.WinXSortable,
+            Visible = WindowsOsVersion.ISAfterOrEqual8
+        };
+        readonly MyCheckBox chkWinXSortable = new MyCheckBox();
+
+        readonly MyListItem mliHideSysStoreItems = new MyListItem
+        {
+            Text = AppString.Other.HideSysStoreItems,
+            Visible = WindowsOsVersion.ISAfterOrEqual7
+        };
+        readonly MyCheckBox chkHideSysStoreItems = new MyCheckBox();
+
         public void LoadItems()
         {
             this.AddItems(new[] { mliUpdate, mliConfigDir, mliRepo, mliEngine, mliBackup, mliProtect,
-                mliWinXSortable, mliShowFilePath, mliOpenMoreRegedit, mliHideDisabledItems });
+                mliShowFilePath, mliOpenMoreRegedit, mliHideDisabledItems,mliHideSysStoreItems,mliWinXSortable });
             foreach(MyListItem item in this.Controls) item.HasImage = false;
             cmbConfigDir.SelectedIndex = AppConfig.SaveToAppDir ? 1 : 0;
             cmbRepo.SelectedIndex = AppConfig.RequestUseGithub ? 0 : 1;
@@ -468,6 +514,7 @@ namespace ContextMenuManager.Controls
             chkShowFilePath.Checked = AppConfig.ShowFilePath;
             chkOpenMoreRegedit.Checked = AppConfig.OpenMoreRegedit;
             chkHideDisabledItems.Checked = AppConfig.HideDisabledItems;
+            chkHideSysStoreItems.Checked = AppConfig.HideSysStoreItems;
 
             int index = 1;
             switch(AppConfig.UpdateFrequency)

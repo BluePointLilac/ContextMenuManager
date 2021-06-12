@@ -123,18 +123,31 @@ namespace ContextMenuManager.Controls
 
         private static string CreateCommandFile(XmlElement xe)
         {
-            if(xe == null) return string.Empty;
-            XmlElement cfXE = (XmlElement)xe.SelectSingleNode("CreateFile");
-            if(cfXE == null) return string.Empty;
-            string fileName = cfXE.GetAttribute("FileName");
-            string content = cfXE.GetAttribute("Content");
-            string extension = Path.GetExtension(fileName).ToLower();
-            string filePath = $@"{AppConfig.ProgramsDir}\{fileName}";
-            Encoding encoding = Encoding.Unicode;
-            if(extension == ".bat" || extension == ".cmd") encoding = Encoding.Default;
-            if(File.Exists(filePath)) File.Delete(filePath);
-            File.WriteAllText(filePath, content, encoding);
-            return filePath;
+            string path = string.Empty;
+            if(xe == null) return path;
+            foreach(XmlElement cfXE in xe.SelectNodes("CreateFile"))
+            {
+                string fileName = cfXE.GetAttribute("FileName");
+                string content = cfXE.GetAttribute("Content");
+                string extension = Path.GetExtension(fileName).ToLower();
+                string filePath = $@"{AppConfig.ProgramsDir}\{fileName}";
+                if(path == string.Empty) path = filePath;
+                Encoding encoding;
+                switch(extension)
+                {
+                    case ".bat":
+                    case ".cmd":
+                        encoding = Encoding.Default;
+                        break;
+                    default:
+                        encoding = Encoding.Unicode;
+                        break;
+                }
+                File.Delete(filePath);
+                File.WriteAllText(filePath, content, encoding);
+
+            }
+            return path;
         }
     }
 

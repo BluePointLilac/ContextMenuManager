@@ -23,7 +23,7 @@ namespace ContextMenuManager.Controls.Interfaces
                 {
                     MyList list = (MyList)listItem.Parent;
                     int index = list.GetItemIndex(listItem);
-                    index -= (index < list.Controls.Count) ? 0 : 1;
+                    index -= (index < list.Controls.Count - 1) ? 0 : 1;
                     item.DeleteMe();
                     list.HoveredItem = (MyListItem)list.Controls[index];
                 }

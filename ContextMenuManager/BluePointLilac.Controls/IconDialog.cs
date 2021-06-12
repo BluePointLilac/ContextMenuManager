@@ -7,10 +7,15 @@ namespace BluePointLilac.Controls
 {
     public sealed class IconDialog : CommonDialog
     {
-        const int MAXLENGTH = 260;//文件名最大长度
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, EntryPoint = "#62", SetLastError = true)]
+        private static extern bool PickIconDlg(IntPtr hWnd, StringBuilder pszFileName, int cchFileNameMax, ref int pnIconIndex);
+
+        private const int MAXLENGTH = 260;
         private int iconIndex;
         public int IconIndex { get => iconIndex; set => iconIndex = value; }
         public string IconPath { get; set; }
+
+        public override void Reset() { }
 
         protected override bool RunDialog(IntPtr hwndOwner)
         {
@@ -19,10 +24,5 @@ namespace BluePointLilac.Controls
             IconPath = flag ? sb.ToString() : null;
             return flag;
         }
-
-        public override void Reset() { }
-
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode, EntryPoint = "#62", SetLastError = true)]
-        private static extern bool PickIconDlg(IntPtr hWnd, StringBuilder pszFileName, int cchFileNameMax, ref int pnIconIndex);
     }
 }

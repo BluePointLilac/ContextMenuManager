@@ -144,8 +144,11 @@ namespace ContextMenuManager.Controls
                     string openMode = FileExtension.GetOpenMode(extension);
                     if(string.IsNullOrEmpty(openMode))
                     {
-                        MessageBoxEx.Show(AppString.Message.NoOpenModeExtension);
-                        ExternalProgram.ShowOpenWithDialog(extension);
+                        if(MessageBoxEx.Show(AppString.Message.NoOpenModeExtension,
+                            MessageBoxButtons.OKCancel) == DialogResult.OK)
+                        {
+                            ExternalProgram.ShowOpenWithDialog(extension);
+                        }
                         return;
                     }
                     foreach(Control ctr in this.Controls)
@@ -165,12 +168,12 @@ namespace ContextMenuManager.Controls
                     using(RegistryKey snKey = exKey.CreateSubKey("ShellNew", true))
                     {
                         string defaultOpenMode = exKey.GetValue("")?.ToString();
-                        if(string.IsNullOrEmpty(defaultOpenMode))
-                        {
-                            exKey.SetValue("", openMode);
-                        }
+                        if(string.IsNullOrEmpty(defaultOpenMode)) exKey.SetValue("", openMode);
 
-                        snKey.SetValue("NullFile", string.Empty);
+                        byte[] bytes = Updater.GetShellNewData(extension);
+                        if(bytes != null) snKey.SetValue("Data", bytes, RegistryValueKind.Binary);
+                        else snKey.SetValue("NullFile", "", RegistryValueKind.String);
+
                         ShellNewItem item = new ShellNewItem(this, snKey.Name);
                         this.AddItem(item);
                         item.Focus();

@@ -18,76 +18,6 @@ namespace ContextMenuManager.Controls
 
         private const string OpenInNewWindowPath = @"HKEY_CLASSES_ROOT\Folder\shell\opennewwindow";
 
-        /// <summary>系统原有Shell公共子菜单项名</summary>
-        public static readonly string[] SysStoreItemNames = { "Windows.aboutWindows", "Windows.AddColumns",
-                "Windows.AddDevice", "Windows.AddMediaServer", "Windows.AddNetworkLocation", "Windows.AddPrinter",
-                "Windows.AddRemovePrograms", "Windows.AddToFavorites", "Windows.Autoplay", "Windows.Backup",
-                "Windows.BitLocker", "Windows.BitLocker.Encrypt", "Windows.BitLocker.Manage",
-                "Windows.BitLocker.ResetPasswordPin", "Windows.burn", "Windows.Burn.Action", "Windows.change-passphrase",
-                "Windows.change-pin", "Windows.ChangeIndexedLocations", "Windows.ChooseColumns", "Windows.CleanUp",
-                "Windows.ClearAddressBarHistory", "Windows.ClearFrequentHistory", "Windows.clearRecentDocs",
-                "Windows.closewindow", "Windows.cmd", "Windows.cmdPromptAsAdministrator", "Windows.CompressedFile.extract",
-                "Windows.CompressedFile.ExtractTo", "Windows.CompressedFolder.extract", "Windows.CompressedItem.extract",
-                "Windows.Computer.Manage", "Windows.connectNetworkDrive", "Windows.copy", "Windows.copyaspath",
-                "Windows.CopyToBrowser", "Windows.CopyToMenu", "Windows.CscSync", "Windows.CscWorkOfflineOnline",
-                "Windows.cut", "Windows.Defragment", "Windows.delete", "Windows.Dialog.DisconnectNetworkDrive",
-                "Windows.DiscImage.burn", "Windows.DisconnectNetworkDrive", "Windows.DiskFormat",
-                "Windows.DriveFolder.DisconnectNetworkDrive", "Windows.edit", "Windows.Eject", "Windows.email",
-                "Windows.encrypt-bde", "Windows.encrypt-bde-elev", "Windows.Enqueue", "Windows.EraseDisc",
-                "Windows.EraseDisc.Action", "Windows.fax", "Windows.FinishBurn", "Windows.folderoptions",
-                "Windows.GroupByColumn", "Windows.help", "Windows.HideSelected", "Windows.HistoryVaultRestore",
-                "Windows.HomeGroupCPL", "Windows.HomeGroupJoin", "Windows.HomeGroupPassword", "Windows.HomeGroupSharing",
-                "Windows.HomeGroupTroubleshooter", "Windows.IconSize", "Windows.includeinlibrary", "Windows.invertselection",
-                "Windows.layout", "Windows.LibraryChangeIcon", "Windows.LibraryDefaultSaveLocation",
-                "Windows.LibraryIncludeInLibrary", "Windows.LibraryManageLibrary", "Windows.LibraryOptimizeLibraryFor",
-                "Windows.LibraryPublicSaveLocation", "Windows.LibraryRestoreDefaults", "Windows.LibrarySelChangeIcon",
-                "Windows.LibrarySelDefaultSaveLocation", "Windows.LibrarySelManageLibrary", "Windows.LibrarySelOptimizeLibraryFor",
-                "Windows.LibrarySelPublicSaveLocation", "Windows.LibrarySelRestoreDefaults", "Windows.LibrarySelShowInNavPane",
-                "Windows.LibraryShowInNavPane", "Windows.location.cmd", "Windows.location.cmdPromptAsAdministrator",
-                "Windows.location.opennewprocess", "Windows.location.opennewtab", "Windows.location.opennewwindow",
-                "Windows.location.Powershell", "Windows.location.PowershellAsAdmin", "Windows.manage-bde",
-                "Windows.manage-bde-elev", "Windows.MapNetworkDrive", "Windows.menubar", "Windows.ModernShare",
-                "Windows.mount", "Windows.MoveToBrowser", "Windows.MoveToMenu", "Windows.MultiVerb.cmd",
-                "Windows.MultiVerb.cmdPromptAsAdministrator", "Windows.MultiVerb.opennewprocess", "Windows.MultiVerb.opennewtab",
-                "Windows.MultiVerb.opennewwindow", "Windows.MultiVerb.Powershell", "Windows.MultiVerb.PowershellAsAdmin",
-                "Windows.navpane", "Windows.NavPaneExpandToCurrentFolder", "Windows.NavPaneShowAllFolders",
-                "Windows.NavPaneShowLibraries", "Windows.NetworkAndSharing", "Windows.NetworkViewDeviceWebpage",
-                "Windows.newfolder", "Windows.newitem", "Windows.open", "Windows.OpenContainingFolder.opencontaining",
-                "Windows.OpenControlPanel", "Windows.opennewprocess", "Windows.opennewtab", "Windows.opennewwindow",
-                "Windows.OpenPrinterServerProperty", "Windows.OpenPrintQueue", "Windows.OpenSearch.openfilelocation",
-                "Windows.OpenSearchViewSite", "Windows.OpenWith", "Windows.organize", "Windows.paste", "Windows.pastelink",
-                "Windows.PermanentDelete", "Windows.PinToHome", "Windows.pintostartscreen", "Windows.play", "Windows.playall",
-                "Windows.playmusic", "Windows.PowershellAsAdmin", "Windows.previewpane", "Windows.print", "Windows.properties",
-                "Windows.readingpane", "Windows.recycle", "Windows.RecycleBin.Empty", "Windows.RecycleBin.Location.properties",
-                "Windows.RecycleBin.properties", "Windows.RecycleBin.RestoreAll", "Windows.RecycleBin.RestoreItems",
-                "Windows.RecycleBin.Selection.properties", "Windows.redo", "Windows.remotedesktop", "Windows.RemoveMediaServer",
-                "Windows.removeproperties", "Windows.rename", "Windows.RibbonDelete", "Windows.RibbonPermissionsDialog",
-                "Windows.RibbonShare", "Windows.RibbonSync.MakeAvailableOffline", "Windows.RibbonSync.SyncThisFolder",
-                "Windows.RibbonSync.WorkOfflineOnline", "Windows.rotate270", "Windows.rotate90", "Windows.runas",
-                "Windows.runasuser", "Windows.SearchActiveDirectory", "Windows.SearchClearMru", "Windows.SearchCloseTab",
-                "Windows.SearchFilterDate", "Windows.SearchFilterKind", "Windows.SearchFilterMoreProperties",
-                "Windows.SearchFilterSize", "Windows.SearchMru", "Windows.SearchOpenLocation", "Windows.SearchOptionCompressed",
-                "Windows.SearchOptionContents", "Windows.SearchOptionDeep", "Windows.SearchOptionShallow",
-                "Windows.SearchOptionSystem", "Windows.SearchSave", "Windows.SearchSendTo", "Windows.SearchSendToComputer",
-                "Windows.selectall", "Windows.SelectionCheckboxes", "Windows.selectMode", "Windows.selectnone",
-                "Windows.separator", "Windows.setdesktopwallpaper", "Windows.Share", "Windows.SharePrivate",
-                "Windows.ShareSpecificUsers", "Windows.Shortcut.opencontaining", "Windows.ShowFileExtensions",
-                "Windows.ShowHiddenFiles", "Windows.SizeAllColumns", "Windows.slideshow", "Windows.SortAscending",
-                "Windows.SortByColumn", "Windows.SortDescending", "Windows.SortGroupsAscending", "Windows.SortGroupsDescending",
-                "Windows.StartScan", "Windows.statusbar", "Windows.Sync", "Windows.SystemProperties", "Windows.taskbarpin",
-                "Windows.ToggleRecycleConfirmations", "Windows.topviewrestoredefault", "Windows.Troubleshoot", "Windows.undo",
-                "Windows.UpdatePrinterDriver", "Windows.v2.Powershell", "Windows.View.OptionsGallery",
-                "Windows.ViewRemotePrinters", "Windows.zip", "Windows.Zip.Action",
-                
-                //Win8.1
-                "Windows.ManageDefaultPrinters", "Windows.NavPaneShowFavorites", "Windows.playto", "Windows.Powershell",
-                "Windows.ShareHomegroupFullAccess", "Windows.ShareHomegroupNoAccess", "Windows.ShareHomegroupReadAccess",
-                //Win8
-                "Windows.SearchOptionPartial",
-                //Win7
-                "Windows.librarypane"
-            };
-
         /// <summary>Shell类型菜单特殊注册表项名默认名称</summary>
         private static readonly Dictionary<string, string> DefaultNames
             = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
@@ -127,7 +57,6 @@ namespace ContextMenuManager.Controls
         public string KeyName => RegistryEx.GetKeyName(RegPath);
         protected virtual bool IsSubItem => false;
         private bool IsOpenItem => KeyName.ToLower() == "open";
-
         public string ItemFilePath => GuidInfo.GetFilePath(Guid) ?? ObjectPath.ExtractFilePath(ItemCommand);
         private bool HasIcon => !IconLocation.IsNullOrWhiteSpace() || HasLUAShield;
 
@@ -198,6 +127,7 @@ namespace ContextMenuManager.Controls
             {
                 if(value) Registry.SetValue(RegPath, "ShowAsDisabledIfHidden", "");
                 else RegistryEx.DeleteValue(RegPath, "ShowAsDisabledIfHidden");
+                if(value && !ItemVisible) ItemVisible = false;
             }
         }
 
@@ -387,13 +317,14 @@ namespace ContextMenuManager.Controls
                 if(IconLocation != null)
                 {
                     icon = ResourceIcon.GetIcon(IconLocation, out iconPath, out iconIndex);
-                    if(icon == null && Path.GetExtension(iconPath)?.ToLower() == ".exe")
-                        icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = -15);//文件为不存在的或没有图标的exe文件，不含图标的默认exe图标
+                    if(icon == null && Path.GetExtension(iconPath)?.ToLower() == ".exe")//文件不存在，或为没有图标的exe文件
+                        icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = -15);//不含图标的默认exe图标
                 }
                 else if(HasLUAShield)
                     icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = -78);//管理员小盾牌图标
                 else icon = ResourceIcon.GetIcon(iconPath = ItemFilePath, iconIndex = 0);//文件第一个图标
-                if(icon == null) icon = ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = -2);//图标资源不存在，白纸图标
+                if(icon == null) icon = ResourceIcon.GetExtensionIcon(iconPath = ItemFilePath)//文件类型图标
+                        ?? ResourceIcon.GetIcon(iconPath = "imageres.dll", iconIndex = -2);//图标资源不存在，白纸图标
                 IconPath = iconPath;
                 IconIndex = iconIndex;
                 return icon;
@@ -441,6 +372,7 @@ namespace ContextMenuManager.Controls
         readonly ToolStripMenuItem TsiNeverDefault = new ToolStripMenuItem(AppString.Menu.NeverDefault);
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
         readonly ToolStripMenuItem TsiShowAsDisabled = new ToolStripMenuItem(AppString.Menu.ShowAsDisabledIfHidden);
+        readonly ToolStripMenuItem TsiClsidLocation = new ToolStripMenuItem(AppString.Menu.ClsidLocation);
 
         private void InitializeComponents()
         {
@@ -467,7 +399,7 @@ namespace ContextMenuManager.Controls
                 TsiNoWorkDir, TsiNeverDefault, TsiShowAsDisabled });
 
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
-                TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport});
+                TsiChangeCommand, TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport, TsiClsidLocation});
 
             TsiDeleteIcon.Click += (sender, e) => DeleteIcon();
             TsiSetTop.Click += (sender, e) => this.ItemPosition = Positions.Top;
@@ -477,7 +409,8 @@ namespace ContextMenuManager.Controls
             TsiOnlyWithShift.Click += (sender, e) => this.OnlyWithShift = !TsiOnlyWithShift.Checked;
             TsiNoWorkDir.Click += (sender, e) => this.NoWorkingDirectory = !TsiNoWorkDir.Checked;
             TsiNeverDefault.Click += (sender, e) => this.NeverDefault = !TsiNeverDefault.Checked;
-            TsiShowAsDisabled.Click += (sender, e) => SetDisabled(!TsiShowAsDisabled.Checked);
+            TsiShowAsDisabled.Click += (sender, e) => this.ShowAsDisabledIfHidden = !TsiShowAsDisabled.Checked;
+            TsiClsidLocation.Click += (sender, e) => ExternalProgram.JumpRegEdit(GuidInfo.GetClsidPath(Guid));
             ContextMenuStrip.Opening += (sender, e) => RefreshMenuItem();
             BtnSubItems.MouseDown += (sender, e) => ShowSubItems();
             TsiShieldIcon.Click += (sender, e) => UseShieldIcon();
@@ -510,12 +443,6 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        private void SetDisabled(bool flag)
-        {
-            this.ShowAsDisabledIfHidden = flag;
-            if(!ItemVisible && flag) ItemVisible = false;
-        }
-
         private void RefreshMenuItem()
         {
             TsiOnlyWithShift.Visible = !IsSubItem;
@@ -524,6 +451,7 @@ namespace ContextMenuManager.Controls
             TsiShowAsDisabled.Visible = WindowsOsVersion.IsAfterOrEqualWin10_1703;
             TsiShowAsDisabled.Checked = this.ShowAsDisabledIfHidden;
             TsiChangeCommand.Visible = !IsMultiItem && Guid.Equals(Guid.Empty);
+            TsiClsidLocation.Visible = GuidInfo.GetClsidPath(Guid) != null;
             if(!this.IsSubItem) TsiOnlyWithShift.Checked = this.OnlyWithShift;
 
             if(WindowsOsVersion.IsAfterVista)

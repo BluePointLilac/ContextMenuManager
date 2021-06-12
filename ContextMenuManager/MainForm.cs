@@ -14,13 +14,15 @@ namespace ContextMenuManager
     {
         public MainForm()
         {
-            this.SetSideBarWidth();
+            SideBar.Width = GetSideBarWidth();
             this.Text = AppString.General.AppName;
             this.ForeColor = Color.FromArgb(80, 80, 80);
             this.Controls.Add(new ExplorerRestarter());
-            appSettingBox.Owner = shellList.Owner = shellNewList.Owner = sendToList.Owner = openWithList.Owner
-                = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner = thirdRuleList.Owner = iEList.Owner = MainBody;
-            donateBox.Parent = aboutMeBox.Parent = dictionariesBox.Parent = languagesBox.Parent = MainBody;
+            donateBox.Parent = aboutMeBox.Parent = dictionariesBox.Parent 
+                = languagesBox.Parent = appSettingBox.Owner = shellList.Owner 
+                = shellNewList.Owner = sendToList.Owner = openWithList.Owner 
+                = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner 
+                = thirdRuleList.Owner = iEList.Owner = MainBody;
             ToolBar.SelectedButtonChanged += (sender, e) => SwitchTab(ToolBar.SelectedIndex);
             SideBar.HoverIndexChanged += (sender, e) => ShowItemInfo();
             SideBar.SelectIndexChanged += (sender, e) => SwitchItem();
@@ -29,7 +31,7 @@ namespace ContextMenuManager
             ToolBar.SelectedIndex = 0;
             if(AppConfig.ShowFilePath) ShowFilePath();
             var droper = new ElevatedFileDroper(this);
-            this.DragDrop += (sender, e) =>
+            droper.DragDrop += (sender, e) =>
             {
                 ShellList.CurrentFileObjectPath = droper.DropFilePaths[0];
                 SwitchTab(1, 9);
@@ -37,11 +39,11 @@ namespace ContextMenuManager
         }
 
         readonly MyToolBarButton[] ToolBarButtons = new MyToolBarButton[] {
-            new MyToolBarButton(AppImage.Home, AppString.ToolBar.Home),//主页
-            new MyToolBarButton(AppImage.Type, AppString.ToolBar.Type),//文件类型
-            new MyToolBarButton(AppImage.Star, AppString.ToolBar.Rule),//其他规则
-            new MyToolBarButton(AppImage.Refresh,AppString.ToolBar.Refresh){ CanBeSelected = false },//刷新
-            new MyToolBarButton(AppImage.About, AppString.ToolBar.About)//关于
+            new MyToolBarButton(AppImage.Home, AppString.ToolBar.Home),
+            new MyToolBarButton(AppImage.Type, AppString.ToolBar.Type),
+            new MyToolBarButton(AppImage.Star, AppString.ToolBar.Rule),
+            new MyToolBarButton(AppImage.Refresh,AppString.ToolBar.Refresh){ CanBeSelected = false },
+            new MyToolBarButton(AppImage.About, AppString.ToolBar.About)
         };
         readonly ShellList shellList = new ShellList();
         readonly ShellNewList shellNewList = new ShellNewList();
@@ -352,12 +354,12 @@ namespace ContextMenuManager
             }
         }
 
-        private void SetSideBarWidth()
+        public int GetSideBarWidth()
         {
             int maxWidth = 0;
             string[] strs = GeneralItems.Concat(TypeItems).Concat(OtherRuleItems).Concat(AboutItems).ToArray();
             Array.ForEach(strs, str => maxWidth = Math.Max(maxWidth, SideBar.GetItemWidth(str)));
-            SideBar.Width = maxWidth;
+            return maxWidth;
         }
     }
 }

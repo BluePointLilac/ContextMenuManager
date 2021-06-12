@@ -12,18 +12,19 @@ namespace BluePointLilac.Controls
         public string Title { get; set; } = AppString.General.AppName;
         /// <summary>输入对话框文本框文本</summary>
         public string Text { get; set; }
+        public Size Size { get; set; }
 
-        private static Size LastSize = new Size();
         public override void Reset() { }
 
         protected override bool RunDialog(IntPtr hwndOwner)
         {
-            using(InputBox frm = new InputBox { Text = Title, Size = LastSize })
+            using(InputBox frm = new InputBox())
             {
+                frm.Text = Title;
                 frm.InputedText = this.Text;
+                frm.Size = this.Size;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 this.Text = flag ? frm.InputedText : null;
-                LastSize = frm.Size;
                 return flag;
             }
         }

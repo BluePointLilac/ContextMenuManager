@@ -2,6 +2,7 @@
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
@@ -28,8 +29,23 @@ namespace ContextMenuManager.Controls
 
         public string Value { get; set; }
         public Guid Guid { get; set; }
+        public string SearchText => Value;
         public string ValueName => Value;
-        public string RegPath => GuidBlockedList.HKLMBLOCKED;
+        public string RegPath
+        {
+            get
+            {
+                foreach(string path in GuidBlockedList.BlockedPaths)
+                {
+                    using(var key = RegistryEx.GetRegistryKey(path))
+                    {
+                        if(key == null) continue;
+                        if(key.GetValueNames().Contains(Value, StringComparer.OrdinalIgnoreCase)) return path;
+                    }
+                }
+                return null;
+            }
+        }
 
         public string ItemText
         {
@@ -49,8 +65,6 @@ namespace ContextMenuManager.Controls
             }
         }
 
-
-        public string SearchText => Value;
         public string ItemFilePath { get; set; }
         public DeleteButton BtnDelete { get; set; }
         public ObjectPathButton BtnOpenPath { get; set; }
@@ -71,7 +85,7 @@ namespace ContextMenuManager.Controls
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiFileLocation = new FileLocationMenuItem(this);
             TsiRegLocation = new RegLocationMenuItem(this);
-            TsiHandleGuid = new HandleGuidMenuItem(this, false);
+            TsiHandleGuid = new HandleGuidMenuItem(this);
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] {TsiHandleGuid,
                 new ToolStripSeparator(), TsiDetails, new ToolStripSeparator(), TsiDelete });

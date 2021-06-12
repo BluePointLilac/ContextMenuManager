@@ -5,6 +5,7 @@ Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主
 ValueName为相关键名，On为启用键值，Off为禁用键值；不设置On或Off属性时，其值为null，对应注册表键值不存在；
 每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；判定规则：当有多条规则时，前面的规则注册表键值匹配On则为On，匹配Off则为Off，并终止判断，都不匹配时继续往下判断，若所有规则都不匹配则为On
 ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认值时可省略，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ、REG_BINARY的键值类型-->
+
 <Data>
   <Group Text='System'>
     <Item Text='系统 右键菜单' RestartExplorer=''>

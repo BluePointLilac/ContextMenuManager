@@ -39,6 +39,7 @@ namespace ContextMenuManager.Controls.Interfaces
             listItem.Disposed += (sender, e) => item.ItemIcon?.Dispose();
             listItem.ImageDoubleClick += (sender, e) =>
             {
+                if(listItem.FindForm() is ShellStoreDialog.ShellStoreForm) return;
                 if(this.Enabled) this.OnClick(null);
             };
         }

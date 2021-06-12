@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -48,26 +49,34 @@ namespace BluePointLilac.Methods
             {
                 string command = Application.ExecutablePath;
                 if(args != null && args.Length > 0) command += "," + string.Join(" ", args);
-                string contents =
-                    "Dim wsh, fso\r\n" +
-                    "Set wsh = CreateObject(\"WScript.Shell\")\r\n" +
-                    "Set fso = CreateObject(\"Scripting.FileSystemObject\")\r\n" +
-                    "fso.DeleteFile(WScript.ScriptFullName)\r\n" +  //vbs自删命令
-                    $"wsh.Run \"taskkill /pid {pApp.Id} -f\",0\r\n" +
-                    "WScript.Sleep 1000\r\n";
+                List<string> contents = new List<string>();
+                contents.AddRange(new[]{
+                    "Dim wsh, fso",
+                    "Set wsh = CreateObject(\"WScript.Shell\")",
+                    "Set fso = CreateObject(\"Scripting.FileSystemObject\")",
+                    "fso.DeleteFile(WScript.ScriptFullName)",//vbs自删命令
+                    $"wsh.Run \"taskkill /pid {pApp.Id} -f\",0",//杀死当前进程
+                    "WScript.Sleep 1000"
+                });
 
-                if(updatePath != null) contents +=
-                    $"fso.DeleteFile \"{Application.ExecutablePath}\"\r\n" +
-                    "WScript.Sleep 1000\r\n" +
-                    $"fso.MoveFile \"{updatePath}\",\"{Application.ExecutablePath}\"\r\n";
-
-                contents +=
-                    $"wsh.Run \"{command}\"\r\n" +
-                    "Set wsh = Nothing\r\n" +
-                    "Set fso = Nothing\r\n";
+                if(File.Exists(updatePath))
+                {
+                    contents.AddRange(new[]
+                    {
+                        $"fso.DeleteFile \"{Application.ExecutablePath}\"",
+                        "WScript.Sleep 1000",
+                        $"fso.MoveFile \"{updatePath}\",\"{Application.ExecutablePath}\""//更新文件
+                    });
+                }
+                contents.AddRange(new[]
+                {
+                    $"wsh.Run \"{command}\"",
+                    "Set wsh = Nothing",
+                    "Set fso = Nothing"
+                });
 
                 string vbsPath = Path.GetTempPath() + "Restart.vbs";
-                File.WriteAllText(vbsPath, contents, Encoding.Unicode);
+                File.WriteAllLines(vbsPath, contents.ToArray(), Encoding.Unicode);
                 using(Process pVbs = new Process())
                 {
                     pVbs.StartInfo.FileName = "wscript.exe";

@@ -1,6 +1,7 @@
 ﻿using BluePointLilac.Methods;
 using ContextMenuManager;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -15,10 +16,11 @@ namespace BluePointLilac.Controls
 
         protected override bool RunDialog(IntPtr hwndOwner)
         {
-            using(DownloadForm frm = new DownloadForm())
+            using(Process process = Process.GetCurrentProcess())
+            using(DownloadForm frm = new DownloadForm { Url = this.Url, FilePath = this.FilePath })
             {
-                frm.Url = this.Url;
-                frm.FilePath = this.FilePath;
+                bool isAsyn = hwndOwner == process.MainWindowHandle;
+                frm.StartPosition = isAsyn ? FormStartPosition.CenterParent : FormStartPosition.CenterScreen;
                 return frm.ShowDialog() == DialogResult.OK;
             }
         }

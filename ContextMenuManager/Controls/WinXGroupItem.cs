@@ -74,16 +74,14 @@ namespace ContextMenuManager.Controls
         {
             if(MessageBoxEx.Show(AppString.Message.RestoreDefault, MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
+                File.SetAttributes(TargetPath, FileAttributes.Normal);
+                Directory.Delete(TargetPath, true);
+                Directory.CreateDirectory(TargetPath);
                 File.SetAttributes(TargetPath, File.GetAttributes(DefaultGroupPath));
-                string[] paths = Directory.GetFiles(TargetPath);
-                foreach(string path in paths)
+                foreach(string srcPath in Directory.GetFiles(DefaultGroupPath))
                 {
-                    File.Delete(path);
-                }
-                paths = Directory.GetFiles(DefaultGroupPath);
-                foreach(string path in paths)
-                {
-                    File.Copy(path, $@"{TargetPath}\{Path.GetFileName(path)}");
+                    string dstPath = $@"{TargetPath}\{Path.GetFileName(srcPath)}";
+                    File.Copy(srcPath, dstPath);
                 }
                 WinXList list = (WinXList)this.Parent;
                 list.ClearItems();

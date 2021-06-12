@@ -159,7 +159,7 @@ namespace BluePointLilac.Methods
 
         public static void Export(string regPath, string filePath)
         {
-            if(File.Exists(filePath)) File.Delete(filePath);
+            File.Delete(filePath);
             using(Process process = Process.Start("regedit.exe", $"/e \"{filePath}\" \"{regPath}\""))
                 process.WaitForExit();
         }

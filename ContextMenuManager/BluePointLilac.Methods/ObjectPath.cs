@@ -62,16 +62,16 @@ namespace BluePointLilac.Methods
                     if(arr.Length > 0)
                     {
                         string fileName = arr[0];
+                        if(GetFullFilePath(fileName, out filePath))
+                        {
+                            FilePathDic.Add(command, filePath);
+                            return filePath;
+                        }
                         if(arr.Length > 1)
                         {
                             string arguments = arr[1];
                             filePath = ExtractFilePath(arguments);
                             if(filePath != null) return filePath;
-                        }
-                        if(GetFullFilePath(fileName, out filePath))
-                        {
-                            FilePathDic.Add(command, filePath);
-                            return filePath;
                         }
                     }
                 }

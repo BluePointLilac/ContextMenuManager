@@ -108,7 +108,7 @@ namespace ContextMenuManager.Controls
                 using(OpenFileDialog dlg = new OpenFileDialog())
                 {
                     dlg.DereferenceLinks = false;
-                    dlg.Filter = $"{AppString.Dialog.Program}|*.exe;*.bat;*.cmd;*.vbs;*.vbe;*.js;*.jse;*.wsf";
+                    dlg.Filter = $"{AppString.Dialog.Program}|*.exe|{AppString.Dialog.AllFiles}|*";
                     if(dlg.ShowDialog() != DialogResult.OK) return;
                     string filePath = dlg.FileName;
                     string arguments = "";
@@ -123,22 +123,17 @@ namespace ContextMenuManager.Controls
                             extension = Path.GetExtension(filePath);
                         }
                     }
-                    switch(extension)
+                    string exePath = FileExtension.GetExecutablePath(extension);
+                    if(File.Exists(exePath))
                     {
-                        case ".vbs":
-                        case ".vbe":
-                        case ".js":
-                        case ".jse":
-                        case ".wsf":
-                            chkSE.Checked = true;
-                            ItemFilePath = "wscript.exe";
-                            Arguments = filePath;
-                            if(!arguments.IsNullOrWhiteSpace()) Arguments += " " + arguments;
-                            break;
-                        default:
-                            Arguments = arguments;
-                            ItemFilePath = filePath;
-                            break;
+                        ItemFilePath = exePath;
+                        Arguments = filePath;
+                        if(!arguments.IsNullOrWhiteSpace()) Arguments += " " + arguments;
+                    }
+                    else
+                    {
+                        ItemFilePath = filePath;
+                        Arguments = arguments;
                     }
                     if(Array.FindIndex(DirScenePaths, path
                        => ScenePath.StartsWith(path, StringComparison.OrdinalIgnoreCase)) != -1)

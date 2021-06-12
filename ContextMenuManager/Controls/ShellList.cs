@@ -381,7 +381,12 @@ namespace ContextMenuManager.Controls
 
         private void AddNewItem(string scenePath)
         {
+            string shellPath = GetShellPath(scenePath);
             NewItem newItem = new NewItem { Visible = scenePath != null };
+            PictureButton btnAddExisting = new PictureButton(AppImage.AddExisting);
+            MyToolTip.SetToolTip(btnAddExisting, AppString.Tip.AddFromPublic);
+            btnAddExisting.Visible = Scene != Scenes.DragDrop && !string.Equals(shellPath, ShellItem.CommandStorePath, StringComparison.OrdinalIgnoreCase);
+            newItem.AddCtr(btnAddExisting);
             this.AddItem(newItem);
             newItem.AddNewItem += (sender, e) =>
             {
@@ -400,6 +405,25 @@ namespace ContextMenuManager.Controls
                 }
                 if(isShell) this.AddNewShellItem(scenePath);
                 else this.AddNewShellExItem(scenePath);
+            };
+            btnAddExisting.MouseDown += (sender, e) =>
+            {
+                using(ShellStoreDialog dlg = new ShellStoreDialog())
+                {
+                    dlg.IsReference = false;
+                    dlg.ShellPath = ShellItem.CommandStorePath;
+                    dlg.Filter = new Func<string, bool>(itemName => !(AppConfig.HideSysStoreItems
+                        && itemName.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase)));
+                    if(dlg.ShowDialog() != DialogResult.OK) return;
+                    foreach(string keyName in dlg.SelectedKeyNames)
+                    {
+                        string srcPath = $@"{dlg.ShellPath}\{keyName}";
+                        string dstPath = ObjectPath.GetNewPathWithIndex($@"{shellPath}\{keyName}", ObjectPath.PathType.Registry);
+
+                        RegistryEx.CopyTo(srcPath, dstPath);
+                        this.AddItem(new ShellItem(dstPath));
+                    }
+                }
             };
         }
 
@@ -503,9 +527,12 @@ namespace ContextMenuManager.Controls
         {
             using(var shellKey = RegistryEx.GetRegistryKey(ShellItem.CommandStorePath))
             {
-                Array.ForEach(Array.FindAll(shellKey.GetSubKeyNames(), itemName =>
-                    !ShellItem.SysStoreItemNames.Contains(itemName, StringComparer.OrdinalIgnoreCase)), itemName =>
-                        this.AddItem(new StoreShellItem($@"{ShellItem.CommandStorePath}\{itemName}", true, false)));
+                bool flag = AppConfig.HideSysStoreItems;
+                foreach(string itemName in shellKey.GetSubKeyNames())
+                {
+                    if(flag && itemName.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase)) continue;
+                    this.AddItem(new StoreShellItem($@"{ShellItem.CommandStorePath}\{itemName}", true, false));
+                }
             }
         }
 

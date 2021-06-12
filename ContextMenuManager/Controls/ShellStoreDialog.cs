@@ -3,22 +3,22 @@ using BluePointLilac.Methods;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
     sealed class ShellStoreDialog : CommonDialog
     {
-        public List<string> SelectedKeyNames { get; private set; }
-        public List<string> IgnoredKeyNames { get; set; }
+        public string[] SelectedKeyNames { get; private set; }
+        public Func<string, bool> Filter { get; set; }
         public string ShellPath { get; set; }
+        public bool IsReference { get; set; }
 
         public override void Reset() { }
 
         protected override bool RunDialog(IntPtr hwndOwner)
         {
-            using(ShellStoreForm frm = new ShellStoreForm(this.ShellPath, this.IgnoredKeyNames))
+            using(ShellStoreForm frm = new ShellStoreForm(this.ShellPath, this.Filter, this.IsReference))
             {
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag) this.SelectedKeyNames = frm.SelectedKeyNames;
@@ -29,25 +29,26 @@ namespace ContextMenuManager.Controls
         public sealed class ShellStoreForm : Form
         {
             public string ShellPath { get; private set; }
-            public List<string> IgnoredKeyNames { get; private set; }
-            public List<string> SelectedKeyNames { get; private set; } = new List<string>();
-            private bool IsPublic => ShellPath.Equals(ShellItem.CommandStorePath, StringComparison.OrdinalIgnoreCase);
+            public Func<string, bool> Filter { get; private set; }
+            public string[] SelectedKeyNames { get; private set; }
 
-            public ShellStoreForm(string shellPath, List<string> ignoredKeyNames)
+            public ShellStoreForm(string shellPath, Func<string, bool> filter, bool isReference)
             {
                 this.ShellPath = shellPath;
-                this.IgnoredKeyNames = ignoredKeyNames;
+                this.Filter = filter;
                 this.AcceptButton = btnOk;
                 this.CancelButton = btnCancel;
                 this.Font = SystemFonts.MessageBoxFont;
+                this.SizeGripStyle = SizeGripStyle.Hide;
                 this.ShowIcon = this.ShowInTaskbar = false;
+                this.MinimizeBox = this.MaximizeBox = false;
                 this.StartPosition = FormStartPosition.CenterParent;
                 this.MinimumSize = this.Size = new Size(652, 425).DpiZoom();
-                this.Text = IsPublic ? AppString.Dialog.CheckReference : AppString.Dialog.CheckCopy;
+                this.Text = isReference ? AppString.Dialog.CheckReference : AppString.Dialog.CheckCopy;
                 btnOk.Click += (sender, e) => GetSelectedItems();
                 list.Owner = listBox;
                 InitializeComponents();
-                LoadItems();
+                LoadItems(isReference);
             }
 
             readonly MyList list = new MyList();
@@ -92,23 +93,25 @@ namespace ContextMenuManager.Controls
                 pnlBorder.Height = listBox.Height + 2;
             }
 
-            private void LoadItems()
+            private void LoadItems(bool isReference)
             {
                 using(var shellKey = RegistryEx.GetRegistryKey(ShellPath))
                 {
-                    Array.ForEach(Array.FindAll(shellKey.GetSubKeyNames(), itemName =>
-                        !IgnoredKeyNames.Contains(itemName, StringComparer.OrdinalIgnoreCase)), itemName =>
-                        {
-                            string regPath = $@"{ShellPath}\{itemName}";
-                            list.AddItem(new StoreShellItem(regPath, IsPublic));
-                        });
+                    foreach(string itemName in shellKey.GetSubKeyNames())
+                    {
+                        if(Filter != null && !Filter(itemName)) continue;
+                        string regPath = $@"{ShellPath}\{itemName}";
+                        list.AddItem(new StoreShellItem(regPath, isReference));
+                    }
                 }
             }
 
             private void GetSelectedItems()
             {
+                List<string> names = new List<string>();
                 foreach(StoreShellItem item in list.Controls)
-                    if(item.IsSelected) SelectedKeyNames.Add(item.KeyName);
+                    if(item.IsSelected) names.Add(item.KeyName);
+                SelectedKeyNames = names.ToArray();
             }
         }
     }
@@ -126,8 +129,10 @@ namespace ContextMenuManager.Controls
             }
             RegTrustedInstaller.TakeRegTreeOwnerShip(regPath);
         }
-        public bool IsSelected => chkSelected.Checked;
+
         public bool IsPublic { get; set; }
+        public bool IsSelected => chkSelected.Checked;
+
         readonly CheckBox chkSelected = new CheckBox { AutoSize = true };
 
         public override void DeleteMe()

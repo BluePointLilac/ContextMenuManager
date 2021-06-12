@@ -2,7 +2,6 @@
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -18,6 +17,9 @@ namespace ContextMenuManager
         const string GithubLatest = "https://github.com/BluePointLilac/ContextMenuManager/releases/latest";
         const string GithubLatestApi = "https://api.github.com/repos/BluePointLilac/ContextMenuManager/releases/latest";
         const string GithubLangsApi = "https://api.github.com/repos/BluePointLilac/ContextMenuManager/contents/languages";
+        const string GithubLangsRawDir = "https://raw.githubusercontent.com/BluePointLilac/ContextMenuManager/master/languages";
+        const string GithubShellNewApi = "https://api.github.com/repos/BluePointLilac/ContextMenuManager/contents/ContextMenuManager/Properties/Resources/ShellNew";
+        const string GithubShellNewRawDir = "https://raw.githubusercontent.com/BluePointLilac/ContextMenuManager/master/ContextMenuManager/Properties/Resources/ShellNew";
         const string GithubTexts = "https://raw.githubusercontent.com/BluePointLilac/ContextMenuManager/master/ContextMenuManager/Properties/Resources/Texts";
         const string GithubDonateRaw = "https://raw.githubusercontent.com/BluePointLilac/ContextMenuManager/master/Donate.md";
         const string GithubDonate = "https://github.com/BluePointLilac/ContextMenuManager/blob/master/Donate.md";
@@ -25,6 +27,9 @@ namespace ContextMenuManager
         const string GiteeReleases = "https://gitee.com/BluePointLilac/ContextMenuManager/releases";
         const string GiteeLatestApi = "https://gitee.com/api/v5/repos/BluePointLilac/ContextMenuManager/releases/latest";
         const string GiteeLangsApi = "https://gitee.com/api/v5/repos/BluePointLilac/ContextMenuManager/contents/languages";
+        const string GiteeLangsRawDir = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/languages";
+        const string GiteeShellNewApi = "https://gitee.com/api/v5/repos/BluePointLilac/ContextMenuManager/contents/ContextMenuManager/Properties/Resources/ShellNew";
+        const string GiteeShellNewRawDir = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/ShellNew";
         const string GiteeTexts = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/ContextMenuManager/Properties/Resources/Texts";
         const string GiteeDonateRaw = "https://gitee.com/BluePointLilac/ContextMenuManager/raw/master/Donate.md";
         const string GiteeDonate = "https://gitee.com/BluePointLilac/ContextMenuManager/blob/master/Donate.md";
@@ -35,7 +40,9 @@ namespace ContextMenuManager
             int day = AppConfig.UpdateFrequency;
             if(day == -1) return;//自动检测更新频率为-1则从不自动检查更新
             //如果上次检测更新时间加上时间间隔早于或等于今天以前就进行更新操作
-            if(AppConfig.LastCheckUpdateTime.AddDays(day) <= DateTime.Today) Update(false);
+            DateTime time = AppConfig.LastCheckUpdateTime.AddDays(day);
+            //time = DateTime.Today;//测试用
+            if(time <= DateTime.Today) new Action<bool>(Update).BeginInvoke(false, null, null);
         }
 
         /// <summary>更新程序以及程序字典</summary>
@@ -57,7 +64,7 @@ namespace ContextMenuManager
             {
                 if(isManual)
                 {
-                    MessageBoxEx.Show(AppString.Message.NetworkDtaReadFailed);
+                    MessageBoxEx.Show(AppString.Message.WebDataReadFailed);
                     url = AppConfig.RequestUseGithub ? GithubLatest : GiteeReleases;
                     ExternalProgram.OpenUrl(url);
                 }
@@ -76,7 +83,7 @@ namespace ContextMenuManager
             {
                 XmlElement bodyXE = (XmlElement)root.SelectSingleNode("body");
                 string info = AppString.Message.UpdateInfo.Replace("%v1", appVer.ToString()).Replace("%v2", webVer.ToString());
-                info += "\r\n\r\n" + MachinedInfo(bodyXE.InnerText);
+                info += Environment.NewLine + Environment.NewLine + MachinedInfo(bodyXE.InnerText);
                 if(MessageBoxEx.Show(info, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     string netVer = Environment.Version > new Version(4, 0) ? "4.0" : "3.5";
@@ -107,57 +114,78 @@ namespace ContextMenuManager
         /// <param name="isManual">是否为手动点击更新</param>
         private static void UpdateText(bool isManual)
         {
-            bool flag = isManual;
-            string url = AppConfig.RequestUseGithub ? GithubTexts : GiteeTexts;
-            string[] fileNames = new[]
+            string error = null;
+            var func = new Func<string, string, bool>(WebStringToFile);
+            string dirUrl = AppConfig.RequestUseGithub ? GithubTexts : GiteeTexts;
+            string[] filePaths = new[]
             {
-                AppConfig.GUIDINFOSDICINI, AppConfig.ENHANCEMENUSICXML,
-                AppConfig.THIRDRULESDICXML, AppConfig.UWPMODEITEMSDICXML
+                AppConfig.WebGuidInfosDic, AppConfig.WebEnhanceMenusDic,
+                AppConfig.WebThirdRulesDic, AppConfig.WebUwpModeItemsDic
             };
-            foreach(string fileName in fileNames)
+            foreach(string filePath in filePaths)
             {
-                string fileUrl = $"{url}/{fileName}";
-                string filePath = $@"{AppConfig.WebDicsDir}\{fileName}";
-                string contents = GetWebString(fileUrl);
-                if(string.IsNullOrEmpty(contents)) { flag = false; continue; }
-                contents = contents.Replace("\n", Environment.NewLine);
-                File.WriteAllText(filePath, contents, Encoding.Unicode);
+                bool flag = func.EndInvoke(func.BeginInvoke(filePath, dirUrl, null, null));
+                if(!flag) error += Path.GetFileName(filePath) + ", ";
             }
-            if(!flag) MessageBoxEx.Show(AppString.Message.NetworkDtaReadFailed);
+            dirUrl = AppConfig.RequestUseGithub ? GithubLangsRawDir : GiteeLangsRawDir;
+            filePaths = Directory.GetFiles(AppConfig.LangsDir, "*.ini");
+            foreach(string filePath in filePaths)
+            {
+                bool flag = func.EndInvoke(func.BeginInvoke(filePath, dirUrl, null, null));
+                if(!flag) error += Path.GetFileName(filePath) + ", ";
+            }
+            if(isManual && error != null)
+            {
+                error = error.Substring(0, error.LastIndexOf(", "));
+                MessageBoxEx.Show(error + " : " + AppString.Message.WebDataReadFailed);
+            }
+        }
+
+        /// <summary>将网络文本写入本地文件</summary>
+        /// <param name="filePath">本地文件路径</param>
+        /// <param name="dirUrl">网络文件Raw链接的目录</param>
+        private static bool WebStringToFile(string filePath, string dirUrl)
+        {
+            string fileName = Path.GetFileName(filePath);
+            string fileUrl = $"{dirUrl}/{fileName}";
+            string contents = GetWebString(fileUrl);
+            bool flag = contents != null;
+            if(flag) File.WriteAllText(filePath, contents, Encoding.Unicode);
+            return flag;
         }
 
         /// <summary>显示语言下载对话框</summary>
         /// <returns>返回值为是否下载了语言文件</returns>
         public static bool ShowLanguageDialog()
         {
-            string url = AppConfig.RequestUseGithub ? GithubLangsApi : GiteeLangsApi;
-            XmlDocument doc = GetWebJsonToXml(url);
+            string apiUrl = AppConfig.RequestUseGithub ? GithubLangsApi : GiteeLangsApi;
+            XmlDocument doc = GetWebJsonToXml(apiUrl);
             if(doc == null)
             {
-                MessageBoxEx.Show(AppString.Message.NetworkDtaReadFailed);
+                MessageBoxEx.Show(AppString.Message.WebDataReadFailed);
                 return false;
             }
-            Dictionary<string, string> langs = new Dictionary<string, string>();
-            foreach(XmlElement itemXE in doc.FirstChild.SelectNodes("item"))
+            XmlNodeList list = doc.FirstChild.ChildNodes;
+            string[] langs = new string[list.Count];
+            for(int i = 0; i < list.Count; i++)
             {
-                XmlElement nameXE = (XmlElement)itemXE.SelectSingleNode("name");
-                XmlElement urlXE = (XmlElement)itemXE.SelectSingleNode("download_url");
-                string lang = Path.GetFileNameWithoutExtension(nameXE.InnerText);
-                langs.Add(lang, urlXE.InnerText);
+                XmlNode nameXN = list.Item(i).SelectSingleNode("name");
+                langs[i] = Path.GetFileNameWithoutExtension(nameXN.InnerText);
             }
             using(SelectDialog dlg = new SelectDialog())
             {
-                dlg.Items = langs.Keys.ToArray();
+                dlg.Items = langs;
                 dlg.Title = AppString.Dialog.DownloadLanguages;
                 string lang = CultureInfo.CurrentUICulture.Name;
                 if(dlg.Items.Contains(lang)) dlg.Selected = lang;
                 else dlg.SelectedIndex = 0;
                 if(dlg.ShowDialog() == DialogResult.OK)
                 {
-                    lang = dlg.Selected;
-                    string contents = GetWebString(langs[lang]);
-                    string filePath = $@"{AppConfig.LangsDir}\{lang}.ini";
-                    File.WriteAllText(filePath, contents, Encoding.Unicode);
+                    string fileName = $"{dlg.Selected}.ini";
+                    string filePath = $@"{AppConfig.LangsDir}\{fileName}";
+                    string dirUrl = AppConfig.RequestUseGithub ? GithubLangsRawDir : GiteeLangsRawDir;
+                    bool flag = WebStringToFile(filePath, dirUrl);
+                    if(!flag) MessageBoxEx.Show(fileName + ": " + AppString.Message.WebDataReadFailed);
                     return true;
                 }
             }
@@ -172,7 +200,7 @@ namespace ContextMenuManager
             //contents = File.ReadAllText(@"..\..\..\Donate.md");//用于求和更新Donate.md文件
             if(contents == null)
             {
-                MessageBoxEx.Show(AppString.Message.NetworkDtaReadFailed);
+                MessageBoxEx.Show(AppString.Message.WebDataReadFailed);
                 url = AppConfig.RequestUseGithub ? GithubDonate : GiteeDonate;
                 ExternalProgram.OpenUrl(url);
             }
@@ -184,6 +212,32 @@ namespace ContextMenuManager
                     dlg.ShowDialog();
                 }
             }
+        }
+
+        public static byte[] GetShellNewData(string extension)
+        {
+            string apiUrl = AppConfig.RequestUseGithub ? GithubShellNewApi : GiteeShellNewApi;
+            XmlDocument doc = GetWebJsonToXml(apiUrl);
+            if(doc == null) return null;
+            foreach(XmlNode node in doc.FirstChild.ChildNodes)
+            {
+                XmlNode nameXN = node.SelectSingleNode("name");
+                string str = Path.GetExtension(nameXN.InnerText);
+                if(string.Equals(str, extension, StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        using(UAWebClient client = new UAWebClient())
+                        {
+                            string dirUrl = AppConfig.RequestUseGithub ? GithubShellNewRawDir : GiteeShellNewRawDir;
+                            string fileUrl = $"{dirUrl}/{nameXN.InnerText}";
+                            return client.DownloadData(fileUrl);
+                        }
+                    }
+                    catch { return null; }
+                }
+            }
+            return null;
         }
 
         /// <summary>加工处理更新信息，去掉标题头</summary>
@@ -214,7 +268,9 @@ namespace ContextMenuManager
             {
                 using(UAWebClient client = new UAWebClient())
                 {
-                    return client.DownloadString(url);
+                    string str = client.DownloadString(url);
+                    str = str?.Replace("\n", Environment.NewLine);//换行符转换
+                    return str;
                 }
             }
             catch { return null; }

@@ -30,9 +30,10 @@ namespace ContextMenuManager
         private static readonly IniReader AppDic = new IniReader(new StringBuilder(Properties.Resources.GuidInfosDic));
         public static readonly Dictionary<Guid, IconLocation> IconLocationDic = new Dictionary<Guid, IconLocation>();
         private static readonly Dictionary<Guid, string> FilePathDic = new Dictionary<Guid, string>();
+        private static readonly Dictionary<Guid, string> ClsidPathDic = new Dictionary<Guid, string>();
         public static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
-        public static readonly Dictionary<Guid, Image> ItemImageDic = new Dictionary<Guid, Image>();
         public static readonly Dictionary<Guid, string> UwpNameDic = new Dictionary<Guid, string>();
+        public static readonly Dictionary<Guid, Image> ItemImageDic = new Dictionary<Guid, Image>();
 
         private static bool TryGetValue(Guid guid, string key, out string value)
         {
@@ -83,13 +84,31 @@ namespace ContextMenuManager
                                     }
                                 }
                             }
-                            if(File.Exists(filePath)) break;
+                            if(File.Exists(filePath))
+                            {
+                                if(ClsidPathDic.ContainsKey(guid)) ClsidPathDic[guid] = guidKey.Name;
+                                else ClsidPathDic.Add(guid, guidKey.Name);
+                                break;
+                            }
                         }
                     }
                 }
                 FilePathDic.Add(guid, filePath);
             }
             return filePath;
+        }
+
+        public static string GetClsidPath(Guid guid)
+        {
+            if(ClsidPathDic.ContainsKey(guid)) return ClsidPathDic[guid];
+            foreach(string path in ClsidPaths)
+            {
+                using(RegistryKey key = RegistryEx.GetRegistryKey($@"{path}\{guid:B}"))
+                {
+                    if(key != null) return key.Name;
+                }
+            }
+            return null;
         }
 
         public static string GetText(Guid guid)
@@ -200,11 +219,12 @@ namespace ContextMenuManager
             string absStr = relStr;
             if(isName)
             {
-                if(!relStr.StartsWith("@")) return absStr;
-                else absStr = relStr.Substring(1);
+                if(!absStr.StartsWith("@")) return absStr;
+                else absStr = absStr.Substring(1);
             }
+
             string filePath = GetFilePath(guid);
-            if(filePath == null) return absStr;
+            if(filePath == null) return relStr;
             string dirPath = Path.GetDirectoryName(filePath);
             if(absStr.StartsWith("*"))
             {

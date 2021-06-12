@@ -17,6 +17,11 @@ namespace ContextMenuManager.Controls.Interfaces
     {
         public RegExportMenuItem(ITsiRegExportItem item) : base(AppString.Menu.ExportRegistry)
         {
+            item.ContextMenuStrip.Opening += (sender, e) =>
+            {
+                using(var key = RegistryEx.GetRegistryKey(item.RegPath))
+                    this.Visible = key != null;
+            };
             this.Click += (sender, e) =>
             {
                 using(SaveFileDialog dlg = new SaveFileDialog())
@@ -34,7 +39,7 @@ namespace ContextMenuManager.Controls.Interfaces
                     {
                         RegistryEx.Export(item.RegPath, dlg.FileName);
                     }
-                    if(Directory.GetFiles(dirPath).Length == 0 && Directory.GetDirectories(dirPath).Length == 0)
+                    if(Directory.GetFileSystemEntries(dirPath).Length == 0)
                     {
                         Directory.Delete(dirPath);
                     }

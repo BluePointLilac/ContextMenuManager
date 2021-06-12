@@ -144,6 +144,7 @@ namespace ContextMenuManager
             public static string CopyGuid => GetValue("CopyGuid");
             public static string BlockGuid => GetValue("BlockGuid");
             public static string AddGuidDic => GetValue("AddGuidDic");
+            public static string ClsidLocation => GetValue("ClsidLocation");
             public static string InitialData => GetValue("InitialData");
             public static string BeforeSeparator => GetValue("BeforeSeparator");
             public static string ChangeGroup => GetValue("ChangeGroup");
@@ -160,6 +161,8 @@ namespace ContextMenuManager
             public static string Cancel => GetValue("Cancel");
             public static string Browse => GetValue("Browse");
             public static string Program => GetValue("Program");
+            public static string AllFiles => GetValue("AllFiles");
+            public static string RegistryFile => GetValue("RegistryFile");
             public static string ItemText => GetValue("ItemText");
             public static string ItemCommand => GetValue("ItemCommand");
             public static string CommandArguments => GetValue("CommandArguments");
@@ -189,7 +192,6 @@ namespace ContextMenuManager
             public static string SelectPerceivedType => GetValue("SelectPerceivedType");
             public static string SelectDirectoryType => GetValue("SelectDirectoryType");
             public static string SelectNewItemType => GetValue("SelectNewItemType");
-            public static string RegistryFile => GetValue("RegistryFile");
             public static string SelectGroup => GetValue("SelectGroup");
             public static string SelectObjectType => GetValue("SelectObjectType");
             public static string SelectDropEffect => GetValue("SelectDropEffect");
@@ -241,7 +243,7 @@ namespace ContextMenuManager
             public static string WinXSorted => GetValue("WinXSorted");
             public static string RestoreDefault => GetValue("RestoreDefault");
             public static string DeleteGroup => GetValue("DeleteGroup");
-            public static string NetworkDtaReadFailed => GetValue("NetworkDtaReadFailed");
+            public static string WebDataReadFailed => GetValue("WebDataReadFailed");
         }
 
         /// <summary>其他文本</summary>
@@ -278,7 +280,7 @@ namespace ContextMenuManager
             public static string UserDictionaries => GetValue("UserDictionaries");
             public static string DictionaryDescription => GetValue("DictionaryDescription");
             public static string GuidInfosDictionary => GetValue("GuidInfosDictionary");
-            public static string UWPMode => GetValue("UWPMode");
+            public static string UwpMode => GetValue("UWPMode");
             public static string Translators => GetValue("Translators");
             public static string AboutApp => GetValue("AboutApp");
             public static string Dictionaries => GetValue("Dictionaries");
@@ -303,6 +305,7 @@ namespace ContextMenuManager
             public static string ShowFilePath => GetValue("ShowFilePath");
             public static string OpenMoreRegedit => GetValue("OpenMoreRegedit");
             public static string HideDisabledItems => GetValue("HideDisabledItems");
+            public static string HideSysStoreItems => GetValue("HideSysStoreItems");
             public static string SetPerceivedType => GetValue("SetPerceivedType");
             public static string SetDefaultDropEffect => GetValue("SetDefaultDropEffect");
         }
@@ -319,6 +322,7 @@ namespace ContextMenuManager
             public static string InvalidItem => GetValue("InvalidItem");
             public static string AddSeparator => GetValue("AddSeparator");
             public static string AddReference => GetValue("AddReference");
+            public static string AddFromPublic => GetValue("AddFromPublic");
             public static string AddFromParentMenu => GetValue("AddFromParentMenu");
             public static string DeleteGuidDic => GetValue("DeleteGuidDic");
             public static string LockNewMenu => GetValue("LockNewMenu");

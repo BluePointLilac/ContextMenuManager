@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
@@ -17,6 +18,9 @@ namespace ContextMenuManager.Controls
             using(DonateListForm frm = new DonateListForm())
             {
                 frm.ShowDonateList(DanateData);
+                MainForm mainForm = (MainForm)Control.FromHandle(hwndOwner);
+                frm.Left = mainForm.Left + (mainForm.Width + mainForm.GetSideBarWidth() - frm.Width) / 2;
+                frm.Top = mainForm.Top + 150.DpiZoom();
                 frm.ShowDialog();
             }
             return true;
@@ -28,11 +32,12 @@ namespace ContextMenuManager.Controls
             {
                 this.Text = AppString.Other.DonationList;
                 this.SizeGripStyle = SizeGripStyle.Hide;
-                this.StartPosition = FormStartPosition.CenterParent;
+                this.StartPosition = FormStartPosition.Manual;
                 this.MinimizeBox = this.MaximizeBox = this.ShowInTaskbar = false;
                 this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
                 this.Font = new Font(SystemFonts.DialogFont.FontFamily, 9F);
-                this.ClientSize = new Size(520, 378).DpiZoom();
+                this.ClientSize = new Size(520, 355).DpiZoom();
+                this.MinimumSize = this.Size;
                 dgvDonate.ColumnHeadersDefaultCellStyle.Alignment
                     = dgvDonate.RowsDefaultCellStyle.Alignment
                     = DataGridViewContentAlignment.BottomCenter;
@@ -42,7 +47,7 @@ namespace ContextMenuManager.Controls
 
             readonly DataGridView dgvDonate = new DataGridView
             {
-                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 BackgroundColor = SystemColors.Control,
@@ -70,25 +75,35 @@ namespace ContextMenuManager.Controls
             {
                 string[] lines = contents.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 int index = Array.FindIndex(lines, line => line == "|:--:|:--:|:--:|:--:|:--:");
+                if(index == -1) return;
                 string[] heads = lines[index - 1].Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 dgvDonate.ColumnCount = heads.Length;
+                dgvDonate.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 for(int m = 0; m < heads.Length; m++)
                 {
                     dgvDonate.Columns[m].HeaderText = heads[m];
                 }
                 for(int n = index + 1; n < lines.Length; n++)
                 {
-                    string[] values = lines[n].Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] strs = lines[n].Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    object[] values = new object[strs.Length];
+                    for(int k = 0; k < strs.Length; k++)
+                    {
+                        switch(k)
+                        {
+                            case 3:
+                                values[k] = Convert.ToSingle(strs[k]);
+                                break;
+                            default:
+                                values[k] = strs[k];
+                                break;
+                        }
+                    }
                     dgvDonate.Rows.Add(values);
                 }
                 dgvDonate.Sort(dgvDonate.Columns[0], ListSortDirection.Descending);
                 DateTime date = Convert.ToDateTime(dgvDonate.Rows[0].Cells[0].Value);
-                float money = 0;
-                foreach(DataGridViewRow row in dgvDonate.Rows)
-                {
-                    money += Convert.ToSingle(row.Cells[3].Value);
-                }
-                dgvDonate.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                float money = dgvDonate.Rows.Cast<DataGridViewRow>().Sum(row => (float)row.Cells[3].Value);
                 lblDonate.Text = AppString.Dialog.DonateInfo.Replace("%date", date.ToLongDateString())
                     .Replace("%money", money.ToString()).Replace("%count", dgvDonate.RowCount.ToString());
             }

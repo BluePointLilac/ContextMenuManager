@@ -42,15 +42,19 @@ namespace ContextMenuManager.Controls.Interfaces
             public string Command { get; set; }
             public string Arguments { get; set; }
 
+            private static Size LastSize = new Size();
+
             public override void Reset() { }
 
             protected override bool RunDialog(IntPtr hwndOwner)
             {
                 using(CommandForm frm = new CommandForm())
                 {
+                    frm.Size = LastSize;
                     frm.Command = this.Command;
                     frm.Arguments = this.Arguments;
                     bool flag = frm.ShowDialog() == DialogResult.OK;
+                    LastSize = frm.Size;
                     if(flag)
                     {
                         this.Command = frm.Command;

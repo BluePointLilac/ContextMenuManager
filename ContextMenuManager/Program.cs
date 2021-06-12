@@ -15,10 +15,10 @@ namespace ContextMenuManager
         [STAThread]
         static void Main()
         {
-            if(SingleInstance.IsRunning()) return;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            new Action(Updater.PeriodicUpdate).BeginInvoke(null, null);
+            if(SingleInstance.IsRunning()) return;
+            Updater.PeriodicUpdate();
             Application.Run(new MainForm());
         }
     }

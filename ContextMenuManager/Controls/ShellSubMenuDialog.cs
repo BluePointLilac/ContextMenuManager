@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using static Microsoft.Win32.Registry;
@@ -199,12 +198,10 @@ namespace ContextMenuManager.Controls
                 private void AddNewItem()
                 {
                     if(!SubShellTypeItem.CanAddMore(this)) return;
-                    using(NewShellDialog dlg = new NewShellDialog
+                    using(NewShellDialog dlg = new NewShellDialog())
                     {
-                        ScenePath = this.ScenePath,
-                        ShellPath = ShellItem.CommandStorePath
-                    })
-                    {
+                        dlg.ScenePath = this.ScenePath;
+                        dlg.ShellPath = ShellItem.CommandStorePath;
                         if(dlg.ShowDialog() != DialogResult.OK) return;
                         SubKeyNames.Add(dlg.NewItemKeyName);
                         SaveSorting();
@@ -215,20 +212,20 @@ namespace ContextMenuManager.Controls
                 private void AddReference()
                 {
                     if(!SubShellTypeItem.CanAddMore(this)) return;
-                    using(ShellStoreDialog dlg = new ShellStoreDialog
+                    using(ShellStoreDialog dlg = new ShellStoreDialog())
                     {
-                        ShellPath = ShellItem.CommandStorePath,
-                        IgnoredKeyNames = ShellItem.SysStoreItemNames.ToList()
-                    })
-                    {
+                        dlg.IsReference = true;
+                        dlg.ShellPath = ShellItem.CommandStorePath;
+                        dlg.Filter = new Func<string, bool>(itemName => !(AppConfig.HideSysStoreItems 
+                            && itemName.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase)));
                         if(dlg.ShowDialog() != DialogResult.OK) return;
-                        dlg.SelectedKeyNames.ForEach(keyName =>
+                        foreach(string keyName in dlg.SelectedKeyNames)
                         {
                             if(!SubShellTypeItem.CanAddMore(this)) return;
                             this.AddItem(new SubShellItem(this, keyName));
                             this.SubKeyNames.Add(keyName);
                             SaveSorting();
-                        });
+                        }
                     }
                 }
 
@@ -386,7 +383,7 @@ namespace ContextMenuManager.Controls
                     {
                         if(shellKey == null) return;
                         RegTrustedInstaller.TakeRegTreeOwnerShip(shellKey.Name);
-                        Array.ForEach(shellKey.GetSubKeyNames(), keyName =>
+                        foreach(string keyName in shellKey.GetSubKeyNames())
                         {
                             string regPath = $@"{ShellPath}\{keyName}";
                             int value = Convert.ToInt32(GetValue(regPath, "CommandFlags", 0));
@@ -398,7 +395,7 @@ namespace ContextMenuManager.Controls
                             {
                                 this.AddItem(new SubShellItem(this, regPath));
                             }
-                        });
+                        }
                     }
                 }
 
@@ -418,7 +415,7 @@ namespace ContextMenuManager.Controls
 
                 private void AddSeparator()
                 {
-                    string regPath = null;
+                    string regPath;
                     if(this.Controls.Count > 1)
                     {
                         regPath = GetItemRegPath((MyListItem)Controls[Controls.Count - 1]);
@@ -435,14 +432,13 @@ namespace ContextMenuManager.Controls
                 private void AddFromParentMenu()
                 {
                     if(!SubShellTypeItem.CanAddMore(this)) return;
-                    using(ShellStoreDialog dlg = new ShellStoreDialog
+                    using(ShellStoreDialog dlg = new ShellStoreDialog())
                     {
-                        ShellPath = this.ParentShellPath,
-                        IgnoredKeyNames = new List<string> { this.ParentKeyName }
-                    })
-                    {
+                        dlg.IsReference = false;
+                        dlg.ShellPath = this.ParentShellPath;
+                        dlg.Filter = new Func<string, bool>(itemName => !itemName.Equals(this.ParentKeyName, StringComparison.OrdinalIgnoreCase));
                         if(dlg.ShowDialog() != DialogResult.OK) return;
-                        dlg.SelectedKeyNames.ForEach(keyName =>
+                        foreach(string keyName in dlg.SelectedKeyNames)
                         {
                             if(!SubShellTypeItem.CanAddMore(this)) return;
                             string srcPath = $@"{dlg.ShellPath}\{keyName}";
@@ -450,7 +446,7 @@ namespace ContextMenuManager.Controls
 
                             RegistryEx.CopyTo(srcPath, dstPath);
                             this.AddItem(new SubShellItem(this, dstPath));
-                        });
+                        }
                     }
                 }
 

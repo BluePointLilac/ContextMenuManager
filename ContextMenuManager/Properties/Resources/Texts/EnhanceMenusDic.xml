@@ -3,6 +3,7 @@
 Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ、REG_BINARY的键值类型，
 子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突
 由于Shell项太过复杂，程序只根据注册表项名判断存在即启用，故同一场景下不允许有相同KeyName属性的Shell项目，ShellEx项只要Guid符合则为启用-->
+
 <Data>
   <File>
     <Shell>
@@ -32,7 +33,11 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='获取哈希值'/>
         </Value>
         <SubKey>
-          <Command Default='powershell -noexit get-filehash -literalpath "%1" -algorithm SHA1 | format-list;get-filehash -literalpath "%1" -algorithm SHA256 | format-list;get-filehash -literalpath "%1" -algorithm SHA384 | format-list;get-filehash -literalpath "%1" -algorithm SHA512 | format-list;get-filehash -literalpath "%1" -algorithm MACTripleDES | format-list;get-filehash -literalpath "%1" -algorithm MD5 | format-list;get-filehash -literalpath "%1" -algorithm RIPEMD160 | format-list'/>
+          <Command>
+            <ShellExecute Verb='open' WindowStyle='3'/>
+            <FileName>powershell.exe</FileName>
+            <Arguments>-noexit write-host '"%1"';$args = 'md5', 'sha1', 'sha256', 'sha384', 'sha512', 'mactripledes', 'ripemd160'; foreach($arg in $args){get-filehash '"%1"' -algorithm $arg | select-object algorithm, hash | format-table -wrap}</Arguments>
+          </Command>
         </SubKey>
       </Item>
     </Shell>
@@ -418,76 +423,6 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           </Shell>
         </SubKey>
       </Item>
-      <Item KeyName='VirtualMode' Tip='解决 Hyper-V 和 VirtualBox 不能共存的问题'>
-        <OSVersion Compare=">=">10.0</OSVersion>
-        <Value>
-          <REG_SZ MUIVerb='虚拟模式' Icon='imageres.dll,-109' SubCommands='' Position='bottom'/>
-        </Value>
-        <SubKey>
-          <Shell>
-            <SubKey>
-              <Item0>
-                <Value>
-                  <REG_SZ MUIVerb='Hyper-V'/>
-                </Value>
-                <SubKey>
-                  <Command>
-                    <FileName>wscript.exe</FileName>
-                    <Arguments>
-                      <CreateFile
-                        FileName='HyperVMode.vbs'
-                        Content='
-                        Dim sap, wsh
-                        Set sap = CreateObject("Shell.Application")
-                        sap.ShellExecute "bcdedit", "/set hypervisorlaunchtype auto", "" ,"runas", 0
-                        msg = "你当前切换的模式为 Hyper-V，" &amp; VbCrlf
-                        msg = msg &amp; "该模式可使用 Windows SandBox 和 Hyper-V，" &amp; VbCrlf
-                        msg = msg &amp; "不可使用 VirtualBox 和 VMware 等虚拟机程序，" &amp; VbCrlf
-                        msg = msg &amp; "是否立即重启计算机应用该模式？" &amp; VbCrlf
-                        msg = msg &amp; "你也可稍后自行重启，请保存好工作！"
-                        If Msgbox(msg, VbYesNo + VbInformation, "虚拟模式") = VbYes Then
-                            Set wsh = CreateObject("WScript.Shell")
-                            wsh.Run("shutdown -r -f -t 00")
-                            Set wsh = Nothing
-                        End If
-                        Set sap = Nothing'/>
-                    </Arguments>
-                  </Command>
-                </SubKey>
-              </Item0>
-              <Item1>
-                <Value>
-                  <REG_SZ MUIVerb='VirtualBox'/>
-                </Value>
-                <SubKey>
-                  <Command>
-                    <FileName>wscript.exe</FileName>
-                    <Arguments>
-                      <CreateFile
-                        FileName='VirtualBoxMode.vbs'
-                        Content='
-                        Dim sap, wsh
-                        Set sap = CreateObject("Shell.Application")
-                        sap.ShellExecute "bcdedit", "/set hypervisorlaunchtype off", "", "runas", 0
-                        msg = "你当前切换的模式为 VirtualBox，" &amp; VbCrlf
-                        msg = msg &amp; "该模式可使用 VirtualBox 和 VMware 等虚拟机程序，" &amp; VbCrlf
-                        msg = msg &amp; "不可使用 Windows SandBox 和 Hyper-V，" &amp; VbCrlf
-                        msg = msg &amp; "是否立即重启计算机应用该模式？" &amp; VbCrlf
-                        msg = msg &amp; "你也可稍后自行重启，请保存好工作！"
-                        If Msgbox(msg, VbYesNo + VbInformation, "虚拟模式") = VbYes Then
-                            Set wsh = CreateObject("WScript.Shell")
-                            wsh.Run("shutdown -r -f -t 00")
-                            Set wsh = Nothing
-                        End If
-                        Set sap = Nothing'/>
-                    </Arguments>
-                  </Command>
-                </SubKey>
-              </Item1>
-            </SubKey>
-          </Shell>
-        </SubKey>
-      </Item>
       <Item KeyName='WallPaperLocation'>
         <Value>
           <REG_SZ MUIVerb='壁纸位置' Icon='imageres.dll,-5346' Position='bottom'/>
@@ -774,6 +709,76 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <Command Default='explorer shell:::{ED7BA470-8E54-465E-825C-99712043E01C}'/>
         </SubKey>
       </Item>
+      <Item KeyName='VirtualMode' Tip='解决 Hyper-V 和 VirtualBox 不能共存的问题'>
+        <OSVersion Compare=">=">10.0</OSVersion>
+        <Value>
+          <REG_SZ MUIVerb='虚拟模式' Icon='imageres.dll,-109' SubCommands='' Position='bottom'/>
+        </Value>
+        <SubKey>
+          <Shell>
+            <SubKey>
+              <Item0>
+                <Value>
+                  <REG_SZ MUIVerb='Hyper-V'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <FileName>wscript.exe</FileName>
+                    <Arguments>
+                      <CreateFile
+                        FileName='HyperVMode.vbs'
+                        Content='
+                        Dim sap, wsh
+                        Set sap = CreateObject("Shell.Application")
+                        sap.ShellExecute "bcdedit", "/set hypervisorlaunchtype auto", "" ,"runas", 0
+                        msg = "你当前切换的模式为 Hyper-V，" &amp; VbCrlf
+                        msg = msg &amp; "该模式可使用 Windows SandBox 和 Hyper-V，" &amp; VbCrlf
+                        msg = msg &amp; "不可使用 VirtualBox 和 VMware 等虚拟机程序，" &amp; VbCrlf
+                        msg = msg &amp; "是否立即重启计算机应用该模式？" &amp; VbCrlf
+                        msg = msg &amp; "你也可稍后自行重启，请保存好工作！"
+                        If Msgbox(msg, VbYesNo + VbInformation, "虚拟模式") = VbYes Then
+                            Set wsh = CreateObject("WScript.Shell")
+                            wsh.Run("shutdown -r -f -t 00")
+                            Set wsh = Nothing
+                        End If
+                        Set sap = Nothing'/>
+                    </Arguments>
+                  </Command>
+                </SubKey>
+              </Item0>
+              <Item1>
+                <Value>
+                  <REG_SZ MUIVerb='VirtualBox'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <FileName>wscript.exe</FileName>
+                    <Arguments>
+                      <CreateFile
+                        FileName='VirtualBoxMode.vbs'
+                        Content='
+                        Dim sap, wsh
+                        Set sap = CreateObject("Shell.Application")
+                        sap.ShellExecute "bcdedit", "/set hypervisorlaunchtype off", "", "runas", 0
+                        msg = "你当前切换的模式为 VirtualBox，" &amp; VbCrlf
+                        msg = msg &amp; "该模式可使用 VirtualBox 和 VMware 等虚拟机程序，" &amp; VbCrlf
+                        msg = msg &amp; "不可使用 Windows SandBox 和 Hyper-V，" &amp; VbCrlf
+                        msg = msg &amp; "是否立即重启计算机应用该模式？" &amp; VbCrlf
+                        msg = msg &amp; "你也可稍后自行重启，请保存好工作！"
+                        If Msgbox(msg, VbYesNo + VbInformation, "虚拟模式") = VbYes Then
+                            Set wsh = CreateObject("WScript.Shell")
+                            wsh.Run("shutdown -r -f -t 00")
+                            Set wsh = Nothing
+                        End If
+                        Set sap = Nothing'/>
+                    </Arguments>
+                  </Command>
+                </SubKey>
+              </Item1>
+            </SubKey>
+          </Shell>
+        </SubKey>
+      </Item>
       <Item KeyName='EditHosts'>
         <Value>
           <REG_SZ MUIVerb='编辑 Hosts'/>
@@ -782,7 +787,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <Command>
             <ShellExecute Verb='runas'/>
             <FileName>notepad.exe</FileName>
-            <Arguments>"%systemroot%\system32\drivers\etc\hosts"</Arguments>
+            <Arguments>%systemroot%\system32\drivers\etc\hosts</Arguments>
           </Command>
         </SubKey>
       </Item>
@@ -870,10 +875,10 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                 Content='
                 @echo off
                 taskkill /f /im explorer.exe
-                del /a "%LocalAppData%\IconCache.db"
+                del /f /s /q /a "%LocalAppData%\IconCache.db"
                 cd /d "%LocalAppData%\Microsoft\Windows\Explorer"
-                for /r %%f in (iconcache_*.db) do del %%f
-                for /r %%f in (thumbcache_*.db) do del %%f
+                del /f /s /q /a thumbcache_*.db
+                del /f /s /q /a iconcache_*.db
                 reg delete "HKCR\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify" /v IconStreams /f
                 reg delete "HKCR\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify" /v PastIconsStream /f
                 start explorer'/>

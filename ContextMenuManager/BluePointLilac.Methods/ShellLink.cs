@@ -298,6 +298,8 @@ namespace BluePointLilac.Methods
             PersistFile.Save(lnkPath, true);
         }
 
+        public void Load() { Load(this.ShortcutPath); }
+
         public void Load(string lnkPath)
         {
             this.ShortcutPath = lnkPath;

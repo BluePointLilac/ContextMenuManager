@@ -15,17 +15,17 @@ namespace ContextMenuManager.Controls.Interfaces
 
     sealed class HandleGuidMenuItem : ToolStripMenuItem
     {
-        public HandleGuidMenuItem(ITsiGuidItem item, bool isShellExItem) : base(AppString.Menu.HandleGuid)
+        public HandleGuidMenuItem(ITsiGuidItem item) : base(AppString.Menu.HandleGuid)
         {
             this.Item = item;
-            this.DropDownItems.Add(TsiCopyGuid);
-            if(isShellExItem)
+            this.DropDownItems.AddRange(new ToolStripItem[] {
+                TsiAddGuidDic, new ToolStripSeparator(), TsiCopyGuid });
+            if(item is ShellExItem shellExItem)
             {
-                this.DropDownItems.Add(new ToolStripSeparator());
-                this.DropDownItems.Add(TsiBlockGuid);
+                this.DropDownItems.AddRange(new ToolStripItem[] { TsiBlockGuid, TsiClsidLocation });
+                shellExItem.ContextMenuStrip.Opening += (sender, e) => TsiClsidLocation.Visible = shellExItem.ClsidPath != null;
+                TsiClsidLocation.Click += (sender, e) => ExternalProgram.JumpRegEdit(shellExItem.ClsidPath);
             }
-            this.DropDownItems.Add(new ToolStripSeparator());
-            this.DropDownItems.Add(TsiAddGuidDic);
             TsiCopyGuid.Click += (sender, e) => CopyGuid();
             TsiBlockGuid.Click += (sender, e) => BlockGuid();
             TsiAddGuidDic.Click += (sender, e) => AddGuidDic();
@@ -49,6 +49,7 @@ namespace ContextMenuManager.Controls.Interfaces
         readonly ToolStripMenuItem TsiCopyGuid = new ToolStripMenuItem(AppString.Menu.CopyGuid);
         readonly ToolStripMenuItem TsiBlockGuid = new ToolStripMenuItem(AppString.Menu.BlockGuid);
         readonly ToolStripMenuItem TsiAddGuidDic = new ToolStripMenuItem(AppString.Menu.AddGuidDic);
+        readonly ToolStripMenuItem TsiClsidLocation = new ToolStripMenuItem(AppString.Menu.ClsidLocation);
 
         public ITsiGuidItem Item { get; set; }
 

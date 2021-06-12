@@ -132,7 +132,7 @@ namespace ContextMenuManager.Controls
             TsiRegLocation = new RegLocationMenuItem(this);
             TsiDeleteMe = new DeleteMeMenuItem(this);
             TsiRegExport = new RegExportMenuItem(this);
-            TsiHandleGuid = new HandleGuidMenuItem(this, false);
+            TsiHandleGuid = new HandleGuidMenuItem(this);
             this.ContextMenuStrip.Items.AddRange(new ToolStripItem[] { TsiHandleGuid,
                 new ToolStripSeparator(), TsiDetails, new ToolStripSeparator(), TsiDeleteMe });
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),

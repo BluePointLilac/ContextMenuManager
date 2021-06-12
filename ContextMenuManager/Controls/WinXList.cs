@@ -76,34 +76,38 @@ namespace ContextMenuManager.Controls
                         dlg2.Title = AppString.Dialog.SelectGroup;
                         dlg2.Items = GetGroupNames();
                         if(dlg2.ShowDialog() != DialogResult.OK) return;
-                        string dirPath = $@"{WinXPath}\{dlg2.Selected}";
-                        string extension = Path.GetExtension(dlg1.ItemFilePath).ToLower();
-                        string fileName = Path.GetFileNameWithoutExtension(dlg1.ItemFilePath);
+                        string dirName = dlg2.Selected;
+                        string dirPath = $@"{WinXPath}\{dirName}";
+                        string itemText = dlg1.ItemText;
+                        string targetPath = dlg1.ItemFilePath;
+                        string arguments = dlg1.Arguments;
+                        string workDir = Path.GetDirectoryName(targetPath);
+                        string extension = Path.GetExtension(targetPath).ToLower();
+                        string fileName = Path.GetFileNameWithoutExtension(targetPath);
                         int count = Directory.GetFiles(dirPath, "*.lnk").Length;
                         string index = (count + 1).ToString().PadLeft(2, '0');
                         string lnkName = $"{index} - {fileName}.lnk";
                         string lnkPath = $@"{dirPath}\{lnkName}";
-                        ShellLink shellLink;
-                        if(extension == ".lnk")
+                        using(ShellLink shellLink = new ShellLink(lnkPath))
                         {
-                            File.Copy(dlg1.ItemFilePath, lnkPath);
-                            shellLink = new ShellLink(lnkPath);
-                        }
-                        else
-                        {
-                            shellLink = new ShellLink(lnkPath)
+                            if(extension == ".lnk")
                             {
-                                TargetPath = dlg1.ItemFilePath,
-                                Arguments = dlg1.Arguments,
-                            };
-                            shellLink.WorkingDirectory = Path.GetDirectoryName(shellLink.TargetPath);
+                                File.Copy(targetPath, lnkPath);
+                                shellLink.Load();
+                            }
+                            else
+                            {
+                                shellLink.TargetPath = targetPath;
+                                shellLink.Arguments = arguments;
+                                shellLink.WorkingDirectory = workDir;
+                            }
+                            shellLink.Description = itemText;
+                            shellLink.Save();
                         }
-                        shellLink.Description = dlg1.ItemText;
-                        shellLink.Save();
-                        DesktopIni.SetLocalizedFileNames(lnkPath, dlg1.ItemText);
+                        DesktopIni.SetLocalizedFileNames(lnkPath, itemText);
                         foreach(MyListItem ctr in this.Controls)
                         {
-                            if(ctr is WinXGroupItem groupItem && groupItem.Text == dlg2.Selected)
+                            if(ctr is WinXGroupItem groupItem && groupItem.Text == dirName)
                             {
                                 WinXItem item = new WinXItem(lnkPath, groupItem) { Visible = !groupItem.IsFold };
                                 item.BtnMoveDown.Visible = item.BtnMoveUp.Visible = AppConfig.WinXSortable;
@@ -133,7 +137,7 @@ namespace ContextMenuManager.Controls
         {
             List<string> items = new List<string>();
             DirectoryInfo winxDi = new DirectoryInfo(WinXPath);
-            Array.ForEach(winxDi.GetDirectories(), di => items.Add(di.Name));
+            foreach(DirectoryInfo di in winxDi.GetDirectories()) items.Add(di.Name);
             items.Reverse();
             return items.ToArray();
         }

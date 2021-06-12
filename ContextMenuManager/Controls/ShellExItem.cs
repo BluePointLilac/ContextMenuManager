@@ -66,6 +66,7 @@ namespace ContextMenuManager.Controls
         public Guid Guid { get; set; }
         public string ValueName => null;
         public string SearchText => Text;
+        public string ClsidPath => GuidInfo.GetClsidPath(Guid);
         public string ItemFilePath => GuidInfo.GetFilePath(Guid);
         private string KeyName => RegistryEx.GetKeyName(RegPath);
         private string ParentPath => RegistryEx.GetParentPath(RegPath);
@@ -131,7 +132,7 @@ namespace ContextMenuManager.Controls
             TsiRegLocation = new RegLocationMenuItem(this);
             TsiRegExport = new RegExportMenuItem(this);
             TsiDeleteMe = new DeleteMeMenuItem(this);
-            TsiHandleGuid = new HandleGuidMenuItem(this, true);
+            TsiHandleGuid = new HandleGuidMenuItem(this);
 
             ContextMenuStrip.Items.AddRange(new ToolStripItem[] { TsiHandleGuid, new ToolStripSeparator(),
                 TsiDetails, new ToolStripSeparator(), TsiDeleteMe });
