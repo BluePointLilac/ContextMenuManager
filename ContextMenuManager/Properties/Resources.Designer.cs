@@ -180,12 +180,13 @@ namespace ContextMenuManager.Properties {
         ///Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ、REG_BINARY的键值类型，
         ///子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突
         ///由于Shell项太过复杂，程序只根据注册表项名判断存在即启用，故同一场景下不允许有相同KeyName属性的Shell项目，ShellEx项只要Guid符合则为启用--&gt;
+        ///
         ///&lt;Data&gt;
         ///  &lt;File&gt;
         ///    &lt;Shell&gt;
         ///      &lt;Item KeyName=&apos;CopyContent&apos; Tip=&apos;不需打开文件直接复制文件文本内容&amp;#x000A;非UTF-16 LE(或带BOM)编码会乱码&apos;&gt;
         ///        &lt;Value&gt;
-        ///     [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string EnhanceMenusDic {
             get {
