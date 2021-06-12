@@ -18,7 +18,7 @@ namespace BluePointLilac.Methods
             this.Encoding = Encoding.UTF8;
             //远程服务器返回错误: (403) 已禁止
             //浏览器 F12 console 输入 console.log(navigator.userAgent); 获取 User Agent
-            this.Headers.Add("User-Agent", 
+            this.Headers.Add("User-Agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
                 "Chrome/90.0.4430.212 Safari/537.36 Edg/90.0.818.66");
         }

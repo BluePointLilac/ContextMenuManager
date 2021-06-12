@@ -1,6 +1,5 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
-using System;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls.Interfaces

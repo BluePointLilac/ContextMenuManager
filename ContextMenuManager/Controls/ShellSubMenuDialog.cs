@@ -216,7 +216,7 @@ namespace ContextMenuManager.Controls
                     {
                         dlg.IsReference = true;
                         dlg.ShellPath = ShellItem.CommandStorePath;
-                        dlg.Filter = new Func<string, bool>(itemName => !(AppConfig.HideSysStoreItems 
+                        dlg.Filter = new Func<string, bool>(itemName => !(AppConfig.HideSysStoreItems
                             && itemName.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase)));
                         if(dlg.ShowDialog() != DialogResult.OK) return;
                         foreach(string keyName in dlg.SelectedKeyNames)

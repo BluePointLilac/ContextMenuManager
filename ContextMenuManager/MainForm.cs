@@ -18,10 +18,10 @@ namespace ContextMenuManager
             this.Text = AppString.General.AppName;
             this.ForeColor = Color.FromArgb(80, 80, 80);
             this.Controls.Add(new ExplorerRestarter());
-            donateBox.Parent = aboutMeBox.Parent = dictionariesBox.Parent 
-                = languagesBox.Parent = appSettingBox.Owner = shellList.Owner 
-                = shellNewList.Owner = sendToList.Owner = openWithList.Owner 
-                = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner 
+            donateBox.Parent = aboutMeBox.Parent = dictionariesBox.Parent
+                = languagesBox.Parent = appSettingBox.Owner = shellList.Owner
+                = shellNewList.Owner = sendToList.Owner = openWithList.Owner
+                = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner
                 = thirdRuleList.Owner = iEList.Owner = MainBody;
             ToolBar.SelectedButtonChanged += (sender, e) => SwitchTab(ToolBar.SelectedIndex);
             SideBar.HoverIndexChanged += (sender, e) => ShowItemInfo();
