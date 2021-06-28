@@ -17,6 +17,11 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <OSVersion Compare='&lt;'>10.0.17763</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\FlightedFeatures' ValueName='ImmersiveContextMenu' On='0'/>
     </Item>
+    <Item Text='系统 右键菜单在左侧弹出' Tip='更改后需要重新登录账户'>
+      <OSVersion Compare='>='>10.0</OSVersion>
+      <!--explorer.exe shell:::{80F3F1D5-FECA-45F3-BC32-752C152E456E}-->
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows' ValueName='MenuDropAlignment' On='1'/>
+    </Item>
     <Item Text='Shell类型菜单同时操作文件对象数量限制' Tip='系统默认值为15，超过15为无限制' IsNumberItem=''>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' ValueName='MultipleInvokePromptMinimum' Max='32767' Min='1' Default='15'/>
     </Item>
@@ -56,7 +61,11 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People' ValueName='PeopleBand' Off='0'/>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='HidePeopleBar' Off='1'/>
     </Item>
-    <Item Text='任务栏 Windows lnk 工作区' Tip='禁用此项将同时禁用 Win+W 快捷键'>
+    <Item Text='任务栏 资讯和兴趣' RestartExplorer=''>
+      <OSVersion Compare='>='>10.0.19043</OSVersion>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds' ValueName='EnableFeeds' Off='0'/>
+    </Item>
+    <Item Text='任务栏 Windows lnk 工作区(Win+W)'>
       <OSVersion Compare='>='>10.0</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsInkWorkspace' ValueName='AllowWindowsInkWorkspace' Off='0'/>
     </Item>
@@ -89,7 +98,7 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <OSVersion Compare='>='>10.0</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='JumpListItems_Maximum' Max='60' Min='0' Default='13'/>
     </Item>
-    <Item Text='Win+X 命令提示符 替换为 PowerShell' RestartExplorer=''>
+    <Item Text='开始 徽标右键菜单(Win+X) 命令提示符 替换为 PowerShell' RestartExplorer=''>
       <OSVersion Compare='>='>10.0</OSVersion>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='DontUsePowerShellOnWinX' Off='1'/>
     </Item>
@@ -284,6 +293,21 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item Text='一键解压完成后自动关闭360压缩'>
       <Rule Section='General' KeyName='WiseExtract' On='1' Off='0'/>
+    </Item>
+  </Group>
+
+  <Group Text='WPS云文档' Guid='67f4d210-bfc2-4add-9a2a-c9b9e1f42c4f' RegPath='HKEY_CURRENT_USER\SOFTWARE\Kingsoft\WPSCloud'>
+    <Item Text='上传到"WPS云文档"'>
+      <Rule ValueName='uploadFile' On='true' Off='false' ValueKind='REG_SZ'/>
+    </Item>
+    <Item Text='发送到"WPS云文档传输助手"'>
+      <Rule ValueName='fileTransfer' On='true' Off='false' ValueKind='REG_SZ'/>
+    </Item>
+    <Item Text='通过"WPS云文档"分享和协作'>
+      <Rule ValueName='shareFile' On='true' Off='false' ValueKind='REG_SZ'/>
+    </Item>
+    <Item Text='同步桌面所有文件'>
+      <Rule ValueName='DesktopSync' On='true' Off='false' ValueKind='REG_SZ'/>
     </Item>
   </Group>
 </Data>

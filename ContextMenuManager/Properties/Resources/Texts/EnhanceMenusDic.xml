@@ -793,7 +793,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       </Item>
       <Item KeyName='FlushDNS'>
         <Value>
-          <REG_SZ MUIVerb='刷新DNS缓存'/>
+          <REG_SZ MUIVerb='刷新DNS缓存' Icon='shell32.dll,238'/>
         </Value>
         <SubKey>
           <Command Default='ipconfig /flushdns'/>
