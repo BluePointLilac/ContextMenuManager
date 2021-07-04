@@ -42,7 +42,7 @@
 * 个人邮箱：1617859183@qq.com
 
 ## 捐赠作者
-此程序完全免费，如果你觉得这个程序对你有所帮助，可以通过扫面下方二维码（微信、支付宝、QQ）<br>进行捐赠，金额请随意，谢谢你的理解和支持！更加期待你为此项目点亮Star（这对我很重要！）<br>![][Donate]
+此程序完全免费，如果你觉得这个程序对你有所帮助，可以通过扫面下方二维码（微信、支付宝、QQ）<br>进行捐赠，金额请随意，谢谢你的理解和支持！更加期待你为此项目点亮Star（这对我很重要！）<br>[捐赠名单](Donate.md)<br>![][Donate]
 
   [Latest]: https://github.com/BluePointLilac/ContextMenuManager/releases/latest
   [GitHub Releases]: https://github.com/BluePointLilac/ContextMenuManager/releases

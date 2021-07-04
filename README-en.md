@@ -40,7 +40,7 @@
 
 ## Donations
 This program is completely free of charge; if you find this program useful, you can donate by scanning the QR codes below（WeChat, Alipay, QQ) 
-<br>Any amount is welcome，thank you for your understanding and support! Please also don't forget to star this repo (It means a lot to me!）<br>![][Donate]
+<br>Any amount is welcome，thank you for your understanding and support! Please also don't forget to star this repo (It means a lot to me!）<br>[Donate List](Donate.md)<br>![][Donate]
 
   [EasyIcon]: https://www.easyicon.net/1208132-mouse_icon.html
   [AppIcon]: ContextMenuManager/Properties/AppIcon.ico
