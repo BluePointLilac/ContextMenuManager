@@ -372,7 +372,11 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='节能'/>
                 </Value>
                 <SubKey>
-                  <Command Default='powercfg /S a1841308-3541-4fab-bc81-f71556f20b4a'/>
+                  <Command>
+                    <ShellExecute WindowStyle='0'/>
+                    <FileName>powercfg.exe</FileName>
+                    <Arguments>/S a1841308-3541-4fab-bc81-f71556f20b4a</Arguments>
+                  </Command>
                 </SubKey>
               </Item0>
               <Item1>
@@ -380,7 +384,11 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='平衡'/>
                 </Value>
                 <SubKey>
-                  <Command Default='powercfg /S 381b4222-f694-41f0-9685-ff5bb260df2e'/>
+                  <Command>
+                    <ShellExecute WindowStyle='0'/>
+                    <FileName>powercfg.exe</FileName>
+                    <Arguments>/S 381b4222-f694-41f0-9685-ff5bb260df2e</Arguments>
+                  </Command>
                 </SubKey>
               </Item1>
               <Item2>
@@ -388,7 +396,11 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='高性能'/>
                 </Value>
                 <SubKey>
-                  <Command Default='powercfg /S 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c'/>
+                  <Command>
+                    <ShellExecute WindowStyle='0'/>
+                    <FileName>powercfg.exe</FileName>
+                    <Arguments>/S 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</Arguments>
+                  </Command>
                 </SubKey>
               </Item2>
             </SubKey>
@@ -816,10 +828,6 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                 Set wsh = CreateObject("WScript.Shell")
                 Set fso = CreateObject("Scripting.FileSystemObject")
                 path = fso.GetSpecialFolder(2) &amp; "\BatteryReport.html"
-                If fso.FileExists(path) Then 
-                    fso.DeleteFile(path)
-                    WScript.Sleep 1000
-                End If
                 wsh.Run "powercfg /batteryreport /output " &amp; path, 0
                 WScript.Sleep 1000
                 wsh.Run("explorer.exe " &amp; path)

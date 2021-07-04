@@ -17,7 +17,7 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
       <OSVersion Compare='&lt;'>10.0.17763</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\FlightedFeatures' ValueName='ImmersiveContextMenu' On='0'/>
     </Item>
-    <Item Text='系统 右键菜单在左侧弹出' Tip='更改后需要重新登录账户'>
+    <Item Text='系统 右键菜单在左侧弹出' Tip='更改后需要重新登录账户生效'>
       <OSVersion Compare='>='>10.0</OSVersion>
       <!--explorer.exe shell:::{80F3F1D5-FECA-45F3-BC32-752C152E456E}-->
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows' ValueName='MenuDropAlignment' On='1'/>
