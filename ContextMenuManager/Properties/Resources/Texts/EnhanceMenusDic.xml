@@ -30,7 +30,7 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='GetHash'>
         <OSVersion Compare=">=">6.3</OSVersion>
         <Value>
-          <REG_SZ MUIVerb='获取哈希值'/>
+          <REG_SZ MUIVerb='获取哈希值' Icon='powershell.exe,0'/>
         </Value>
         <SubKey>
           <Command>
@@ -85,92 +85,106 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           </Command>
         </SubKey>
       </Item>
-      <Item KeyName='Windows.ShowHiddenFiles'>
-        <OSVersion Compare=">=">6.2</OSVersion>
+      <Item KeyName='SuperHidden'>
         <Value>
-          <REG_SZ MUIVerb='显示/隐藏 隐藏文件' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync=''
-                  ExplorerCommandHandler='{f7300245-1f4b-41ba-8948-6fd392064494}'/>
-        </Value>
-      </Item>
-      <Item KeyName='Windows.ShowFileExtensions'>
-        <OSVersion Compare=">=">6.2</OSVersion>
-        <Value>
-          <REG_SZ MUIVerb='显示/隐藏 文件扩展名' Icon='imageres.dll,-5314' Position='bottom' CommandStateSync=''
-                  ExplorerCommandHandler='{4ac6c205-2853-4bf5-b47c-919a42a48a16}'/>
-        </Value>
-      </Item>
-      <Item KeyName='ShowHiddenFiles'>
-        <OSVersion Compare="&lt;">6.2</OSVersion>
-        <Value>
-          <REG_SZ MUIVerb='显示/隐藏 隐藏文件' Position='bottom'/>
+          <REG_SZ MUIVerb='超级隐藏' SubCommands='' Position='bottom'/>
+          <REG_SZ Icon='imageres.dll,-5314'>
+            <OSVersion Compare=">=">6.2</OSVersion>
+          </REG_SZ>
         </Value>
         <SubKey>
-          <Command>
-            <FileName>wscript.exe</FileName>
-            <Arguments>
-              <CreateFile
-                FileName='ShowHiddenFiles.vbs'
-                Content='
-                Dim wsh
-                On Error Resume Next
-                Set wsh = CreateObject("WScript.Shell")
-                path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Hidden"
-                value = 1
-                If wsh.RegRead(path) = value Then value = 2
-                wsh.RegWrite path, value, "REG_DWORD"
-                wsh.SendKeys "{F5}"
-                Set wsh = Nothing'/>
-            </Arguments>
-          </Command>
-        </SubKey>
-      </Item>
-      <Item KeyName='ShowFileExtensions'>
-        <OSVersion Compare="&lt;">6.2</OSVersion>
-        <Value>
-          <REG_SZ MUIVerb='显示/隐藏 文件扩展名' Position='bottom'/>
-        </Value>
-        <SubKey>
-          <Command>
-            <FileName>wscript.exe</FileName>
-            <Arguments>
-              <CreateFile
-                FileName='ShowFileExtensions.vbs'
-                Content='
-                Dim wsh
-                On Error Resume Next
-                Set wsh = CreateObject("WScript.Shell")
-                path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\HideFileExt"
-                value = 1
-                If wsh.RegRead(path) = value Then value = 0
-                wsh.RegWrite path, value, "REG_DWORD"
-                wsh.SendKeys "{F5}"
-                Set wsh = Nothing'/>
-            </Arguments>
-          </Command>
-        </SubKey>
-      </Item>
-      <Item KeyName='ShowSuperHidden'>
-        <Value>
-          <REG_SZ MUIVerb='显示/隐藏 系统隐藏文件' Position='bottom'/>
-        </Value>
-        <SubKey>
-          <Command>
-            <FileName>wscript.exe</FileName>
-            <Arguments>
-              <CreateFile
-                FileName='ShowSuperHidden.vbs'
-                Content='
-                Dim wsh
-                On Error Resume Next
-                Set wsh = CreateObject("WScript.Shell")
-                path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ShowSuperHidden"
-                value = 1
-                If wsh.RegRead(path) = value Then value = 0
-                wsh.RegWrite path, value, "REG_DWORD"
-                wsh.SendKeys "{F5}"
-                Set wsh = Nothing'/>
-            </Arguments>
-          </Command>
+          <Shell>
+            <SubKey>
+              <Item0>
+                <OSVersion Compare=">=">6.2</OSVersion>
+                <Value>
+                  <REG_SZ MUIVerb='显示/隐藏 文件扩展名' CommandStateSync=''
+                          ExplorerCommandHandler='{4ac6c205-2853-4bf5-b47c-919a42a48a16}'/>
+                </Value>
+              </Item0>
+              <Item1>
+                <OSVersion Compare=">=">6.2</OSVersion>
+                <Value>
+                  <REG_SZ MUIVerb='显示/隐藏 隐藏文件' CommandStateSync=''
+                          ExplorerCommandHandler='{f7300245-1f4b-41ba-8948-6fd392064494}'/>
+                </Value>
+              </Item1>
+              <Item0>
+                <OSVersion Compare="&lt;">6.2</OSVersion>
+                <Value>
+                  <REG_SZ MUIVerb='显示/隐藏 文件扩展名' Position='bottom'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <FileName>wscript.exe</FileName>
+                    <Arguments>
+                      <CreateFile
+                        FileName='ShowFileExtensions.vbs'
+                        Content='
+                        Dim wsh
+                        On Error Resume Next
+                        Set wsh = CreateObject("WScript.Shell")
+                        path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\HideFileExt"
+                        value = 1
+                        If wsh.RegRead(path) = value Then value = 0
+                        wsh.RegWrite path, value, "REG_DWORD"
+                        wsh.SendKeys "{F5}"
+                        Set wsh = Nothing'/>
+                    </Arguments>
+                  </Command>
+                </SubKey>
+              </Item0>
+              <Item1>
+                <OSVersion Compare="&lt;">6.2</OSVersion>
+                <Value>
+                  <REG_SZ MUIVerb='显示/隐藏 隐藏文件'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <FileName>wscript.exe</FileName>
+                    <Arguments>
+                      <CreateFile
+                        FileName='ShowHiddenFiles.vbs'
+                        Content='
+                        Dim wsh
+                        On Error Resume Next
+                        Set wsh = CreateObject("WScript.Shell")
+                        path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\Hidden"
+                        value = 1
+                        If wsh.RegRead(path) = value Then value = 2
+                        wsh.RegWrite path, value, "REG_DWORD"
+                        wsh.SendKeys "{F5}"
+                        Set wsh = Nothing'/>
+                    </Arguments>
+                  </Command>
+                </SubKey>
+              </Item1>
+              <Item2>
+                <Value>
+                  <REG_SZ MUIVerb='显示/隐藏 系统隐藏文件'/>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <FileName>wscript.exe</FileName>
+                    <Arguments>
+                      <CreateFile
+                        FileName='ShowSuperHidden.vbs'
+                        Content='
+                        Dim wsh
+                        On Error Resume Next
+                        Set wsh = CreateObject("WScript.Shell")
+                        path = "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ShowSuperHidden"
+                        value = 1
+                        If wsh.RegRead(path) = value Then value = 0
+                        wsh.RegWrite path, value, "REG_DWORD"
+                        wsh.SendKeys "{F5}"
+                        Set wsh = Nothing'/>
+                    </Arguments>
+                  </Command>
+                </SubKey>
+              </Item2>
+            </SubKey>
+          </Shell>
         </SubKey>
       </Item>
       <Item KeyName='RunasCmd'>
@@ -602,6 +616,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
       <Item KeyName='HideAttributes'>
         <Value>
           <REG_SZ MUIVerb='隐藏属性' SubCommands='' Position='bottom'/>
+          <REG_SZ Icon='imageres.dll,-5314'>
+            <OSVersion Compare=">=">6.2</OSVersion>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Shell>
