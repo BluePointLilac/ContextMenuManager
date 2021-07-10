@@ -34,18 +34,26 @@ namespace ContextMenuManager.Controls
 
             public ShellStoreForm(string shellPath, Func<string, bool> filter, bool isReference)
             {
-                this.ShellPath = shellPath;
                 this.Filter = filter;
+                this.ShellPath = shellPath;
                 this.AcceptButton = btnOk;
                 this.CancelButton = btnCancel;
                 this.Font = SystemFonts.MessageBoxFont;
                 this.SizeGripStyle = SizeGripStyle.Hide;
                 this.ShowIcon = this.ShowInTaskbar = false;
-                this.MinimizeBox = this.MaximizeBox = false;
+                this.MinimizeBox =this.MaximizeBox = false;
                 this.StartPosition = FormStartPosition.CenterParent;
                 this.MinimumSize = this.Size = new Size(652, 425).DpiZoom();
                 this.Text = isReference ? AppString.Dialog.CheckReference : AppString.Dialog.CheckCopy;
                 btnOk.Click += (sender, e) => GetSelectedItems();
+                chkSelectAll.Click += (sender, e) =>
+                {
+                    bool flag = chkSelectAll.Checked;
+                    foreach(StoreShellItem item in list.Controls)
+                    {
+                        item.IsSelected = flag;
+                    }
+                };
                 list.Owner = listBox;
                 InitializeComponents();
                 LoadItems(isReference);
@@ -71,16 +79,24 @@ namespace ContextMenuManager.Controls
                 Text = AppString.Dialog.Cancel,
                 AutoSize = true
             };
+            readonly CheckBox chkSelectAll = new CheckBox
+            {
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
+                Text = AppString.Dialog.SelectAll,
+                Cursor = Cursors.Hand,
+                AutoSize = true
+            };
 
             private void InitializeComponents()
             {
-                this.Controls.AddRange(new Control[] { listBox, pnlBorder, btnOk, btnCancel });
+                this.Controls.AddRange(new Control[] { listBox, pnlBorder, btnOk, btnCancel, chkSelectAll });
                 int a = 20.DpiZoom();
                 listBox.Location = new Point(a, a);
                 pnlBorder.Location = new Point(a - 1, a - 1);
-                btnOk.Top = btnCancel.Top = this.ClientSize.Height - btnCancel.Height - a;
+                chkSelectAll.Top = btnOk.Top = btnCancel.Top = this.ClientSize.Height - btnCancel.Height - a;
                 btnCancel.Left = this.ClientSize.Width - btnCancel.Width - a;
                 btnOk.Left = btnCancel.Left - btnOk.Width - a;
+                chkSelectAll.Left = a;
                 this.OnResize(null);
             }
 
@@ -101,7 +117,20 @@ namespace ContextMenuManager.Controls
                     {
                         if(Filter != null && !Filter(itemName)) continue;
                         string regPath = $@"{ShellPath}\{itemName}";
-                        list.AddItem(new StoreShellItem(regPath, isReference));
+                        StoreShellItem item = new StoreShellItem(regPath, isReference);
+                        item.SelectedChanged += () =>
+                        {
+                            foreach(StoreShellItem shellItem in list.Controls)
+                            {
+                                if(!shellItem.IsSelected)
+                                {
+                                    chkSelectAll.Checked = false;
+                                    return;
+                                }
+                            }
+                            chkSelectAll.Checked = true;
+                        };
+                        list.AddItem(item);
                     }
                 }
             }
@@ -111,7 +140,7 @@ namespace ContextMenuManager.Controls
                 List<string> names = new List<string>();
                 foreach(StoreShellItem item in list.Controls)
                     if(item.IsSelected) names.Add(item.KeyName);
-                SelectedKeyNames = names.ToArray();
+                this.SelectedKeyNames = names.ToArray();
             }
         }
     }
@@ -123,17 +152,31 @@ namespace ContextMenuManager.Controls
             this.IsPublic = isPublic;
             if(isSelect)
             {
-                this.AddCtr(chkSelected, 40.DpiZoom());
                 this.ContextMenuStrip = null;
+                this.AddCtr(chkSelected);
                 ChkVisible.Visible = BtnShowMenu.Visible = BtnSubItems.Visible = false;
+                this.MouseClick += (sender, e) => chkSelected.Checked = !chkSelected.Checked;
+                chkSelected.CheckedChanged += (sender, e) => SelectedChanged?.Invoke();
+                ImageDoubleClick += () => OnMouseClick(null);
+                TextDoubleClick += () => OnMouseClick(null);
             }
             RegTrustedInstaller.TakeRegTreeOwnerShip(regPath);
         }
 
         public bool IsPublic { get; set; }
-        public bool IsSelected => chkSelected.Checked;
+        public bool IsSelected
+        {
+            get => chkSelected.Checked;
+            set => chkSelected.Checked = value;
+        }
 
-        readonly CheckBox chkSelected = new CheckBox { AutoSize = true };
+        readonly CheckBox chkSelected = new CheckBox
+        {
+            Cursor = Cursors.Hand,
+            AutoSize = true
+        };
+
+        public Action SelectedChanged { get; set; }
 
         public override void DeleteMe()
         {

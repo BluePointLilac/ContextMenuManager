@@ -42,7 +42,7 @@ namespace ContextMenuManager.Controls
         {
             NewItem newItem = new NewItem(AppString.Other.AddGuidBlockedItem);
             this.AddItem(newItem);
-            newItem.AddNewItem += (sender, e) =>
+            newItem.AddNewItem += () =>
             {
                 using(InputDialog dlg = new InputDialog { Title = AppString.Dialog.InputGuid })
                 {

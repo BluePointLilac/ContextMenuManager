@@ -32,18 +32,19 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
+    <ErrorReport>queue</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <DocumentationFile>
     </DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -127,11 +128,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
-    <Compile Include="BluePointLilac.Controls\MyToolTip.cs" />
+    <Compile Include="BluePointLilac.Methods\ToolTipBox.cs" />
     <Compile Include="BluePointLilac.Controls\ReadOnlyTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BluePointLilac.Controls\ResizbleForm.cs">
+    <Compile Include="BluePointLilac.Controls\ResizeLimitedForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="BluePointLilac.Controls\MyToolBar.cs">
@@ -181,6 +182,7 @@
     <Compile Include="Controls\Interfaces\IBtnMoveUpDownItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\Interfaces\IProtectOpenItem.cs" />
     <Compile Include="Controls\Interfaces\ITsiAdministratorItem.cs">
       <SubType>Component</SubType>
     </Compile>

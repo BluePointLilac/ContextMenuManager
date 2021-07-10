@@ -89,14 +89,18 @@ namespace ContextMenuManager.Controls
                     ((PrivateMultiItemsList)LstSubItems).LoadItems(ParentPath);
                     this.Text += $"({AppString.Dialog.Private})";
                 }
-                LstSubItems.HoveredItemChanged += (sender, a) =>
+                LstSubItems.HoveredItemChanged += () =>
                 {
                     if(!AppConfig.ShowFilePath) return;
                     MyListItem item = LstSubItems.HoveredItem;
-                    if(item is ITsiFilePathItem pathItem)
+                    if(item is ITsiFilePathItem pathItem1)
                     {
-                        string path = pathItem.ItemFilePath;
+                        string path = pathItem1.ItemFilePath;
                         if(File.Exists(path)) { StatusBar.Text = path; return; }
+                    }
+                    if(item is ITsiRegPathItem pathItem2)
+                    {
+                        StatusBar.Text = pathItem2.RegPath; return;
                     }
                     StatusBar.Text = item.Text;
                 };
@@ -166,9 +170,9 @@ namespace ContextMenuManager.Controls
                 public PulicMultiItemsList(MyListBox owner) : base(owner)
                 {
                     this.AddItem(subNewItem);
-                    subNewItem.AddNewItem += (sender, e) => AddNewItem();
-                    subNewItem.AddExisting += (sender, e) => AddReference();
-                    subNewItem.AddSeparator += (sender, e) => AddSeparator();
+                    subNewItem.AddNewItem += () => AddNewItem();
+                    subNewItem.AddExisting += () => AddReference();
+                    subNewItem.AddSeparator += () => AddSeparator();
                 }
 
                 /// <param name="parentPath">子菜单的父菜单的注册表路径</param>
@@ -327,8 +331,8 @@ namespace ContextMenuManager.Controls
                         BtnMoveUp = new MoveButton(this, true);
                         BtnMoveUp.MouseDown += (sender, e) => Owner.MoveItem(this, true);
                         BtnMoveDown.MouseDown += (sender, e) => Owner.MoveItem(this, false);
-                        MyToolTip.SetToolTip(this, AppString.Tip.InvalidItem);
-                        MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
+                        ToolTipBox.SetToolTip(this, AppString.Tip.InvalidItem);
+                        ToolTipBox.SetToolTip(BtnDelete, AppString.Menu.Delete);
                     }
 
                     public DeleteButton BtnDelete { get; set; }
@@ -349,9 +353,9 @@ namespace ContextMenuManager.Controls
                 public PrivateMultiItemsList(MyListBox owner) : base(owner)
                 {
                     this.AddItem(subNewItem);
-                    subNewItem.AddNewItem += (sender, e) => AddNewItem();
-                    subNewItem.AddSeparator += (sender, e) => AddSeparator();
-                    subNewItem.AddExisting += (sender, e) => AddFromParentMenu();
+                    subNewItem.AddNewItem += () => AddNewItem();
+                    subNewItem.AddSeparator += () => AddSeparator();
+                    subNewItem.AddExisting += () => AddFromParentMenu();
                 }
 
                 readonly SubNewItem subNewItem = new SubNewItem(false);
@@ -555,7 +559,7 @@ namespace ContextMenuManager.Controls
                     BtnDelete = new DeleteButton(this);
                     BtnMoveDown = new MoveButton(this, false);
                     BtnMoveUp = new MoveButton(this, true);
-                    MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
+                    ToolTipBox.SetToolTip(BtnDelete, AppString.Menu.Delete);
                 }
 
                 public DeleteButton BtnDelete { get; set; }
@@ -598,17 +602,17 @@ namespace ContextMenuManager.Controls
                 public SubNewItem(bool isPublic)
                 {
                     this.AddCtrs(new[] { btnAddExisting, btnAddSeparator });
-                    MyToolTip.SetToolTip(btnAddExisting, isPublic ? AppString.Tip.AddReference : AppString.Tip.AddFromParentMenu);
-                    MyToolTip.SetToolTip(btnAddSeparator, AppString.Tip.AddSeparator);
-                    btnAddExisting.MouseDown += (sender, e) => AddExisting?.Invoke(null, null);
-                    btnAddSeparator.MouseDown += (sender, e) => AddSeparator?.Invoke(null, null);
+                    ToolTipBox.SetToolTip(btnAddExisting, isPublic ? AppString.Tip.AddReference : AppString.Tip.AddFromParentMenu);
+                    ToolTipBox.SetToolTip(btnAddSeparator, AppString.Tip.AddSeparator);
+                    btnAddExisting.MouseDown += (sender, e) => AddExisting?.Invoke();
+                    btnAddSeparator.MouseDown += (sender, e) => AddSeparator?.Invoke();
                 }
 
                 readonly PictureButton btnAddExisting = new PictureButton(AppImage.AddExisting);
                 readonly PictureButton btnAddSeparator = new PictureButton(AppImage.AddSeparator);
 
-                public event EventHandler AddExisting;
-                public event EventHandler AddSeparator;
+                public Action AddExisting { get; set; }
+                public Action AddSeparator { get; set; }
             }
         }
     }

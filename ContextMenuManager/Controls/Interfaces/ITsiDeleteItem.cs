@@ -32,7 +32,7 @@ namespace ContextMenuManager.Controls.Interfaces
                     string time = DateTime.Now.ToString("HH.mm.ss");
                     string filePath = $@"{AppConfig.BackupDir}\{date}\{regItem.Text} - {time}.reg";
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    RegistryEx.Export(regItem.RegPath, filePath);
+                    ExternalProgram.ExportRegistry(regItem.RegPath, filePath);
                 }
                 else if(MessageBoxEx.Show(AppString.Message.ConfirmDeletePermanently,
                      MessageBoxButtons.YesNo) != DialogResult.Yes) return;

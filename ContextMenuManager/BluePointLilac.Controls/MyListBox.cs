@@ -58,11 +58,11 @@ namespace BluePointLilac.Controls
                 value.ForeColor = Color.FromArgb(0, 138, 217);
                 //value.BackColor = Color.FromArgb(200, 230, 250);
                 value.Focus();
-                HoveredItemChanged?.Invoke(null, null);
+                HoveredItemChanged?.Invoke();
             }
         }
 
-        public event EventHandler HoveredItemChanged;
+        public Action HoveredItemChanged;
 
         public void AddItem(MyListItem item)
         {
@@ -91,7 +91,7 @@ namespace BluePointLilac.Controls
 
         public int GetItemIndex(MyListItem item)
         {
-            return this.Controls.GetChildIndex(item);
+            return Controls.GetChildIndex(item);
         }
 
         public void InsertItem(MyListItem item, int index)
@@ -142,8 +142,9 @@ namespace BluePointLilac.Controls
             this.BackColor = Color.FromArgb(250, 250, 250);
             this.Controls.AddRange(new Control[] { lblSeparator, flpControls, lblText, picImage });
             this.Resize += (Sender, e) => pnlScrollbar.Height = this.ClientSize.Height;
-            picImage.DoubleClick += (sender, e) => ImageDoubleClick?.Invoke(null, null);
-            lblText.DoubleClick += (sender, e) => TextDoubleClick?.Invoke(null, null);
+            picImage.DoubleClick += (sender, e) => ImageDoubleClick?.Invoke();
+            lblText.DoubleClick += (sender, e) => TextDoubleClick?.Invoke();
+            flpControls.MouseClick += (sender, e) => this.OnMouseClick(null);
             flpControls.MouseEnter += (sender, e) => this.OnMouseEnter(null);
             flpControls.MouseDown += (sender, e) => this.OnMouseDown(null);
             CenterControl(lblText);
@@ -154,11 +155,7 @@ namespace BluePointLilac.Controls
         public Image Image
         {
             get => picImage.Image;
-            set
-            {
-                picImage.Image = value;
-                picImage.Visible = value != null;
-            }
+            set => picImage.Image = value;
         }
         public new string Text
         {
@@ -188,8 +185,8 @@ namespace BluePointLilac.Controls
             }
         }
 
-        public event EventHandler TextDoubleClick;
-        public event EventHandler ImageDoubleClick;
+        public Action TextDoubleClick { get; set; }
+        public Action ImageDoubleClick { get; set; }
 
         private readonly Label lblText = new Label
         {

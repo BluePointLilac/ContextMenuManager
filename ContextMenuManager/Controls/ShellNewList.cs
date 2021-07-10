@@ -134,7 +134,7 @@ namespace ContextMenuManager.Controls
         {
             NewItem newItem = new NewItem();
             this.AddItem(newItem);
-            newItem.AddNewItem += (sender, e) =>
+            newItem.AddNewItem += () =>
             {
                 using(FileExtensionDialog dlg = new FileExtensionDialog())
                 {
@@ -196,7 +196,7 @@ namespace ContextMenuManager.Controls
                 this.Text = AppString.Other.LockNewMenu;
                 BtnShowMenu = new MenuButton(this);
                 ChkVisible = new VisibleCheckBox(this) { Checked = IsLocked };
-                MyToolTip.SetToolTip(ChkVisible, AppString.Tip.LockNewMenu);
+                ToolTipBox.SetToolTip(ChkVisible, AppString.Tip.LockNewMenu);
                 TsiSearch = new WebSearchMenuItem(this);
                 TsiRegLocation = new RegLocationMenuItem(this);
                 this.ContextMenuStrip.Items.AddRange(new ToolStripItem[]

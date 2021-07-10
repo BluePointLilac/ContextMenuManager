@@ -23,15 +23,15 @@ namespace ContextMenuManager
                 = shellNewList.Owner = sendToList.Owner = openWithList.Owner
                 = winXList.Owner = guidBlockedList.Owner = enhanceMenusList.Owner
                 = thirdRuleList.Owner = iEList.Owner = MainBody;
-            ToolBar.SelectedButtonChanged += (sender, e) => SwitchTab(ToolBar.SelectedIndex);
-            SideBar.HoverIndexChanged += (sender, e) => ShowItemInfo();
-            SideBar.SelectIndexChanged += (sender, e) => SwitchItem();
+            ToolBar.SelectedButtonChanged += () => SwitchTab(ToolBar.SelectedIndex);
+            SideBar.HoverIndexChanged += () => ShowItemInfo();
+            SideBar.SelectIndexChanged += () => SwitchItem();
             ToolBarButtons[3].MouseDown += (sender, e) => SwitchItem();
             ToolBar.AddButtons(ToolBarButtons);
             ToolBar.SelectedIndex = 0;
             if(AppConfig.ShowFilePath) ShowFilePath();
             var droper = new ElevatedFileDroper(this);
-            droper.DragDrop += (sender, e) =>
+            droper.DragDrop += () =>
             {
                 ShellList.CurrentFileObjectPath = droper.DropFilePaths[0];
                 SwitchTab(1, 9);
@@ -134,7 +134,7 @@ namespace ContextMenuManager
             AppString.SideBar.CustomRegPath,
             null,
             AppString.SideBar.GuidBlocked,
-            AppString.SideBar.IEMenu
+            AppString.SideBar.IEMenu,
         };
         static readonly string[] OtherRuleItemInfos = {
             AppString.StatusBar.EnhanceMenu,
@@ -145,7 +145,7 @@ namespace ContextMenuManager
             AppString.StatusBar.CustomRegPath,
             null,
             AppString.StatusBar.GuidBlocked,
-            AppString.StatusBar.IEMenu
+            AppString.StatusBar.IEMenu,
         };
 
         static readonly string[] AboutItems = {
@@ -244,7 +244,7 @@ namespace ContextMenuManager
         {
             foreach(MyList list in new MyList[] { shellList, shellNewList, sendToList, openWithList, winXList, guidBlockedList, iEList })
             {
-                list.HoveredItemChanged += (sender, e) =>
+                list.HoveredItemChanged += () =>
                 {
                     MyListItem item = list.HoveredItem;
                     if(item is ITsiFilePathItem pathItem)
@@ -327,6 +327,8 @@ namespace ContextMenuManager
                     guidBlockedList.LoadItems(); guidBlockedList.Visible = true; break;
                 case 8:
                     iEList.LoadItems(); iEList.Visible = true; break;
+                case 9:
+                    break;
             }
         }
 

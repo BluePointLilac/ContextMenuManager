@@ -27,7 +27,6 @@ namespace ContextMenuManager.Controls
                 if(IsShortcut) this.ShellLink = new ShellLink(value);
                 this.Text = this.ItemText;
                 this.Image = this.ItemIcon.ToBitmap();
-                ChkVisible.Checked = this.ItemVisible;
             }
         }
 
@@ -219,7 +218,7 @@ namespace ContextMenuManager.Controls
         {
             File.Delete(this.FilePath);
             DesktopIni.DeleteLocalizedFileNames(FilePath);
-            //this.Shortcut.Dispose();
+            this.ShellLink.Dispose();
             this.Dispose();
         }
     }

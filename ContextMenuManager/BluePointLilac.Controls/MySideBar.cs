@@ -181,9 +181,9 @@ namespace BluePointLilac.Controls
             HoverIndex = SelectIndex;
         }
 
-        public event EventHandler SelectIndexChanged;
+        public Action SelectIndexChanged { get; set; }
 
-        public event EventHandler HoverIndexChanged;
+        public Action HoverIndexChanged { get; set; }
 
         private int selectIndex;
         public int SelectIndex
@@ -194,7 +194,7 @@ namespace BluePointLilac.Controls
                 HoverIndex = value;
                 RefreshItem(PnlSelected, value);
                 selectIndex = value;
-                SelectIndexChanged?.Invoke(null, null);
+                SelectIndexChanged?.Invoke();
             }
         }
 
@@ -207,7 +207,7 @@ namespace BluePointLilac.Controls
                 if(hoverIndex == value) return;
                 RefreshItem(PnlHovered, value);
                 hoverIndex = value;
-                HoverIndexChanged?.Invoke(null, null);
+                HoverIndexChanged?.Invoke();
             }
         }
     }

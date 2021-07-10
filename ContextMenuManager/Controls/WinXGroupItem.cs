@@ -21,7 +21,6 @@ namespace ContextMenuManager.Controls
                 base.TargetPath = value;
                 this.Text = Path.GetFileNameWithoutExtension(value);
                 this.Image = ResourceIcon.GetFolderIcon(value).ToBitmap();
-                ChkVisible.Checked = this.ItemVisible;
             }
         }
 

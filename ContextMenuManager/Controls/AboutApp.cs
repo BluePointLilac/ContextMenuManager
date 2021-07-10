@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
@@ -18,7 +19,13 @@ namespace ContextMenuManager.Controls
             this.BackColor = Color.White;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
             this.Controls.AddRange(new Control[] { lblInfo, picQR, lblList });
-            lblList.Click += (sender, e) => Updater.ShowDonateDialog();
+            this.VisibleChanged += (sender, e) => this.SetEnabled(this.Visible);
+            lblList.Click += (sender, e) =>
+            {
+                this.Cursor = Cursors.WaitCursor;
+                Updater.ShowDonateDialog();
+                this.Cursor = Cursors.Default;
+            };
             picQR.Resize += (sender, e) => this.OnResize(null);
             picQR.MouseDown += SwitchQR;
         }
@@ -109,9 +116,10 @@ namespace ContextMenuManager.Controls
             boxs[0].Controls.Add(btnOpenDir);
             boxs[0].Text = AppString.Other.Dictionaries;
             btnOpenDir.Top = boxs[0].Height - btnOpenDir.Height;
-            MyToolTip.SetToolTip(btnOpenDir, AppString.Menu.FileLocation);
-            btnOpenDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.DicsDir);
+            ToolTipBox.SetToolTip(btnOpenDir, AppString.Menu.FileLocation);
+            btnOpenDir.MouseDown += (sender, e) => ExternalProgram.OpenDirectory(AppConfig.DicsDir);
             this.SelectedIndexChanged += (sender, e) => LoadText();
+            this.VisibleChanged += (sender, e) => this.SetEnabled(this.Visible);
         }
 
         readonly TabPage[] pages = new TabPage[] {
@@ -215,15 +223,27 @@ namespace ContextMenuManager.Controls
         {
             this.Dock = DockStyle.Fill;
             this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
-            this.Controls.AddRange(new Control[] { cmbLanguages, btnOpenDir, btnDownLoad, btnTranslate, txtTranslators });
+            this.Controls.AddRange(new Control[] { cmbLanguages, btnOpenDir, btnDownLoad, btnTranslate, pnlTranslators });
+            this.VisibleChanged += (sender, e) => this.SetEnabled(this.Visible);
+            pnlTranslators.Controls.AddRange(new[] { lblHeader, lblLanguages, lblTranslators });
             cmbLanguages.SelectionChangeCommitted += (sender, e) => ChangeLanguage();
-            btnDownLoad.MouseDown += (sender, e) => { if(Updater.ShowLanguageDialog()) LoadLanguages(); };
-            btnOpenDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.LangsDir);
-            btnTranslate.MouseDown += (sender, e) => new TranslateDialog().ShowDialog();
-            MyToolTip.SetToolTip(btnOpenDir, AppString.Menu.FileLocation);
-            MyToolTip.SetToolTip(btnDownLoad, AppString.Dialog.DownloadLanguages);
-            MyToolTip.SetToolTip(btnTranslate, AppString.Dialog.TranslateTool);
-            txtTranslators.SetAutoShowScroll(ScrollBars.Vertical);
+            btnOpenDir.MouseDown += (sender, e) => ExternalProgram.OpenDirectory(AppConfig.LangsDir);
+            btnDownLoad.MouseDown += (sender, e) =>
+            {
+                this.Cursor = Cursors.WaitCursor;
+                if(Updater.ShowLanguageDialog()) LoadLanguages();
+                this.Cursor = Cursors.Default;
+            };
+            btnTranslate.MouseDown += (sender, e) =>
+            {
+                using(TranslateDialog dlg = new TranslateDialog())
+                {
+                    dlg.ShowDialog();
+                }
+            };
+            ToolTipBox.SetToolTip(btnOpenDir, AppString.Menu.FileLocation);
+            ToolTipBox.SetToolTip(btnDownLoad, AppString.Dialog.DownloadLanguages);
+            ToolTipBox.SetToolTip(btnTranslate, AppString.Dialog.TranslateTool);
             cmbLanguages.AutosizeDropDownWidth();
             this.OnResize(null);
         }
@@ -233,20 +253,38 @@ namespace ContextMenuManager.Controls
             Width = 150.DpiZoom(),
             DropDownStyle = ComboBoxStyle.DropDownList
         };
-
-        readonly ReadOnlyTextBox txtTranslators = new ReadOnlyTextBox();
         readonly PictureButton btnOpenDir = new PictureButton(AppImage.Open);
         readonly PictureButton btnDownLoad = new PictureButton(AppImage.DownLoad);
         readonly PictureButton btnTranslate = new PictureButton(AppImage.Translate);
+        readonly Panel pnlTranslators = new Panel
+        {
+            BorderStyle = BorderStyle.FixedSingle,
+            AutoScroll = true
+        };
+        readonly Label lblHeader = new Label
+        {
+            Text = AppString.Other.Translators + "\r\n" + new string('-', 75),
+            Dock = DockStyle.Top,
+            AutoSize = true
+        };
+        readonly Label lblLanguages = new Label
+        {
+            AutoSize = true,
+            Left = 0
+        };
+        readonly Label lblTranslators = new Label
+        {
+            AutoSize = true
+        };
         readonly List<string> languages = new List<string>();
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             int a = 20.DpiZoom();
-            txtTranslators.Width = this.ClientSize.Width - 2 * a;
-            txtTranslators.Height = this.ClientSize.Height - txtTranslators.Top - a;
-            cmbLanguages.Margin = txtTranslators.Margin = btnOpenDir.Margin
+            pnlTranslators.Width = this.ClientSize.Width - 2 * a;
+            pnlTranslators.Height = this.ClientSize.Height - pnlTranslators.Top - a;
+            cmbLanguages.Margin = pnlTranslators.Margin = btnOpenDir.Margin
                 = btnDownLoad.Margin = btnTranslate.Margin = new Padding(a, a, 0, 0);
         }
 
@@ -254,10 +292,10 @@ namespace ContextMenuManager.Controls
         {
             cmbLanguages.Items.Clear();
             cmbLanguages.Items.Add("(default) 简体中文");
-            string str = AppString.Other.Translators + Environment.NewLine + new string('-', 74);
             if(Directory.Exists(AppConfig.LangsDir))
             {
                 languages.Clear();
+                lblLanguages.Text = lblTranslators.Text = string.Empty;
                 foreach(string fileName in Directory.GetFiles(AppConfig.LangsDir, "*.ini"))
                 {
                     string langName = Path.GetFileNameWithoutExtension(fileName);
@@ -265,13 +303,22 @@ namespace ContextMenuManager.Controls
                     string language = reader.GetValue("General", "Language");
                     if(language.IsNullOrWhiteSpace()) language = langName;
                     string translator = reader.GetValue("General", "Translator");
-                    str += Environment.NewLine + language + new string('\t', 5) + translator;
+                    translator = translator.Replace("\\r\\n", "\r\n").Replace("\\n", "\r\n");
+                    lblLanguages.Text += language + "\r\n";
+                    lblTranslators.Text += translator + "\r\n";
+                    for(int i = 0; i < Regex.Matches(translator, "\r\n").Count; i++)
+                    {
+                        lblLanguages.Text += "\r\n";
+                    }
                     cmbLanguages.Items.Add(language);
                     languages.Add(langName);
                 }
+                lblLanguages.Top = lblTranslators.Top = lblHeader.Bottom;
+                lblTranslators.Left = lblLanguages.Right + 200.DpiZoom();
             }
-            txtTranslators.Text = str;
-            cmbLanguages.SelectedIndex = GetSelectIndex();
+            int index = GetSelectIndex();
+            cmbLanguages.SelectedIndex = index;
+            if(index == 0) AppConfig.Language = "default";
         }
 
         private void ChangeLanguage()
@@ -316,31 +363,38 @@ namespace ContextMenuManager.Controls
             mliWinXSortable.AddCtr(chkWinXSortable);
             mliShowFilePath.AddCtr(chkShowFilePath);
             mliOpenMoreRegedit.AddCtr(chkOpenMoreRegedit);
+            mliOpenMoreExplorer.AddCtr(chkOpenMoreExplorer);
             mliHideDisabledItems.AddCtr(chkHideDisabledItems);
             mliHideSysStoreItems.AddCtr(chkHideSysStoreItems);
             cmbConfigDir.AutosizeDropDownWidth();
             cmbEngine.AutosizeDropDownWidth();
             cmbRepo.AutosizeDropDownWidth();
-            MyToolTip.SetToolTip(cmbConfigDir, AppString.Tip.ConfigPath);
-            MyToolTip.SetToolTip(btnConfigDir, AppString.Menu.FileLocation);
-            MyToolTip.SetToolTip(btnBackupDir, AppString.Menu.FileLocation);
+            ToolTipBox.SetToolTip(cmbConfigDir, AppString.Tip.ConfigPath);
+            ToolTipBox.SetToolTip(btnConfigDir, AppString.Menu.FileLocation);
+            ToolTipBox.SetToolTip(btnBackupDir, AppString.Menu.FileLocation);
 
             cmbRepo.Items.AddRange(new[] { "Github", "Gitee" });
             cmbConfigDir.Items.AddRange(new[] { AppString.Other.AppDataDir, AppString.Other.AppDir });
-            cmbEngine.Items.AddRange(new[] { "Bing", "Baidu", "Google", "DuckDuckGo", "DogeDoge", "Sogou", "360", AppString.Other.CustomEngine });
+            cmbEngine.Items.AddRange(new[] { "Bing", "Baidu", "Google", "DuckDuckGo", "Sogou", "360", AppString.Other.CustomEngine });
             cmbUpdate.Items.AddRange(new[] { AppString.Other.OnceAWeek, AppString.Other.OnceAMonth, AppString.Other.OnceASeason, AppString.Other.NeverCheck });
 
-            lblUpdate.Click += (sender, e) => Updater.Update(true);
-            this.VisibleChanged += (sender, e) => this.Enabled = this.Visible;
-            btnConfigDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.ConfigDir);
-            btnBackupDir.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(AppConfig.BackupDir);
+            lblUpdate.Click += (sender, e) =>
+            {
+                this.Cursor = Cursors.WaitCursor;
+                Updater.Update(true);
+                this.Cursor = Cursors.Default;
+            };
+            this.VisibleChanged += (sender, e) => this.SetEnabled(this.Visible);
+            btnConfigDir.MouseDown += (sender, e) => ExternalProgram.OpenDirectory(AppConfig.ConfigDir);
+            btnBackupDir.MouseDown += (sender, e) => ExternalProgram.OpenDirectory(AppConfig.BackupDir);
+            chkBackup.CheckChanged += () => AppConfig.AutoBackup = chkBackup.Checked;
+            chkProtect.CheckChanged += () => AppConfig.ProtectOpenItem = chkProtect.Checked;
+            chkWinXSortable.CheckChanged += () => AppConfig.WinXSortable = chkWinXSortable.Checked;
+            chkOpenMoreRegedit.CheckChanged += () => AppConfig.OpenMoreRegedit = chkOpenMoreRegedit.Checked;
+            chkOpenMoreExplorer.CheckChanged += () => AppConfig.OpenMoreExplorer = chkOpenMoreExplorer.Checked;
+            chkHideDisabledItems.CheckChanged += () => AppConfig.HideDisabledItems = chkHideDisabledItems.Checked;
+            chkHideSysStoreItems.CheckChanged += () => AppConfig.HideSysStoreItems = chkHideSysStoreItems.Checked;
             cmbRepo.SelectionChangeCommitted += (sender, e) => AppConfig.RequestUseGithub = cmbRepo.SelectedIndex == 0;
-            chkBackup.MouseDown += (sender, e) => AppConfig.AutoBackup = chkBackup.Checked = !chkBackup.Checked;
-            chkProtect.MouseDown += (sender, e) => AppConfig.ProtectOpenItem = chkProtect.Checked = !chkProtect.Checked;
-            chkWinXSortable.MouseDown += (sender, e) => AppConfig.WinXSortable = chkWinXSortable.Checked = !chkWinXSortable.Checked;
-            chkOpenMoreRegedit.MouseDown += (sender, e) => AppConfig.OpenMoreRegedit = chkOpenMoreRegedit.Checked = !chkOpenMoreRegedit.Checked;
-            chkHideDisabledItems.MouseDown += (sender, e) => AppConfig.HideDisabledItems = chkHideDisabledItems.Checked = !chkHideDisabledItems.Checked;
-            chkHideSysStoreItems.MouseDown += (sender, e) => AppConfig.HideSysStoreItems = chkHideSysStoreItems.Checked = !chkHideSysStoreItems.Checked;
             cmbConfigDir.SelectionChangeCommitted += (sender, e) =>
             {
                 string newPath = (cmbConfigDir.SelectedIndex == 0) ? AppConfig.AppDataConfigDir : AppConfig.AppConfigDir;
@@ -393,18 +447,14 @@ namespace ContextMenuManager.Controls
                 }
                 AppConfig.UpdateFrequency = day;
             };
-            chkShowFilePath.MouseDown += (sender, e) =>
+            chkShowFilePath.PreCheckChanging += () =>
             {
-                chkShowFilePath.Checked = !chkShowFilePath.Checked;
-                if(MessageBoxEx.Show(AppString.Message.RestartApp, MessageBoxButtons.OKCancel) == DialogResult.OK)
-                {
-                    AppConfig.ShowFilePath = chkShowFilePath.Checked;
-                    SingleInstance.Restart();
-                }
-                else
-                {
-                    chkShowFilePath.Checked = !chkShowFilePath.Checked;
-                }
+                return MessageBoxEx.Show(AppString.Message.RestartApp, MessageBoxButtons.OKCancel) == DialogResult.OK;
+            };
+            chkShowFilePath.CheckChanged += () =>
+            {
+                AppConfig.ShowFilePath = chkShowFilePath.Checked;
+                SingleInstance.Restart();
             };
         }
 
@@ -481,6 +531,12 @@ namespace ContextMenuManager.Controls
         };
         readonly MyCheckBox chkOpenMoreRegedit = new MyCheckBox();
 
+        readonly MyListItem mliOpenMoreExplorer = new MyListItem
+        {
+            Text = AppString.Other.OpenMoreExplorer
+        };
+        readonly MyCheckBox chkOpenMoreExplorer = new MyCheckBox();
+
         readonly MyListItem mliHideDisabledItems = new MyListItem
         {
             Text = AppString.Other.HideDisabledItems
@@ -503,8 +559,8 @@ namespace ContextMenuManager.Controls
 
         public void LoadItems()
         {
-            this.AddItems(new[] { mliUpdate, mliConfigDir, mliRepo, mliEngine, mliBackup, mliProtect,
-                mliShowFilePath, mliOpenMoreRegedit, mliHideDisabledItems,mliHideSysStoreItems,mliWinXSortable });
+            this.AddItems(new[] { mliUpdate, mliConfigDir, mliRepo, mliEngine, mliBackup, mliProtect, mliShowFilePath,
+                mliOpenMoreRegedit, mliOpenMoreExplorer, mliHideDisabledItems,mliHideSysStoreItems,mliWinXSortable });
             foreach(MyListItem item in this.Controls) item.HasImage = false;
             cmbConfigDir.SelectedIndex = AppConfig.SaveToAppDir ? 1 : 0;
             cmbRepo.SelectedIndex = AppConfig.RequestUseGithub ? 0 : 1;
@@ -513,6 +569,7 @@ namespace ContextMenuManager.Controls
             chkWinXSortable.Checked = AppConfig.WinXSortable;
             chkShowFilePath.Checked = AppConfig.ShowFilePath;
             chkOpenMoreRegedit.Checked = AppConfig.OpenMoreRegedit;
+            chkOpenMoreExplorer.Checked = AppConfig.OpenMoreExplorer;
             chkHideDisabledItems.Checked = AppConfig.HideDisabledItems;
             chkHideSysStoreItems.Checked = AppConfig.HideSysStoreItems;
 

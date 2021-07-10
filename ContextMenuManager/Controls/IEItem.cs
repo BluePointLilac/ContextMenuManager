@@ -28,7 +28,6 @@ namespace ContextMenuManager.Controls
                 regPath = value;
                 this.Text = this.ItemText;
                 this.Image = this.ItemImage;
-                ChkVisible.Checked = this.ItemVisible;
             }
         }
         public string ValueName => null;

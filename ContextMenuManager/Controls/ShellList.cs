@@ -384,11 +384,11 @@ namespace ContextMenuManager.Controls
             string shellPath = GetShellPath(scenePath);
             NewItem newItem = new NewItem { Visible = scenePath != null };
             PictureButton btnAddExisting = new PictureButton(AppImage.AddExisting);
-            MyToolTip.SetToolTip(btnAddExisting, AppString.Tip.AddFromPublic);
+            ToolTipBox.SetToolTip(btnAddExisting, AppString.Tip.AddFromPublic);
             btnAddExisting.Visible = Scene != Scenes.DragDrop && !string.Equals(shellPath, ShellItem.CommandStorePath, StringComparison.OrdinalIgnoreCase);
             newItem.AddCtr(btnAddExisting);
             this.AddItem(newItem);
-            newItem.AddNewItem += (sender, e) =>
+            newItem.AddNewItem += () =>
             {
                 bool isShell;
                 if(Scene == Scenes.CommandStore) isShell = true;
@@ -525,7 +525,7 @@ namespace ContextMenuManager.Controls
 
         private void LoadStoreItems()
         {
-            using(var shellKey = RegistryEx.GetRegistryKey(ShellItem.CommandStorePath))
+            using(RegistryKey shellKey = RegistryEx.GetRegistryKey(ShellItem.CommandStorePath))
             {
                 bool flag = AppConfig.HideSysStoreItems;
                 foreach(string itemName in shellKey.GetSubKeyNames())
@@ -642,8 +642,8 @@ namespace ContextMenuManager.Controls
                 this.SetTextAndTip();
                 this.SetImage();
                 BtnSelect.MouseDown += (sender, e) => ShowSelectDialog();
-                this.ImageDoubleClick += (sender, e) => ShowSelectDialog();
-                this.TextDoubleClick += (sender, e) => ShowSelectDialog();
+                this.ImageDoubleClick += () => ShowSelectDialog();
+                this.TextDoubleClick += () => ShowSelectDialog();
             }
 
             readonly PictureButton BtnSelect = new PictureButton(AppImage.Select);
@@ -691,7 +691,7 @@ namespace ContextMenuManager.Controls
                             + " " + GetPerceivedTypeName(CurrentExtensionPerceivedType);
                         break;
                 }
-                MyToolTip.SetToolTip(BtnSelect, tip);
+                ToolTipBox.SetToolTip(BtnSelect, tip);
                 this.Text = text;
             }
 
@@ -933,8 +933,8 @@ namespace ContextMenuManager.Controls
                     ((MainForm)this.FindForm()).SwitchTab(index1, index2);
                 };
                 btnJump.MouseDown += (sender, e) => SwitchTab();
-                this.ImageDoubleClick += (sender, e) => SwitchTab();
-                this.TextDoubleClick += (sender, e) => SwitchTab();
+                this.ImageDoubleClick += () => SwitchTab();
+                this.TextDoubleClick += () => SwitchTab();
             }
 
             readonly PictureButton btnJump = new PictureButton(AppImage.Jump);

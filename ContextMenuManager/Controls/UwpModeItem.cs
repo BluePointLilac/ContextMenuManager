@@ -19,7 +19,7 @@ namespace ContextMenuManager.Controls
             this.Guid = guid;
             this.UwpName = uwpName;
             this.InitializeComponents();
-            ChkVisible.Checked = ItemVisible;
+            //ChkVisible.Checked = ItemVisible;
             this.Visible = GetPackageName(uwpName) != null;
             this.Image = GuidInfo.GetImage(guid);
             this.Text = this.ItemText;

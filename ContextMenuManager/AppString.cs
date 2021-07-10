@@ -170,6 +170,7 @@ namespace ContextMenuManager
             public static string MultiMenu => GetValue("MultiMenu");
             public static string Public => GetValue("Public");
             public static string Private => GetValue("Private");
+            public static string SelectAll => GetValue("SelectAll");
             public static string InputGuid => GetValue("InputGuid");
             public static string AddGuidDic => GetValue("AddGuidDic");
             public static string DeleteGuidDic => GetValue("DeleteGuidDic");
@@ -236,6 +237,7 @@ namespace ContextMenuManager
             public static string RestartApp => GetValue("RestartApp");
             public static string UpdateInfo => GetValue("UpdateInfo");
             public static string UpdateSucceeded => GetValue("UpdateSucceeded");
+            public static string DicUpdateSucceeded => GetValue("DicUpdateSucceeded");
             public static string FileNotExists => GetValue("FileNotExists");
             public static string FolderNotExists => GetValue("FolderNotExists");
             public static string VersionIsLatest => GetValue("VersionIsLatest");
@@ -244,6 +246,7 @@ namespace ContextMenuManager
             public static string RestoreDefault => GetValue("RestoreDefault");
             public static string DeleteGroup => GetValue("DeleteGroup");
             public static string WebDataReadFailed => GetValue("WebDataReadFailed");
+            public static string OpenWebUrl => GetValue("OpenWebUrl");
         }
 
         /// <summary>其他文本</summary>
@@ -304,6 +307,7 @@ namespace ContextMenuManager
             public static string WinXSortable => GetValue("WinXSortable");
             public static string ShowFilePath => GetValue("ShowFilePath");
             public static string OpenMoreRegedit => GetValue("OpenMoreRegedit");
+            public static string OpenMoreExplorer => GetValue("OpenMoreExplorer");
             public static string HideDisabledItems => GetValue("HideDisabledItems");
             public static string HideSysStoreItems => GetValue("HideSysStoreItems");
             public static string SetPerceivedType => GetValue("SetPerceivedType");

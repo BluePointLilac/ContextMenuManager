@@ -30,8 +30,8 @@ namespace ContextMenuManager.Controls.Interfaces
             TsiBlockGuid.Click += (sender, e) => BlockGuid();
             TsiAddGuidDic.Click += (sender, e) => AddGuidDic();
             MyListItem listItem = (MyListItem)item;
-            listItem.ImageDoubleClick += (sender, e) => AddGuidDic();
-            listItem.TextDoubleClick += (sender, e) => AddGuidDic();
+            listItem.ImageDoubleClick += () => AddGuidDic();
+            listItem.TextDoubleClick += () => AddGuidDic();
             listItem.ContextMenuStrip.Opening += (sender, e) =>
             {
                 TsiBlockGuid.Checked = false;
@@ -70,6 +70,11 @@ namespace ContextMenuManager.Controls.Interfaces
                 }
                 else
                 {
+                    if(Item.Guid.Equals(ShellExItem.LnkOpenGuid) && AppConfig.ProtectOpenItem)
+                    {
+                        if(MessageBoxEx.Show(AppString.Message.PromptIsOpenItem,
+                            MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+                    }
                     Microsoft.Win32.Registry.SetValue(path, Item.Guid.ToString("B"), string.Empty);
                 }
             }
@@ -272,7 +277,7 @@ namespace ContextMenuManager.Controls.Interfaces
                     lblIcon.Top = btnBrowse.Top + (btnBrowse.Height - lblIcon.Height) / 2;
                     btnDelete.Top = btnOk.Top = btnCancel.Top = btnBrowse.Bottom + a;
                     this.ClientSize = new Size(btnCancel.Right + a, btnCancel.Bottom + a);
-                    MyToolTip.SetToolTip(btnDelete, AppString.Tip.DeleteGuidDic);
+                    ToolTipBox.SetToolTip(btnDelete, AppString.Tip.DeleteGuidDic);
                     btnBrowse.Click += (sender, e) => SelectIcon();
                     btnDelete.Click += (sender, e) => this.IsDelete = true;
                 }
@@ -284,9 +289,11 @@ namespace ContextMenuManager.Controls.Interfaces
                         dlg.IconPath = this.ItemIconPath;
                         dlg.IconIndex = this.ItemIconIndex;
                         if(dlg.ShowDialog() != DialogResult.OK) return;
+                        Image image = ResourceIcon.GetIcon(dlg.IconPath, dlg.IconIndex)?.ToBitmap();
+                        if(image == null) return;
+                        picIcon.Image = image;
                         ItemIconPath = dlg.IconPath;
                         ItemIconIndex = dlg.IconIndex;
-                        picIcon.Image = ResourceIcon.GetIcon(ItemIconPath, ItemIconIndex).ToBitmap();
                     }
                 }
             }

@@ -63,10 +63,10 @@ namespace ContextMenuManager.Controls
             NewItem newItem = new NewItem();
             this.AddItem(newItem);
             PictureButton btnCreateDir = new PictureButton(AppImage.NewFolder);
-            MyToolTip.SetToolTip(btnCreateDir, AppString.Tip.CreateGroup);
+            ToolTipBox.SetToolTip(btnCreateDir, AppString.Tip.CreateGroup);
             newItem.AddCtr(btnCreateDir);
             btnCreateDir.MouseDown += (sender, e) => CreateNewGroup();
-            newItem.AddNewItem += (sender, e) =>
+            newItem.AddNewItem += () =>
             {
                 using(NewLnkFileDialog dlg1 = new NewLnkFileDialog())
                 {

@@ -40,7 +40,7 @@ namespace ContextMenuManager.Controls
 
                         string keyName = names.Find(name =>
                         {
-                            using(var cmdKey = shellKey.OpenSubKey(name))
+                            using(RegistryKey cmdKey = shellKey.OpenSubKey(name))
                                 return cmdKey.GetValue("NeverDefault") == null;
                         });
                         if(keyName == null) continue;
@@ -60,7 +60,7 @@ namespace ContextMenuManager.Controls
         {
             NewItem newItem = new NewItem();
             this.InsertItem(newItem, 0);
-            newItem.AddNewItem += (sender, e) =>
+            newItem.AddNewItem += () =>
             {
                 using(NewOpenWithDialog dlg = new NewOpenWithDialog())
                 {

@@ -21,7 +21,7 @@ namespace ContextMenuManager.Controls.Interfaces
                 if(name != null) item.ItemText = name;
             };
             MyListItem listItem = (MyListItem)item;
-            listItem.TextDoubleClick += (sender, e) =>
+            listItem.TextDoubleClick += () =>
             {
                 if(listItem is IFoldGroupItem) return;
                 if(listItem.FindForm() is ShellStoreDialog.ShellStoreForm) return;

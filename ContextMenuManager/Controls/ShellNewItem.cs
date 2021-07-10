@@ -43,7 +43,6 @@ namespace ContextMenuManager.Controls
                 regPath = value;
                 this.Text = this.ItemText;
                 this.Image = this.ItemIcon.ToBitmap();
-                ChkVisible.Checked = this.ItemVisible;
             }
         }
 

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 namespace BluePointLilac.Controls
 {
     /// <summary>限制水平、竖直方向调整大小的窗体</summary>
-    public class ResizbleForm : Form
+    public class ResizeLimitedForm : Form
     {
         /// <summary>水平方向可调整大小</summary>
         public bool HorizontalResizable { get; set; } = true;

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace ContextMenuManager.Controls
 {
     sealed class ShellExItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, IFoldSubItem, ITsiGuidItem,
-        ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem
+        ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem, IProtectOpenItem
     {
         public static Dictionary<string, Guid> GetPathAndGuids(string shellExPath, bool isDragDrop = false)
         {
@@ -41,7 +41,7 @@ namespace ContextMenuManager.Controls
 
         public static readonly string[] DdhParts = { "DragDropHandlers", "-DragDropHandlers" };
         public static readonly string[] CmhParts = { "ContextMenuHandlers", "-ContextMenuHandlers" };
-        private const string LnkOpenGuid = "00021401-0000-0000-c000-000000000046";
+        public static readonly Guid LnkOpenGuid = new Guid("00021401-0000-0000-c000-000000000046");
 
         public ShellExItem(Guid guid, string regPath)
         {
@@ -59,7 +59,6 @@ namespace ContextMenuManager.Controls
                 regPath = value;
                 this.Text = this.ItemText;
                 this.Image = GuidInfo.GetImage(Guid);
-                ChkVisible.Checked = this.ItemVisible;
             }
         }
 
@@ -74,7 +73,6 @@ namespace ContextMenuManager.Controls
         private string ParentKeyName => RegistryEx.GetKeyName(ParentPath);
         private string DefaultValue => Registry.GetValue(RegPath, "", null)?.ToString();
         public string ItemText => GuidInfo.GetText(Guid) ?? (KeyName.Equals(Guid.ToString("B"), StringComparison.OrdinalIgnoreCase) ? DefaultValue : KeyName);
-        private bool IsOpenLnkItem => Guid.ToString() == LnkOpenGuid;
         public bool IsDragDropItem => ParentKeyName.EndsWith(DdhParts[0], StringComparison.OrdinalIgnoreCase);
 
         private string BackupPath
@@ -95,7 +93,6 @@ namespace ContextMenuManager.Controls
             }
             set
             {
-                if(!value && TryProtectOpenItem()) return;
                 try
                 {
                     RegistryEx.MoveTo(RegPath, BackupPath);
@@ -140,14 +137,14 @@ namespace ContextMenuManager.Controls
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch, new ToolStripSeparator(),
                 TsiFileProperties, TsiFileLocation, TsiRegLocation, TsiRegExport});
 
-            ContextMenuStrip.Opening += (sender, e) => TsiDeleteMe.Enabled = !(IsOpenLnkItem && AppConfig.ProtectOpenItem);
+            ContextMenuStrip.Opening += (sender, e) => TsiDeleteMe.Enabled = !(Guid.Equals(LnkOpenGuid) && AppConfig.ProtectOpenItem);
+            ChkVisible.PreCheckChanging += TryProtectOpenItem;
         }
 
-        private bool TryProtectOpenItem()
+        public bool TryProtectOpenItem()
         {
-            if(!IsOpenLnkItem) return false;
-            if(!AppConfig.ProtectOpenItem) return false;
-            return MessageBoxEx.Show(AppString.Message.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
+            if(!ChkVisible.Checked || !Guid.Equals(LnkOpenGuid) || !AppConfig.ProtectOpenItem) return true;
+            return MessageBoxEx.Show(AppString.Message.PromptIsOpenItem, MessageBoxButtons.YesNo) == DialogResult.Yes;
         }
 
         public void DeleteMe()

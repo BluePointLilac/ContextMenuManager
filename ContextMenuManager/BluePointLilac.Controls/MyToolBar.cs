@@ -22,14 +22,19 @@ namespace BluePointLilac.Controls
             set
             {
                 if(selectedButton == value) return;
-                if(selectedButton != null) selectedButton.Opacity = 0;
+                if(selectedButton != null)
+                {
+                    selectedButton.Opacity = 0;
+                    selectedButton.Cursor = Cursors.Hand;
+                }
                 selectedButton = value;
-                value.Opacity = 0.4F;
-                SelectedButtonChanged?.Invoke(null, null);
+                selectedButton.Opacity = 0.4F;
+                selectedButton.Cursor = Cursors.Default;
+                SelectedButtonChanged?.Invoke();
             }
         }
 
-        public event EventHandler SelectedButtonChanged;
+        public Action SelectedButtonChanged { get; set; }
 
         public int SelectedIndex
         {
@@ -40,14 +45,14 @@ namespace BluePointLilac.Controls
         public void AddButton(MyToolBarButton button)
         {
             button.Parent = this;
-            button.Margin = new Padding(12.DpiZoom(), 4.DpiZoom(), 0, 0);
+            button.Margin = new Padding(12, 4, 0, 0).DpiZoom();
             button.MouseDown += (sender, e) =>
             {
-                if(button.CanBeSelected) { SelectedButton = button; button.Cursor = Cursors.Default; }
+                if(button.CanBeSelected) SelectedButton = button;
             };
             button.MouseEnter += (sender, e) =>
             {
-                if(button != SelectedButton) { button.Opacity = 0.2F; button.Cursor = Cursors.Hand; }
+                if(button != SelectedButton) button.Opacity = 0.2F;
             };
             button.MouseLeave += (sender, e) =>
             {

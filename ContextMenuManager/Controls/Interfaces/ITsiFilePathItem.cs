@@ -18,11 +18,9 @@ namespace ContextMenuManager.Controls.Interfaces
         {
             item.ContextMenuStrip.Opening += (sender, e) =>
             {
-                string path = item.ItemFilePath;
-                this.Visible = path != null && (Directory.Exists(path)
-                    || File.Exists(path) || path.StartsWith("shell:AppsFolder"));
+                this.Visible = item.ItemFilePath != null;
             };
-            this.Click += (sender, e) => ExternalProgram.JumpExplorer(item.ItemFilePath);
+            this.Click += (sender, e) => ExternalProgram.JumpExplorer(item.ItemFilePath, AppConfig.OpenMoreExplorer);
         }
     }
 

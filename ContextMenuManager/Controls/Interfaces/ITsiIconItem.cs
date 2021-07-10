@@ -26,18 +26,20 @@ namespace ContextMenuManager.Controls.Interfaces
                     dlg.IconPath = item.IconPath;
                     dlg.IconIndex = item.IconIndex;
                     if(dlg.ShowDialog() != DialogResult.OK) return;
-                    item.IconPath = dlg.IconPath;
-                    item.IconIndex = dlg.IconIndex;
-                    item.IconLocation = $"{dlg.IconPath},{dlg.IconIndex}";
                     using(Icon icon = ResourceIcon.GetIcon(dlg.IconPath, dlg.IconIndex))
                     {
-                        item.Image = icon.ToBitmap();
+                        Image image = icon?.ToBitmap();
+                        if(image == null) return;
+                        item.Image = image;
+                        item.IconPath = dlg.IconPath;
+                        item.IconIndex = dlg.IconIndex;
+                        item.IconLocation = $"{dlg.IconPath},{dlg.IconIndex}";
                     }
                 }
             };
             MyListItem listItem = (MyListItem)item;
             listItem.Disposed += (sender, e) => item.ItemIcon?.Dispose();
-            listItem.ImageDoubleClick += (sender, e) =>
+            listItem.ImageDoubleClick += () =>
             {
                 if(listItem.FindForm() is ShellStoreDialog.ShellStoreForm) return;
                 if(this.Enabled) this.OnClick(null);

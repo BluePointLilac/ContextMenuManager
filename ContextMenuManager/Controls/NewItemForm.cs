@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    class NewItemForm : ResizbleForm
+    class NewItemForm : ResizeLimitedForm
     {
         public NewItemForm()
         {
@@ -86,7 +86,7 @@ namespace ContextMenuManager.Controls
             btnCancel.Left = btnBrowse.Left = this.ClientSize.Width - btnCancel.Width - a;
             btnOk.Left = btnCancel.Left - btnOk.Width - a;
             int b = Math.Max(Math.Max(lblText.Width, lblCommand.Width), lblArguments.Width) + btnBrowse.Width + 4 * a;
-            this.ClientSize = new Size(250.DpiZoom() + b, btnOk.Bottom + a);
+            this.ClientSize = new Size(320.DpiZoom() + b, btnOk.Bottom + a);
             this.MinimumSize = this.Size;
             this.Resize += (sender, e) =>
             {

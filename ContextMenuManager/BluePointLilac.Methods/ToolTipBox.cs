@@ -1,14 +1,13 @@
-﻿using BluePointLilac.Methods;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
-namespace BluePointLilac.Controls
+namespace BluePointLilac.Methods
 {
-    public static class MyToolTip
+    public static class ToolTipBox
     {
         public static void SetToolTip(Control ctr, string tip)
         {
             if(tip.IsNullOrWhiteSpace()) return;
-            ToolTip toolTip = new ToolTip();
+            ToolTip toolTip = new ToolTip { InitialDelay = 1 };
             toolTip.SetToolTip(ctr, tip);
             ctr.Disposed += (sender, e) => toolTip.Dispose();
         }

@@ -156,12 +156,5 @@ namespace BluePointLilac.Methods
             GetRootAndSubRegPath(regPath, out RegistryKey root, out string keyPath);
             using(root) return root.OpenSubKey(keyPath, check, rights);
         }
-
-        public static void Export(string regPath, string filePath)
-        {
-            File.Delete(filePath);
-            using(Process process = Process.Start("regedit.exe", $"/e \"{filePath}\" \"{regPath}\""))
-                process.WaitForExit();
-        }
     }
 }

@@ -10,14 +10,22 @@ namespace ContextMenuManager
     {
         static AppConfig()
         {
-            foreach(string dirPath in new[] { ConfigDir, ProgramsDir, BackupDir, LangsDir, DicsDir, WebDicsDir, UserDicsDir })
+            foreach(string dirPath in new[] { AppDataDir, ConfigDir, ProgramsDir, BackupDir, LangsDir, DicsDir, WebDicsDir, UserDicsDir })
             {
                 Directory.CreateDirectory(dirPath);
+                Application.ApplicationExit += (sender, e) =>
+                {
+                    if(Directory.GetFileSystemEntries(dirPath).Length == 0)
+                    {
+                        Directory.Delete(dirPath);
+                    }
+                };
             }
         }
 
         public static readonly string AppConfigDir = $@"{Application.StartupPath}\Config";
-        public static readonly string AppDataConfigDir = Environment.ExpandEnvironmentVariables(@"%AppData%\ContextMenuManager\Config");
+        public static readonly string AppDataDir = Environment.ExpandEnvironmentVariables(@"%AppData%\ContextMenuManager");
+        public static readonly string AppDataConfigDir = $@"{AppDataDir}\Config";
         public static readonly string ConfigDir = Directory.Exists(AppConfigDir) ? AppConfigDir : AppDataConfigDir;
         public static readonly bool SaveToAppDir = ConfigDir == AppConfigDir;
         public static string ConfigIni = $@"{ConfigDir}\Config.ini";
@@ -50,7 +58,6 @@ namespace ContextMenuManager
             "https://www.baidu.com/s?wd=%s",          //百度搜索
             "https://www.google.com/search?q=%s",     //谷歌搜索
             "https://duckduckgo.com/?q=%s",           //DuckDuckGo
-            "https://www.dogedoge.com/results?q=%s",  //多吉搜索
             "https://www.sogou.com/web?query=%s",     //搜狗搜索
             "https://www.so.com/s?q=%s",              //360搜索
         };
@@ -136,6 +143,12 @@ namespace ContextMenuManager
         {
             get => GetGeneralValue("OpenMoreRegedit") == "1";
             set => SetGeneralValue("OpenMoreRegedit", value ? 1 : 0);
+        }
+
+        public static bool OpenMoreExplorer
+        {
+            get => GetGeneralValue("OpenMoreExplorer") == "1";
+            set => SetGeneralValue("OpenMoreExplorer", value ? 1 : 0);
         }
 
         public static bool HideDisabledItems

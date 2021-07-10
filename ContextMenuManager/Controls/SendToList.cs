@@ -28,7 +28,7 @@ namespace ContextMenuManager.Controls
         {
             NewItem newItem = new NewItem();
             this.InsertItem(newItem, 0);
-            newItem.AddNewItem += (sender, e) =>
+            newItem.AddNewItem += () =>
             {
                 using(NewLnkFileDialog dlg = new NewLnkFileDialog())
                 {
@@ -57,8 +57,8 @@ namespace ContextMenuManager.Controls
                 Image = ResourceIcon.GetFolderIcon(SendToPath).ToBitmap()
             };
             PictureButton btnPath = new PictureButton(AppImage.Open);
-            MyToolTip.SetToolTip(btnPath, AppString.Menu.FileLocation);
-            btnPath.MouseDown += (sender, e) => ExternalProgram.JumpExplorer(SendToPath);
+            ToolTipBox.SetToolTip(btnPath, AppString.Menu.FileLocation);
+            btnPath.MouseDown += (sender, e) => ExternalProgram.OpenDirectory(SendToPath);
             item.AddCtr(btnPath);
             this.InsertItem(item, 1);
         }

@@ -22,7 +22,7 @@ namespace ContextMenuManager.Controls.Interfaces
                 {
                     case PathType.File:
                     case PathType.Directory:
-                        ExternalProgram.JumpExplorer(item.TargetPath);
+                        ExternalProgram.JumpExplorer(item.TargetPath, AppConfig.OpenMoreExplorer);
                         break;
                     case PathType.Registry:
                         ExternalProgram.JumpRegEdit(item.TargetPath, null, AppConfig.OpenMoreRegedit);

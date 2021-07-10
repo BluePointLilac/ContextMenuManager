@@ -56,7 +56,7 @@ namespace BluePointLilac.Controls
 
         protected override void OnLinkClicked(LinkClickedEventArgs e)
         {
-            base.OnLinkClicked(e); ExternalProgram.OpenUrl(e.LinkText);
+            base.OnLinkClicked(e); ExternalProgram.OpenWebUrl(e.LinkText);
         }
     }
 }

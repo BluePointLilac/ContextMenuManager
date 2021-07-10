@@ -54,6 +54,7 @@ namespace BluePointLilac.Methods
             box.ClientSizeChanged += (sender, e) => SetScrollVisible();
         }
 
+        /// <summary>TextBox只读时可以使用Ctrl+A全选快捷键</summary>
         public static void CanSelectAllWhenReadOnly(this TextBox box)
         {
             box.KeyDown += (sender, e) =>

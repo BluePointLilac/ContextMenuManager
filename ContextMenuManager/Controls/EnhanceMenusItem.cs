@@ -39,37 +39,39 @@ namespace ContextMenuManager.Controls
         private static void WriteAttributesValue(XmlNode valueXN, string regPath)
         {
             if(valueXN == null) return;
-            XmlNode szXN = valueXN.SelectSingleNode("REG_SZ");
-            XmlNode binaryXN = valueXN.SelectSingleNode("REG_BINARY");
-            XmlNode dwordXN = valueXN.SelectSingleNode("REG_DWORD");
-            XmlNode expand_szXN = valueXN.SelectSingleNode("REG_EXPAND_SZ");
+            if(!EnhanceMenusList.JudgeOSVersion((XmlElement)valueXN)) return;
             using(RegistryKey key = RegistryEx.GetRegistryKey(regPath, true, true))
             {
-                if(szXN != null)
-                    foreach(XmlAttribute a in szXN.Attributes)
-                        key.SetValue(a.Name, a.Value, RegistryValueKind.String);
-                if(expand_szXN != null)
-                    foreach(XmlAttribute a in expand_szXN.Attributes)
-                        key.SetValue(a.Name, a.Value, RegistryValueKind.ExpandString);
-                if(binaryXN != null)
+                foreach(XmlNode xn in valueXN.ChildNodes)
                 {
-                    foreach(XmlAttribute a in binaryXN.Attributes)
-                        key.SetValue(a.Name, EnhanceMenusList.ConvertToBinary(a.Value), RegistryValueKind.Binary);
-                }
-                if(dwordXN != null)
-                    foreach(XmlAttribute a in dwordXN.Attributes)
+                    if(!EnhanceMenusList.JudgeOSVersion((XmlElement)xn)) continue;
+                    foreach(XmlAttribute xa in xn.Attributes)
                     {
-                        int value = a.Value.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
-                            ? Convert.ToInt32(a.Value, 16) : Convert.ToInt32(a.Value);
-                        key.SetValue(a.Name, value, RegistryValueKind.DWord);
+                        switch(xn.Name)
+                        {
+                            case "REG_SZ":
+                                key.SetValue(xa.Name, xa.Value, RegistryValueKind.String);
+                                break;
+                            case "REG_EXPAND_SZ":
+                                key.SetValue(xa.Name, xa.Value, RegistryValueKind.ExpandString);
+                                break;
+                            case "REG_BINARY":
+                                key.SetValue(xa.Name, EnhanceMenusList.ConvertToBinary(xa.Value), RegistryValueKind.Binary);
+                                break;
+                            case "REG_DWORD":
+                                int num = xa.Value.ToLower().StartsWith("0x") ? 16 : 10;
+                                key.SetValue(xa.Name, Convert.ToInt32(xa.Value, num), RegistryValueKind.DWord);
+                                break;
+                        }
                     }
-
+                }
             }
         }
 
         private static void WriteSubKeysValue(XmlElement keyXE, string regPath)
         {
             if(keyXE == null) return;
+            if(!EnhanceMenusList.JudgeOSVersion(keyXE)) return;
             string defaultValue = Environment.ExpandEnvironmentVariables(keyXE.GetAttribute("Default"));
             if(!defaultValue.IsNullOrWhiteSpace())
             {

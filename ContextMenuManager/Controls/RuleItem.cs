@@ -72,7 +72,7 @@ namespace ContextMenuManager.Controls
         private VisibleRegRuleItem(ItemInfo info) : base(info)
         {
             ChkVisible = new VisibleCheckBox(this);
-            MyToolTip.SetToolTip(ChkVisible, info.Tip);
+            ToolTipBox.SetToolTip(ChkVisible, info.Tip);
             TsiRegLocation = new RegLocationMenuItem(this);
             this.ContextMenuStrip.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(), TsiRegLocation });
         }
@@ -93,7 +93,7 @@ namespace ContextMenuManager.Controls
             set
             {
                 _Rules = value;
-                ChkVisible.Checked = ItemVisible;
+                //ChkVisible.Checked = ItemVisible;
             }
         }
 
@@ -261,7 +261,7 @@ namespace ContextMenuManager.Controls
         public NumberRegRuleItem(RegRule rule, ItemInfo info) : base(info)
         {
             this.AddCtr(NudValue);
-            MyToolTip.SetToolTip(NudValue, info.Tip);
+            ToolTipBox.SetToolTip(NudValue, info.Tip);
             TsiRegLocation = new RegLocationMenuItem(this);
             this.ContextMenuStrip.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(), TsiRegLocation });
             this.Rule = rule;
@@ -327,7 +327,7 @@ namespace ContextMenuManager.Controls
         public StringRegRuleItem(RegRule rule, ItemInfo info) : base(info)
         {
             this.AddCtr(LblValue);
-            MyToolTip.SetToolTip(LblValue, info.Tip);
+            ToolTipBox.SetToolTip(LblValue, info.Tip);
             TsiRegLocation = new RegLocationMenuItem(this);
             this.ContextMenuStrip.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(), TsiRegLocation });
             this.Rule = rule;
@@ -371,8 +371,8 @@ namespace ContextMenuManager.Controls
         {
             this.Rule = rule;
             this.IniWriter = new IniWriter(rule.IniPath);
-            ChkVisible = new VisibleCheckBox(this) { Checked = ItemVisible };
-            MyToolTip.SetToolTip(ChkVisible, info.Tip);
+            ChkVisible = new VisibleCheckBox(this);// { Checked = ItemVisible };
+            ToolTipBox.SetToolTip(ChkVisible, info.Tip);
         }
 
         public IniRule Rule { get; set; }
@@ -402,7 +402,7 @@ namespace ContextMenuManager.Controls
             this.AddCtr(NudValue);
             this.Rule = rule;
             this.IniWriter = new IniWriter(rule.IniPath);
-            MyToolTip.SetToolTip(NudValue, info.Tip);
+            ToolTipBox.SetToolTip(NudValue, info.Tip);
             NudValue.Maximum = rule.MaxValue;
             NudValue.Minimum = rule.MinValue;
             NudValue.ValueChanged += (sender, e) =>
@@ -473,7 +473,7 @@ namespace ContextMenuManager.Controls
             this.Rule = rule;
             this.IniWriter = new IniWriter(rule.IniPath);
             this.AddCtr(LblValue);
-            MyToolTip.SetToolTip(LblValue, info.Tip);
+            ToolTipBox.SetToolTip(LblValue, info.Tip);
             LblValue.Text = ItemValue;
             LblValue.MouseDown += (sender, e) =>
             {

@@ -29,10 +29,10 @@ namespace BluePointLilac.Methods
             using(Graphics g = Graphics.FromImage(destImage))
             {
                 g.CompositingMode = CompositingMode.SourceCopy;
-                g.CompositingQuality = CompositingQuality.HighQuality;
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.SmoothingMode = SmoothingMode.HighQuality;
+                g.CompositingQuality = CompositingQuality.HighQuality;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.SmoothingMode = SmoothingMode.HighQuality;
 
                 using(ImageAttributes attributes = new ImageAttributes())
                 {

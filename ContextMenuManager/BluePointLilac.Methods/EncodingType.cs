@@ -1,34 +1,39 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace BluePointLilac.Methods
 {
     /* 获取文本文件编码类型
-     * 代码参考：https://www.cnblogs.com/guyun/p/4262587.html (Napoléon)
-
-     * 各种带BOM的编码BOM值
-     * UTF-7 : 2B 2F 76
-     * UTF-8 : EF BB BF
-     * UTF-16LE : FF FE
-     * UTF-16BE : FE FF
-     * UTF-32LE : FF FE 00 00
-     * UTF-32BE : 00 00 FE FF
-     */
+     * 代码参考：https://www.cnblogs.com/guyun/p/4262587.html (Napoléon)*/
     public static class EncodingType
     {
+        /// <summary>各种带BOM的编码BOM值</summary>
+        private static readonly Dictionary<byte[], Encoding> EncodingBomBytes = new Dictionary<byte[], Encoding>
+        {
+            { new byte[] { 0xEF, 0xBB, 0xBF }, Encoding.UTF8 },                         //UTF-8         EF BB BF
+            { new byte[] { 0xFF, 0xFE, 0x00, 0x00 }, Encoding.UTF32 },                  //UTF-32LE      FF FE 00 00
+            { new byte[] { 0xFF, 0xFE }, Encoding.Unicode },                            //UTF-16LE      FF FE
+            { new byte[] { 0xFE, 0xFF }, Encoding.BigEndianUnicode },                   //UTF-16BE      FE FF
+            { new byte[] { 0x2B, 0x2F, 0x76 }, Encoding.UTF7 },                         //UTF-7         2B 2F 76
+            { new byte[] { 0x00, 0x00, 0xFE, 0xFF }, new UTF32Encoding(true, true) },   //UTF-32BE      00 00 FE FF
+        };
+
         /// <summary>获取给定的文件的编码类型</summary> 
         /// <param name=“filePath“>文件路径</param> 
         /// <returns>文件的编码类型</returns> 
         public static Encoding GetType(string filePath)
         {
-            byte[] bytes = File.ReadAllBytes(filePath);
-            if(bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) return Encoding.UTF8;//UTF-8
-            else if(bytes.Length >= 4 && bytes[0] == 0xFF && bytes[1] == 0xFE && bytes[2] == 0x00 && bytes[3] == 0x00) return Encoding.UTF32;//UTF-32LE
-            else if(bytes.Length >= 2 && bytes[0] == 0xFF && bytes[1] == 0xFE) return Encoding.Unicode; //UTF-16LE
-            else if(bytes.Length >= 2 && bytes[0] == 0xFE && bytes[1] == 0xFF) return Encoding.BigEndianUnicode; //UTF-16BE
-            else if(bytes.Length >= 3 && bytes[0] == 0x2B && bytes[1] == 0x2F && bytes[2] == 0x76) return Encoding.UTF7; //UTF-7
-            else if(bytes.Length >= 4 && bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0xFE && bytes[3] == 0xFF) return new UTF32Encoding(true, true);//UTF-32BE
-            else if(IsUTF8Bytes(bytes)) return Encoding.UTF8; //不带BOM的UTF-8
+            byte[] fs = File.ReadAllBytes(filePath);
+            foreach(var kv in EncodingBomBytes)
+            {
+                if(fs.Length < kv.Key.Length) continue;
+                int i = -1;
+                bool flag = kv.Key.All(s => { i++; return s == fs[i]; });
+                if(flag) return kv.Value;
+            }
+            if(IsUTF8Bytes(fs)) return Encoding.UTF8; //不带BOM的UTF-8
             return Encoding.Default;
         }
 

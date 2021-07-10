@@ -92,7 +92,7 @@ namespace ContextMenuManager.Controls
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch,
                 new ToolStripSeparator(), TsiFileProperties, TsiFileLocation, TsiRegLocation});
 
-            MyToolTip.SetToolTip(BtnDelete, AppString.Menu.Delete);
+            ToolTipBox.SetToolTip(BtnDelete, AppString.Menu.Delete);
             TsiDelete.Click += (sender, e) =>
             {
                 if(MessageBoxEx.Show(AppString.Message.ConfirmDelete, MessageBoxButtons.YesNo) == DialogResult.Yes) DeleteMe();

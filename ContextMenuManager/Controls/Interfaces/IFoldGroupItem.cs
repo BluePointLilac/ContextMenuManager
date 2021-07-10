@@ -67,11 +67,11 @@ namespace ContextMenuManager.Controls.Interfaces
             {
                 if(BtnFold.IsFold == value) return;
                 BtnFold.IsFold = value;
-                IsFoldChanegd?.Invoke(null, null);
+                //IsFoldChanegd?.Invoke();
             }
         }
 
-        public event EventHandler IsFoldChanegd;
+        //public Action IsFoldChanegd;
         public string TargetPath { get; set; }
         public PathType PathType { get; set; }
         public ObjectPathButton BtnOpenPath { get; set; }
@@ -104,16 +104,16 @@ namespace ContextMenuManager.Controls.Interfaces
                     tip = AppString.Menu.RegistryLocation;
                     break;
             }
-            MyToolTip.SetToolTip(BtnOpenPath, tip);
-            this.ImageDoubleClick += (sender, e) => this.OnDoubleClick(null);
-            this.TextDoubleClick += (sender, e) => this.OnDoubleClick(null);
+            ToolTipBox.SetToolTip(BtnOpenPath, tip);
+            this.ImageDoubleClick += () => this.OnDoubleClick(null);
+            this.TextDoubleClick += () => this.OnDoubleClick(null);
             this.DoubleClick += (sender, e) => this.IsFold = !this.IsFold;
         }
 
         public void HideWhenNoSubItem()
         {
             int count = 0;
-            foreach(var ctr in this.Parent.Controls)
+            foreach(Control ctr in this.Parent.Controls)
             {
                 if(ctr is IFoldSubItem item1 && item1.FoldGroupItem == this) count++;
                 else if(ctr is SubGroupItem item2 && item2.FoldGroupItem == this) count++;

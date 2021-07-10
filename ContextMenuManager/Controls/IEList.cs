@@ -50,7 +50,7 @@ namespace ContextMenuManager.Controls
         {
             NewItem newItem = new NewItem();
             this.AddItem(newItem);
-            newItem.AddNewItem += (sender, e) =>
+            newItem.AddNewItem += () =>
             {
                 using(NewIEDialog dlg = new NewIEDialog())
                 {

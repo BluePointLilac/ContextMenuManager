@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    class ShellItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiTextItem, ITsiCommandItem,
+    class ShellItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiTextItem, ITsiCommandItem, IProtectOpenItem,
         ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem
     {
         /// <summary>Shell公共引用子菜单注册表项路径</summary>
@@ -46,7 +46,6 @@ namespace ContextMenuManager.Controls
                 this.Text = this.ItemText;
                 this.Image = this.ItemIcon.ToBitmap();
                 if(!HasIcon) this.Image = Image.ToTransparent();
-                ChkVisible.Checked = this.ItemVisible;
                 BtnSubItems.Visible = IsMultiItem;
             }
         }
@@ -79,7 +78,7 @@ namespace ContextMenuManager.Controls
             {
                 if(value)
                 {
-                    if(TryProtectOpenItem()) return;
+                    if(!TryProtectOpenItem()) return;
                     Registry.SetValue(RegPath, "OnlyInBrowserWindow", "");
                 }
                 else RegistryEx.DeleteValue(RegPath, "OnlyInBrowserWindow");
@@ -93,7 +92,7 @@ namespace ContextMenuManager.Controls
             {
                 if(value)
                 {
-                    if(TryProtectOpenItem()) return;
+                    if(!TryProtectOpenItem()) return;
                     Registry.SetValue(RegPath, "Extended", "");
                 }
                 else RegistryEx.DeleteValue(RegPath, "Extended");
@@ -105,6 +104,7 @@ namespace ContextMenuManager.Controls
             get => Registry.GetValue(RegPath, "NoWorkingDirectory", null) != null;
             set
             {
+                if(!TryProtectOpenItem()) return;
                 if(value) Registry.SetValue(RegPath, "NoWorkingDirectory", "");
                 else RegistryEx.DeleteValue(RegPath, "NoWorkingDirectory");
             }
@@ -115,6 +115,7 @@ namespace ContextMenuManager.Controls
             get => Registry.GetValue(RegPath, "NeverDefault", null) != null;
             set
             {
+                if(!TryProtectOpenItem()) return;
                 if(value) Registry.SetValue(RegPath, "NeverDefault", "");
                 else RegistryEx.DeleteValue(RegPath, "NeverDefault");
             }
@@ -125,6 +126,7 @@ namespace ContextMenuManager.Controls
             get => Registry.GetValue(RegPath, "ShowAsDisabledIfHidden", null) != null;
             set
             {
+                if(!TryProtectOpenItem()) return;
                 if(value) Registry.SetValue(RegPath, "ShowAsDisabledIfHidden", "");
                 else RegistryEx.DeleteValue(RegPath, "ShowAsDisabledIfHidden");
                 if(value && !ItemVisible) ItemVisible = false;
@@ -203,7 +205,6 @@ namespace ContextMenuManager.Controls
                     }
                     else
                     {
-                        if(TryProtectOpenItem()) return;
                         if(WindowsOsVersion.IsAfterOrEqualWin10_1703)
                         {
                             Registry.SetValue(RegPath, "HideBasedOnVelocityId", 0x639bc8);
@@ -277,7 +278,7 @@ namespace ContextMenuManager.Controls
             }
             set
             {
-                if(TryProtectOpenItem()) return;
+                if(!TryProtectOpenItem()) return;
                 Registry.SetValue(CommandPath, "", value);
                 if(!this.HasIcon) this.Image = this.ItemIcon.ToBitmap().ToTransparent();
             }
@@ -411,10 +412,11 @@ namespace ContextMenuManager.Controls
             TsiNeverDefault.Click += (sender, e) => this.NeverDefault = !TsiNeverDefault.Checked;
             TsiShowAsDisabled.Click += (sender, e) => this.ShowAsDisabledIfHidden = !TsiShowAsDisabled.Checked;
             TsiClsidLocation.Click += (sender, e) => ExternalProgram.JumpRegEdit(GuidInfo.GetClsidPath(Guid));
+            ChkVisible.PreCheckChanging += () => !ChkVisible.Checked || TryProtectOpenItem();
             ContextMenuStrip.Opening += (sender, e) => RefreshMenuItem();
             BtnSubItems.MouseDown += (sender, e) => ShowSubItems();
             TsiShieldIcon.Click += (sender, e) => UseShieldIcon();
-            MyToolTip.SetToolTip(BtnSubItems, AppString.Tip.EditSubItems);
+            ToolTipBox.SetToolTip(BtnSubItems, AppString.Tip.EditSubItems);
             this.AddCtr(BtnSubItems);
         }
 
@@ -515,11 +517,11 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        private bool TryProtectOpenItem()
+        public bool TryProtectOpenItem()
         {
-            if(!IsOpenItem) return false;
-            if(!AppConfig.ProtectOpenItem) return false;
-            return MessageBoxEx.Show(AppString.Message.PromptIsOpenItem, MessageBoxButtons.YesNo) != DialogResult.Yes;
+            if(!IsOpenItem) return true;
+            if(!AppConfig.ProtectOpenItem) return true;
+            return MessageBoxEx.Show(AppString.Message.PromptIsOpenItem, MessageBoxButtons.YesNo) == DialogResult.Yes;
         }
 
         public virtual void DeleteMe()

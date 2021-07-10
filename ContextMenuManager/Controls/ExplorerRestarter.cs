@@ -13,11 +13,11 @@ namespace ContextMenuManager.Controls
             this.Dock = DockStyle.Bottom;
             this.Image = AppImage.Explorer;
             this.Text = AppString.Other.RestartExplorer;
-            MyToolTip.SetToolTip(BtnRestart, AppString.Tip.RestartExplorer);
+            ToolTipBox.SetToolTip(BtnRestart, AppString.Tip.RestartExplorer);
             this.AddCtr(BtnRestart);
             this.CanMoveForm();
             BtnRestart.MouseDown += (sender, e) => { ExternalProgram.RestartExplorer(); this.Visible = false; };
-            ShowHandler += (sender, e) => this.Visible = true;
+            ShowHandler += () => this.Visible = true;
         }
 
         protected override void OnVisibleChanged(EventArgs e)
@@ -28,8 +28,8 @@ namespace ContextMenuManager.Controls
 
         private readonly PictureButton BtnRestart = new PictureButton(AppImage.RestartExplorer);
 
-        private static event EventHandler ShowHandler;
+        private static Action ShowHandler { get; set; }
 
-        public new static void Show() { ShowHandler?.Invoke(null, null); }
+        public static new void Show() { ShowHandler?.Invoke(); }
     }
 }

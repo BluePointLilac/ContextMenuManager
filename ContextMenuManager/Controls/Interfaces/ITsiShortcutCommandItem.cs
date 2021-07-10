@@ -64,7 +64,7 @@ namespace ContextMenuManager.Controls.Interfaces
                 }
             }
 
-            sealed class CommandForm : ResizbleForm
+            sealed class CommandForm : ResizeLimitedForm
             {
                 public CommandForm()
                 {

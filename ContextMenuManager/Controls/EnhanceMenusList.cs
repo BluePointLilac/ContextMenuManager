@@ -129,7 +129,6 @@ namespace ContextMenuManager.Controls
             {
                 if(!JudgeOSVersion(itemXE)) continue;
                 if(!FileExists(itemXE)) continue;
-                XmlElement szXE = (XmlElement)itemXE.SelectSingleNode("Value/REG_SZ");
                 string keyName = itemXE.GetAttribute("KeyName");
                 if(keyName.IsNullOrWhiteSpace()) continue;
                 EnhanceShellItem item = new EnhanceShellItem()
@@ -138,37 +137,45 @@ namespace ContextMenuManager.Controls
                     FoldGroupItem = groupItem,
                     ItemXE = itemXE
                 };
-                if(szXE != null)
+                foreach(XmlElement szXE in itemXE.SelectNodes("Value/REG_SZ"))
                 {
-                    item.Text = ResourceString.GetDirectString(szXE.GetAttribute("MUIVerb"));
+                    if(szXE.HasAttribute("MUIVerb")) item.Text = ResourceString.GetDirectString(szXE.GetAttribute("MUIVerb"));
                     if(szXE.HasAttribute("Icon")) item.Image = ResourceIcon.GetIcon(szXE.GetAttribute("Icon"))?.ToBitmap();
                     else if(szXE.HasAttribute("HasLUAShield")) item.Image = AppImage.Shield;
-                    else
+                }
+                if(item.Image == null)
+                {
+                    XmlElement cmdXE = (XmlElement)itemXE.SelectSingleNode("SubKey/Command");
+                    if(cmdXE != null)
                     {
-                        XmlElement cmdXE = (XmlElement)itemXE.SelectSingleNode("SubKey/Command");
-                        if(cmdXE != null)
+                        Icon icon = null;
+                        if(cmdXE.HasAttribute("Default"))
                         {
-                            Icon icon = null;
-                            if(cmdXE.HasAttribute("Default"))
+                            string filePath = ObjectPath.ExtractFilePath(cmdXE.GetAttribute("Default"));
+                            icon = ResourceIcon.GetIcon(filePath);
+                        }
+                        else
+                        {
+                            XmlElement fileXE = (XmlElement)cmdXE.SelectSingleNode("FileName");
+                            if(fileXE != null)
                             {
-                                string filePath = ObjectPath.ExtractFilePath(cmdXE.GetAttribute("Default"));
+                                string filePath = ObjectPath.ExtractFilePath(fileXE.InnerText);
                                 icon = ResourceIcon.GetIcon(filePath);
                             }
-                            item.Image = icon?.ToBitmap();
-                            icon?.Dispose();
                         }
+                        item.Image = icon?.ToBitmap();
+                        icon?.Dispose();
                     }
                 }
                 if(item.Image == null) item.Image = AppImage.NotFound;
                 if(item.Text.IsNullOrWhiteSpace()) item.Text = keyName;
-                item.ChkVisible.Checked = item.ItemVisible;
                 string tip = itemXE.GetAttribute("Tip");
                 if(itemXE.GetElementsByTagName("CreateFile").Count > 0)
                 {
                     if(!tip.IsNullOrWhiteSpace()) tip += "\n";
                     tip += AppString.Tip.CommandFiles;
                 }
-                MyToolTip.SetToolTip(item.ChkVisible, tip);
+                ToolTipBox.SetToolTip(item.ChkVisible, tip);
                 this.AddItem(item);
             }
         }
@@ -190,8 +197,7 @@ namespace ContextMenuManager.Controls
                 };
                 if(item.Text.IsNullOrWhiteSpace()) item.Text = GuidInfo.GetText(guid);
                 if(item.DefaultKeyName.IsNullOrWhiteSpace()) item.DefaultKeyName = guid.ToString("B");
-                item.ChkVisible.Checked = item.ItemVisible;
-                MyToolTip.SetToolTip(item.ChkVisible, itemXE.GetAttribute("Tip"));
+                ToolTipBox.SetToolTip(item.ChkVisible, itemXE.GetAttribute("Tip"));
                 this.AddItem(item);
             }
         }

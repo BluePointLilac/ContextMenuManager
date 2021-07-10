@@ -50,7 +50,7 @@ namespace ContextMenuManager.Controls
                 this.StartPosition = FormStartPosition.CenterParent;
                 this.ShowIcon = ShowInTaskbar = MaximizeBox = MinimizeBox = false;
                 this.HelpButton = true;
-                this.HelpButtonClicked += (sender, e) => ExternalProgram.OpenUrl(ApiInfoUrl);
+                this.HelpButtonClicked += (sender, e) => ExternalProgram.OpenWebUrl(ApiInfoUrl);
                 this.InitializeComponents();
             }
             public string Verb { get; set; }
@@ -131,7 +131,7 @@ namespace ContextMenuManager.Controls
         {
             this.Text = "ShellExecute";
             this.AutoSize = true;
-            this.Font = new Font(SystemFonts.DialogFont.FontFamily, 8F / 1F.DpiZoom());
+            this.Font = new Font(SystemFonts.DialogFont.FontFamily, 8F).DpiZoom();
         }
 
         public string Verb { get; set; }

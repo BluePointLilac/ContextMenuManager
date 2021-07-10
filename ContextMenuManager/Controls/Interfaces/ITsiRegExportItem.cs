@@ -37,7 +37,7 @@ namespace ContextMenuManager.Controls.Interfaces
                     dlg.Filter = $"{AppString.Dialog.RegistryFile}|*.reg";
                     if(dlg.ShowDialog() == DialogResult.OK)
                     {
-                        RegistryEx.Export(item.RegPath, dlg.FileName);
+                        ExternalProgram.ExportRegistry(item.RegPath, dlg.FileName);
                     }
                     if(Directory.GetFileSystemEntries(dirPath).Length == 0)
                     {

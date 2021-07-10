@@ -64,9 +64,10 @@ namespace ContextMenuManager
             {
                 if(isManual)
                 {
-                    MessageBoxEx.Show(AppString.Message.WebDataReadFailed);
+                    if(MessageBoxEx.Show(AppString.Message.WebDataReadFailed + "\r\n"
+                        + AppString.Message.OpenWebUrl, MessageBoxButtons.OKCancel) != DialogResult.OK) return;
                     url = AppConfig.RequestUseGithub ? GithubLatest : GiteeReleases;
-                    ExternalProgram.OpenUrl(url);
+                    ExternalProgram.OpenWebUrl(url);
                 }
                 return;
             }
@@ -77,7 +78,8 @@ namespace ContextMenuManager
             //appVer = new Version(0, 0, 0, 0);//测试用
             if(appVer >= webVer)
             {
-                if(isManual) MessageBoxEx.Show(AppString.Message.VersionIsLatest);
+                if(isManual) MessageBoxEx.Show(AppString.Message.VersionIsLatest,
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -97,7 +99,7 @@ namespace ContextMenuManager
                             using(DownloadDialog dlg = new DownloadDialog())
                             {
                                 dlg.Url = urlXE?.InnerText;
-                                dlg.FilePath = Path.GetTempFileName();
+                                dlg.FilePath = $@"{AppConfig.AppDataDir}\{webVer}.exe";
                                 if(dlg.ShowDialog() == DialogResult.OK)
                                 {
                                     MessageBoxEx.Show(AppString.Message.UpdateSucceeded, MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -114,7 +116,10 @@ namespace ContextMenuManager
         /// <param name="isManual">是否为手动点击更新</param>
         private static void UpdateText(bool isManual)
         {
-            string error = null;
+            string error1 = null;
+            string error2 = null;
+            bool hasError1 = false;
+            bool hasError2 = false;
             var func = new Func<string, string, bool>(WebStringToFile);
             string dirUrl = AppConfig.RequestUseGithub ? GithubTexts : GiteeTexts;
             string[] filePaths = new[]
@@ -124,30 +129,42 @@ namespace ContextMenuManager
             };
             foreach(string filePath in filePaths)
             {
-                bool flag = func.EndInvoke(func.BeginInvoke(filePath, dirUrl, null, null));
-                if(!flag) error += Path.GetFileName(filePath) + ", ";
+                string fileUrl = $"{dirUrl}/{Path.GetFileName(filePath)}";
+                bool flag = func.EndInvoke(func.BeginInvoke(filePath, fileUrl, null, null));
+                if(!flag)
+                {
+                    hasError1 = true;
+                    error1 += "\r\n ● " + Path.GetFileName(filePath);
+                }
             }
+            if(hasError1) error1 = "\r\n\r\nDictionaries:" + error1;
+
             dirUrl = AppConfig.RequestUseGithub ? GithubLangsRawDir : GiteeLangsRawDir;
             filePaths = Directory.GetFiles(AppConfig.LangsDir, "*.ini");
             foreach(string filePath in filePaths)
             {
-                bool flag = func.EndInvoke(func.BeginInvoke(filePath, dirUrl, null, null));
-                if(!flag) error += Path.GetFileName(filePath) + ", ";
+                string fileUrl = $"{dirUrl}/{Path.GetFileName(filePath)}";
+                bool flag = func.EndInvoke(func.BeginInvoke(filePath, fileUrl, null, null));
+                if(!flag)
+                {
+                    hasError2 = true;
+                    error2 += "\r\n ● " + Path.GetFileName(filePath);
+                }
             }
-            if(isManual && error != null)
+            if(hasError2) error2 = "\r\n\r\nLanguages:" + error2;
+
+            if(isManual)
             {
-                error = error.Substring(0, error.LastIndexOf(", "));
-                MessageBoxEx.Show(error + " : " + AppString.Message.WebDataReadFailed);
+                if(hasError1 || hasError2) MessageBoxEx.Show(AppString.Message.WebDataReadFailed + error1 + error2);
+                else MessageBoxEx.Show(AppString.Message.DicUpdateSucceeded, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         /// <summary>将网络文本写入本地文件</summary>
         /// <param name="filePath">本地文件路径</param>
-        /// <param name="dirUrl">网络文件Raw链接的目录</param>
-        private static bool WebStringToFile(string filePath, string dirUrl)
+        /// <param name="dirUrl">网络文件Raw路径</param>
+        private static bool WebStringToFile(string filePath, string fileUrl)
         {
-            string fileName = Path.GetFileName(filePath);
-            string fileUrl = $"{dirUrl}/{fileName}";
             string contents = GetWebString(fileUrl);
             bool flag = contents != null;
             if(flag) File.WriteAllText(filePath, contents, Encoding.Unicode);
@@ -184,9 +201,17 @@ namespace ContextMenuManager
                     string fileName = $"{dlg.Selected}.ini";
                     string filePath = $@"{AppConfig.LangsDir}\{fileName}";
                     string dirUrl = AppConfig.RequestUseGithub ? GithubLangsRawDir : GiteeLangsRawDir;
-                    bool flag = WebStringToFile(filePath, dirUrl);
-                    if(!flag) MessageBoxEx.Show(fileName + ": " + AppString.Message.WebDataReadFailed);
-                    return true;
+                    string fileUrl = $"{dirUrl}/{fileName}";
+                    bool flag = WebStringToFile(filePath, fileUrl);
+                    if(!flag)
+                    {
+                        if(MessageBoxEx.Show(AppString.Message.WebDataReadFailed + "\r\n ● " + fileName + "\r\n"
+                            + AppString.Message.OpenWebUrl, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
+                            ExternalProgram.OpenWebUrl(fileUrl);
+                        }
+                    }
+                    return flag;
                 }
             }
             return false;
@@ -200,9 +225,10 @@ namespace ContextMenuManager
             //contents = File.ReadAllText(@"..\..\..\Donate.md");//用于求和更新Donate.md文件
             if(contents == null)
             {
-                MessageBoxEx.Show(AppString.Message.WebDataReadFailed);
+                if(MessageBoxEx.Show(AppString.Message.WebDataReadFailed + "\r\n"
+                    + AppString.Message.OpenWebUrl, MessageBoxButtons.OKCancel) != DialogResult.OK) return;
                 url = AppConfig.RequestUseGithub ? GithubDonate : GiteeDonate;
-                ExternalProgram.OpenUrl(url);
+                ExternalProgram.OpenWebUrl(url);
             }
             else
             {

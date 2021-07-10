@@ -30,7 +30,6 @@ namespace ContextMenuManager.Controls
                 this.ItemFilePath = ObjectPath.ExtractFilePath(ItemCommand);
                 this.Text = this.ItemText;
                 this.Image = this.ItemIcon.ToBitmap();
-                ChkVisible.Checked = this.ItemVisible;
             }
         }
         public string ValueName => null;

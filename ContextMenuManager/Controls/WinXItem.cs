@@ -27,7 +27,6 @@ namespace ContextMenuManager.Controls
                 this.ShellLink = new ShellLink(value);
                 this.Text = this.ItemText;
                 this.Image = this.ItemIcon.ToBitmap();
-                ChkVisible.Checked = this.ItemVisible;
             }
         }
 

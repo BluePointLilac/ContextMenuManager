@@ -16,7 +16,7 @@ namespace ContextMenuManager.Controls.Interfaces
             this.Click += (sender, e) =>
             {
                 string url = AppConfig.EngineUrl.Replace("%s", item.SearchText);
-                ExternalProgram.OpenUrl(url);
+                ExternalProgram.OpenWebUrl(url);
             };
         }
     }
