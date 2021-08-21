@@ -7,12 +7,12 @@ using System.Security;
 using System.Text;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
-namespace BluePointLilac.Methods
+namespace ContextMenuManager.Methods
 {
     /// 代码用途：添加WinX菜单项目
     /// 参考代码1：https://github.com/riverar/hashlnk/blob/master/hashlnk.cpp (Rafael Rivera)
     /// 参考代码2：https://github.com/xmoer/HashLnk/blob/main/HashLnk.cs (坑晨)
-    public static class WinXHasher
+    static class WinXHasher
     {
         [DllImport("shlwapi.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
         private static extern int HashData(
@@ -52,17 +52,10 @@ namespace BluePointLilac.Methods
         [Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")]
         interface IShellItem
         {
-            void BindToHandler(IntPtr pbc,
-                [MarshalAs(UnmanagedType.LPStruct)] Guid bhid,
-                [MarshalAs(UnmanagedType.LPStruct)] Guid riid,
-                out IntPtr ppv);
-
+            void BindToHandler(IntPtr pbc, [MarshalAs(UnmanagedType.LPStruct)] Guid bhid, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, out IntPtr ppv);
             void GetParent(out IShellItem ppsi);
-
-            void GetDisplayName(SIGDN sigdnName, out IntPtr ppszName);
-
+            void GetDisplayName(uint sigdnName, out IntPtr ppszName);
             void GetAttributes(uint sfgaoMask, out uint psfgaoAttribs);
-
             void Compare(IShellItem psi, uint hint, out int piOrder);
         }
 
@@ -78,11 +71,11 @@ namespace BluePointLilac.Methods
             IShellItem GetParent();
 
             [return: MarshalAs(UnmanagedType.LPWStr)]
-            string GetDisplayName(SIGDN sigdnName);
+            string GetDisplayName(uint sigdnName);
 
-            SFGAO GetAttributes(SFGAO sfgaoMask);
+            uint GetAttributes(uint sfgaoMask);
 
-            int Compare(IShellItem psi, SICHINT hint);
+            int Compare(IShellItem psi, uint hint);
 
             [return: MarshalAs(UnmanagedType.Interface)]
             IPropertyStore GetPropertyStore(GPS flags, [In] ref Guid riid);
@@ -128,109 +121,28 @@ namespace BluePointLilac.Methods
         [StructLayout(LayoutKind.Explicit, Pack = 1)]
         struct PropVariant
         {
-            [FieldOffset(0)]
-            public VarEnum VarType;
-            [FieldOffset(2)]
-            public ushort wReserved1;
-            [FieldOffset(4)]
-            public ushort wReserved2;
-            [FieldOffset(6)]
-            public ushort wReserved3;
-            [FieldOffset(8)]
-            public byte bVal;
-            [FieldOffset(8)]
-            public sbyte cVal;
-            [FieldOffset(8)]
-            public ushort uiVal;
-            [FieldOffset(8)]
-            public short iVal;
-            [FieldOffset(8)]
-            public uint uintVal;
-            [FieldOffset(8)]
-            public int intVal;
-            [FieldOffset(8)]
-            public ulong ulVal;
-            [FieldOffset(8)]
-            public long lVal;
-            [FieldOffset(8)]
-            public float fltVal;
-            [FieldOffset(8)]
-            public double dblVal;
-            [FieldOffset(8)]
-            public short boolVal;
-            [FieldOffset(8)]
-            public IntPtr pclsidVal;
-            [FieldOffset(8)]
-            public IntPtr pszVal;
-            [FieldOffset(8)]
-            public IntPtr pwszVal;
-            [FieldOffset(8)]
-            public IntPtr punkVal;
-            [FieldOffset(8)]
-            public IntPtr ca;
-            [FieldOffset(8)]
-            public ComTypes.FILETIME filetime;
+            [FieldOffset(0)] public VarEnum VarType;
+            [FieldOffset(2)] public ushort wReserved1;
+            [FieldOffset(4)] public ushort wReserved2;
+            [FieldOffset(6)] public ushort wReserved3;
+            [FieldOffset(8)] public byte bVal;
+            [FieldOffset(8)] public sbyte cVal;
+            [FieldOffset(8)] public ushort uiVal;
+            [FieldOffset(8)] public short iVal;
+            [FieldOffset(8)] public uint uintVal;
+            [FieldOffset(8)] public int intVal;
+            [FieldOffset(8)] public ulong ulVal;
+            [FieldOffset(8)] public long lVal;
+            [FieldOffset(8)] public float fltVal;
+            [FieldOffset(8)] public double dblVal;
+            [FieldOffset(8)] public short boolVal;
+            [FieldOffset(8)] public IntPtr pclsidVal;
+            [FieldOffset(8)] public IntPtr pszVal;
+            [FieldOffset(8)] public IntPtr pwszVal;
+            [FieldOffset(8)] public IntPtr punkVal;
+            [FieldOffset(8)] public IntPtr ca;
+            [FieldOffset(8)] public ComTypes.FILETIME filetime;
 
-        }
-
-        enum SIGDN : uint
-        {
-            NORMALDISPLAY = 0,
-            PARENTRELATIVEPARSING = 0x80018001,
-            PARENTRELATIVEFORADDRESSBAR = 0x8001c001,
-            DESKTOPABSOLUTEPARSING = 0x80028000,
-            PARENTRELATIVEEDITING = 0x80031001,
-            DESKTOPABSOLUTEEDITING = 0x8004c000,
-            FILESYSPATH = 0x80058000,
-            URL = 0x80068000
-        }
-
-        [Flags]
-        enum SFGAO : uint
-        {
-            CANCOPY = 1u,
-            CANMOVE = 2u,
-            CANLINK = 4u,
-            STORAGE = 8u,
-            CANRENAME = 16u,
-            CANDELETE = 32u,
-            HASPROPSHEET = 64u,
-            DROPTARGET = 256u,
-            CAPABILITYMASK = 375u,
-            ENCRYPTED = 8192u,
-            ISSLOW = 16384u,
-            GHOSTED = 32768u,
-            LINK = 65536u,
-            SHARE = 131072u,
-            READONLY = 262144u,
-            HIDDEN = 524288u,
-            DISPLAYATTRMASK = 1032192u,
-            FILESYSANCESTOR = 268435456u,
-            FOLDER = 536870912u,
-            FILESYSTEM = 1073741824u,
-            HASSUBFOLDER = 2147483648u,
-            CONTENTSMASK = 2147483648u,
-            VALIDATE = 16777216u,
-            REMOVABLE = 33554432u,
-            COMPRESSED = 67108864u,
-            BROWSABLE = 134217728u,
-            NONENUMERATED = 1048576u,
-            NEWCONTENT = 2097152u,
-            CANMONIKER = 4194304u,
-            HASSTORAGE = 4194304u,
-            STREAM = 4194304u,
-            STORAGEANCESTOR = 8388608u,
-            STORAGECAPMASK = 1891958792u,
-            PKEYSFGAOMASK = 2164539392u
-        }
-
-        [Flags]
-        enum SICHINT : uint
-        {
-            DISPLAY = 0u,
-            ALLFIELDS = 2147483648u,
-            CANONICAL = 268435456u,
-            TEST_FILESYSPATH_IF_NOT_EQUAL = 536870912u
         }
 
         [Flags]
@@ -253,17 +165,15 @@ namespace BluePointLilac.Methods
             SHCreateItemFromParsingName(lnkPath, null, typeof(IShellItem2).GUID, out IShellItem item);
             IShellItem2 item2 = (IShellItem2)item;
             PSGetPropertyKeyFromName("System.Link.TargetParsingPath", out PropertyKey pk);
-            //PKEY_Link_TargetParsingPath
-            //pk.GUID = new Guid("{B9B4B3FC-2B51-4A42-B5D8-324146AFCF25}");
-            //pk.PID = 2;
+            //shellPKey = PKEY_Link_TargetParsingPath
+            //formatID = B9B4B3FC-2B51-4A42-B5D8-324146AFCF25, propID = 2
             string targetPath;
             try { targetPath = item2.GetString(pk); }
             catch { targetPath = null; }
 
             PSGetPropertyKeyFromName("System.Link.Arguments", out pk);
-            //PKEY_Link_Arguments
-            //pk.GUID = new Guid("{436F2667-14E2-4FEB-B30A-146C53B5B674}");
-            //pk.PID = 100;
+            //shellPKey = PKEY_Link_Arguments
+            //formatID = 436F2667-14E2-4FEB-B30A-146C53B5B674, propID = 100
             string arguments;
             try { arguments = item2.GetString(pk); }
             catch { arguments = null; }
@@ -280,9 +190,8 @@ namespace BluePointLilac.Methods
             Guid guid = typeof(IPropertyStore).GUID;
             IPropertyStore store = item2.GetPropertyStore(GPS.READWRITE, ref guid);
             PSGetPropertyKeyFromName("System.Winx.Hash", out pk);
-            //PKEY_WINX_HASH
-            //pk.GUID = new Guid("{FB8D2D7B-90D1-4E34-BF60-6EAC09922BBF}");
-            //pk.PID = 2;
+            //shellPKey = PKEY_WINX_HASH
+            //formatID = FB8D2D7B-90D1-4E34-BF60-6EAC09922BBF, propID = 2
             PropVariant pv = new PropVariant { VarType = VarEnum.VT_UI4, ulVal = hash };
             store.SetValue(ref pk, ref pv);
             store.Commit();
@@ -300,13 +209,13 @@ namespace BluePointLilac.Methods
 
         private static string GetGeneralizePath(string filePath)
         {
-            if(filePath == null) return null;
+            if(string.IsNullOrEmpty(filePath)) return filePath;
             foreach(var kv in GeneralizePathDic)
             {
-                string dirPath = Environment.ExpandEnvironmentVariables(kv.Key) + "\\";
-                if(filePath.StartsWith(dirPath, StringComparison.OrdinalIgnoreCase))
+                string dirPath = Environment.ExpandEnvironmentVariables(kv.Key);
+                if(filePath.StartsWith(dirPath + "\\", StringComparison.OrdinalIgnoreCase))
                 {
-                    filePath = filePath.Replace(dirPath, kv.Value + "\\"); break;
+                    filePath = filePath.Replace(dirPath, kv.Value); break;
                 }
             }
             return filePath;

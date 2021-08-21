@@ -1,20 +1,22 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
+using ContextMenuManager.Methods;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class WinXItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, IBtnMoveUpDownItem, ITsiAdministratorItem,
-        ITsiTextItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiDeleteItem, IFoldSubItem, ITsiShortcutCommandItem
+    sealed class WinXItem : FoldSubItem, IChkVisibleItem, IBtnShowMenuItem, IBtnMoveUpDownItem, ITsiAdministratorItem,
+        ITsiTextItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiDeleteItem, ITsiShortcutCommandItem
     {
-        public WinXItem(string filePath, IFoldGroupItem group)
+        public WinXItem(string filePath, FoldGroupItem group)
         {
             InitializeComponents();
             this.FoldGroupItem = group;
             this.FilePath = filePath;
+            this.Indent();
         }
 
         private string filePath;
@@ -26,7 +28,7 @@ namespace ContextMenuManager.Controls
                 filePath = value;
                 this.ShellLink = new ShellLink(value);
                 this.Text = this.ItemText;
-                this.Image = this.ItemIcon.ToBitmap();
+                this.Image = this.ItemImage;
             }
         }
 
@@ -43,6 +45,7 @@ namespace ContextMenuManager.Controls
             {
                 ShellLink.Description = value;
                 ShellLink.Save();
+                DesktopIni.SetLocalizedFileNames(FilePath, value);
                 this.Text = ResourceString.GetDirectString(value);
                 ExplorerRestarter.Show();
             }
@@ -57,6 +60,7 @@ namespace ContextMenuManager.Controls
                 if(value) attributes &= ~FileAttributes.Hidden;
                 else attributes |= FileAttributes.Hidden;
                 File.SetAttributes(FilePath, attributes);
+                if(value) WinXHasher.HashLnk(FilePath);
                 ExplorerRestarter.Show();
             }
         }
@@ -93,8 +97,8 @@ namespace ContextMenuManager.Controls
         public ShellLink ShellLink { get; private set; }
         public string SearchText => $"{AppString.SideBar.WinX} {Text}";
         private string FileName => Path.GetFileName(FilePath);
+        private Image ItemImage => ItemIcon?.ToBitmap() ?? AppImage.NotFound;
 
-        public IFoldGroupItem FoldGroupItem { get; set; }
         public VisibleCheckBox ChkVisible { get; set; }
         public MenuButton BtnShowMenu { get; set; }
         public ChangeTextMenuItem TsiChangeText { get; set; }
@@ -109,6 +113,7 @@ namespace ContextMenuManager.Controls
 
         readonly ToolStripMenuItem TsiDetails = new ToolStripMenuItem(AppString.Menu.Details);
         readonly ToolStripMenuItem TsiChangeGroup = new ToolStripMenuItem(AppString.Menu.ChangeGroup);
+
         private void InitializeComponents()
         {
             BtnShowMenu = new MenuButton(this);
@@ -137,7 +142,7 @@ namespace ContextMenuManager.Controls
             {
                 if(TsiChangeCommand.ChangeCommand(ShellLink))
                 {
-                    Image = ItemIcon.ToBitmap();
+                    Image = this.ItemImage;
                     WinXHasher.HashLnk(FilePath);
                     ExplorerRestarter.Show();
                 }
@@ -219,7 +224,6 @@ namespace ContextMenuManager.Controls
             DesktopIni.DeleteLocalizedFileNames(FilePath);
             ExplorerRestarter.Show();
             this.ShellLink.Dispose();
-            this.Dispose();
         }
     }
 }

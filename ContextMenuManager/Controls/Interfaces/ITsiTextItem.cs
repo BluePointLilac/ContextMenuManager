@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls.Interfaces
@@ -20,13 +21,6 @@ namespace ContextMenuManager.Controls.Interfaces
                 string name = ChangeText(item.Text);
                 if(name != null) item.ItemText = name;
             };
-            MyListItem listItem = (MyListItem)item;
-            listItem.TextDoubleClick += () =>
-            {
-                if(listItem is IFoldGroupItem) return;
-                if(listItem.FindForm() is ShellStoreDialog.ShellStoreForm) return;
-                if(this.Enabled) this.OnClick(null);
-            };
         }
 
         private string ChangeText(string text)
@@ -36,12 +30,12 @@ namespace ContextMenuManager.Controls.Interfaces
                 if(dlg.ShowDialog() != DialogResult.OK) return null;
                 if(dlg.Text.Length == 0)
                 {
-                    MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
+                    AppMessageBox.Show(AppString.Message.TextCannotBeEmpty);
                     return ChangeText(text);
                 }
                 else if(ResourceString.GetDirectString(dlg.Text).Length == 0)
                 {
-                    MessageBoxEx.Show(AppString.Message.StringParsingFailed);
+                    AppMessageBox.Show(AppString.Message.StringParsingFailed);
                     return ChangeText(text);
                 }
                 else return dlg.Text;

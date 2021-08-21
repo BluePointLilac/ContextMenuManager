@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,11 +12,11 @@ namespace ContextMenuManager.Controls
     sealed class WinXList : MyList
     {
         public static readonly string WinXPath = Environment.ExpandEnvironmentVariables(@"%LocalAppData%\Microsoft\Windows\WinX");
-        public static readonly string DefaultWinXPath = Environment.ExpandEnvironmentVariables(@"%HOMEDRIVE%\Users\Default\AppData\Local\Microsoft\Windows\WinX");
+        public static readonly string DefaultWinXPath = Environment.ExpandEnvironmentVariables(@"%SystemDrive%\Users\Default\AppData\Local\Microsoft\Windows\WinX");
 
         public void LoadItems()
         {
-            if(WindowsOsVersion.ISAfterOrEqual8)
+            if(WinOsVersion.Current >= WinOsVersion.Win8)
             {
                 this.AddNewItem();
                 this.LoadWinXItems();
@@ -26,14 +27,13 @@ namespace ContextMenuManager.Controls
         {
             string[] dirPaths = Directory.GetDirectories(WinXPath);
             Array.Reverse(dirPaths);
-            bool sortable = AppConfig.WinXSortable;
             bool sorted = false;
             foreach(string dirPath in dirPaths)
             {
                 WinXGroupItem groupItem = new WinXGroupItem(dirPath);
                 this.AddItem(groupItem);
                 string[] lnkPaths;
-                if(sortable)
+                if(AppConfig.WinXSortable)
                 {
                     lnkPaths = GetSortedPaths(dirPath, out bool flag);
                     if(flag) sorted = true;
@@ -46,15 +46,14 @@ namespace ContextMenuManager.Controls
                 foreach(string path in lnkPaths)
                 {
                     WinXItem winXItem = new WinXItem(path, groupItem);
-                    winXItem.BtnMoveDown.Visible = winXItem.BtnMoveUp.Visible = sortable;
+                    winXItem.BtnMoveDown.Visible = winXItem.BtnMoveUp.Visible = AppConfig.WinXSortable;
                     this.AddItem(winXItem);
                 }
-                groupItem.IsFold = true;
             }
             if(sorted)
             {
                 ExplorerRestarter.Show();
-                MessageBoxEx.Show(AppString.Message.WinXSorted);
+                AppMessageBox.Show(AppString.Message.WinXSorted);
             }
         }
 
@@ -156,12 +155,25 @@ namespace ContextMenuManager.Controls
                 {
                     sortedPaths.Add(srcPath); continue;
                 }
-                string dstPath = $@"{groupPath}\{(i + 1).ToString().PadLeft(2, '0')} - {name.Substring(index + 3)}";
+                if(index >= 0) name = name.Substring(index + 3);
+                string dstPath = $@"{groupPath}\{(i + 1).ToString().PadLeft(2, '0')} - {name}";
                 dstPath = ObjectPath.GetNewPathWithIndex(dstPath, ObjectPath.PathType.File);
-                string value = DesktopIni.GetLocalizedFileNames(srcPath);
+
+                string value;
+                using(ShellLink srcLnk = new ShellLink(srcPath))
+                {
+                    value = srcLnk.Description?.Trim();
+                }
+                if(string.IsNullOrEmpty(value)) value = DesktopIni.GetLocalizedFileNames(srcPath);
+                if(string.IsNullOrEmpty(value)) value = Path.GetFileNameWithoutExtension(name);
                 DesktopIni.DeleteLocalizedFileNames(srcPath);
-                if(value != string.Empty) DesktopIni.SetLocalizedFileNames(dstPath, value);
+                DesktopIni.SetLocalizedFileNames(dstPath, value);
                 File.Move(srcPath, dstPath);
+                using(ShellLink dstLnk = new ShellLink(dstPath))
+                {
+                    dstLnk.Description = value;
+                    dstLnk.Save();
+                }
                 sortedPaths.Add(dstPath);
                 sorted = true;
             }

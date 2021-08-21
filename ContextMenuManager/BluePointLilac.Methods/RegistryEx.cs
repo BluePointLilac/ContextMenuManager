@@ -1,18 +1,22 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Security.AccessControl;
 
 namespace BluePointLilac.Methods
 {
     public static class RegistryEx
     {
-        public const string CLASSESROOT = "HKEY_CLASSES_ROOT";
-        public const string CURRENTUSER = "HKEY_CURRENT_USER";
-        public const string LOCALMACHINE = "HKEY_LOCAL_MACHINE";
-        public const string CURRENTCONFIG = "HKEY_CURRENT_CONFIG";
+        public const string CLASSES_ROOT = "HKEY_CLASSES_ROOT";
+        public const string CURRENT_USER = "HKEY_CURRENT_USER";
+        public const string LOCAL_MACHINE = "HKEY_LOCAL_MACHINE";
+        public const string CURRENT_CONFIG = "HKEY_CURRENT_CONFIG";
         public const string USERS = "HKEY_USERS";
+
+        public const string HKCR = "HKCR";
+        public const string HKCU = "HKCU";
+        public const string HKLM = "HKLM";
+        public const string HKCC = "HKCC";
+        public const string HKU = "HKU";
 
         public static void CopyTo(this RegistryKey srcKey, RegistryKey dstKey)
         {
@@ -113,23 +117,28 @@ namespace BluePointLilac.Methods
             }
             switch(rootPath)
             {
-                case CLASSESROOT:
+                case HKCR:
+                case CLASSES_ROOT:
                     root = Registry.ClassesRoot;
                     break;
-                case CURRENTUSER:
+                case HKCU:
+                case CURRENT_USER:
                     root = Registry.CurrentUser;
                     break;
-                case LOCALMACHINE:
+                case HKLM:
+                case LOCAL_MACHINE:
                     root = Registry.LocalMachine;
                     break;
+                case HKU:
                 case USERS:
                     root = Registry.Users;
                     break;
-                case CURRENTCONFIG:
+                case HKCC:
+                case CURRENT_CONFIG:
                     root = Registry.CurrentConfig;
                     break;
                 default:
-                    throw new ArgumentNullException("The root key resolution failed!");
+                    throw new ArgumentNullException(regPath);
             }
         }
 

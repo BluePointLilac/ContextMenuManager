@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -42,19 +43,16 @@ namespace ContextMenuManager.Controls.Interfaces
             public string Command { get; set; }
             public string Arguments { get; set; }
 
-            private static Size LastSize = new Size();
-
             public override void Reset() { }
 
             protected override bool RunDialog(IntPtr hwndOwner)
             {
                 using(CommandForm frm = new CommandForm())
                 {
-                    frm.Size = LastSize;
                     frm.Command = this.Command;
                     frm.Arguments = this.Arguments;
+                    frm.TopMost = AppConfig.TopMost;
                     bool flag = frm.ShowDialog() == DialogResult.OK;
-                    LastSize = frm.Size;
                     if(flag)
                     {
                         this.Command = frm.Command;
@@ -68,7 +66,7 @@ namespace ContextMenuManager.Controls.Interfaces
             {
                 public CommandForm()
                 {
-                    this.AcceptButton = btnOk;
+                    this.AcceptButton = btnOK;
                     this.CancelButton = btnCancel;
                     this.VerticalResizable = false;
                     this.Font = SystemFonts.MessageBoxFont;
@@ -103,31 +101,31 @@ namespace ContextMenuManager.Controls.Interfaces
                 };
                 readonly TextBox txtCommand = new TextBox();
                 readonly TextBox txtArguments = new TextBox();
-                readonly Button btnOk = new Button
+                readonly Button btnOK = new Button
                 {
                     DialogResult = DialogResult.OK,
-                    Text = AppString.Dialog.Ok,
+                    Text = ResourceString.OK,
                     AutoSize = true
                 };
                 readonly Button btnCancel = new Button
                 {
                     DialogResult = DialogResult.Cancel,
-                    Text = AppString.Dialog.Cancel,
+                    Text = ResourceString.Cancel,
                     AutoSize = true
                 };
 
                 private void InitializeComponents()
                 {
-                    this.Controls.AddRange(new Control[] { lblCommand, lblArguments, txtCommand, txtArguments, btnOk, btnCancel });
+                    this.Controls.AddRange(new Control[] { lblCommand, lblArguments, txtCommand, txtArguments, btnOK, btnCancel });
                     int a = 20.DpiZoom();
                     lblArguments.Left = lblCommand.Left = lblCommand.Top = txtCommand.Top = a;
                     lblArguments.Top = txtArguments.Top = txtCommand.Bottom + a;
-                    btnOk.Top = btnCancel.Top = txtArguments.Bottom + a;
+                    btnOK.Top = btnCancel.Top = txtArguments.Bottom + a;
                     int b = Math.Max(lblCommand.Width, lblArguments.Width) + 3 * a;
-                    this.ClientSize = new Size(250.DpiZoom() + b, btnOk.Bottom + a);
-                    btnOk.Anchor = btnCancel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+                    this.ClientSize = new Size(250.DpiZoom() + b, btnOK.Bottom + a);
+                    btnOK.Anchor = btnCancel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
                     btnCancel.Left = this.ClientSize.Width - btnCancel.Width - a;
-                    btnOk.Left = btnCancel.Left - btnOk.Width - a;
+                    btnOK.Left = btnCancel.Left - btnOK.Width - a;
                     this.Resize += (sender, e) =>
                     {
                         txtArguments.Width = txtCommand.Width = this.ClientSize.Width - b;

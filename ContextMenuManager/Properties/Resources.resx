@@ -133,17 +133,26 @@
   <data name="AppLanguageDic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\texts\applanguagedic.ini;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="CheckUpdate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\images\checkupdate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Custom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\custom.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="DetailedEditDic" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\texts\detailededitdic.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="Donate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\donate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="DownLoad" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\download.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Enhance" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\images\enhance.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="EnhanceMenusDic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\texts\enhancemenusdic.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
@@ -184,17 +193,8 @@
   <data name="SubItems" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\subitems.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ThirdRulesDic" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\texts\thirdrulesdic.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="Translate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\translate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TurnOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\images\turnoff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TurnOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\images\turnon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Type" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\images\type.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -207,5 +207,8 @@
   </data>
   <data name="UwpModeItemsDic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\texts\uwpmodeitemsdic.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Web" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\images\web.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

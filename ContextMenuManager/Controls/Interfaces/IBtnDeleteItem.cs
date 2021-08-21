@@ -1,5 +1,5 @@
 ﻿using BluePointLilac.Controls;
-using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls.Interfaces
@@ -18,15 +18,7 @@ namespace ContextMenuManager.Controls.Interfaces
             listItem.AddCtr(this);
             this.MouseDown += (sender, e) =>
             {
-                if(MessageBoxEx.Show(AppString.Message.ConfirmDelete,
-                MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    MyList list = (MyList)listItem.Parent;
-                    int index = list.GetItemIndex(listItem);
-                    index -= (index < list.Controls.Count - 1) ? 0 : 1;
-                    item.DeleteMe();
-                    list.HoveredItem = (MyListItem)list.Controls[index];
-                }
+                if(AppMessageBox.Show(AppString.Message.ConfirmDelete, MessageBoxButtons.YesNo) == DialogResult.Yes) item.DeleteMe();
             };
         }
     }

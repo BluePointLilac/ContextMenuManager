@@ -8,8 +8,20 @@ namespace BluePointLilac.Methods
 {
     public sealed class IniReader
     {
-        public IniReader(StringBuilder sb)
+        public IniReader() { }
+
+        public IniReader(StringBuilder sb) => LoadStringBuilder(sb);
+
+        public IniReader(string filePath) => LoadFile(filePath);
+
+        private readonly Dictionary<string, Dictionary<string, string>> RootDic
+            = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+
+        public string[] Sections => RootDic.Keys.ToArray();
+
+        public void LoadStringBuilder(StringBuilder sb)
         {
+            RootDic.Clear();
             if(sb.ToString().IsNullOrWhiteSpace()) return;
             List<string> lines = sb.ToString().Split(new[] { "\r\n", "\n" },
                 StringSplitOptions.RemoveEmptyEntries).ToList();//拆分为行
@@ -17,8 +29,9 @@ namespace BluePointLilac.Methods
             ReadLines(lines);
         }
 
-        public IniReader(string filePath)
+        public void LoadFile(string filePath)
         {
+            RootDic.Clear();
             if(!File.Exists(filePath)) return;
             List<string> lines = new List<string>();
             using(StreamReader reader = new StreamReader(filePath, EncodingType.GetType(filePath)))
@@ -31,9 +44,6 @@ namespace BluePointLilac.Methods
             }
             ReadLines(lines);
         }
-
-        public readonly Dictionary<string, Dictionary<string, string>> RootDic
-            = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
 
         private void ReadLines(List<string> lines)
         {
@@ -83,6 +93,72 @@ namespace BluePointLilac.Methods
         {
             value = GetValue(section, key);
             return value != string.Empty;
+        }
+
+        public string[] GetSectionKeys(string section)
+        {
+            if(!RootDic.ContainsKey(section)) return null;
+            else return RootDic[section].Keys.ToArray();
+        }
+
+        public bool RemoveSection(string section)
+        {
+            return RootDic.Remove(section);
+        }
+
+        public bool RemoveKey(string section, string key)
+        {
+            if(RootDic.ContainsKey(section))
+            {
+                return RootDic[section].Remove(key);
+            }
+            return false;
+        }
+
+        public void AddValue(string section, string key, string value)
+        {
+            if(RootDic.ContainsKey(section))
+            {
+                if(RootDic[section].ContainsKey(key))
+                {
+                    RootDic[section][key] = value;
+                }
+                else
+                {
+                    RootDic[section].Add(key, value);
+                }
+            }
+            else
+            {
+                var dic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                RootDic.Add(section, dic);
+                dic.Add(key, value);
+            }
+        }
+
+        public void SaveFile(string filePath)
+        {
+            List<string> lines = new List<string>();
+            foreach(var item in RootDic)
+            {
+                lines.Add("[" + item.Key + "]");
+                foreach(var key in item.Value)
+                {
+                    lines.Add(key.Key + " = " + key.Value);
+                }
+                lines.Add("");
+            }
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            FileAttributes attributes = FileAttributes.Normal;
+            Encoding encoding = Encoding.Unicode;
+            if(File.Exists(filePath))
+            {
+                encoding = EncodingType.GetType(filePath);
+                attributes = File.GetAttributes(filePath);
+                File.SetAttributes(filePath, FileAttributes.Normal);
+            }
+            File.WriteAllLines(filePath, lines.ToArray(), encoding);
+            File.SetAttributes(filePath, attributes);
         }
     }
 }

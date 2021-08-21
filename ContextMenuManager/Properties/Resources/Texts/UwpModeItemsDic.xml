@@ -9,6 +9,9 @@ UwpName、Text、Icon、Tip等属性写在GuidInfosDic.ini里面-->
   <File>
     <Item Guid='776dbc8d-7347-478c-8d71-791e12ef49d8'/>
   </File>
+  <Folder>
+    <Item Guid='9f156763-7844-4dc4-b2b1-901f640f5155'/>
+  </Folder>
   <Directory>
     <Item Guid='9f156763-7844-4dc4-b2b1-901f640f5155'/>
   </Directory>

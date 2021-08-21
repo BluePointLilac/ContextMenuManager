@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -56,14 +57,14 @@ namespace ContextMenuManager.Controls
                         {
                             if(((GuidBlockedItem)Controls[i]).Guid.Equals(guid))
                             {
-                                MessageBoxEx.Show(AppString.Message.HasBeenAdded);
+                                AppMessageBox.Show(AppString.Message.HasBeenAdded);
                                 return;
                             }
                         }
                         this.InsertItem(new GuidBlockedItem(value), 1);
                         ExplorerRestarter.Show();
                     }
-                    else MessageBoxEx.Show(AppString.Message.MalformedGuid);
+                    else AppMessageBox.Show(AppString.Message.MalformedGuid);
                 }
             };
         }

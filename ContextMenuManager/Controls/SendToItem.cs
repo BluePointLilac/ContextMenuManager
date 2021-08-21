@@ -1,6 +1,7 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
+using ContextMenuManager.Methods;
 using Microsoft.Win32;
 using System.Drawing;
 using System.IO;
@@ -26,7 +27,7 @@ namespace ContextMenuManager.Controls
                 filePath = value;
                 if(IsShortcut) this.ShellLink = new ShellLink(value);
                 this.Text = this.ItemText;
-                this.Image = this.ItemIcon.ToBitmap();
+                this.Image = this.ItemImage;
             }
         }
 
@@ -34,6 +35,7 @@ namespace ContextMenuManager.Controls
         private string FileExtension => Path.GetExtension(FilePath);
         private bool IsShortcut => FileExtension.ToLower() == ".lnk";
         public string SearchText => $"{AppString.SideBar.SendTo} {Text}";
+        private Image ItemImage => ItemIcon?.ToBitmap() ?? AppImage.NotFound;
 
         public string ItemFilePath
         {
@@ -209,7 +211,7 @@ namespace ContextMenuManager.Controls
             {
                 if(TsiChangeCommand.ChangeCommand(ShellLink))
                 {
-                    Image = ItemIcon.ToBitmap();
+                    Image = this.ItemImage;
                 }
             };
         }
@@ -218,8 +220,7 @@ namespace ContextMenuManager.Controls
         {
             File.Delete(this.FilePath);
             DesktopIni.DeleteLocalizedFileNames(FilePath);
-            this.ShellLink.Dispose();
-            this.Dispose();
+            this.ShellLink?.Dispose();
         }
     }
 }

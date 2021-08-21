@@ -1,13 +1,14 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
+using ContextMenuManager.Methods;
 using System;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    class GuidBlockedItem : MyListItem, IBtnDeleteItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiGuidItem, ITsiRegPathItem
+    class GuidBlockedItem : MyListItem, IBtnShowMenuItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiGuidItem, ITsiRegPathItem
     {
         public GuidBlockedItem(string value)
         {
@@ -52,22 +53,16 @@ namespace ContextMenuManager.Controls
             get
             {
                 string text;
-                if(GuidEx.TryParse(Value, out Guid guid))
-                {
-                    text = GuidInfo.GetText(guid);
-                }
-                else
-                {
-                    text = AppString.Message.MalformedGuid;
-                }
+                if(GuidEx.TryParse(Value, out Guid guid)) text = GuidInfo.GetText(guid);
+                else text = AppString.Message.MalformedGuid;
                 text += "\n" + Value;
                 return text;
             }
         }
 
         public string ItemFilePath { get; set; }
-        public DeleteButton BtnDelete { get; set; }
-        public ObjectPathButton BtnOpenPath { get; set; }
+        public MenuButton BtnShowMenu { get; set; }
+        public DetailedEditButton BtnDetailedEdit { get; set; }
         public WebSearchMenuItem TsiSearch { get; set; }
         public FileLocationMenuItem TsiFileLocation { get; set; }
         public FilePropertiesMenuItem TsiFileProperties { get; set; }
@@ -79,8 +74,8 @@ namespace ContextMenuManager.Controls
 
         private void InitializeComponents()
         {
-            BtnDelete = new DeleteButton(this);
-            ContextMenuStrip = new ContextMenuStrip();
+            BtnShowMenu = new MenuButton(this);
+            BtnDetailedEdit = new DetailedEditButton(this);
             TsiSearch = new WebSearchMenuItem(this);
             TsiFileProperties = new FilePropertiesMenuItem(this);
             TsiFileLocation = new FileLocationMenuItem(this);
@@ -92,17 +87,17 @@ namespace ContextMenuManager.Controls
             TsiDetails.DropDownItems.AddRange(new ToolStripItem[] { TsiSearch,
                 new ToolStripSeparator(), TsiFileProperties, TsiFileLocation, TsiRegLocation});
 
-            ToolTipBox.SetToolTip(BtnDelete, AppString.Menu.Delete);
-            TsiDelete.Click += (sender, e) =>
-            {
-                if(MessageBoxEx.Show(AppString.Message.ConfirmDelete, MessageBoxButtons.YesNo) == DialogResult.Yes) DeleteMe();
-            };
+            TsiDelete.Click += (sender, e) => DeleteMe();
         }
 
         public void DeleteMe()
         {
+            if(AppMessageBox.Show(AppString.Message.ConfirmDelete, MessageBoxButtons.YesNo) != DialogResult.Yes) return;
             Array.ForEach(GuidBlockedList.BlockedPaths, path => RegistryEx.DeleteValue(path, this.Value));
             if(!this.Guid.Equals(Guid.Empty)) ExplorerRestarter.Show();
+            int index = this.Parent.Controls.GetChildIndex(this);
+            index -= (index < this.Parent.Controls.Count - 1) ? 0 : 1;
+            this.Parent.Controls[index].Focus();
             this.Dispose();
         }
     }

@@ -1,5 +1,6 @@
 **[简体中文](README.md)** | **English**
 # ContextMenuManager
+![](Logo/Logo.png)
 ------
 > 🖱️ A program to manage the Windows right-click context menu.
 

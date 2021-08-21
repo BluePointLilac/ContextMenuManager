@@ -18,8 +18,7 @@ namespace BluePointLilac.Controls
             if(m.Msg == WM_NCHITTEST && this.WindowState == FormWindowState.Normal)
             {
                 IntPtr hNowhere = new IntPtr((int)HitTest.Nowhere);
-                HitTest value = (HitTest)m.Result;
-                switch(value)
+                switch((HitTest)m.Result)
                 {
                     case HitTest.Top:
                     case HitTest.Bottom:
@@ -41,7 +40,7 @@ namespace BluePointLilac.Controls
 
         const int WM_NCHITTEST = 0x84;//光标移动或鼠标按下、释放时的消息
         /// <summary>鼠标击中位置</summary>
-        public enum HitTest : int
+        enum HitTest : int
         {
             Error = -2,
             Transparent = -1,

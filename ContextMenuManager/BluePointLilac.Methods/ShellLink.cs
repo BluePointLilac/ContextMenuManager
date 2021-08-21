@@ -121,7 +121,6 @@ namespace BluePointLilac.Methods
         private const int SW_SHOWMINNOACTIVE = 7;
         private const int SW_SHOWNORMAL = 1;
 
-
         private IShellLinkW shellLinkW = null;
         private IPersistFile PersistFile => (IPersistFile)shellLinkW;
         private IShellLinkDataList LinkDataList => (IShellLinkDataList)shellLinkW;

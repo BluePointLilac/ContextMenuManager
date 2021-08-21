@@ -28,27 +28,39 @@ namespace BluePointLilac.Controls
                     selectedButton.Cursor = Cursors.Hand;
                 }
                 selectedButton = value;
-                selectedButton.Opacity = 0.4F;
-                selectedButton.Cursor = Cursors.Default;
-                SelectedButtonChanged?.Invoke();
+                if(selectedButton != null)
+                {
+                    selectedButton.Opacity = 0.4F;
+                    selectedButton.Cursor = Cursors.Default;
+                }
+                SelectedButtonChanged?.Invoke(this, null);
             }
         }
 
-        public Action SelectedButtonChanged { get; set; }
+        public event EventHandler SelectedButtonChanged;
 
         public int SelectedIndex
         {
-            get => Controls.GetChildIndex(SelectedButton);
-            set => SelectedButton = (MyToolBarButton)Controls[value];
+            get
+            {
+                if(SelectedButton == null) return -1;
+                else return Controls.GetChildIndex(SelectedButton);
+            }
+            set
+            {
+                if(value < 0 || value >= this.Controls.Count) SelectedButton = null;
+                else SelectedButton = (MyToolBarButton)Controls[value];
+            }
         }
 
         public void AddButton(MyToolBarButton button)
         {
+            this.SuspendLayout();
             button.Parent = this;
             button.Margin = new Padding(12, 4, 0, 0).DpiZoom();
             button.MouseDown += (sender, e) =>
             {
-                if(button.CanBeSelected) SelectedButton = button;
+                if(e.Button == MouseButtons.Left && button.CanBeSelected) SelectedButton = button;
             };
             button.MouseEnter += (sender, e) =>
             {
@@ -58,6 +70,7 @@ namespace BluePointLilac.Controls
             {
                 if(button != SelectedButton) button.Opacity = 0;
             };
+            this.ResumeLayout();
         }
 
         public void AddButtons(MyToolBarButton[] buttons)
@@ -72,7 +85,9 @@ namespace BluePointLilac.Controls
     {
         public MyToolBarButton(Image image, string text)
         {
+            this.SuspendLayout();
             this.DoubleBuffered = true;
+            this.Cursor = Cursors.Hand;
             this.Size = new Size(72, 72).DpiZoom();
             this.Controls.AddRange(new Control[] { picImage, lblText });
             lblText.Resize += (sender, e) => this.OnResize(null);
@@ -81,6 +96,7 @@ namespace BluePointLilac.Controls
             lblText.SetEnabled(false);
             this.Image = image;
             this.Text = text;
+            this.ResumeLayout();
         }
 
         readonly PictureBox picImage = new PictureBox
@@ -115,11 +131,6 @@ namespace BluePointLilac.Controls
             set => BackColor = Color.FromArgb((int)(value * 255), Color.White);
         }
         public bool CanBeSelected { get; set; } = true;
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if(e.Button == MouseButtons.Left) base.OnMouseDown(e);
-        }
 
         protected override void OnResize(EventArgs e)
         {

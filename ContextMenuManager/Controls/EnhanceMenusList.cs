@@ -1,144 +1,78 @@
-﻿using BluePointLilac.Controls;
-using BluePointLilac.Methods;
-using ContextMenuManager.Controls.Interfaces;
+﻿using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.Drawing;
-using System.IO;
-using System.Text;
 using System.Xml;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class EnhanceMenusList : MyList
+    sealed class EnhanceMenusList : SwitchDicList
     {
-        public void LoadItems()
-        {
-            string webPath = AppConfig.WebEnhanceMenusDic;
-            string userPath = AppConfig.UserEnhanceMenusDic;
-            string contents = Properties.Resources.EnhanceMenusDic;
-            if(!File.Exists(webPath)) File.WriteAllText(webPath, contents, Encoding.Unicode);
-            GroupPathItem webGroupItem = new GroupPathItem(webPath, ObjectPath.PathType.File);
-            GroupPathItem userGroupItem = new GroupPathItem(userPath, ObjectPath.PathType.File);
-            webGroupItem.Text = AppString.SideBar.Dictionaries;
-            userGroupItem.Text = AppString.Other.UserDictionaries;
-            webGroupItem.Image = AppImage.App;
-            userGroupItem.Image = AppImage.User;
-            LoadDocItems(webPath, webGroupItem);
-            LoadDocItems(userPath, userGroupItem);
-        }
+        public string ScenePath { get; set; }
 
-        private void LoadDocItems(string xmlPath, GroupPathItem groupItem)
+        public override void LoadItems()
         {
-            if(!File.Exists(xmlPath)) return;
-            this.AddItem(groupItem);
-            XmlDocument doc = new XmlDocument();
-            try { doc.LoadXml(File.ReadAllText(xmlPath, EncodingType.GetType(xmlPath)).Trim()); }
-            catch(Exception e) { MessageBoxEx.Show(e.Message); return; }
+            base.LoadItems();
+            int index = this.UseUserDic ? 1 : 0;
+            XmlDocument doc = XmlDicHelper.EnhanceMenusDic[index];
+            if(doc?.DocumentElement == null) return;
             foreach(XmlNode xn in doc.DocumentElement.ChildNodes)
             {
                 try
                 {
-                    SubGroupItem subGroupItem = GetGroupPathItem(xn);
-                    if(subGroupItem == null) continue;
-                    this.AddItem(subGroupItem);
-                    XmlElement shellXE = (XmlElement)xn.SelectSingleNode("Shell");
-                    XmlElement shellExXE = (XmlElement)xn.SelectSingleNode("ShellEx");
-                    if(shellXE != null) LoadShellItems(shellXE, subGroupItem);
-                    if(shellExXE != null) LoadShellExItems(shellExXE, subGroupItem);
-                    subGroupItem.HideWhenNoSubItem();
-                    subGroupItem.FoldGroupItem = groupItem;
+                    Image image = null;
+                    string text = null;
+                    string path = xn.SelectSingleNode("RegPath")?.InnerText;
+                    foreach(XmlElement textXE in xn.SelectNodes("Text"))
+                    {
+                        if(XmlDicHelper.JudgeCulture(textXE))
+                        {
+                            text = ResourceString.GetDirectString(textXE.GetAttribute("Value"));
+                        }
+                    }
+                    if(string.IsNullOrEmpty(path) || string.IsNullOrEmpty(text)) continue;
+                    if(!string.IsNullOrEmpty(this.ScenePath) && !path.Equals(this.ScenePath, StringComparison.OrdinalIgnoreCase)) continue;
+
+                    string iconLocation = xn.SelectSingleNode("Icon")?.InnerText;
+                    using(Icon icon = ResourceIcon.GetIcon(iconLocation))
+                    {
+                        image = icon?.ToBitmap();
+                        image = image ?? AppImage.NotFound;
+                    }
+                    FoldGroupItem groupItem = new FoldGroupItem(path, ObjectPath.PathType.Registry)
+                    {
+                        Image = image,
+                        Text = text
+                    };
+                    this.AddItem(groupItem);
+                    XmlNode shellXN = xn.SelectSingleNode("Shell");
+                    XmlNode shellExXN = xn.SelectSingleNode("ShellEx");
+                    if(shellXN != null) LoadShellItems(shellXN, groupItem);
+                    if(shellExXN != null) LoadShellExItems(shellExXN, groupItem);
+                    groupItem.SetVisibleWithSubItemCount();
                 }
                 catch { continue; }
             }
-            groupItem.IsFold = true;
-            groupItem.HideWhenNoSubItem();
         }
 
-        private SubGroupItem GetGroupPathItem(XmlNode xn)
+        private void LoadShellItems(XmlNode shellXN, FoldGroupItem groupItem)
         {
-            string path;
-            string text;
-            Image image;
-            switch(xn.Name)
+            foreach(XmlElement itemXE in shellXN.SelectNodes("Item"))
             {
-                case "File":
-                    path = ShellList.MENUPATH_FILE;
-                    text = AppString.SideBar.File;
-                    image = AppImage.File;
-                    break;
-                case "Folder":
-                    path = ShellList.MENUPATH_FOLDER;
-                    text = AppString.SideBar.Folder;
-                    image = AppImage.Folder;
-                    break;
-                case "Directory":
-                    path = ShellList.MENUPATH_FOLDER;
-                    text = AppString.SideBar.Directory;
-                    image = AppImage.Directory;
-                    break;
-                case "Background":
-                    path = ShellList.MENUPATH_BACKGROUND;
-                    text = AppString.SideBar.Background;
-                    image = AppImage.Background;
-                    break;
-                case "Desktop":
-                    path = ShellList.MENUPATH_DESKTOP;
-                    //Vista没有桌面右键菜单的独立注册表项
-                    if(WindowsOsVersion.IsEqualVista) path = ShellList.MENUPATH_BACKGROUND;
-                    text = AppString.SideBar.Desktop;
-                    image = AppImage.Desktop;
-                    break;
-                case "Drive":
-                    path = ShellList.MENUPATH_DRIVE;
-                    text = AppString.SideBar.Drive;
-                    image = AppImage.Drive;
-                    break;
-                case "AllObjects":
-                    path = ShellList.MENUPATH_ALLOBJECTS;
-                    text = AppString.SideBar.AllObjects;
-                    image = AppImage.AllObjects;
-                    break;
-                case "Computer":
-                    path = ShellList.MENUPATH_COMPUTER;
-                    text = AppString.SideBar.Computer;
-                    image = AppImage.Computer;
-                    break;
-                case "RecycleBin":
-                    path = ShellList.MENUPATH_RECYCLEBIN;
-                    text = AppString.SideBar.RecycleBin;
-                    image = AppImage.RecycleBin;
-                    break;
-                default:
-                    XmlElement xe = (XmlElement)xn;
-                    path = xe.GetAttribute("RegPath");
-                    text = ResourceString.GetDirectString(xe.GetAttribute("Text"));
-                    if(string.IsNullOrEmpty(path) || string.IsNullOrEmpty(text)) return null;
-                    using(Icon icon = ResourceIcon.GetIcon(xe.GetAttribute("Icon")))
-                    {
-                        if(icon != null) image = icon.ToBitmap();
-                        else image = AppImage.NotFound;
-                    }
-                    break;
-            }
-            return new SubGroupItem(path, ObjectPath.PathType.Registry) { Image = image, Text = text };
-        }
-
-        private void LoadShellItems(XmlElement shellXE, SubGroupItem groupItem)
-        {
-            foreach(XmlElement itemXE in shellXE.SelectNodes("Item"))
-            {
-                if(!JudgeOSVersion(itemXE)) continue;
-                if(!FileExists(itemXE)) continue;
+                if(!XmlDicHelper.FileExists(itemXE)) continue;
+                if(!XmlDicHelper.JudgeCulture(itemXE)) continue;
+                if(!XmlDicHelper.JudgeOSVersion(itemXE)) continue;
                 string keyName = itemXE.GetAttribute("KeyName");
                 if(keyName.IsNullOrWhiteSpace()) continue;
                 EnhanceShellItem item = new EnhanceShellItem()
                 {
-                    RegPath = $@"{groupItem.TargetPath}\shell\{keyName}",
+                    RegPath = $@"{groupItem.GroupPath}\shell\{keyName}",
                     FoldGroupItem = groupItem,
                     ItemXE = itemXE
                 };
                 foreach(XmlElement szXE in itemXE.SelectNodes("Value/REG_SZ"))
                 {
+                    if(!XmlDicHelper.JudgeCulture(szXE)) continue;
                     if(szXE.HasAttribute("MUIVerb")) item.Text = ResourceString.GetDirectString(szXE.GetAttribute("MUIVerb"));
                     if(szXE.HasAttribute("Icon")) item.Image = ResourceIcon.GetIcon(szXE.GetAttribute("Icon"))?.ToBitmap();
                     else if(szXE.HasAttribute("HasLUAShield")) item.Image = AppImage.Shield;
@@ -156,7 +90,7 @@ namespace ContextMenuManager.Controls
                         }
                         else
                         {
-                            XmlElement fileXE = (XmlElement)cmdXE.SelectSingleNode("FileName");
+                            XmlNode fileXE = cmdXE.SelectSingleNode("FileName");
                             if(fileXE != null)
                             {
                                 string filePath = ObjectPath.ExtractFilePath(fileXE.InnerText);
@@ -169,7 +103,11 @@ namespace ContextMenuManager.Controls
                 }
                 if(item.Image == null) item.Image = AppImage.NotFound;
                 if(item.Text.IsNullOrWhiteSpace()) item.Text = keyName;
-                string tip = itemXE.GetAttribute("Tip");
+                string tip = "";
+                foreach(XmlElement tipXE in itemXE.SelectNodes("Tip"))
+                {
+                    if(XmlDicHelper.JudgeCulture(tipXE)) tip = tipXE.GetAttribute("Value");
+                }
                 if(itemXE.GetElementsByTagName("CreateFile").Count > 0)
                 {
                     if(!tip.IsNullOrWhiteSpace()) tip += "\n";
@@ -180,85 +118,39 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        private void LoadShellExItems(XmlElement shellExXE, SubGroupItem groupItem)
+        private void LoadShellExItems(XmlNode shellExXN, FoldGroupItem groupItem)
         {
-            foreach(XmlElement itemXE in shellExXE.SelectNodes("Item"))
+            foreach(XmlNode itemXN in shellExXN.SelectNodes("Item"))
             {
-                if(!JudgeOSVersion(itemXE)) continue;
-                if(!GuidEx.TryParse(itemXE.GetAttribute("Guid"), out Guid guid)) continue;
+                if(!XmlDicHelper.FileExists(itemXN)) continue;
+                if(!XmlDicHelper.JudgeCulture(itemXN)) continue;
+                if(!XmlDicHelper.JudgeOSVersion(itemXN)) continue;
+                if(!GuidEx.TryParse(itemXN.SelectSingleNode("Guid")?.InnerText, out Guid guid)) continue;
                 EnhanceShellExItem item = new EnhanceShellExItem
                 {
                     FoldGroupItem = groupItem,
-                    ShellExPath = $@"{groupItem.TargetPath}\ShellEx",
-                    Image = ResourceIcon.GetIcon(itemXE.GetAttribute("Icon"))?.ToBitmap() ?? AppImage.SystemFile,
-                    Text = ResourceString.GetDirectString(itemXE.GetAttribute("Text")),
-                    DefaultKeyName = itemXE.GetAttribute("KeyName"),
+                    ShellExPath = $@"{groupItem.GroupPath}\ShellEx",
+                    Image = ResourceIcon.GetIcon(itemXN.SelectSingleNode("Icon")?.InnerText)?.ToBitmap() ?? AppImage.SystemFile,
+                    DefaultKeyName = itemXN.SelectSingleNode("KeyName")?.InnerText,
                     Guid = guid
                 };
+                foreach(XmlNode textXE in itemXN.SelectNodes("Text"))
+                {
+                    if(XmlDicHelper.JudgeCulture(textXE))
+                    {
+                        item.Text = ResourceString.GetDirectString(textXE.InnerText);
+                    }
+                }
                 if(item.Text.IsNullOrWhiteSpace()) item.Text = GuidInfo.GetText(guid);
                 if(item.DefaultKeyName.IsNullOrWhiteSpace()) item.DefaultKeyName = guid.ToString("B");
-                ToolTipBox.SetToolTip(item.ChkVisible, itemXE.GetAttribute("Tip"));
+                string tip = "";
+                foreach(XmlElement tipXE in itemXN.SelectNodes("Tip"))
+                {
+                    if(XmlDicHelper.JudgeCulture(tipXE)) tip = tipXE.GetAttribute("Text");
+                }
+                ToolTipBox.SetToolTip(item.ChkVisible, tip);
                 this.AddItem(item);
             }
-        }
-
-        public static bool JudgeOSVersion(XmlElement itemXE)
-        {
-            //return true;//测试用
-            bool JudgeOne(XmlElement osXE)
-            {
-                Version ver = new Version(osXE.InnerText);
-                Version osVer = Environment.OSVersion.Version;
-                int compare = osVer.CompareTo(ver);
-                string symbol = osXE.GetAttribute("Compare");
-                switch(symbol)
-                {
-                    case ">":
-                        return compare > 0;
-                    case "<":
-                        return compare < 0;
-                    case "=":
-                        return compare == 0;
-                    case ">=":
-                        return compare >= 0;
-                    case "<=":
-                        return compare <= 0;
-                    default:
-                        return true;
-                }
-            }
-
-            foreach(XmlElement osXE in itemXE.SelectNodes("OSVersion"))
-            {
-                if(!JudgeOne(osXE)) return false;
-            }
-            return true;
-        }
-
-        private static bool FileExists(XmlElement itemXE)
-        {
-            //return true;//测试用
-            foreach(XmlElement feXE in itemXE.SelectNodes("FileExists"))
-            {
-                string path = Environment.ExpandEnvironmentVariables(feXE.InnerText);
-                if(!File.Exists(path)) return false;
-            }
-            return true;
-        }
-
-        public static byte[] ConvertToBinary(string value)
-        {
-            try
-            {
-                string[] strs = value.Split(' ');
-                byte[] bs = new byte[strs.Length];
-                for(int i = 0; i < strs.Length; i++)
-                {
-                    bs[i] = Convert.ToByte(strs[i], 16);
-                }
-                return bs;
-            }
-            catch { return null; }
         }
     }
 }

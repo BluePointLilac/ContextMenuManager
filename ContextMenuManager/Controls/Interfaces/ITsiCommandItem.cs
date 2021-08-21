@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -30,11 +31,11 @@ namespace ContextMenuManager.Controls.Interfaces
             {
                 dlg.Text = command;
                 dlg.Title = AppString.Menu.ChangeCommand;
-                dlg.Size = new Size(500, 270).DpiZoom();
+                dlg.Size = new Size(530, 260).DpiZoom();
                 if(dlg.ShowDialog() != DialogResult.OK) return null;
                 if(!CommandCanBeEmpty && string.IsNullOrEmpty(dlg.Text))
                 {
-                    MessageBoxEx.Show(AppString.Message.CommandCannotBeEmpty);
+                    AppMessageBox.Show(AppString.Message.CommandCannotBeEmpty);
                     return ChangeCommand(command);
                 }
                 else return dlg.Text;

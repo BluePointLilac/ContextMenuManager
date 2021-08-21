@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Controls;
+using ContextMenuManager.Methods;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls.Interfaces
@@ -15,7 +16,13 @@ namespace ContextMenuManager.Controls.Interfaces
         {
             item.ContextMenuStrip = new ContextMenuStrip();
             ((MyListItem)item).AddCtr(this);
-            this.MouseDown += (sender, e) => item.ContextMenuStrip.Show(this, 0, Height);
+            bool isShow = false;
+            this.MouseDown += (sender, e) =>
+            {
+                if(!isShow) item.ContextMenuStrip.Show(this, 0, Height);
+                else item.ContextMenuStrip.Close();
+                isShow = !isShow;
+            };
         }
     }
 }

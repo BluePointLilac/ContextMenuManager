@@ -1,5 +1,6 @@
 using BluePointLilac.Methods;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -19,11 +20,8 @@ namespace BluePointLilac.Controls
             this.ForeColor = Color.White;
         }
 
-        public override string Text
-        {
-            get => base.Text;
-            set => base.Text = value;
-        }
+        [Browsable(true), EditorBrowsable(EditorBrowsableState.Always)]
+        public override string Text { get => base.Text; set => base.Text = value; }
 
         protected override void OnPaint(PaintEventArgs e)
         {

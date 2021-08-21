@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -26,7 +27,7 @@ namespace ContextMenuManager.Controls.Interfaces
             {
                 if(item is ITsiRegDeleteItem regItem && AppConfig.AutoBackup)
                 {
-                    if(MessageBoxEx.Show(AppString.Message.DeleteButCanRestore,
+                    if(AppMessageBox.Show(AppString.Message.DeleteButCanRestore,
                      MessageBoxButtons.YesNo) != DialogResult.Yes) return;
                     string date = DateTime.Today.ToString("yyyy-MM-dd");
                     string time = DateTime.Now.ToString("HH.mm.ss");
@@ -34,15 +35,25 @@ namespace ContextMenuManager.Controls.Interfaces
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
                     ExternalProgram.ExportRegistry(regItem.RegPath, filePath);
                 }
-                else if(MessageBoxEx.Show(AppString.Message.ConfirmDeletePermanently,
+                else if(AppMessageBox.Show(AppString.Message.ConfirmDeletePermanently,
                      MessageBoxButtons.YesNo) != DialogResult.Yes) return;
 
                 MyListItem listItem = (MyListItem)item;
                 MyList list = (MyList)listItem.Parent;
                 int index = list.GetItemIndex(listItem);
-                index -= (index < list.Controls.Count - 1) ? 0 : 1;
-                item.DeleteMe();
-                list.HoveredItem = (MyListItem)list.Controls[index];
+                if(index == list.Controls.Count - 1) index--;
+                try
+                {
+                    item.DeleteMe();
+                }
+                catch
+                {
+                    AppMessageBox.Show(AppString.Message.AuthorityProtection);
+                    return;
+                }
+                list.Controls.Remove(listItem);
+                list.Controls[index].Focus();
+                listItem.Dispose();
             };
         }
     }

@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.Collections.Generic;
 
@@ -18,7 +19,7 @@ namespace ContextMenuManager.Controls
             this.CanEdit = true;
             this.Title = AppString.Dialog.SelectExtension;
             List<string> items = new List<string>();
-            using(var key = RegistryEx.GetRegistryKey(FileExtension.FileExtsPath))
+            using(var key = RegistryEx.GetRegistryKey(FileExtension.FILEEXTSPATH))
             {
                 if(key != null)
                 {

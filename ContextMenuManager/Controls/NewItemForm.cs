@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -10,7 +11,7 @@ namespace ContextMenuManager.Controls
     {
         public NewItemForm()
         {
-            this.AcceptButton = btnOk;
+            this.AcceptButton = btnOK;
             this.CancelButton = btnCancel;
             this.Text = AppString.Other.NewItem;
             this.Font = SystemFonts.MenuFont;
@@ -29,10 +30,13 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                if(Arguments.IsNullOrWhiteSpace()) return ItemFilePath;
-                if(ItemFilePath.IsNullOrWhiteSpace()) return Arguments;
-                if(Arguments.StartsWith("\"") && Arguments.EndsWith("\"")) return $"\"{ItemFilePath}\" {Arguments}";
-                return $"\"{ItemFilePath}\" \"{Arguments}\"";
+                string filePath = ItemFilePath;
+                string arguments = Arguments;
+                if(arguments.IsNullOrWhiteSpace()) return filePath;
+                if(filePath.IsNullOrWhiteSpace()) return arguments;
+                if(filePath.Contains(" ")) filePath = $"\"{filePath}\"";
+                if(!arguments.Contains("\"")) arguments = $"\"{arguments}\"";
+                return $"{filePath} {arguments}";
             }
         }
 
@@ -59,42 +63,38 @@ namespace ContextMenuManager.Controls
             Text = AppString.Dialog.Browse,
             AutoSize = true
         };
-        protected readonly Button btnOk = new Button
+        protected readonly Button btnOK = new Button
         {
-            Text = AppString.Dialog.Ok,
+            Text = ResourceString.OK,
             AutoSize = true
         };
         protected readonly Button btnCancel = new Button
         {
             DialogResult = DialogResult.Cancel,
-            Text = AppString.Dialog.Cancel,
+            Text = ResourceString.Cancel,
             AutoSize = true
         };
-
-        private static Size LastSize = new Size();
 
         protected virtual void InitializeComponents()
         {
             this.Controls.AddRange(new Control[] { lblText, lblCommand, lblArguments,
-                txtText, txtFilePath, txtArguments, btnBrowse, btnOk, btnCancel });
+                txtText, txtFilePath, txtArguments, btnBrowse, btnOK, btnCancel });
             int a = 20.DpiZoom();
-            btnBrowse.Anchor = btnOk.Anchor = btnCancel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+            btnBrowse.Anchor = btnOK.Anchor = btnCancel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             txtText.Top = lblText.Top = lblText.Left = lblCommand.Left = lblArguments.Left = a;
             btnBrowse.Top = txtFilePath.Top = lblCommand.Top = txtText.Bottom + a;
             lblArguments.Top = txtArguments.Top = txtFilePath.Bottom + a;
-            btnOk.Top = btnCancel.Top = txtArguments.Bottom + a;
+            btnOK.Top = btnCancel.Top = txtArguments.Bottom + a;
             btnCancel.Left = btnBrowse.Left = this.ClientSize.Width - btnCancel.Width - a;
-            btnOk.Left = btnCancel.Left - btnOk.Width - a;
+            btnOK.Left = btnCancel.Left - btnOK.Width - a;
             int b = Math.Max(Math.Max(lblText.Width, lblCommand.Width), lblArguments.Width) + btnBrowse.Width + 4 * a;
-            this.ClientSize = new Size(320.DpiZoom() + b, btnOk.Bottom + a);
+            this.ClientSize = new Size(320.DpiZoom() + b, btnOK.Bottom + a);
             this.MinimumSize = this.Size;
             this.Resize += (sender, e) =>
             {
                 txtText.Width = txtFilePath.Width = txtArguments.Width = this.ClientSize.Width - b;
                 txtText.Left = txtFilePath.Left = txtArguments.Left = btnBrowse.Left - txtFilePath.Width - a;
-                LastSize = this.Size;
             };
-            if(LastSize != null) this.Size = LastSize;
             this.OnResize(null);
         }
     }

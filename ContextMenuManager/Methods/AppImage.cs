@@ -3,9 +3,9 @@ using ContextMenuManager.Properties;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ContextMenuManager
+namespace ContextMenuManager.Methods
 {
-    public static class AppImage
+    static class AppImage
     {
         private static readonly double Scale = HighDpi.DpiScale / 1.5;
         ///<summary>主页</summary>
@@ -20,10 +20,6 @@ namespace ContextMenuManager
         public static readonly Image About = Resources.About.ResizeImage(Scale);
         ///<summary>设置按钮</summary>
         public static readonly Image Setting = Resources.Setting.ResizeImage(Scale);
-        ///<summary>开关打开状态</summary>
-        public static readonly Image TurnOn = Resources.TurnOn.ResizeImage(Scale);
-        ///<summary>开关关闭状态</summary>
-        public static readonly Image TurnOff = Resources.TurnOff.ResizeImage(Scale);
         ///<summary>编辑子项</summary>
         public static readonly Image SubItems = Resources.SubItems.ResizeImage(Scale);
         ///<summary>删除</summary>
@@ -34,12 +30,16 @@ namespace ContextMenuManager
         public static readonly Image AddExisting = Resources.AddExisting.ResizeImage(Scale);
         ///<summary>添加分割线</summary>
         public static readonly Image AddSeparator = Resources.AddSeparator.ResizeImage(Scale);
+        ///<summary>添加增强菜单</summary>
+        public static readonly Image Enhance = Resources.Enhance.ResizeImage(Scale);
         ///<summary>打开</summary>
         public static readonly Image Open = Resources.Open.ResizeImage(Scale);
         ///<summary>下载</summary>
         public static readonly Image DownLoad = Resources.DownLoad.ResizeImage(Scale);
         ///<summary>翻译</summary>
         public static readonly Image Translate = Resources.Translate.ResizeImage(Scale);
+        ///<summary>检查更新</summary>
+        public static readonly Image CheckUpdate = Resources.CheckUpdate.ResizeImage(Scale);
         ///<summary>上</summary>
         public static readonly Image Up = Resources.Up.ResizeImage(Scale);
         ///<summary>下</summary>
@@ -58,8 +58,8 @@ namespace ContextMenuManager
         public static readonly Image MicrosoftStore = Resources.MicrosoftStore.ResizeImage(Scale);
         ///<summary>用户</summary>
         public static readonly Image User = Resources.User.ResizeImage(Scale);
-        ///<summary>程序图标</summary>
-        public static readonly Image App = Icon.ExtractAssociatedIcon(Application.ExecutablePath).ToBitmap();
+        ///<summary>网络</summary>
+        public static readonly Image Web = Resources.Web.ResizeImage(Scale);
         ///<summary>系统文件</summary>
         public static readonly Image SystemFile = GetIconImage("imageres.dll", -67);
         ///<summary>资源不存在</summary>
@@ -68,8 +68,6 @@ namespace ContextMenuManager
         public static readonly Image Shield = GetIconImage("imageres.dll", -78);
         ///<summary>资源管理器</summary>
         public static readonly Image Explorer = GetIconImage("explorer.exe", 0);
-        ///<summary>命令提示符</summary>
-        public static readonly Image Cmd = GetIconImage("cmd.exe", 0);
         ///<summary>重启Explorer</summary>
         public static readonly Image RestartExplorer = GetIconImage("shell32.dll", 238);
         ///<summary>网络驱动器</summary>
@@ -78,8 +76,6 @@ namespace ContextMenuManager
         public static readonly Image SendTo = GetIconImage("imageres.dll", -185);
         ///<summary>回收站</summary>
         public static readonly Image RecycleBin = GetIconImage("imageres.dll", -55);
-        ///<summary>此电脑</summary>
-        public static readonly Image Computer = GetIconImage("imageres.dll", -109);
         ///<summary>磁盘</summary>
         public static readonly Image Drive = GetIconImage("imageres.dll", -30);
         ///<summary>文件</summary>
@@ -88,10 +84,6 @@ namespace ContextMenuManager
         public static readonly Image Folder = GetIconImage("imageres.dll", -3);
         ///<summary>目录</summary>
         public static readonly Image Directory = GetIconImage("imageres.dll", -162);
-        ///<summary目录背景</summary>
-        public static readonly Image Background = GetIconImage("imageres.dll", 0);
-        ///<summary>桌面</summary>
-        public static readonly Image Desktop = GetIconImage("imageres.dll", -183);
         ///<summary>所有对象</summary>
         public static readonly Image AllObjects = GetIconImage("imageres.dll", -117);
         ///<summary>锁定</summary>

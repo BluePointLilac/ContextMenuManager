@@ -1,6 +1,7 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
+using ContextMenuManager.Methods;
 using Microsoft.Win32;
 using System;
 using System.Drawing;
@@ -10,12 +11,29 @@ using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    /* 新建菜单项成立条件与相关规则：
-     * 1.有关联打开方式，优先为HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\<扩展名>\UserChoice的ProgId键值（以下简称<OpenMode>）
-     * 再次为HKCR\<扩展名>的默认键值（以下简称<DefaultOpenMode>）
-     * 2.<DefaultOpenMode>不能为空，HKCR\<DefaultOpenMode>项需存在，<DefaultOpenMode>不一定为关联打开方式，
-     * 但当ShellNew项中不存在合法的MenuText键值时，菜单名称取HKCR\<DefaultOpenMode>的FriendlyTypeName键值或者默认值，后两个键值都为空时也不成立
-     * 3.ShellNew项中存在"NullFile", "Data", "FileName", "Directory", "Command"中的一个或多个键值*/
+    /* 新建菜单项成立条件与相关规则:（恶心的关联方式，反复研究了好久）
+     * 
+     * 1.① 扩展名的关联打开方式（以下简称[OpenMode]，对应路径简称[OpenModePath]）
+     *   ② HKCR默认值打开方式（以下简称[DefaultOpenMode]，对应路径简称[DefaultOpenModePath]）
+     *   以上两个打开方式不一定相同
+     * 
+     * 2.① [DefaultOpenMode]不能为空，[DefaultOpenModePath]必须存在
+     *   ② 菜单文本也不可为空
+     *   ③ ShellNew项中必须存在 NullFile、Data、FileName、Directory、Command 中的一个或多个键值
+     *   以上三个条件缺一不可，否则菜单不成立
+     *   
+     * 3.菜单名称取值优先级:
+     *   ① ShellNew项的 MenuText 键值（必须为带@的资源文件字符串)
+     *   ② [DefaultOpenModePath] 的 FriendlyTypeName 键值
+     *   ③ [DefaultOpenModePath] 的默认键值
+     *   ④ ②和③虽然不是第一优先级，但至少得存在一个，否则菜单不成立
+     *   
+     * 4.菜单图标取值优先级:
+     *   ① ShellNew项的 IconPath 键值
+     *   ② [OpenModePath]\DefaultIcon 的默认键值
+     *   ③ 关联程序图标
+     */
+
     sealed class ShellNewItem : MyListItem, IChkVisibleItem, ITsiTextItem, IBtnShowMenuItem, IBtnMoveUpDownItem,
          ITsiIconItem, ITsiWebSearchItem, ITsiFilePathItem, ITsiRegPathItem, ITsiRegDeleteItem, ITsiRegExportItem, ITsiCommandItem
     {
@@ -52,10 +70,9 @@ namespace ContextMenuManager.Controls
         private string SnKeyName => RegistryEx.GetKeyName(RegPath);
         private string BackupPath => $@"{RegistryEx.GetParentPath(RegPath)}\{(ItemVisible ? SnParts[1] : SnParts[0])}";
         private string OpenMode => FileExtension.GetOpenMode(Extension);//关联打开方式
-        private string OpenModePath => $@"{RegistryEx.CLASSESROOT}\{OpenMode}";//关联打开方式注册表路径
-        private string DefaultOpenMode => Registry.GetValue($@"{RegistryEx.CLASSESROOT}\{Extension}", "", null)?.ToString();//默认关联打开方式
-        private string DefaultOpenModePath => $@"{RegistryEx.CLASSESROOT}\{DefaultOpenMode}";//默认关联打开方式注册表路径
-        private string ConfigPath => $@"{RegPath}\Config";
+        private string OpenModePath => $@"{RegistryEx.CLASSES_ROOT}\{OpenMode}";//关联打开方式注册表路径
+        private string DefaultOpenMode => Registry.GetValue($@"{RegistryEx.CLASSES_ROOT}\{Extension}", "", null)?.ToString();//HKCR默认值打开方式
+        private string DefaultOpenModePath => $@"{RegistryEx.CLASSES_ROOT}\{DefaultOpenMode}";//HKCR默认值打开方式路径
         public bool CanSort => !UnableSortExtensions.Contains(Extension, StringComparer.OrdinalIgnoreCase);//能够排序的
         private bool CanEditData => UnableEditDataValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够编辑初始数据的
         private bool CanChangeCommand => UnableChangeCommandValues.All(value => Registry.GetValue(RegPath, value, null) == null);//能够更改菜单命令的
@@ -65,7 +82,7 @@ namespace ContextMenuManager.Controls
         {
             get
             {
-                string filePath = FileExtension.GetExecutablePath(Extension);
+                string filePath = FileExtension.GetExtentionInfo(FileExtension.AssocStr.Executable, Extension);
                 if(File.Exists(filePath)) return filePath;
                 using(RegistryKey oKey = RegistryEx.GetRegistryKey(OpenModePath))
                 {
@@ -103,8 +120,11 @@ namespace ContextMenuManager.Controls
             get
             {
                 string name = Registry.GetValue(RegPath, "MenuText", null)?.ToString();
-                name = ResourceString.GetDirectString(name);
-                if(!string.IsNullOrEmpty(name)) return name;
+                if(name!=null&&name.StartsWith("@"))
+                {
+                    name = ResourceString.GetDirectString(name);
+                    if(!string.IsNullOrEmpty(name)) return name;
+                }
                 name = Registry.GetValue(DefaultOpenModePath, "FriendlyTypeName", null)?.ToString();
                 name = ResourceString.GetDirectString(name);
                 if(!string.IsNullOrEmpty(name)) return name;
@@ -138,7 +158,10 @@ namespace ContextMenuManager.Controls
             get
             {
                 string location = IconLocation;
-                if(location == null || location.StartsWith("@")) return ResourceIcon.GetExtensionIcon(Extension);
+                if(location == null || location.StartsWith("@"))
+                {
+                    return ResourceIcon.GetExtensionIcon(Extension);
+                } 
                 Icon icon = ResourceIcon.GetIcon(location, out string path, out int index);
                 if(icon == null) icon = ResourceIcon.GetIcon(path = "imageres.dll", index = -2);
                 IconPath = path; IconIndex = index;
@@ -179,13 +202,13 @@ namespace ContextMenuManager.Controls
             get
             {
                 if(DefaultBeforeSeparator) return true;
-                else return Registry.GetValue(ConfigPath, "BeforeSeparator", null) != null;
+                else return Registry.GetValue($@"{RegPath}\Config", "BeforeSeparator", null) != null;
             }
             set
             {
                 if(value)
                 {
-                    Registry.SetValue(ConfigPath, "BeforeSeparator", "");
+                    Registry.SetValue($@"{RegPath}\Config", "BeforeSeparator", "");
                 }
                 else
                 {
@@ -264,7 +287,7 @@ namespace ContextMenuManager.Controls
 
         private void EditInitialData()
         {
-            if(MessageBoxEx.Show(AppString.Message.EditInitialData,
+            if(AppMessageBox.Show(AppString.Message.EditInitialData,
                 MessageBoxButtons.YesNo) != DialogResult.Yes) return;
             using(InputDialog dlg = new InputDialog
             {
@@ -294,7 +317,7 @@ namespace ContextMenuManager.Controls
         {
             RegistryEx.DeleteKeyTree(this.RegPath);
             RegistryEx.DeleteKeyTree(this.BackupPath);
-            this.Dispose();
+            this.Parent.Controls.Remove(this);
             if(ShellNewList.ShellNewLockItem.IsLocked) Owner.SaveSorting();
         }
     }

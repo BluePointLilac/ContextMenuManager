@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Controls;
+using ContextMenuManager.Methods;
 
 namespace ContextMenuManager.Controls.Interfaces
 {
@@ -15,14 +16,14 @@ namespace ContextMenuManager.Controls.Interfaces
             MyListItem listItem = (MyListItem)item;
             listItem.AddCtr(this);
             this.CheckChanged += () => item.ItemVisible = this.Checked;
-            listItem.HandleCreated += (sender, e) => this.Checked = item.ItemVisible;
             listItem.ParentChanged += (sender, e) =>
             {
                 if(listItem.IsDisposed) return;
                 if(listItem.Parent == null) return;
-                if(listItem is IFoldSubItem subItem && subItem.FoldGroupItem != null) return;
+                this.Checked = item.ItemVisible;
+                if(listItem is FoldSubItem subItem && subItem.FoldGroupItem != null) return;
                 if(listItem.FindForm() is ShellStoreDialog.ShellStoreForm) return;
-                if(AppConfig.HideDisabledItems) listItem.Visible = item.ItemVisible;
+                if(AppConfig.HideDisabledItems) listItem.Visible = this.Checked;
             };
         }
     }

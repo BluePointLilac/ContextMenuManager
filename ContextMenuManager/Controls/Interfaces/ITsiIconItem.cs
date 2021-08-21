@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -36,13 +37,6 @@ namespace ContextMenuManager.Controls.Interfaces
                         item.IconLocation = $"{dlg.IconPath},{dlg.IconIndex}";
                     }
                 }
-            };
-            MyListItem listItem = (MyListItem)item;
-            listItem.Disposed += (sender, e) => item.ItemIcon?.Dispose();
-            listItem.ImageDoubleClick += () =>
-            {
-                if(listItem.FindForm() is ShellStoreDialog.ShellStoreForm) return;
-                if(this.Enabled) this.OnClick(null);
             };
         }
     }

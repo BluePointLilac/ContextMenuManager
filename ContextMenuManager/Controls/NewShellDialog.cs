@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -22,6 +23,7 @@ namespace ContextMenuManager.Controls
                 ShellPath = this.ShellPath
             })
             {
+                frm.TopMost = AppConfig.TopMost;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag) this.NewItemRegPath = frm.NewItemRegPath;
                 return flag;
@@ -64,21 +66,19 @@ namespace ContextMenuManager.Controls
             {
                 base.InitializeComponents();
                 this.Controls.AddRange(new Control[] { rdoSingle, rdoMulti, chkSE });
-                rdoSingle.Top = rdoMulti.Top = btnOk.Top;
+                rdoSingle.Top = rdoMulti.Top = chkSE.Top = btnOK.Top + (btnOK.Height - rdoSingle.Height) / 2;
                 rdoSingle.Left = lblCommand.Left;
                 rdoMulti.Left = rdoSingle.Right + 20.DpiZoom();
-                chkSE.Top = txtArguments.Top + (txtArguments.Height - chkSE.Height) / 2;
-                this.Resize += (sender, e) => chkSE.Left = txtArguments.Right + 20.DpiZoom();
-                this.OnResize(null);
+                chkSE.Left = rdoMulti.Right + 20.DpiZoom();
 
                 rdoMulti.CheckedChanged += (sender, e) =>
                 {
                     if(rdoMulti.Checked)
                     {
                         chkSE.Checked = false;
-                        if(WindowsOsVersion.IsEqualVista)
+                        if(WinOsVersion.Current == WinOsVersion.Vista)
                         {
-                            MessageBoxEx.Show(AppString.Message.VistaUnsupportedMulti);
+                            AppMessageBox.Show(AppString.Message.VistaUnsupportedMulti);
                             rdoSingle.Checked = true;
                             return;
                         }
@@ -89,11 +89,11 @@ namespace ContextMenuManager.Controls
 
                 btnBrowse.Click += (sender, e) => BrowseFile();
 
-                btnOk.Click += (sender, e) =>
+                btnOK.Click += (sender, e) =>
                 {
                     if(txtText.Text.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
+                        AppMessageBox.Show(AppString.Message.TextCannotBeEmpty);
                     }
                     else
                     {
@@ -123,7 +123,7 @@ namespace ContextMenuManager.Controls
                             extension = Path.GetExtension(filePath);
                         }
                     }
-                    string exePath = FileExtension.GetExecutablePath(extension);
+                    string exePath = FileExtension.GetExtentionInfo(FileExtension.AssocStr.Executable, extension);
                     if(File.Exists(exePath))
                     {
                         ItemFilePath = exePath;

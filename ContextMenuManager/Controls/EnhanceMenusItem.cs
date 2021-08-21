@@ -1,6 +1,6 @@
-﻿using BluePointLilac.Controls;
-using BluePointLilac.Methods;
+﻿using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
+using ContextMenuManager.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -11,12 +11,12 @@ using System.Xml;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class EnhanceShellItem : MyListItem, IFoldSubItem, IChkVisibleItem
+    sealed class EnhanceShellItem : FoldSubItem, IChkVisibleItem
     {
         public string RegPath { get; set; }
         public XmlElement ItemXE { get; set; }
         public VisibleCheckBox ChkVisible { get; set; }
-        public IFoldGroupItem FoldGroupItem { get; set; }
+
         public bool ItemVisible
         {
             get
@@ -34,29 +34,35 @@ namespace ContextMenuManager.Controls
         public EnhanceShellItem()
         {
             ChkVisible = new VisibleCheckBox(this);
+            this.Indent();
         }
 
         private static void WriteAttributesValue(XmlNode valueXN, string regPath)
         {
             if(valueXN == null) return;
-            if(!EnhanceMenusList.JudgeOSVersion((XmlElement)valueXN)) return;
+            if(!XmlDicHelper.FileExists(valueXN)) return;
+            if(!XmlDicHelper.JudgeCulture(valueXN)) return;
+            if(!XmlDicHelper.JudgeOSVersion(valueXN)) return;
             using(RegistryKey key = RegistryEx.GetRegistryKey(regPath, true, true))
             {
                 foreach(XmlNode xn in valueXN.ChildNodes)
                 {
-                    if(!EnhanceMenusList.JudgeOSVersion((XmlElement)xn)) continue;
+                    if(xn is XmlComment) continue;
+                    if(!XmlDicHelper.FileExists(xn)) continue;
+                    if(!XmlDicHelper.JudgeCulture(xn)) continue;
+                    if(!XmlDicHelper.JudgeOSVersion(xn)) continue;
                     foreach(XmlAttribute xa in xn.Attributes)
                     {
                         switch(xn.Name)
                         {
                             case "REG_SZ":
-                                key.SetValue(xa.Name, xa.Value, RegistryValueKind.String);
+                                key.SetValue(xa.Name, Environment.ExpandEnvironmentVariables(xa.Value), RegistryValueKind.String);
                                 break;
                             case "REG_EXPAND_SZ":
                                 key.SetValue(xa.Name, xa.Value, RegistryValueKind.ExpandString);
                                 break;
                             case "REG_BINARY":
-                                key.SetValue(xa.Name, EnhanceMenusList.ConvertToBinary(xa.Value), RegistryValueKind.Binary);
+                                key.SetValue(xa.Name, XmlDicHelper.ConvertToBinary(xa.Value), RegistryValueKind.Binary);
                                 break;
                             case "REG_DWORD":
                                 int num = xa.Value.ToLower().StartsWith("0x") ? 16 : 10;
@@ -68,31 +74,37 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        private static void WriteSubKeysValue(XmlElement keyXE, string regPath)
+        private static void WriteSubKeysValue(XmlNode keyXN, string regPath)
         {
-            if(keyXE == null) return;
-            if(!EnhanceMenusList.JudgeOSVersion(keyXE)) return;
-            string defaultValue = Environment.ExpandEnvironmentVariables(keyXE.GetAttribute("Default"));
+            if(keyXN == null) return;
+            if(!XmlDicHelper.FileExists(keyXN)) return;
+            if(!XmlDicHelper.JudgeCulture(keyXN)) return;
+            if(!XmlDicHelper.JudgeOSVersion(keyXN)) return;
+            string defaultValue = ((XmlElement)keyXN).GetAttribute("Default");
             if(!defaultValue.IsNullOrWhiteSpace())
             {
+                defaultValue = Environment.ExpandEnvironmentVariables(defaultValue);
                 Registry.SetValue(regPath, "", defaultValue);
             }
-            else if(keyXE.Name == "Command")
+            else if(keyXN.Name == "Command")
             {
                 //按照规则Command节点无默认值则创建文件
-                WriteCommandValue(keyXE, regPath);
+                WriteCommandValue(keyXN, regPath);
             }
-            WriteAttributesValue(keyXE.SelectSingleNode("Value"), regPath);
+            WriteAttributesValue(keyXN.SelectSingleNode("Value"), regPath);
 
-            XmlNode subKeyXN = keyXE.SelectSingleNode("SubKey");
+            XmlNode subKeyXN = keyXN.SelectSingleNode("SubKey");
             if(subKeyXN != null)
             {
-                foreach(XmlElement xe in subKeyXN.ChildNodes)
-                    WriteSubKeysValue(xe, $@"{regPath}\{xe.Name}");
+                foreach(XmlNode xn in subKeyXN.ChildNodes)
+                {
+                    if(xn is XmlComment) continue;
+                    WriteSubKeysValue(xn, $@"{regPath}\{xn.Name}");
+                }
             }
         }
 
-        private static void WriteCommandValue(XmlElement cmdXE, string regPath)
+        private static void WriteCommandValue(XmlNode cmdXE, string regPath)
         {
             XmlElement fnXE = (XmlElement)cmdXE.SelectSingleNode("FileName");
             XmlElement argXE = (XmlElement)cmdXE.SelectSingleNode("Arguments");
@@ -105,8 +117,8 @@ namespace ContextMenuManager.Controls
             if(string.IsNullOrEmpty(arguments)) arguments = CreateCommandFile(argXE);
             fileName = Environment.ExpandEnvironmentVariables(fileName);
             arguments = Environment.ExpandEnvironmentVariables(arguments);
-            string prefix = argXE?.GetAttribute("Prefix");
-            string suffix = argXE?.GetAttribute("Suffix");
+            string prefix = argXE?.GetAttribute("Prefix");//参数前缀
+            string suffix = argXE?.GetAttribute("Suffix");//参数后缀
             arguments = prefix + arguments + suffix;
             if(seXE != null)
             {
@@ -123,12 +135,15 @@ namespace ContextMenuManager.Controls
             Registry.SetValue(regPath, "", command);
         }
 
-        private static string CreateCommandFile(XmlElement xe)
+        private static string CreateCommandFile(XmlNode xe)
         {
             string path = string.Empty;
             if(xe == null) return path;
             foreach(XmlElement cfXE in xe.SelectNodes("CreateFile"))
             {
+                if(!XmlDicHelper.FileExists(cfXE)) continue;
+                if(!XmlDicHelper.JudgeCulture(cfXE)) continue;
+                if(!XmlDicHelper.JudgeOSVersion(cfXE)) continue;
                 string fileName = cfXE.GetAttribute("FileName");
                 string content = cfXE.GetAttribute("Content");
                 string extension = Path.GetExtension(fileName).ToLower();
@@ -153,13 +168,13 @@ namespace ContextMenuManager.Controls
         }
     }
 
-    sealed class EnhanceShellExItem : MyListItem, IFoldSubItem, IChkVisibleItem
+    sealed class EnhanceShellExItem : FoldSubItem, IChkVisibleItem
     {
         public string ShellExPath { get; set; }
         public string DefaultKeyName { get; set; }
         public Guid Guid { get; set; }
         public VisibleCheckBox ChkVisible { get; set; }
-        public IFoldGroupItem FoldGroupItem { get; set; }
+
         public bool ItemVisible
         {
             get => ShellExItem.GetPathAndGuids(ShellExPath).Values.Contains(Guid);
@@ -186,6 +201,7 @@ namespace ContextMenuManager.Controls
         public EnhanceShellExItem()
         {
             ChkVisible = new VisibleCheckBox(this);
+            this.Indent();
         }
     }
 }

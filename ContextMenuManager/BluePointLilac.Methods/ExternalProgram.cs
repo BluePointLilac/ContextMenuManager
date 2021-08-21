@@ -20,7 +20,7 @@ namespace BluePointLilac.Methods
             //还有一种方法，修改HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit
             //中的LastKey键值（记录上次关闭注册表编辑器时的注册表路径）为要跳转的注册表项路径regPath，
             //再使用Process.Start("regedit.exe", "-m")打开注册表编辑器
-            //优点：代码少、不会有Bug。缺点：不能定位具体键，没有展开效果
+            //优点：代码少、不会有Bug。缺点：不能定位具体键，没有逐步展开效果
             if(regPath == null) return;
             Process process;
             IntPtr hMain = FindWindow("RegEdit_RegEdit", null);
@@ -124,7 +124,8 @@ namespace BluePointLilac.Methods
             SHELLEXECUTEINFO info = new SHELLEXECUTEINFO
             {
                 lpVerb = "Properties",
-                //lpParameters = "详细信息";//显示选项卡,此处有语言差异
+                //显示详细信息选项卡, 此处有语言差异
+                //lpParameters = ResourceString.GetDirectString("@shell32.dll,-31433"),//"详细信息",
                 lpFile = filePath,
                 nShow = SW_SHOW,
                 fMask = SEE_MASK_INVOKEIDLIST,
@@ -140,8 +141,7 @@ namespace BluePointLilac.Methods
             //Win10 调用 SHOpenWithDialog API 或调用 OpenWith.exe -override "%1"
             //或调用 rundll32.exe shell32.dll,OpenAs_RunDLL %1 能显示打开方式对话框，但都不能设置默认应用
             //以下方法只针对未关联打开方式的扩展名显示系统打开方式对话框，对于已关联打开方式的扩展名会报错
-            string tempPath = $"{Path.GetTempPath()}{extension}";
-            tempPath = ObjectPath.GetNewPathWithIndex(tempPath, ObjectPath.PathType.File);
+            string tempPath = $"{Path.GetTempPath()}{Guid.NewGuid()}{extension}";
             File.WriteAllText(tempPath, "");
             using(Process process = new Process())
             {
@@ -159,9 +159,9 @@ namespace BluePointLilac.Methods
         /// <summary>重启Explorer</summary>
         public static void RestartExplorer()
         {
-            //有些系统有tskill.exe可以直接调用tskill explorer命令
             using(Process process = new Process())
             {
+                //有些系统有tskill.exe可以直接调用tskill explorer命令
                 process.StartInfo = new ProcessStartInfo
                 {
                     FileName = "taskkill.exe",
@@ -185,8 +185,7 @@ namespace BluePointLilac.Methods
             using(Process process = new Process())
             {
                 //通过explorer来调用默认浏览器打开链接，避免管理员权限影响
-                process.StartInfo.FileName = "explorer.exe";
-                process.StartInfo.Arguments = $"\"{url}\"";
+                process.StartInfo = new ProcessStartInfo($"\"{url}\"");
                 process.Start();
             }
         }
@@ -200,6 +199,7 @@ namespace BluePointLilac.Methods
             {
                 process.StartInfo.FileName = "regedit.exe";
                 process.StartInfo.Arguments = $"/e \"{filePath}\" \"{regPath}\"";
+                process.Start();
                 process.WaitForExit();
             }
         }
@@ -235,7 +235,7 @@ namespace BluePointLilac.Methods
         private static extern bool SetFocus(IntPtr hWnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int GetWindowThreadProcessId(IntPtr hwnd, out int ID);
+        private static extern int GetWindowThreadProcessId(IntPtr hwnd, out int ID);
 
         [DllImport("user32.dll")]
         private static extern IntPtr FindWindow(string lpszClass, string lpszWindow);

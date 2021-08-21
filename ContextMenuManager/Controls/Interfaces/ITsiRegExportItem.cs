@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.IO;
 using System.Windows.Forms;

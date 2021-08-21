@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -15,6 +16,7 @@ namespace ContextMenuManager.Controls
         {
             using(NewOpenWithForm frm = new NewOpenWithForm())
             {
+                frm.TopMost = AppConfig.TopMost;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag) this.RegPath = frm.RegPath;
                 return flag;
@@ -27,23 +29,23 @@ namespace ContextMenuManager.Controls
 
             private string FilePath;
             private string FileName => Path.GetFileName(FilePath);
-            private string AppRegPath => $@"{RegistryEx.CLASSESROOT}\Applications\{FileName}";
+            private string AppRegPath => $@"{RegistryEx.CLASSES_ROOT}\Applications\{FileName}";
             private string CommandPath => $@"{AppRegPath}\shell\open\command";
 
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
                 btnBrowse.Click += (sender, e) => BrowseFile();
-                btnOk.Click += (sender, e) =>
+                btnOK.Click += (sender, e) =>
                 {
                     if(string.IsNullOrEmpty(ItemText))
                     {
-                        MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
+                        AppMessageBox.Show(AppString.Message.TextCannotBeEmpty);
                         return;
                     }
                     if(ItemCommand.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.Message.CommandCannotBeEmpty);
+                        AppMessageBox.Show(AppString.Message.CommandCannotBeEmpty);
                         return;
                     }
                     FilePath = ObjectPath.ExtractFilePath(base.ItemFilePath);
@@ -53,12 +55,12 @@ namespace ContextMenuManager.Controls
                         string name = Path.GetFileName(path);
                         if(FilePath != null && FilePath.Equals(path, StringComparison.OrdinalIgnoreCase))
                         {
-                            MessageBoxEx.Show(AppString.Message.HasBeenAdded);
+                            AppMessageBox.Show(AppString.Message.HasBeenAdded);
                             return;
                         }
                         if(FileName == null || FileName.Equals(name, StringComparison.OrdinalIgnoreCase))
                         {
-                            MessageBoxEx.Show(AppString.Message.UnsupportedFilename);
+                            AppMessageBox.Show(AppString.Message.UnsupportedFilename);
                             return;
                         }
                     }

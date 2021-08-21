@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -18,6 +19,7 @@ namespace ContextMenuManager.Controls
             using(NewLnkForm frm = new NewLnkForm())
             {
                 frm.FileFilter = this.FileFilter;
+                frm.TopMost = AppConfig.TopMost;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag)
                 {
@@ -49,7 +51,7 @@ namespace ContextMenuManager.Controls
             {
                 base.InitializeComponents();
                 this.Controls.AddRange(new Control[] { rdoFile, rdoFolder });
-                rdoFile.Top = rdoFolder.Top = btnOk.Top;
+                rdoFile.Top = rdoFolder.Top = btnOK.Top + (btnOK.Height - rdoFile.Height) / 2;
                 rdoFile.Left = lblCommand.Left;
                 rdoFolder.Left = rdoFile.Right + 20.DpiZoom();
 
@@ -59,23 +61,23 @@ namespace ContextMenuManager.Controls
                     else BrowseFolder();
                 };
 
-                btnOk.Click += (sender, e) =>
+                btnOK.Click += (sender, e) =>
                 {
                     if(ItemText.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
+                        AppMessageBox.Show(AppString.Message.TextCannotBeEmpty);
                     }
                     else if(ItemFilePath.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.Message.CommandCannotBeEmpty);
+                        AppMessageBox.Show(AppString.Message.CommandCannotBeEmpty);
                     }
                     else if(rdoFile.Checked && !ObjectPath.GetFullFilePath(ItemFilePath, out _))
                     {
-                        MessageBoxEx.Show(AppString.Message.FileNotExists);
+                        AppMessageBox.Show(AppString.Message.FileNotExists);
                     }
                     else if(rdoFolder.Checked && !Directory.Exists(ItemFilePath))
                     {
-                        MessageBoxEx.Show(AppString.Message.FolderNotExists);
+                        AppMessageBox.Show(AppString.Message.FolderNotExists);
                     }
                     else DialogResult = DialogResult.OK;
                 };

@@ -1,5 +1,4 @@
 ﻿using BluePointLilac.Methods;
-using ContextMenuManager.Controls;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -9,11 +8,12 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace ContextMenuManager
+namespace ContextMenuManager.Methods
 {
     static class GuidInfo
     {
-        public static readonly string[] ClsidPaths = {
+        public static readonly string[] ClsidPaths =
+        {
             @"HKEY_CLASSES_ROOT\CLSID",
             @"HKEY_CLASSES_ROOT\WOW6432Node\CLSID",
             @"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Classes\CLSID",
@@ -23,27 +23,49 @@ namespace ContextMenuManager
         {
             public string IconPath { get; set; }
             public int IconIndex { get; set; }
+            public string Tostring() => $"{IconPath},{IconIndex}";
         }
 
+        private static readonly IniWriter UserDic = new IniWriter(AppConfig.UserGuidInfosDic);
         private static readonly IniReader WebDic = new IniReader(AppConfig.WebGuidInfosDic);
-        public static readonly IniReader UserDic = new IniReader(AppConfig.UserGuidInfosDic);
         private static readonly IniReader AppDic = new IniReader(new StringBuilder(Properties.Resources.GuidInfosDic));
-        public static readonly Dictionary<Guid, IconLocation> IconLocationDic = new Dictionary<Guid, IconLocation>();
+        private static readonly Dictionary<Guid, IconLocation> IconLocationDic = new Dictionary<Guid, IconLocation>();
+        private static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
+        private static readonly Dictionary<Guid, Image> ItemImageDic = new Dictionary<Guid, Image>();
         private static readonly Dictionary<Guid, string> FilePathDic = new Dictionary<Guid, string>();
         private static readonly Dictionary<Guid, string> ClsidPathDic = new Dictionary<Guid, string>();
-        public static readonly Dictionary<Guid, string> ItemTextDic = new Dictionary<Guid, string>();
-        public static readonly Dictionary<Guid, string> UwpNameDic = new Dictionary<Guid, string>();
-        public static readonly Dictionary<Guid, Image> ItemImageDic = new Dictionary<Guid, Image>();
+        private static readonly Dictionary<Guid, string> UwpNameDic = new Dictionary<Guid, string>();
+
+        /// <summary>重新加载字典</summary>
+        public static void ReloadDics()
+        {
+            WebDic.LoadFile(AppConfig.WebGuidInfosDic);
+            IconLocationDic.Clear();
+            ItemTextDic.Clear();
+            ItemImageDic.Clear();
+            FilePathDic.Clear();
+            ClsidPathDic.Clear();
+            UwpNameDic.Clear();
+        }
+
+        public static void RemoveDic(Guid guid)
+        {
+            IconLocationDic.Remove(guid);
+            ItemTextDic.Remove(guid);
+            ItemImageDic.Remove(guid);
+            FilePathDic.Remove(guid);
+            ClsidPathDic.Remove(guid);
+            UwpNameDic.Remove(guid);
+        }
 
         private static bool TryGetValue(Guid guid, string key, out string value)
         {
             //用户自定义字典优先
-            value = string.Empty;
             string section = guid.ToString();
-            foreach(IniReader reader in new[] { UserDic, WebDic, AppDic })
-            {
-                if(reader.TryGetValue(section, key, out value)) return true;
-            }
+            value = UserDic.GetValue(section, key);
+            if(value != string.Empty) return true;
+            if(WebDic.TryGetValue(section, key, out value)) return true;
+            if(AppDic.TryGetValue(section, key, out value)) return true;
             return false;
         }
 
@@ -57,7 +79,7 @@ namespace ContextMenuManager
                 string uwpName = GetUwpName(guid);
                 if(!string.IsNullOrEmpty(uwpName))
                 {
-                    filePath = UwpModeItem.GetFilePath(uwpName, guid);
+                    filePath = UwpHelper.GetFilePath(uwpName, guid);
                 }
                 else
                 {
@@ -71,7 +93,7 @@ namespace ContextMenuManager
                                 using(RegistryKey key = guidKey.OpenSubKey(keyName))
                                 {
                                     if(key == null) continue;
-                                    string value1 = key.GetValue("CodeBase")?.ToString()?.Replace("file:///", "")?.Replace('/', '\\');
+                                    string value1 = key.GetValue("CodeBase")?.ToString().Replace("file:///", "").Replace('/', '\\');
                                     if(File.Exists(value1))
                                     {
                                         filePath = value1; break;
@@ -221,6 +243,11 @@ namespace ContextMenuManager
             {
                 if(!absStr.StartsWith("@")) return absStr;
                 else absStr = absStr.Substring(1);
+                if(absStr.StartsWith("{*?ms-resource://") && absStr.EndsWith("}"))
+                {
+                    absStr = "@{" + UwpHelper.GetPackageName(GetUwpName(guid)) + absStr.Substring(2);
+                    return absStr;
+                }
             }
 
             string filePath = GetFilePath(guid);

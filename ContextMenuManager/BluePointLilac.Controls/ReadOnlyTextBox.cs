@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Methods;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -27,6 +28,15 @@ namespace BluePointLilac.Controls
             }
             base.WndProc(ref m);
         }
+
+        private bool firstEnter = true;
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            if(firstEnter) this.Focus();
+            firstEnter = false;
+        }
     }
 
     public sealed class ReadOnlyRichTextBox : RichTextBox
@@ -54,9 +64,19 @@ namespace BluePointLilac.Controls
             base.WndProc(ref m);
         }
 
+        private bool firstEnter = true;
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            if(firstEnter) this.Focus();
+            firstEnter = false;
+        }
+
         protected override void OnLinkClicked(LinkClickedEventArgs e)
         {
-            base.OnLinkClicked(e); ExternalProgram.OpenWebUrl(e.LinkText);
+            base.OnLinkClicked(e);
+            ExternalProgram.OpenWebUrl(e.LinkText);
         }
     }
 }

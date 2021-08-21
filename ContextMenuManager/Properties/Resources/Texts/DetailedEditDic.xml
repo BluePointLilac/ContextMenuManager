@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，不设置Guid则为常驻菜单，RegPath为程序相关注册表主路径;
+其相关菜单项目设置作为一个Item子元素，Item的Text为该Item项显示文本，Tip为鼠标悬浮在开关上时的提示信息，需要重启资源管理器生效则添加RestartExplorer;
+Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；
+ValueName为相关键名，On为启用键值，Off为禁用键值；不设置On或Off属性时，其值为null，对应注册表键值不存在；
+每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；判定规则：当有多条规则时，前面的规则注册表键值匹配On则为On，匹配Off则为Off，并终止判断，都不匹配时继续往下判断，若所有规则都不匹配则为On
+ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认值时可省略，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ、REG_BINARY的键值类型-->
+
+<Data>
+  <Group>
+    <!--系统-->
+    <Text Value='@shell32.dll,-8770'/>
+    <Guid>20D04FE0-3AEA-1069-A2D8-08002B30309D</Guid>
+    <RegPath>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer</RegPath>
+    <Item>
+      <Text Value='右键菜单'/>
+      <Text Value='Context Menu'>
+        <Culture>en-US</Culture>
+      </Text>
+      <RestartExplorer/>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoViewContextMenu' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoViewContextMenu' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='使用经典紧凑右键菜单'/>
+      <RestartExplorer/>
+      <OSVersion Compare='&gt;='>10.0.14393</OSVersion>
+      <OSVersion Compare='&lt;'>10.0.17763</OSVersion>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\FlightedFeatures' ValueName='ImmersiveContextMenu' On='0'/>
+    </Item>
+    <Item>
+      <Text Value='右键菜单在左侧弹出'/>
+      <Tip Value='更改后需要重新登录账户生效'/>
+      <OSVersion Compare='&gt;='>10.0</OSVersion>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows' ValueName='MenuDropAlignment' On='1'/>
+      <Process FileName='explorer.exe' Arguments='shell:::{80F3F1D5-FECA-45F3-BC32-752C152E456E}'/>
+    </Item>
+    <Item>
+      <Text Value='Shell类型菜单同时操作文件对象数量限制'/>
+      <Tip Value='系统默认值为15，超过15为无限制'/>
+      <IsNumberItem/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' ValueName='MultipleInvokePromptMinimum' Max='32767' Min='1' Default='15'/>
+    </Item>
+    <Item>
+      <Text Value='创建快捷方式时去除 "快捷方式" 后缀'/>
+      <RestartExplorer/>
+      <Rule RegPath='\NamingTemplates' ValueName='ShortcutNameTemplate' On='%s' ValueKind='REG_SZ'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates' ValueName='ShortcutNameTemplate' On='%s' ValueKind='REG_SZ'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' ValueName='Link' On='00 00 00 00' ValueKind='REG_BINARY'/>
+    </Item>
+    <Item>
+      <Text Value='文件(夹) 复制粘贴去除 "副本" 后缀'/>
+      <Rule RegPath='\NamingTemplates' ValueName='CopyNameTemplate' On='%s' ValueKind='REG_SZ'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates' ValueName='CopyNameTemplate' On='%s' ValueKind='REG_SZ'/>
+    </Item>
+    <Item>
+      <Text Value='文件(夹) 加密 解密'/>
+      <Tip Value='当前账户加密后的文件需解密后才能在其他账户中打开'/>
+      <Rule RegPath='\Advanced' ValueName='EncryptionContextMenu' On='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='EncryptionContextMenu' On='1'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='任务栏'/>
+    <Text Value='TaskBar'>
+      <Culture>en-US</Culture>
+    </Text>
+    <Guid>90aa3a4e-1cba-4233-b8bb-535773d48449</Guid>
+    <RegPath>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer</RegPath>
+    <Item>
+      <Text Value='右键菜单'/>
+      <RestartExplorer/>
+      <Rule ValueName='NoTrayContextMenu' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoTrayContextMenu' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='任务栏设置 锁定任务栏'/>
+      <RestartExplorer/>
+      <Rule ValueName='TaskbarLockAll' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='TaskbarLockAll' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='工具栏'/>
+      <Tip Value='禁用后已启用工具栏将被禁用, 请谨慎操作'/>
+      <RestartExplorer/>
+      <Rule ValueName='NoToolbarsOnTaskbar' Off='1'/>
+      <Rule ValueName='NoCloseDragDropBands' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoToolbarsOnTaskbar' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoCloseDragDropBands' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='固定到任务栏'/>
+      <Tip Value='禁用时已固定图标会被隐藏，重新启用会重现&#x000A;文件右键菜单“固定到任务栏”会同时消失&#x000A;且无法拖拽文件到任务栏进行固定'/>
+      <RestartExplorer/>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='TaskbarNoPinnedList' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='TaskbarNoPinnedList' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='人脉'/>
+      <RestartExplorer/>
+      <OSVersion Compare='&gt;='>10.0.16199</OSVersion>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People' ValueName='PeopleBand' Off='0'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='HidePeopleBar' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='资讯和兴趣'/>
+      <RestartExplorer/>
+      <OSVersion Compare='&gt;='>10.0.19043</OSVersion>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds' ValueName='EnableFeeds' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='Windows lnk 工作区(Win+W)'/>
+      <RestartExplorer/>
+      <OSVersion Compare='&gt;='>10.0</OSVersion>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsInkWorkspace' ValueName='AllowWindowsInkWorkspace' Off='0'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='开始屏幕'/>
+    <Text Value='Start Menu'>
+      <Culture>en-US</Culture>
+    </Text>
+    <Guid>470c0ebd-5d73-4d58-9ced-e91e22e23282</Guid>
+    <RegPath>HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer</RegPath>
+    <Item>
+      <Text Value='程序右键菜单'/>
+      <RestartExplorer/>
+      <OSVersion Compare='&gt;='>10.0.17134</OSVersion>
+      <Rule ValueName='DisableContextMenusInStart' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='DisableContextMenusInStart' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='卸载'/>
+      <RestartExplorer/>
+      <OSVersion Compare='&gt;='>6.2</OSVersion>
+      <Rule ValueName='NoUninstallFromStart' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='NoUninstallFromStart' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='以其他用户身份运行'/>
+      <RestartExplorer/>
+      <OSVersion Compare='&gt;='>10.0</OSVersion>
+      <Rule ValueName='ShowRunAsDifferentUserInStart' On='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='ShowRunAsDifferentUserInStart' On='1'/>
+    </Item>
+    <Item>
+      <Text Value='磁贴调整大小、布局、固定、卸载'/>
+      <RestartExplorer/>
+      <OSVersion Compare='&gt;='>6.2</OSVersion>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoChangeStartMenu' Off='1'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoChangeStartMenu' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='最近打开文件跳转列表'/>
+      <OSVersion Compare='&gt;='>10.0</OSVersion>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='Start_TrackDocs' Off='0'/>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='Start_TrackDocs' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='最近打开文件跳转列表数量限制'/>
+      <IsNumberItem/>
+      <OSVersion Compare='&gt;='>10.0</OSVersion>
+      <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='JumpListItems_Maximum' Max='60' Min='0' Default='13'/>
+    </Item>
+    <Item>
+      <Text Value='开始按钮右键菜单(Win+X) 命令提示符 替换为 PowerShell'/>
+      <RestartExplorer/>
+      <OSVersion Compare='&gt;='>10.0</OSVersion>
+      <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='DontUsePowerShellOnWinX' Off='1'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='Bandizip'/>
+    <Guid>5b69a6b4-393b-459c-8ebb-214237a9e7ac</Guid>
+    <RegPath>HKEY_CURRENT_USER\SOFTWARE\Bandizip</RegPath>
+    <Item>
+      <Text Value='禁用上下文菜单'/>
+      <Text Value='Disable context menu'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_DoNotUse' On='1' Off='0' ValueKind='REG_DWORD'/>
+    </Item>
+    <Item>
+      <Text Value='层叠上下文菜单'/>
+      <Text Value='Cascaded context menu'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_ShowSubmenu' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='隐藏Bandizip图标'/>
+      <Text Value='Hide Bandizip icon'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_HideIcon' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='预览压缩文件'/>
+      <Text Value='Preview Archive'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_Preview' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='预览文件数量限制'/>
+      <Text Value='Limit preview files to'>
+        <Culture>en-US</Culture>
+      </Text>
+      <IsNumberItem/>
+      <Rule ValueName='shell_PreviewSize' Max='20' Min='1' Default='6'/>
+    </Item>
+    <Item>
+      <Text Value='新建文件夹'/>
+      <Text Value='New Folder'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_CreateNewFolder' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='打开命令提示符'/>
+      <Text Value='Launch Command Window'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_OpenCmd' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压到当前文件夹'/>
+      <Text Value='Extract Here'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_ExtractHere' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='自动解压'/>
+      <Text Value='Extract Here (Smart)'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_ExtractAuto' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压到...'/>
+      <Text Value='Extract to...'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_ExtractSub' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压到当前文件夹并删除原始文件 (智能)'/>
+      <Text Value='Extract Here (Smart) and Delete'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_ExtractAuto_Del' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='选择解压路径'/>
+      <Text Value='Extract to another folder...'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_ExtractDlg' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='测试压缩文件'/>
+      <Text Value='Test Archive'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_TestArchive' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='用Bandizip打开'/>
+      <Text Value='Open with Bandizip'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_OpenArchive' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='以管理员身份解压'/>
+      <Text Value='Extract as Administrator'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_ExtractAsAdmin' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='以管理员身份压缩'/>
+      <Text Value='Compress as Administrator'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_ArchivingAsAdmin' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='选中压缩文件时仍显示压缩菜单'/>
+      <Text Value='Show archive context menu even for archive files'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_ShowCompressMenu2Archive' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压后打开文件夹'/>
+      <Text Value='Open the folder after extracting'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='openFolderWhenComplete' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压完成后不要关闭进度窗口'/>
+      <Text Value='Do not close the progress window after extracting'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='doNotCloseExtractDlg' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='压缩完成后不要关闭进度窗口'/>
+      <Text Value='Do not close the progress window after archiving'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='doNotCloseCompressDlg' On='1' Off='0'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='Honeyview'/>
+    <Guid>9b6d38f3-8ef4-48a5-ad30-ffffffffffff</Guid>
+    <RegPath>HKEY_CURRENT_USER\SOFTWARE\Honeyview</RegPath>
+    <Item>
+      <Text Value='在资源管理器中使用上下文菜单'/>
+      <Text Value='Use context menu in Windows Explorer'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_useShellMenu' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='用 蜂蜜浏览器 转换图片'/>
+      <Text Value='Convert image with Honeyview'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_transformDlg' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='用 蜂蜜浏览器 浏览图片'/>
+      <Text Value='View image with Honeyview'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_showWithHoneyview' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='上下文菜单预览'/>
+      <Text Value='Preview in context menu'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_previewImage' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='显示图片信息'/>
+      <Text Value='Show image info'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_showImageInfo' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='显示软件图标'/>
+      <Text Value='Show Honeyview icon'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='shell_showIcon' On='1' Off='0'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='WinRAR'/>
+    <Guid>b41db860-64e4-11d2-9906-e49fadc173ca</Guid>
+    <Guid>b41db860-8ee4-11d2-9906-e49fadc173ca</Guid>
+    <RegPath>HKEY_CURRENT_USER\SOFTWARE\WinRAR</RegPath>
+    <Item>
+      <Text Value='层叠右键菜单'/>
+      <Text Value='Cascaded context menus'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup' ValueName='CascadedMenu' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='显示图标'/>
+      <Text Value='Icons in context menus'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup' ValueName='MenuIcons' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压文件(A)...'/>
+      <Text Value='Extract Files...'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='ExtrTo' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压到当前文件夹(X)'/>
+      <Text Value='Extract Here'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='ExtrHere' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压到 [文件夹名\] (E)'/>
+      <Text Value='Extract to [folder\]'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='Extr' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压每个压缩文件到单独文件夹(S)'/>
+      <Text Value='Extract each archive to separate folder'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='ExtrSep' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='使用WinRAR打开(用于自解压文件)'/>
+      <Text Value='Open with WinRAR (for SFX archives)'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='OpenSFX' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='使用WinRAR打开(用于常规压缩文件)'/>
+      <Text Value='Open with WinRAR (for usual archives)'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='OpenArc' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='添加到压缩文件(A)...'/>
+      <Text Value='Add to archive...'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='AddTo' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='添加到 [压缩文件名称](T)'/>
+      <Text Value='Add to [archive name]'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='AddArc' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='压缩到 [压缩文件名称] 并发送电子邮件'/>
+      <Text Value='Compress to [archive name] and email'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='EmailArc' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='压缩并发送电子邮件...'/>
+      <Text Value='Compress and email...'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='EmailOpt' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='测试压缩文件(R)'/>
+      <Text Value='Test archive'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='Test' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='转换压缩文件(V)...'/>
+      <Text Value='Convert archive...'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='Convert' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='右键拖放文件显示压缩菜单'/>
+      <Text Value='Display archiving items in Drag and drop context menu'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='DragAdd' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='右键拖放压缩文件显示解压菜单'/>
+      <Text Value='Display extraction items in Drag and drop context menu'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule RegPath='\Setup\MenuItems' ValueName='DragExtr' On='1' Off='0'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='7-zip'/>
+    <Guid>23170f69-40c1-278a-1000-000100020000</Guid>
+    <RegPath>HKEY_CURRENT_USER\SOFTWARE\7-zip</RegPath>
+    <Item>
+      <Text Value='层叠右键菜单'/>
+      <Rule RegPath='\Options' ValueName='CascadedMenu' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='右键菜单显示图标'/>
+      <Rule RegPath='\Options' ValueName='MenuIcons' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='排除重复的根文件夹'/>
+      <Rule RegPath='\Options' ValueName='ElimDupExtract' On='1' Off='0'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='NVIDIA'/>
+    <Guid>3d1975af-48c6-4f8e-a182-be0e08fa86a9</Guid>
+    <RegPath>HKEY_CURRENT_USER\SOFTWARE\NVIDIA Corporation</RegPath>
+    <Item>
+      <Text Value='显示桌面上下文菜单'/>
+      <Rule RegPath='\Global\NvCplApi\Policies' ValueName='ContextUIPolicy' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='用图形处理器运行'/>
+      <Rule RegPath='\Global\CoProcManager' ValueName='ShowContextMenu' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='显示托盘图标'/>
+      <Rule RegPath='\Global\CoProcManager' ValueName='ShowTrayIcon' On='1' Off='0'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='ACD看图'/>
+    <Guid>c2396f1e-4ba2-4b7d-857a-f764761c012b</Guid>
+    <RegPath>HKEY_CURRENT_USER\SOFTWARE\acdkantu</RegPath>
+    <Item>
+      <Text Value='显示桌面右键菜单'/>
+      <Rule ValueName='menu' On='1' Off='0' ValueKind='REG_SZ'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='Notepad++'/>
+    <Guid>b298d29a-a6ed-11de-ba8c-a68e55d89593</Guid>
+    <RegPath>HKEY_CLASSES_ROOT\CLSID\{b298d29a-a6ed-11de-ba8c-a68e55d89593}</RegPath>
+    <Item>
+      <Text Value='菜单显示文本'/>
+      <IsStringItem/>
+      <Rule RegPath='\Settings' ValueName='Title'/>
+    </Item>
+    <Item>
+      <Text Value='显示菜单图标'/>
+      <Rule RegPath='\Settings' ValueName='ShowIcon' On='1' Off='0'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='360zip'/>
+    <Guid>9179176e-b763-3200-8500-bb1b90b3d5de</Guid>
+    <FilePath>%AppData%\360zip\360zip_config.ini</FilePath>
+    <IsIniGroup/>
+    <Item>
+      <Text Value='层叠右键菜单'/>
+      <Rule Section='General' KeyName='CascadedMenu' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='智慧右键菜单'/>
+      <Rule Section='General' KeyName='CoolMenu' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压完成后打开目标文件夹'/>
+      <Rule Section='Profile.Extract.0' KeyName='OpenAfterExtract' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='解压完成后删除源文件'/>
+      <Rule Section='Profile.Extract.0' KeyName='DeleteSource' On='1' Off='0'/>
+    </Item>
+    <Item>
+      <Text Value='一键解压完成后自动关闭360压缩'/>
+      <Rule Section='General' KeyName='WiseExtract' On='1' Off='0'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='WPS云文档'/>
+    <Guid>67f4d210-bfc2-4add-9a2a-c9b9e1f42c4f</Guid>
+    <RegPath>HKEY_CURRENT_USER\SOFTWARE\Kingsoft\WPSCloud</RegPath>
+    <Item>
+      <Text Value='上传到"WPS云文档"'/>
+      <Rule ValueName='uploadFile' On='true' Off='false' ValueKind='REG_SZ'/>
+    </Item>
+    <Item>
+      <Text Value='发送到"WPS云文档传输助手"'/>
+      <Rule ValueName='fileTransfer' On='true' Off='false' ValueKind='REG_SZ'/>
+    </Item>
+    <Item>
+      <Text Value='通过"WPS云文档"分享和协作'/>
+      <Rule ValueName='shareFile' On='true' Off='false' ValueKind='REG_SZ'/>
+    </Item>
+    <Item>
+      <Text Value='同步桌面所有文件'/>
+      <Rule ValueName='DesktopSync' On='true' Off='false' ValueKind='REG_SZ'/>
+    </Item>
+  </Group>
+
+  <Group>
+    <Text Value='TC4Shell'/>
+    <Guid>00000000-b39d-4cb2-85f6-6e055d3b9a96</Guid>
+    <Guid>9ee0c3ef-c379-4fed-b2a8-651bb61f5c0f</Guid>
+    <Guid>9ee0c3ef-c379-4fed-b2a8-651bb61f5c0e</Guid>
+    <Guid>59624dcd-de34-4e3b-abe4-f40dafa1f2e0</Guid>
+    <RegPath>HKEY_CURRENT_USER\SOFTWARE\Dec Software\TC4Shell</RegPath>
+    <Process Arguments='.\,RunDll_Preferences'/>
+    <Item>
+      <Text Value='解压到(E)'/>
+      <Text Value='Extract to'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='HideExtractMenu' On='0' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='解压到历史文件夹'/>
+      <Text Value='Extract to history folder'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='HideExtractHistory' On='0' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='打开为文件夹'/>
+      <Text Value='Open as folder'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='HideOpenAsFolder' On='0' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='压缩为(P)'/>
+      <Text Value='Pack to'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='HidePackMenu' On='0' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='压缩并邮寄'/>
+      <Text Value='Pack to and email'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='HidePackSendMenu' On='0' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='压缩到历史压缩包'/>
+      <Text Value='Pack to history archive'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='HidePackHistory' On='0' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='属性对话框哈希选项卡'/>
+      <Text Value='Properties dialog hash tab'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='HideHashTab' On='0' Off='1'/>
+    </Item>
+    <Item>
+      <Text Value='属性对话框导航选项卡'/>
+      <Text Value='Properties dialog navigation tab'>
+        <Culture>en-US</Culture>
+      </Text>
+      <Rule ValueName='HideNavTab' On='0' Off='1'/>
+    </Item>
+  </Group>
+</Data>

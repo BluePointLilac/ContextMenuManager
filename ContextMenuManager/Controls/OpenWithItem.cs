@@ -1,6 +1,7 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
+using ContextMenuManager.Methods;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
@@ -66,7 +67,7 @@ namespace ContextMenuManager.Controls
             {
                 if(ObjectPath.ExtractFilePath(value) != ItemFilePath)
                 {
-                    MessageBoxEx.Show(AppString.Message.CannotChangePath);
+                    AppMessageBox.Show(AppString.Message.CannotChangePath);
                 }
                 else Registry.SetValue(RegPath, "", value);
             }
@@ -127,7 +128,6 @@ namespace ContextMenuManager.Controls
             {
                 if(key.GetSubKeyNames().Length == 0) RegistryEx.DeleteKeyTree(this.AppPath);
             }
-            this.Dispose();
         }
     }
 }

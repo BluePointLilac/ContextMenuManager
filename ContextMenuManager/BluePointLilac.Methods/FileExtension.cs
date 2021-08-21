@@ -23,7 +23,7 @@ namespace BluePointLilac.Methods
             IgnoreBaseClass = 0x200
         }
 
-        enum AssocStr
+        public enum AssocStr
         {
             Command = 1,
             Executable,
@@ -40,9 +40,11 @@ namespace BluePointLilac.Methods
         [DllImport("shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern uint AssocQueryString(AssocF flags, AssocStr str, string pszAssoc, string pszExtra, [Out] StringBuilder pszOut, ref uint pcchOut);
 
-        public const string FileExtsPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts";
+        public const string FILEEXTSPATH = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts";
+        private const string HKCRCLASSES = @"HKEY_CURRENT_USER\SOFTWARE\Classes";
+        private const string HKLMCLASSES = @"HKEY_LOCAL_MACHINE\SOFTWARE\Classes";
 
-        private static string GetExtentionInfo(AssocStr assocStr, string extension)
+        public static string GetExtentionInfo(AssocStr assocStr, string extension)
         {
             uint pcchOut = 0;
             AssocQueryString(AssocF.Verify, assocStr, extension, null, null, ref pcchOut);
@@ -51,39 +53,27 @@ namespace BluePointLilac.Methods
             return pszOut.ToString();
         }
 
-        public static string GetExecutablePath(string extension)
-        {
-            return GetExtentionInfo(AssocStr.Executable, extension);
-        }
-
-        public static string GetFriendlyDocName(string extension)
-        {
-            return GetExtentionInfo(AssocStr.FriendlyDocName, extension);
-        }
-
         public static string GetOpenMode(string extension)
         {
             if(string.IsNullOrEmpty(extension)) return null;
-            string mode = Registry.GetValue($@"{FileExtsPath}\{extension}\UserChoice", "ProgId", null)?.ToString();
-            if(!string.IsNullOrEmpty(mode)) return mode;
-            using(RegistryKey root = Registry.ClassesRoot)
-            using(RegistryKey exKey = root.OpenSubKey(extension))
+            string mode;
+            bool CheckMode()
             {
-                if(exKey == null) return null;
-                mode = exKey.GetValue("")?.ToString();
-                if(!mode.IsNullOrWhiteSpace()) return mode;
-                using(RegistryKey pkey = exKey.OpenSubKey("OpenWithProgids"))
+                if(mode.IsNullOrWhiteSpace()) return false;
+                if(mode.Length > 255) return false;
+                if(mode.ToLower().StartsWith(@"applications\")) return false;
+                using(RegistryKey root = Registry.ClassesRoot)
+                using(RegistryKey key = root.OpenSubKey(mode))
                 {
-                    if(pkey == null) return null;
-                    foreach(string name in pkey.GetValueNames())
-                    {
-                        using(RegistryKey mKey = root.OpenSubKey(name))
-                        {
-                            if(mKey.GetValue("") != null) return name;
-                        }
-                    }
+                    return key != null;
                 }
             }
+            mode = Registry.GetValue($@"{FILEEXTSPATH}\{extension}\UserChoice", "ProgId", null)?.ToString();
+            if(CheckMode()) return mode;
+            mode = Registry.GetValue($@"{HKLMCLASSES}\{extension}", "", null)?.ToString();
+            if(CheckMode()) return mode;
+            mode = Registry.GetValue($@"{HKCRCLASSES}\{extension}", "", null)?.ToString();
+            if(CheckMode()) return mode;
             return null;
         }
     }

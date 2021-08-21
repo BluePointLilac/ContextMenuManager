@@ -133,23 +133,21 @@ namespace BluePointLilac.Methods
                 }
             }
 
-            if(DeleteFileWhenEmpty && lines.Count == 0 && File.Exists(FilePath))
+            Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
+            FileAttributes attributes = FileAttributes.Normal;
+            Encoding encoding = Encoding.Unicode;
+            if(File.Exists(FilePath))
+            {
+                encoding = EncodingType.GetType(FilePath);
+                attributes = File.GetAttributes(FilePath);
+                File.SetAttributes(FilePath, FileAttributes.Normal);
+            }
+            File.WriteAllLines(FilePath, lines.ToArray(), encoding);
+            File.SetAttributes(FilePath, attributes);
+
+            if(DeleteFileWhenEmpty && lines.TrueForAll(line => line.IsNullOrWhiteSpace()))
             {
                 File.Delete(FilePath);
-            }
-            else
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
-                FileAttributes attributes = FileAttributes.Normal;
-                Encoding encoding = Encoding.Unicode;
-                if(File.Exists(FilePath))
-                {
-                    encoding = EncodingType.GetType(FilePath);
-                    attributes = File.GetAttributes(FilePath);
-                    File.SetAttributes(FilePath, FileAttributes.Normal);
-                }
-                File.WriteAllLines(FilePath, lines.ToArray(), encoding);
-                File.SetAttributes(FilePath, attributes);
             }
         }
 

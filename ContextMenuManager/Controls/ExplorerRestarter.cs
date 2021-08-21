@@ -1,35 +1,49 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    public sealed class ExplorerRestarter : MyListItem
+    sealed class ExplorerRestarter : MyListItem
     {
         public ExplorerRestarter()
         {
             this.Visible = false;
+            this.DoubleBuffered = false;
             this.Dock = DockStyle.Bottom;
             this.Image = AppImage.Explorer;
             this.Text = AppString.Other.RestartExplorer;
             ToolTipBox.SetToolTip(BtnRestart, AppString.Tip.RestartExplorer);
             this.AddCtr(BtnRestart);
             this.CanMoveForm();
-            BtnRestart.MouseDown += (sender, e) => { ExternalProgram.RestartExplorer(); this.Visible = false; };
             ShowHandler += () => this.Visible = true;
+            HideHandler += () => this.Visible = false;
+            BtnRestart.MouseDown += (sender, e) =>
+            {
+                ExternalProgram.RestartExplorer();
+                this.Visible = false;
+            };
         }
 
-        protected override void OnVisibleChanged(EventArgs e)
+        public new bool Visible
         {
-            base.OnVisibleChanged(e);
-            if(this.Parent != null) this.Parent.Height += Visible ? Height : -Height;
+            get => base.Visible;
+            set
+            {
+                bool flag = base.Visible != value && this.Parent != null;
+                base.Visible = value;
+                if(flag) this.Parent.Height += value ? Height : -Height;
+            }
         }
 
         private readonly PictureButton BtnRestart = new PictureButton(AppImage.RestartExplorer);
 
-        private static Action ShowHandler { get; set; }
+        private static Action ShowHandler;
+        private static Action HideHandler;
 
-        public static new void Show() { ShowHandler?.Invoke(); }
+        public static new void Show() => ShowHandler?.Invoke();
+        public static new void Hide() => HideHandler?.Invoke();
     }
 }

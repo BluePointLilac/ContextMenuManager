@@ -1,5 +1,6 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,8 @@ namespace ContextMenuManager.Controls
             this.AddNewItem();
             VisibleRegRuleItem storeItem = new VisibleRegRuleItem(VisibleRegRuleItem.UseStoreOpenWith)
             {
-                //Win8、Win8.1、Win10才有在应用商店中查找应用
-                Visible = WindowsOsVersion.ISAfterOrEqual8
+                //Win8及以上版本系统才有在应用商店中查找应用
+                Visible = WinOsVersion.Current >= WinOsVersion.Win8
             };
             this.InsertItem(storeItem, 1);
         }

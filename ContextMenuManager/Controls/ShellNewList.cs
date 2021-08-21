@@ -1,13 +1,16 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
+using ContextMenuManager.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace ContextMenuManager.Controls
 {
@@ -34,7 +37,7 @@ namespace ContextMenuManager.Controls
             using(RegistryKey root = Registry.ClassesRoot)
             {
                 extensions.AddRange(Array.FindAll(root.GetSubKeyNames(), keyName => keyName.StartsWith(".")));
-                if(WindowsOsVersion.IsBefore10) extensions.Add("Briefcase");//公文包(Win10没有)
+                if(WinOsVersion.Current < WinOsVersion.Win10) extensions.Add("Briefcase");//公文包(Win10没有)
                 this.LoadItems(extensions);
             }
         }
@@ -63,7 +66,7 @@ namespace ContextMenuManager.Controls
                     using(RegistryKey extKey = root.OpenSubKey(extension))
                     {
                         string defalutOpenMode = extKey?.GetValue("")?.ToString();
-                        if(string.IsNullOrEmpty(defalutOpenMode)) continue;
+                        if(string.IsNullOrEmpty(defalutOpenMode) || defalutOpenMode.Length > 255) continue;
                         using(RegistryKey openModeKey = root.OpenSubKey(defalutOpenMode))
                         {
                             if(openModeKey == null) continue;
@@ -144,7 +147,7 @@ namespace ContextMenuManager.Controls
                     string openMode = FileExtension.GetOpenMode(extension);
                     if(string.IsNullOrEmpty(openMode))
                     {
-                        if(MessageBoxEx.Show(AppString.Message.NoOpenModeExtension,
+                        if(AppMessageBox.Show(AppString.Message.NoOpenModeExtension,
                             MessageBoxButtons.OKCancel) == DialogResult.OK)
                         {
                             ExternalProgram.ShowOpenWithDialog(extension);
@@ -157,7 +160,7 @@ namespace ContextMenuManager.Controls
                         {
                             if(item.Extension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                             {
-                                MessageBoxEx.Show(AppString.Message.HasBeenAdded);
+                                AppMessageBox.Show(AppString.Message.HasBeenAdded);
                                 return;
                             }
                         }
@@ -170,7 +173,7 @@ namespace ContextMenuManager.Controls
                         string defaultOpenMode = exKey.GetValue("")?.ToString();
                         if(string.IsNullOrEmpty(defaultOpenMode)) exKey.SetValue("", openMode);
 
-                        byte[] bytes = Updater.GetShellNewData(extension);
+                        byte[] bytes = GetWebShellNewData(extension);
                         if(bytes != null) snKey.SetValue("Data", bytes, RegistryValueKind.Binary);
                         else snKey.SetValue("NullFile", "", RegistryValueKind.String);
 
@@ -179,12 +182,38 @@ namespace ContextMenuManager.Controls
                         item.Focus();
                         if(item.ItemText.IsNullOrWhiteSpace())
                         {
-                            item.ItemText = FileExtension.GetFriendlyDocName(extension);
+                            item.ItemText = FileExtension.GetExtentionInfo(FileExtension.AssocStr.FriendlyDocName, extension);
                         }
                         if(ShellNewLockItem.IsLocked) this.SaveSorting();
                     }
                 }
             };
+        }
+
+        private static byte[] GetWebShellNewData(string extension)
+        {
+            string apiUrl = AppConfig.RequestUseGithub ? AppConfig.GithubShellNewApi : AppConfig.GiteeShellNewApi;
+            using(UAWebClient client = new UAWebClient())
+            {
+                XmlDocument doc = client.GetWebJsonToXml(apiUrl);
+                if(doc == null) return null;
+                foreach(XmlNode node in doc.FirstChild.ChildNodes)
+                {
+                    XmlNode nameXN = node.SelectSingleNode("name");
+                    string str = Path.GetExtension(nameXN.InnerText);
+                    if(string.Equals(str, extension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        try
+                        {
+                            string dirUrl = AppConfig.RequestUseGithub ? AppConfig.GithubShellNewRawDir : AppConfig.GiteeShellNewRawDir;
+                            string fileUrl = $"{dirUrl}/{nameXN.InnerText}";
+                            return client.DownloadData(fileUrl);
+                        }
+                        catch { return null; }
+                    }
+                }
+                return null;
+            }
         }
 
         public sealed class ShellNewLockItem : MyListItem, IChkVisibleItem, IBtnShowMenuItem, ITsiWebSearchItem, ITsiRegPathItem

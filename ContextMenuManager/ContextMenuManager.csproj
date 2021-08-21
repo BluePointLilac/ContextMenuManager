@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ContextMenuManager</RootNamespace>
     <AssemblyName>ContextMenuManager</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -32,29 +32,34 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>queue</ErrorReport>
+    <ErrorReport>send</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <DocumentationFile>
     </DocumentationFile>
     <FileAlignment>4096</FileAlignment>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <FileAlignment>4096</FileAlignment>
+    <DebugSymbols>false</DebugSymbols>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Properties\AppIcon.ico</ApplicationIcon>
@@ -108,6 +113,15 @@
     <ManifestKeyFile>ContextMenuManager_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>Properties\App.manifest</ApplicationManifest>
   </PropertyGroup>
@@ -119,6 +133,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
@@ -127,7 +142,33 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppConfig.cs" />
+    <Compile Include="Controls\DetailedEditDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DictionariesBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DonateBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\EnhanceMenusDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Interfaces\IBtnDeleteItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\LanguagesBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SubItemsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\SwitchDicList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Methods\AppConfig.cs" />
+    <Compile Include="BluePointLilac.Methods\FormExtension.cs" />
+    <Compile Include="BluePointLilac.Methods\MessageBoxEx.cs" />
     <Compile Include="BluePointLilac.Methods\ToolTipBox.cs" />
     <Compile Include="BluePointLilac.Controls\ReadOnlyTextBox.cs">
       <SubType>Component</SubType>
@@ -139,29 +180,27 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BluePointLilac.Methods\ComboBoxExtension.cs" />
-    <Compile Include="BluePointLilac.Methods\DesktopIni.cs" />
+    <Compile Include="Methods\DesktopIni.cs" />
     <Compile Include="BluePointLilac.Methods\DirectoryEx.cs" />
     <Compile Include="BluePointLilac.Methods\ElevatedFileDroper.cs" />
     <Compile Include="BluePointLilac.Methods\FileExtension.cs" />
     <Compile Include="BluePointLilac.Methods\GuidEx.cs" />
     <Compile Include="BluePointLilac.Methods\IniReader.cs" />
     <Compile Include="BluePointLilac.Methods\IniWriter.cs" />
-    <Compile Include="BluePointLilac.Methods\MessageBoxEx.cs" />
+    <Compile Include="Methods\AppMessageBox.cs" />
     <Compile Include="BluePointLilac.Methods\ExternalProgram.cs" />
     <Compile Include="BluePointLilac.Methods\RichTextBoxExtension.cs" />
     <Compile Include="BluePointLilac.Methods\SingleInstance.cs" />
     <Compile Include="BluePointLilac.Methods\StringExtension.cs" />
     <Compile Include="BluePointLilac.Methods\TextBoxExtension.cs" />
-    <Compile Include="BluePointLilac.Methods\UAWebClient.cs">
+    <Compile Include="BluePointLilac.Controls\UAWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BluePointLilac.Methods\WindowsOsVersion.cs" />
+    <Compile Include="Methods\UwpHelper.cs" />
+    <Compile Include="BluePointLilac.Methods\WinOsVersion.cs" />
     <Compile Include="BluePointLilac.Methods\ShellLink.cs" />
-    <Compile Include="BluePointLilac.Methods\WinXHasher.cs" />
+    <Compile Include="Methods\WinXHasher.cs" />
     <Compile Include="BluePointLilac.Controls\DownloadDialog.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\DonateListDialog.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\FileExtensionDialog.cs">
@@ -210,13 +249,7 @@
     <Compile Include="Controls\ShellStoreDialog.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Interfaces\IFoldGroupItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Interfaces\IBtnOpenPathItem.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Interfaces\IBtnDeleteItem.cs">
+    <Compile Include="Controls\FoldSubItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\Interfaces\ITsiDeleteItem.cs">
@@ -252,7 +285,7 @@
     <Compile Include="Controls\NewItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls\AboutApp.cs">
+    <Compile Include="Controls\AppSettingBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\GuidBlockedItem.cs">
@@ -294,10 +327,7 @@
     <Compile Include="Controls\ShellNewList.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ThirdRulesList.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\TranslateDialog.cs">
+    <Compile Include="Controls\DetailedEditList.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\UwpModeItem.cs">
@@ -352,21 +382,22 @@
     <Compile Include="BluePointLilac.Methods\HighDpi.cs" />
     <Compile Include="BluePointLilac.Methods\RegistryEx.cs" />
     <Compile Include="BluePointLilac.Methods\RegTrustedInstaller.cs" />
-    <Compile Include="AppString.cs" />
-    <Compile Include="AppImage.cs" />
+    <Compile Include="Methods\AppString.cs" />
+    <Compile Include="Methods\AppImage.cs" />
     <Compile Include="BluePointLilac.Methods\EncodingType.cs" />
-    <Compile Include="GuidInfo.cs" />
+    <Compile Include="Methods\GuidInfo.cs" />
     <Compile Include="BluePointLilac.Methods\ImageExtension.cs" />
     <Compile Include="BluePointLilac.Methods\ResourceIcon.cs" />
     <Compile Include="BluePointLilac.Methods\ResourceString.cs" />
-    <Compile Include="BluePointLilac.Methods\ObjectPath.cs" />
+    <Compile Include="Methods\ObjectPath.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Updater.cs" />
+    <Compile Include="Methods\Updater.cs" />
+    <Compile Include="Methods\XmlDicHelper.cs" />
     <None Include="App.config" />
     <None Include="Properties\App.manifest" />
     <None Include="Properties\Resources\ShellNew\0.rar" />
@@ -376,10 +407,13 @@
     <None Include="Properties\Resources\ShellNew\0.zip" />
     <None Include="Properties\Resources\Texts\AppLanguageDic.ini" />
     <None Include="Properties\Resources\Texts\GuidInfosDic.ini" />
+    <Content Include="Properties\Resources\Images\CheckUpdate.png" />
     <Content Include="Properties\Resources\Images\DownLoad.png" />
+    <Content Include="Properties\Resources\Images\Enhance.png" />
     <Content Include="Properties\Resources\Images\Jump.png" />
     <Content Include="Properties\Resources\Images\Translate.png" />
     <Content Include="Properties\Resources\Images\User.png" />
+    <Content Include="Properties\Resources\Images\Web.png" />
     <Content Include="Properties\Resources\ShellNew\0.c" />
     <Content Include="Properties\Resources\ShellNew\0.html" />
     <Content Include="Properties\Resources\ShellNew\0.xml" />
@@ -425,12 +459,10 @@
     <Content Include="Properties\Resources\Images\Setting.png" />
     <Content Include="Properties\Resources\Images\Star.png" />
     <Content Include="Properties\Resources\Images\SubItems.png" />
-    <Content Include="Properties\Resources\Images\TurnOff.png" />
-    <Content Include="Properties\Resources\Images\TurnOn.png" />
     <Content Include="Properties\Resources\Images\Type.png" />
     <Content Include="Properties\Resources\Images\Up.png" />
     <Content Include="Properties\Resources\Images\Donate.png" />
-    <Content Include="Properties\Resources\Texts\ThirdRulesDic.xml" />
+    <Content Include="Properties\Resources\Texts\DetailedEditDic.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

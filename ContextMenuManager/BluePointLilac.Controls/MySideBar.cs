@@ -11,14 +11,15 @@ namespace BluePointLilac.Controls
         {
             this.Dock = DockStyle.Left;
             this.ItemHeight = 30.DpiZoom();
-            this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
+            this.Font = SystemFonts.MenuFont;
+            this.Font = new Font(this.Font.FontFamily, this.Font.Size + 1F);
             this.ForeColor = Color.FromArgb(80, 80, 80);
             this.BackColor = Color.FromArgb(245, 245, 245);
             this.BackgroundImageLayout = ImageLayout.None;
             this.Controls.AddRange(new Control[] { LblSeparator, PnlSelected, PnlHovered });
             PnlHovered.Paint += PaintItem;
             PnlSelected.Paint += PaintItem;
-            this.SelectIndex = -1;
+            this.SelectedIndex = -1;
         }
 
         private string[] itemNames;
@@ -36,7 +37,7 @@ namespace BluePointLilac.Controls
                 }
                 PnlHovered.Width = PnlSelected.Width = this.Width;
                 PaintItems();
-                SelectIndex = -1;
+                SelectedIndex = -1;
             }
         }
 
@@ -152,16 +153,16 @@ namespace BluePointLilac.Controls
         {
             if(itemNames == null) return;
             int index = (e.Y - TopSpace) / ItemHeight;
-            if(index >= itemNames.Length || index < 0 || string.IsNullOrEmpty(itemNames[index]) || index == SelectIndex)
+            if(index >= itemNames.Length || index < 0 || string.IsNullOrEmpty(itemNames[index]) || index == SelectedIndex)
             {
                 this.Cursor = Cursors.Default;
-                HoverIndex = SelectIndex;
+                HoveredIndex = SelectedIndex;
             }
             else
             {
                 this.Cursor = Cursors.Hand;
-                if(panel == PnlSelected) SelectIndex = index;
-                else HoverIndex = index;
+                if(panel == PnlSelected) SelectedIndex = index;
+                else HoveredIndex = index;
             }
         }
 
@@ -178,28 +179,29 @@ namespace BluePointLilac.Controls
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            HoverIndex = SelectIndex;
+            HoveredIndex = SelectedIndex;
         }
 
-        public Action SelectIndexChanged { get; set; }
+        public event EventHandler SelectIndexChanged;
 
-        public Action HoverIndexChanged { get; set; }
+        public event EventHandler HoverIndexChanged;
 
         private int selectIndex;
-        public int SelectIndex
+        public int SelectedIndex
         {
             get => selectIndex;
             set
             {
-                HoverIndex = value;
+                if(selectIndex == value) return;
+                HoveredIndex = value;
                 RefreshItem(PnlSelected, value);
                 selectIndex = value;
-                SelectIndexChanged?.Invoke();
+                SelectIndexChanged?.Invoke(this, null);
             }
         }
 
         private int hoverIndex;
-        public int HoverIndex
+        public int HoveredIndex
         {
             get => hoverIndex;
             set
@@ -207,7 +209,7 @@ namespace BluePointLilac.Controls
                 if(hoverIndex == value) return;
                 RefreshItem(PnlHovered, value);
                 hoverIndex = value;
-                HoverIndexChanged?.Invoke();
+                HoverIndexChanged?.Invoke(this, null);
             }
         }
     }

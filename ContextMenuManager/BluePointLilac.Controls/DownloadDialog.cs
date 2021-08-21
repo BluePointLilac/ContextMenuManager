@@ -1,5 +1,4 @@
 ﻿using BluePointLilac.Methods;
-using ContextMenuManager;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -10,6 +9,7 @@ namespace BluePointLilac.Controls
 {
     sealed class DownloadDialog : CommonDialog
     {
+        public string Text { get; set; }
         public string Url { get; set; }
         public string FilePath { get; set; }
         public override void Reset() { }
@@ -17,10 +17,11 @@ namespace BluePointLilac.Controls
         protected override bool RunDialog(IntPtr hwndOwner)
         {
             using(Process process = Process.GetCurrentProcess())
-            using(DownloadForm frm = new DownloadForm { Url = this.Url, FilePath = this.FilePath })
+            using(DownloadForm frm = new DownloadForm())
             {
-                bool isAsyn = hwndOwner == process.MainWindowHandle;
-                frm.StartPosition = isAsyn ? FormStartPosition.CenterParent : FormStartPosition.CenterScreen;
+                frm.Url = this.Url;
+                frm.Text = this.Text;
+                frm.FilePath = this.FilePath;
                 return frm.ShowDialog() == DialogResult.OK;
             }
         }
@@ -29,15 +30,15 @@ namespace BluePointLilac.Controls
         {
             public DownloadForm()
             {
-                this.Text = AppString.General.AppName;
+                this.SuspendLayout();
+                this.Font = SystemFonts.MessageBoxFont;
                 this.FormBorderStyle = FormBorderStyle.FixedSingle;
-                this.StartPosition = FormStartPosition.CenterParent;
                 this.MinimizeBox = this.MaximizeBox = this.ShowInTaskbar = false;
-                this.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 9F);
                 this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
                 this.Controls.AddRange(new Control[] { pgbDownload, btnCancel });
                 this.Load += (sender, e) => DownloadFile(Url, FilePath);
                 this.InitializeComponents();
+                this.ResumeLayout();
             }
 
             readonly ProgressBar pgbDownload = new ProgressBar
@@ -48,7 +49,7 @@ namespace BluePointLilac.Controls
             readonly Button btnCancel = new Button
             {
                 DialogResult = DialogResult.Cancel,
-                Text = AppString.Dialog.Cancel,
+                Text = ResourceString.Cancel,
                 AutoSize = true
             };
 
@@ -90,9 +91,21 @@ namespace BluePointLilac.Controls
                 }
                 catch(Exception e)
                 {
-                    MessageBoxEx.Show(e.Message);
+                    MessageBox.Show(e.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     this.DialogResult = DialogResult.Cancel;
                 }
+            }
+
+            protected override void OnLoad(EventArgs e)
+            {
+                if(this.Owner == null && Form.ActiveForm != this) this.Owner = Form.ActiveForm;
+                if(this.Owner == null) this.StartPosition = FormStartPosition.CenterScreen;
+                else
+                {
+                    this.TopMost = this.Owner.TopMost;
+                    this.StartPosition = FormStartPosition.CenterParent;
+                }
+                base.OnLoad(e);
             }
         }
     }

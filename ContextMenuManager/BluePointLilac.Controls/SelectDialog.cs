@@ -1,12 +1,11 @@
 ﻿using BluePointLilac.Methods;
-using ContextMenuManager;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace BluePointLilac.Controls
 {
-    class SelectDialog : CommonDialog
+    public class SelectDialog : CommonDialog
     {
         public string Title { get; set; }
         public string Selected { get; set; }
@@ -25,6 +24,8 @@ namespace BluePointLilac.Controls
                 if(this.Selected != null) frm.Selected = this.Selected;
                 else frm.SelectedIndex = this.SelectedIndex;
                 frm.CanEdit = this.CanEdit;
+                Form owner = (Form)Control.FromHandle(hwndOwner);
+                if(owner != null) frm.TopMost = owner.TopMost;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag)
                 {
@@ -39,7 +40,8 @@ namespace BluePointLilac.Controls
         {
             public SelectForm()
             {
-                this.AcceptButton = btnOk;
+                this.SuspendLayout();
+                this.AcceptButton = btnOK;
                 this.CancelButton = btnCancel;
                 this.Font = SystemFonts.MenuFont;
                 this.ShowIcon = this.ShowInTaskbar = false;
@@ -47,6 +49,7 @@ namespace BluePointLilac.Controls
                 this.FormBorderStyle = FormBorderStyle.FixedSingle;
                 this.StartPosition = FormStartPosition.CenterParent;
                 this.InitializeComponents();
+                this.ResumeLayout();
             }
 
             public string Selected
@@ -82,16 +85,16 @@ namespace BluePointLilac.Controls
                 set => cmbItems.SelectedIndex = value;
             }
 
-            readonly Button btnOk = new Button
+            readonly Button btnOK = new Button
             {
                 DialogResult = DialogResult.OK,
-                Text = AppString.Dialog.Ok,
+                Text = ResourceString.OK,
                 AutoSize = true
             };
             readonly Button btnCancel = new Button
             {
                 DialogResult = DialogResult.Cancel,
-                Text = AppString.Dialog.Cancel,
+                Text = ResourceString.Cancel,
                 AutoSize = true
             };
             readonly ComboBox cmbItems = new ComboBox
@@ -104,13 +107,13 @@ namespace BluePointLilac.Controls
 
             private void InitializeComponents()
             {
-                this.Controls.AddRange(new Control[] { cmbItems, btnOk, btnCancel });
+                this.Controls.AddRange(new Control[] { cmbItems, btnOK, btnCancel });
                 int a = 20.DpiZoom();
                 cmbItems.Left = a;
                 cmbItems.Width = 85.DpiZoom();
-                cmbItems.Top = btnOk.Top = btnCancel.Top = a;
-                btnOk.Left = cmbItems.Right + a;
-                btnCancel.Left = btnOk.Right + a;
+                cmbItems.Top = btnOK.Top = btnCancel.Top = a;
+                btnOK.Left = cmbItems.Right + a;
+                btnCancel.Left = btnOK.Right + a;
                 this.ClientSize = new Size(btnCancel.Right + a, btnCancel.Bottom + a);
                 cmbItems.AutosizeDropDownWidth();
             }

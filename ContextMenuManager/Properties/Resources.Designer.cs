@@ -101,36 +101,32 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找类似 ;此文件为 ContextMenuManager Windows右键管理程序 的显示文本字典
-        ///;翻译：可帮助作者为此程序提供翻译并提交到Github，以下内容中等号右侧内容替换为翻译文本，
-        ///;General-Translator为翻译贡献者，General-Language为语言名称，如en-US 美国英语
-        ///;翻译文件保存在Config\languages目录中，文件名保存为en-US.ini
-        ///;翻译说明：暂时不翻译的值保留为空即可，字典内赋值换行使用\r\n或\n进行转义
+        ///   查找类似 ;此文件为 ContextMenuManager Windows右键管理程序 的显示文本字典。
+        ///;可帮助作者为此程序提供翻译并提交到Github，以下内容中等号右侧内容替换为翻译文本。
+        ///;General - Translator 为翻译贡献者，General - Language 为语言名称，如en-US 美国英语，
+        ///;General - TranslatorUrl 为翻译贡献者的URL地址(能用Win+R命令打开的URL链接即可)
+        ///;翻译说明：暂时不翻译的值保留为空即可，字典内赋值换行使用\r\n或\n进行转义。
+        ///;翻译贡献者和为多人时请使用\r\n或\n对 Translator 的值和对应的 TranslatorUrl 值换行，
+        ///;没有URL地址赋值为null，使贡献者与链接一一对应，如 Translator = Bob \r\n Jion \r\n Andi, 
+        ///;TranslatorUrl = https://example.io \r\n null \r\n https://one.blog
         ///
         ///[General]
-        ///Language = zh-CN 简体中文
-        ///Translator = 蓝点lilac
         ///AppName = Windows右键管理
-        ///
-        ///[ToolBar]
-        ///Home = 主页
-        ///Type = 文件类型
-        ///Rule = 其他规则
-        ///Refresh = 刷新
-        ///About = 关于
-        ///
-        ///[SideBar]
-        ///File = 文件
-        ///Folder = 文件夹
-        ///Directory = 目录
-        ///Background = 目录背景
-        ///Desktop = 桌面背景
-        ///Drive = 磁盘分区
-        ///AllObje [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///Language = [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string AppLanguageDic {
             get {
                 return ResourceManager.GetString("AppLanguageDic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap CheckUpdate {
+            get {
+                object obj = ResourceManager.GetObject("CheckUpdate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -155,6 +151,21 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，不设置Guid则为常驻菜单，RegPath为程序相关注册表主路径;
+        ///其相关菜单项目设置作为一个Item子元素，Item的Text为该Item项显示文本，Tip为鼠标悬浮在开关上时的提示信息，需要重启资源管理器生效则添加RestartExplorer;
+        ///Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；
+        ///ValueName为相关键名，On为启用键值，Off为禁用键值；不设置On或Off属性时，其值为null，对应注册表键值不存在；
+        ///每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；判定规则：当有多条规则时，前面的规则注册表键值匹配On则为On，匹配Off则为Off，并终止判断，都不匹配时继续往下判断，若所有规则都不匹配则为On
+        ///ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD， [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string DetailedEditDic {
+            get {
+                return ResourceManager.GetString("DetailedEditDic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
         internal static System.Drawing.Bitmap Donate {
@@ -175,18 +186,27 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Enhance {
+            get {
+                object obj = ResourceManager.GetObject("Enhance", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-        ///&lt;!--此文件为常用右键菜单字典,
+        ///&lt;!--此文件为常用右键菜单字典, 可为此字典添加多语言翻译，添加一个Culture子项并设置为en-US、ja-JP等即可
         ///Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开始, 子元素Value表示该项的注册表键值，目前仅支持REG_SZ、REG_DWORD、REG_EXPAND_SZ、REG_BINARY的键值类型，
         ///子元素SubKey的所有子元素是该项的子项，项名即为元素名; 每一Item项和SubKey的所有子元素的属性Default为该注册表项默认值，不放在Value\REG_SZ元素里面是为了防止与可能存在的键名为Default的键产生冲突
         ///由于Shell项太过复杂，程序只根据注册表项名判断存在即启用，故同一场景下不允许有相同KeyName属性的Shell项目，ShellEx项只要Guid符合则为启用--&gt;
         ///
         ///&lt;Data&gt;
-        ///  &lt;File&gt;
-        ///    &lt;Shell&gt;
-        ///      &lt;Item KeyName=&apos;CopyContent&apos; Tip=&apos;不需打开文件直接复制文件文本内容&amp;#x000A;非UTF-16 LE(或带BOM)编码会乱码&apos;&gt;
-        ///        &lt;Value&gt;
-        ///   [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///  &lt;Group&gt;
+        ///    &lt;Text Value=&apos;文件&apos;/&gt;
+        ///    &lt;Text Value=&apos;File&apos;&gt;
+        ///      &lt;Culture&gt;en-US&lt;/Cult [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string EnhanceMenusDic {
             get {
@@ -331,46 +351,11 @@ namespace ContextMenuManager.Properties {
         }
         
         /// <summary>
-        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-        ///&lt;!--每个程序为一个Group，Text为Group项显示文本，Guid用于判断用户是否安装此程序并决定是否显示该Group，不设置Guid则为常驻菜单，RegPath为程序相关注册表主路径;
-        ///其相关菜单项目设置作为一个Item子元素，Item的Text为该Item项显示文本，Tip属性为鼠标悬浮在开关上时的提示信息，需要重启资源管理器生效则添加属性RestartExplorer;
-        ///Item的子元素Rule为相关注册表内容，RegPath省略则默认为Group主路径，以\开头则为Group主路径的子项路径；
-        ///ValueName为相关键名，On为启用键值，Off为禁用键值；不设置On或Off属性时，其值为null，对应注册表键值不存在；
-        ///每个Item可能受多个注册表Rule影响，按照顺序进行键值判定；判定规则：当有多条规则时，前面的规则注册表键值匹配On则为On，匹配Off则为Off，并终止判断，都不匹配时继续往下判断，若所有规则都不匹配则为On
-        ///ValueKind为键值类型，默认键值类型ValueKind为REG_DW [字符串的其余部分被截断]&quot;; 的本地化字符串。
-        /// </summary>
-        internal static string ThirdRulesDic {
-            get {
-                return ResourceManager.GetString("ThirdRulesDic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
         internal static System.Drawing.Bitmap Translate {
             get {
                 object obj = ResourceManager.GetObject("Translate", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
-        internal static System.Drawing.Bitmap TurnOff {
-            get {
-                object obj = ResourceManager.GetObject("TurnOff", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
-        internal static System.Drawing.Bitmap TurnOn {
-            get {
-                object obj = ResourceManager.GetObject("TurnOn", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -417,15 +402,26 @@ namespace ContextMenuManager.Properties {
         ///  &lt;File&gt;
         ///    &lt;Item Guid=&apos;776dbc8d-7347-478c-8d71-791e12ef49d8&apos;/&gt;
         ///  &lt;/File&gt;
+        ///  &lt;Folder&gt;
+        ///    &lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/&gt;
+        ///  &lt;/Folder&gt;
         ///  &lt;Directory&gt;
         ///    &lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155&apos;/&gt;
-        ///  &lt;/Directory&gt;
-        ///  &lt;Background&gt;
-        ///    &lt;Item Guid=&apos;9f156763-7844-4dc4-b2b1-901f640f5155 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string UwpModeItemsDic {
             get {
                 return ResourceManager.GetString("UwpModeItemsDic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Web {
+            get {
+                object obj = ResourceManager.GetObject("Web", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

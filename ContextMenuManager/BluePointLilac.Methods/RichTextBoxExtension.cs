@@ -7,10 +7,44 @@ namespace BluePointLilac.Methods
 {
     public static class RichTextBoxExtension
     {
+        /// <summary>RichTextBox中ini语法高亮</summary>
+        /// <param name="iniStr">要显示的ini文本</param>
+        public static void LoadIni(this RichTextBox box, string iniStr)
+        {
+            string[] lines = iniStr.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+            for(int i = 0; i < lines.Length; i++)
+            {
+                string str = lines[i].Trim();
+                if(str.StartsWith(";") || str.StartsWith("#"))
+                {
+                    box.AppendText(str, Color.SkyBlue);//注释
+                }
+                else if(str.StartsWith("["))
+                {
+                    if(str.Contains("]"))
+                    {
+                        int index = str.IndexOf(']');
+                        box.AppendText(str.Substring(0, index + 1), Color.DarkCyan, null, true);//section
+                        box.AppendText(str.Substring(index + 1), Color.SkyBlue);//section标签之后的内容视作注释
+                    }
+                    else box.AppendText(str, Color.SkyBlue);//section标签未关闭视作注释
+                }
+                else if(str.Contains("="))
+                {
+                    int index = str.IndexOf('=');
+                    box.AppendText(str.Substring(0, index), Color.DodgerBlue);//key
+                    box.AppendText(str.Substring(index), Color.DimGray);//value
+                }
+                else box.AppendText(str, Color.SkyBlue);//非section行和非key行视作注释
+                if(i != lines.Length - 1) box.AppendText("\r\n");
+            }
+        }
+
         /// 代码原文：https://archive.codeplex.com/?p=xmlrichtextbox
         /// 本人（蓝点lilac）仅作简单修改，将原继承类改写为扩展方法
-        /// <summary>RichTextBox中XML语法高亮</summary>
+        /// <summary>RichTextBox中xml语法高亮</summary>
         /// <param name="xmlStr">要显示的xml文本</param>
+        /// <remarks>可直接用WebBrowser的Url加载本地xml文件，但无法自定义颜色</remarks>
         public static void LoadXml(this RichTextBox box, string xmlStr)
         {
             XmlStateMachine machine = new XmlStateMachine();
@@ -22,8 +56,8 @@ namespace BluePointLilac.Methods
                     xmlStr = XDocument.Parse(xmlStr, LoadOptions.PreserveWhitespace).ToString().Trim();
                     if(string.IsNullOrEmpty(xmlStr) && declaration == string.Empty) return;
                 }
-                catch(Exception e) { throw e; }
-                xmlStr = declaration + Environment.NewLine + xmlStr;
+                catch { throw; }
+                xmlStr = declaration + "\r\n" + xmlStr;
             }
 
             int location = 0;
@@ -47,37 +81,6 @@ namespace BluePointLilac.Methods
                     box.AppendText(theRestOfIt);
                     break;
                 }
-            }
-        }
-
-        public static void LoadIni(this RichTextBox box, string iniStr)
-        {
-            string[] lines = iniStr.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            for(int i = 0; i < lines.Length; i++)
-            {
-                string str = lines[i].Trim();
-                if(str.StartsWith(";") || str.StartsWith("#"))
-                {
-                    box.AppendText(str, Color.SkyBlue);
-                }
-                else if(str.StartsWith("["))
-                {
-                    if(str.Contains("]"))
-                    {
-                        int index = str.IndexOf(']');
-                        box.AppendText(str.Substring(0, index + 1), Color.DarkCyan, null, true);
-                        box.AppendText(str.Substring(index + 1), Color.SkyBlue);
-                    }
-                    else box.AppendText(str, Color.SkyBlue);
-                }
-                else if(str.Contains("="))
-                {
-                    int index = str.IndexOf('=');
-                    box.AppendText(str.Substring(0, index), Color.DodgerBlue);
-                    box.AppendText(str.Substring(index), Color.DimGray);
-                }
-                else box.AppendText(str, Color.SkyBlue);
-                if(i != lines.Length - 1) box.AppendText(Environment.NewLine);
             }
         }
 
@@ -293,7 +296,7 @@ namespace BluePointLilac.Methods
                     case XmlTokenType.DocTypeDeclaration:
                         return Color.DodgerBlue;
                     default:
-                        return Color.Orange;
+                        return Color.DimGray;
                 }
             }
 
@@ -307,6 +310,7 @@ namespace BluePointLilac.Methods
                 }
                 return string.Empty;
             }
+
             private void HandleAttributeEnd()
             {
                 if(subString.StartsWith(">"))
@@ -365,7 +369,6 @@ namespace BluePointLilac.Methods
                 else if(subString.StartsWith("="))
                 {
                     CurrentState = XmlTokenType.EqualSignStart;
-                    if(CurrentState == XmlTokenType.AttributeValue) CurrentState = XmlTokenType.EqualSignEnd;
                     token = "=";
                 }
                 else if(subString.StartsWith("?>"))
@@ -412,10 +415,13 @@ namespace BluePointLilac.Methods
                 }
                 else if(subString.StartsWith("'"))
                 {
-                    CurrentState = XmlTokenType.SingleQuotationMarkStart;
                     if(CurrentState == XmlTokenType.AttributeValue)
                     {
                         CurrentState = XmlTokenType.SingleQuotationMarkEnd;
+                    }
+                    else
+                    {
+                        CurrentState = XmlTokenType.SingleQuotationMarkStart;
                     }
                     token = "'";
                 }

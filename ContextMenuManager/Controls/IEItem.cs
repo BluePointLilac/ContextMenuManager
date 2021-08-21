@@ -1,6 +1,7 @@
 ﻿using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls.Interfaces;
+using ContextMenuManager.Methods;
 using Microsoft.Win32;
 using System;
 using System.Drawing;
@@ -44,7 +45,7 @@ namespace ContextMenuManager.Controls
                 string defaultValue = Registry.GetValue(newPath, "", null)?.ToString();
                 if(!defaultValue.IsNullOrWhiteSpace())
                 {
-                    MessageBoxEx.Show(AppString.Message.HasBeenAdded);
+                    AppMessageBox.Show(AppString.Message.HasBeenAdded);
                 }
                 else
                 {
@@ -115,7 +116,6 @@ namespace ContextMenuManager.Controls
         {
             RegistryEx.DeleteKeyTree(this.RegPath);
             RegistryEx.DeleteKeyTree(this.BackupPath);
-            this.Dispose();
         }
     }
 }

@@ -1,50 +1,38 @@
-﻿using BluePointLilac.Methods;
-using ContextMenuManager.Controls.Interfaces;
+﻿using ContextMenuManager.Controls.Interfaces;
+using ContextMenuManager.Methods;
 using System.IO;
 using System.Windows.Forms;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class WinXGroupItem : GroupPathItem, IChkVisibleItem, ITsiDeleteItem, ITsiTextItem
+    sealed class WinXGroupItem : FoldGroupItem, IChkVisibleItem, ITsiDeleteItem, ITsiTextItem
     {
         public WinXGroupItem(string groupPath) : base(groupPath, ObjectPath.PathType.Directory)
         {
             InitializeComponents();
-            this.TargetPath = groupPath;
-        }
-
-        public new string TargetPath
-        {
-            get => base.TargetPath;
-            set
-            {
-                base.TargetPath = value;
-                this.Text = Path.GetFileNameWithoutExtension(value);
-                this.Image = ResourceIcon.GetFolderIcon(value).ToBitmap();
-            }
         }
 
         public bool ItemVisible
         {
-            get => (File.GetAttributes(TargetPath) & FileAttributes.Hidden) != FileAttributes.Hidden;
+            get => (File.GetAttributes(GroupPath) & FileAttributes.Hidden) != FileAttributes.Hidden;
             set
             {
-                FileAttributes attributes = File.GetAttributes(TargetPath);
+                FileAttributes attributes = File.GetAttributes(GroupPath);
                 if(value) attributes &= ~FileAttributes.Hidden;
                 else attributes |= FileAttributes.Hidden;
-                File.SetAttributes(TargetPath, attributes);
-                if(Directory.GetFiles(TargetPath).Length > 0) ExplorerRestarter.Show();
+                File.SetAttributes(GroupPath, attributes);
+                if(Directory.GetFiles(GroupPath).Length > 0) ExplorerRestarter.Show();
             }
         }
 
         public string ItemText
         {
-            get => Path.GetFileNameWithoutExtension(TargetPath);
+            get => Path.GetFileNameWithoutExtension(GroupPath);
             set
             {
                 string newPath = $@"{WinXList.WinXPath}\{ObjectPath.RemoveIllegalChars(value)}";
-                Directory.Move(TargetPath, newPath);
-                this.TargetPath = newPath;
+                Directory.Move(GroupPath, newPath);
+                this.GroupPath = newPath;
                 ExplorerRestarter.Show();
             }
         }
@@ -62,24 +50,23 @@ namespace ContextMenuManager.Controls
             this.SetCtrIndex(ChkVisible, 1);
             TsiDeleteMe = new DeleteMeMenuItem(this);
             TsiChangeText = new ChangeTextMenuItem(this);
-            this.ContextMenuStrip = new ContextMenuStrip();
-            this.ContextMenuStrip.Items.AddRange(new ToolStripItem[] { TsiChangeText,
-                new ToolStripSeparator(), TsiRestoreDefault, new ToolStripSeparator(), TsiDeleteMe });
+            this.ContextMenuStrip.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(),
+                TsiChangeText, TsiRestoreDefault, new ToolStripSeparator(), TsiDeleteMe });
             this.ContextMenuStrip.Opening += (sender, e) => TsiRestoreDefault.Enabled = Directory.Exists(DefaultGroupPath);
             TsiRestoreDefault.Click += (sender, e) => RestoreDefault();
         }
 
         private void RestoreDefault()
         {
-            if(MessageBoxEx.Show(AppString.Message.RestoreDefault, MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if(AppMessageBox.Show(AppString.Message.RestoreDefault, MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                File.SetAttributes(TargetPath, FileAttributes.Normal);
-                Directory.Delete(TargetPath, true);
-                Directory.CreateDirectory(TargetPath);
-                File.SetAttributes(TargetPath, File.GetAttributes(DefaultGroupPath));
+                File.SetAttributes(GroupPath, FileAttributes.Normal);
+                Directory.Delete(GroupPath, true);
+                Directory.CreateDirectory(GroupPath);
+                File.SetAttributes(GroupPath, File.GetAttributes(DefaultGroupPath));
                 foreach(string srcPath in Directory.GetFiles(DefaultGroupPath))
                 {
-                    string dstPath = $@"{TargetPath}\{Path.GetFileName(srcPath)}";
+                    string dstPath = $@"{GroupPath}\{Path.GetFileName(srcPath)}";
                     File.Copy(srcPath, dstPath);
                 }
                 WinXList list = (WinXList)this.Parent;
@@ -91,10 +78,10 @@ namespace ContextMenuManager.Controls
 
         public void DeleteMe()
         {
-            bool flag = Directory.GetFiles(TargetPath, "*.lnk").Length > 0;
-            if(flag && MessageBoxEx.Show(AppString.Message.DeleteGroup, MessageBoxButtons.OKCancel) != DialogResult.OK) return;
-            File.SetAttributes(TargetPath, FileAttributes.Normal);
-            Directory.Delete(TargetPath, true);
+            bool flag = Directory.GetFiles(GroupPath, "*.lnk").Length > 0;
+            if(flag && AppMessageBox.Show(AppString.Message.DeleteGroup, MessageBoxButtons.OKCancel) != DialogResult.OK) return;
+            File.SetAttributes(GroupPath, FileAttributes.Normal);
+            Directory.Delete(GroupPath, true);
             if(flag)
             {
                 WinXList list = (WinXList)this.Parent;
@@ -102,7 +89,6 @@ namespace ContextMenuManager.Controls
                 list.LoadItems();
                 ExplorerRestarter.Show();
             }
-            else this.Dispose();
         }
     }
 }

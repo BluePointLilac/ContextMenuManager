@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.Drawing;
 using System.IO;
@@ -16,6 +17,7 @@ namespace ContextMenuManager.Controls
         {
             using(ShellExecuteForm frm = new ShellExecuteForm())
             {
+                frm.TopMost = AppConfig.TopMost;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag)
                 {
@@ -40,18 +42,22 @@ namespace ContextMenuManager.Controls
 
         sealed class ShellExecuteForm : Form
         {
-            private const string ApiInfoUrl = "https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shellexecutea";
+            private const string ApiInfoUrl = "https://docs.microsoft.com/windows/win32/api/shellapi/nf-shellapi-shellexecutea";
             private static readonly string[] Verbs = new[] { "open", "runas", "edit", "print", "find", "explore" };
             public ShellExecuteForm()
             {
+                this.SuspendLayout();
+                this.HelpButton = true;
                 this.Text = "ShellExecute";
+                this.AcceptButton = btnOK;
+                this.CancelButton = btnCancel;
                 this.Font = SystemFonts.MenuFont;
                 this.FormBorderStyle = FormBorderStyle.FixedSingle;
                 this.StartPosition = FormStartPosition.CenterParent;
                 this.ShowIcon = ShowInTaskbar = MaximizeBox = MinimizeBox = false;
-                this.HelpButton = true;
                 this.HelpButtonClicked += (sender, e) => ExternalProgram.OpenWebUrl(ApiInfoUrl);
                 this.InitializeComponents();
+                this.ResumeLayout();
             }
             public string Verb { get; set; }
             public int WindowStyle { get; set; }
@@ -71,22 +77,22 @@ namespace ContextMenuManager.Controls
                 Minimum = 0,
                 Value = 1
             };
-            readonly Button btnOk = new Button
+            readonly Button btnOK = new Button
             {
-                Text = AppString.Dialog.Ok,
+                Text = ResourceString.OK,
                 DialogResult = DialogResult.OK,
                 AutoSize = true
             };
             readonly Button btnCancel = new Button
             {
-                Text = AppString.Dialog.Cancel,
+                Text = ResourceString.Cancel,
                 DialogResult = DialogResult.Cancel,
                 AutoSize = true
             };
 
             private void InitializeComponents()
             {
-                this.Controls.AddRange(new Control[] { grpVerb, lblStyle, nudStyle, btnOk, btnCancel });
+                this.Controls.AddRange(new Control[] { grpVerb, lblStyle, nudStyle, btnOK, btnCancel });
                 int a = 10.DpiZoom();
                 int b = 2 * a;
                 for(int i = 0; i < 6; i++)
@@ -104,12 +110,12 @@ namespace ContextMenuManager.Controls
                 grpVerb.Width = rdoVerbs[5].Right + a;
                 grpVerb.Height = rdoVerbs[5].Bottom + b;
                 lblStyle.Left = grpVerb.Left = grpVerb.Top = b;
-                btnOk.Top = btnCancel.Top = lblStyle.Top = nudStyle.Top = grpVerb.Bottom + b;
+                btnOK.Top = btnCancel.Top = lblStyle.Top = nudStyle.Top = grpVerb.Bottom + b;
                 nudStyle.Left = lblStyle.Right + b;
                 btnCancel.Left = grpVerb.Right - btnCancel.Width;
-                btnOk.Left = btnCancel.Left - btnOk.Width - b;
+                btnOK.Left = btnCancel.Left - btnOK.Width - b;
                 this.ClientSize = new Size(btnCancel.Right + b, btnCancel.Bottom + b);
-                btnOk.Click += (sender, e) =>
+                btnOK.Click += (sender, e) =>
                 {
                     for(int i = 0; i < 6; i++)
                     {
@@ -131,13 +137,14 @@ namespace ContextMenuManager.Controls
         {
             this.Text = "ShellExecute";
             this.AutoSize = true;
-            this.Font = new Font(SystemFonts.DialogFont.FontFamily, 8F).DpiZoom();
+            //this.Font = SystemFonts.DialogFont;
+            //this.Font = new Font(this.Font.FontFamily, this.Font.Size - 1F);
         }
 
         public string Verb { get; set; }
         public int WindowStyle { get; set; }
 
-        readonly ToolTip ttpInfo = new ToolTip();
+        readonly ToolTip ttpInfo = new ToolTip { InitialDelay = 1 };
 
         protected override void OnClick(EventArgs e)
         {
@@ -154,7 +161,7 @@ namespace ContextMenuManager.Controls
                     this.Verb = dlg.Verb;
                     this.WindowStyle = dlg.WindowStyle;
                     this.Checked = true;
-                    ttpInfo.SetToolTip(this, $"Verb = {Verb}\nWindowStyle = {WindowStyle}");
+                    ttpInfo.SetToolTip(this, $"Verb: \"{Verb}\"\nWindowStyle: {WindowStyle}");
                 }
             }
         }

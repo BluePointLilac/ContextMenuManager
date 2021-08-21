@@ -1,4 +1,5 @@
 ﻿using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -14,6 +15,7 @@ namespace ContextMenuManager.Controls
         {
             using(NewIEForm frm = new NewIEForm())
             {
+                frm.TopMost = AppConfig.TopMost;
                 bool flag = frm.ShowDialog() == DialogResult.OK;
                 if(flag) this.RegPath = frm.RegPath;
                 return flag;
@@ -27,16 +29,16 @@ namespace ContextMenuManager.Controls
             protected override void InitializeComponents()
             {
                 base.InitializeComponents();
-                btnOk.Click += (sender, e) =>
+                btnOK.Click += (sender, e) =>
                 {
                     if(ItemText.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.Message.TextCannotBeEmpty);
+                        AppMessageBox.Show(AppString.Message.TextCannotBeEmpty);
                         return;
                     }
                     if(ItemCommand.IsNullOrWhiteSpace())
                     {
-                        MessageBoxEx.Show(AppString.Message.CommandCannotBeEmpty);
+                        AppMessageBox.Show(AppString.Message.CommandCannotBeEmpty);
                         return;
                     }
                     AddNewItem();

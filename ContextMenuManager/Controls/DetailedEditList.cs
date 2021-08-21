@@ -1,86 +1,103 @@
-﻿using BluePointLilac.Controls;
-using BluePointLilac.Methods;
-using ContextMenuManager.Controls.Interfaces;
+﻿using BluePointLilac.Methods;
+using ContextMenuManager.Methods;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
-using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace ContextMenuManager.Controls
 {
-    sealed class ThirdRulesList : MyList
+    sealed class DetailedEditList : SwitchDicList
     {
-        public void LoadItems()
-        {
-            string webPath = AppConfig.WebThirdRulesDic;
-            string userPath = AppConfig.UserThirdRulesDic;
-            string contents = Properties.Resources.ThirdRulesDic;
-            if(!File.Exists(webPath)) File.WriteAllText(webPath, contents, Encoding.Unicode);
-            GroupPathItem webGroupItem = new GroupPathItem(webPath, ObjectPath.PathType.File);
-            GroupPathItem userGroupItem = new GroupPathItem(userPath, ObjectPath.PathType.File);
-            webGroupItem.Text = AppString.SideBar.Dictionaries;
-            userGroupItem.Text = AppString.Other.UserDictionaries;
-            webGroupItem.Image = AppImage.App;
-            userGroupItem.Image = AppImage.User;
-            LoadDocItems(webPath, webGroupItem);
-            LoadDocItems(userPath, userGroupItem);
-        }
+        public Guid GroupGuid { get; set; }
 
-        private void LoadDocItems(string xmlPath, GroupPathItem groupItem)
+        public override void LoadItems()
         {
-            if(!File.Exists(xmlPath)) return;
-            this.AddItem(groupItem);
-            XmlDocument doc = new XmlDocument();
-            try { doc.LoadXml(File.ReadAllText(xmlPath, EncodingType.GetType(xmlPath)).Trim()); }
-            catch(Exception e) { MessageBoxEx.Show(e.Message); return; }
-            foreach(XmlElement groupXE in doc.DocumentElement.ChildNodes)
+            base.LoadItems();
+            int index = this.UseUserDic ? 1 : 0;
+            XmlDocument doc = XmlDicHelper.DetailedEditDic[index];
+            if(doc?.DocumentElement == null) return;
+            foreach(XmlNode groupXN in doc.DocumentElement.ChildNodes)
             {
                 try
                 {
-                    Guid guid = Guid.Empty;
-                    if(groupXE.HasAttribute("Guid"))
+                    List<Guid> guids = new List<Guid>();
+                    XmlNodeList guidList = groupXN.SelectNodes("Guid");
+                    foreach(XmlNode guidXN in guidList)
                     {
-                        if(GuidEx.TryParse(groupXE.GetAttribute("Guid"), out guid))
-                        {
-                            if(!File.Exists(GuidInfo.GetFilePath(guid))) continue;
-                        }
-                        else continue;
+                        if(!GuidEx.TryParse(guidXN.InnerText, out Guid guid)) continue;
+                        if(!File.Exists(GuidInfo.GetFilePath(guid))) continue;
+                        if(this.GroupGuid != Guid.Empty && this.GroupGuid != guid) continue;
+                        guids.Add(guid);
                     }
+                    if(guidList.Count > 0 && guids.Count == 0) continue;
 
-                    SubGroupItem subGroupItem;
-                    bool isIniGroup = groupXE.HasAttribute("IsIniGroup");
+                    FoldGroupItem groupItem;
+                    bool isIniGroup = groupXN.SelectSingleNode("IsIniGroup") != null;
                     string attribute = isIniGroup ? "FilePath" : "RegPath";
                     ObjectPath.PathType pathType = isIniGroup ? ObjectPath.PathType.File : ObjectPath.PathType.Registry;
-                    subGroupItem = new SubGroupItem(groupXE.GetAttribute(attribute), pathType)
+                    groupItem = new FoldGroupItem(groupXN.SelectSingleNode(attribute)?.InnerText, pathType);
+                    foreach(XmlElement textXE in groupXN.SelectNodes("Text"))
                     {
-                        Text = groupXE.GetAttribute("Text"),
-                        Image = GuidInfo.GetImage(guid)
-                    };
-                    if(subGroupItem.Text.IsNullOrWhiteSpace()) subGroupItem.Text = GuidInfo.GetText(guid);
-                    this.AddItem(subGroupItem);
+                        if(XmlDicHelper.JudgeCulture(textXE)) groupItem.Text = ResourceString.GetDirectString(textXE.GetAttribute("Value"));
+                    }
+                    if(guids.Count > 0)
+                    {
+                        groupItem.Tag = guids;
+                        if(groupItem.Text.IsNullOrWhiteSpace()) groupItem.Text = GuidInfo.GetText(guids[0]);
+                        groupItem.Image = GuidInfo.GetImage(guids[0]);
+                        string filePath = GuidInfo.GetFilePath(guids[0]);
+                        string clsidPath = GuidInfo.GetClsidPath(guids[0]);
+                        if(filePath != null || clsidPath != null) groupItem.ContextMenuStrip.Items.Add(new ToolStripSeparator());
+                        if(filePath != null)
+                        {
+                            ToolStripMenuItem tsi = new ToolStripMenuItem(AppString.Menu.FileLocation);
+                            tsi.Click += (sender, e) => ExternalProgram.JumpExplorer(filePath, AppConfig.OpenMoreExplorer);
+                            groupItem.ContextMenuStrip.Items.Add(tsi);
+                        }
+                        if(clsidPath != null)
+                        {
+                            ToolStripMenuItem tsi = new ToolStripMenuItem(AppString.Menu.ClsidLocation);
+                            tsi.Click += (sender, e) => ExternalProgram.JumpRegEdit(clsidPath, null, AppConfig.OpenMoreRegedit);
+                            groupItem.ContextMenuStrip.Items.Add(tsi);
+                        }
+                    }
+                    XmlNode iconXN = groupXN.SelectSingleNode("Icon");
+                    using(Icon icon = ResourceIcon.GetIcon(iconXN?.InnerText))
+                    {
+                        if(icon != null) groupItem.Image = icon.ToBitmap();
+                    }
+                    this.AddItem(groupItem);
 
                     string GetRuleFullRegPath(string regPath)
                     {
-                        if(string.IsNullOrEmpty(regPath)) regPath = subGroupItem.TargetPath;
-                        else if(regPath.StartsWith("\\")) regPath = subGroupItem.TargetPath + regPath;
+                        if(string.IsNullOrEmpty(regPath)) regPath = groupItem.GroupPath;
+                        else if(regPath.StartsWith("\\")) regPath = groupItem.GroupPath + regPath;
                         return regPath;
                     };
 
-                    foreach(XmlElement itemXE in groupXE.ChildNodes)
+                    foreach(XmlElement itemXE in groupXN.SelectNodes("Item"))
                     {
                         try
                         {
-                            if(!EnhanceMenusList.JudgeOSVersion(itemXE)) continue;
+                            if(!XmlDicHelper.JudgeOSVersion(itemXE)) continue;
                             RuleItem ruleItem;
-                            ItemInfo info = new ItemInfo
+                            ItemInfo info = new ItemInfo();
+                            foreach(XmlElement textXE in itemXE.SelectNodes("Text"))
                             {
-                                Text = itemXE.GetAttribute("Text"),
-                                Tip = itemXE.GetAttribute("Tip"),
-                                RestartExplorer = itemXE.HasAttribute("RestartExplorer"),
-                            };
+                                if(XmlDicHelper.JudgeCulture(textXE)) info.Text = ResourceString.GetDirectString(textXE.GetAttribute("Value"));
+                            }
+                            foreach(XmlElement tipXE in itemXE.SelectNodes("Tip"))
+                            {
+                                if(XmlDicHelper.JudgeCulture(tipXE)) info.Tip = ResourceString.GetDirectString(tipXE.GetAttribute("Value"));
+                            }
+                            info.RestartExplorer = itemXE.SelectSingleNode("RestartExplorer") != null;
+
                             int defaultValue = 0, maxValue = 0, minValue = 0;
-                            if(itemXE.HasAttribute("IsNumberItem"))
+                            if(itemXE.SelectSingleNode("IsNumberItem") != null)
                             {
                                 XmlElement ruleXE = (XmlElement)itemXE.SelectSingleNode("Rule");
                                 defaultValue = ruleXE.HasAttribute("Default") ? Convert.ToInt32(ruleXE.GetAttribute("Default")) : 0;
@@ -92,10 +109,10 @@ namespace ContextMenuManager.Controls
                             {
                                 XmlElement ruleXE = (XmlElement)itemXE.SelectSingleNode("Rule");
                                 string iniPath = ruleXE.GetAttribute("FilePath");
-                                if(iniPath.IsNullOrWhiteSpace()) iniPath = subGroupItem.TargetPath;
+                                if(iniPath.IsNullOrWhiteSpace()) iniPath = groupItem.GroupPath;
                                 string section = ruleXE.GetAttribute("Section");
                                 string keyName = ruleXE.GetAttribute("KeyName");
-                                if(itemXE.HasAttribute("IsNumberItem"))
+                                if(itemXE.SelectSingleNode("IsNumberItem") != null)
                                 {
                                     var rule = new NumberIniRuleItem.IniRule
                                     {
@@ -108,7 +125,7 @@ namespace ContextMenuManager.Controls
                                     };
                                     ruleItem = new NumberIniRuleItem(rule, info);
                                 }
-                                else if(itemXE.HasAttribute("IsStringItem"))
+                                else if(itemXE.SelectSingleNode("IsStringItem") != null)
                                 {
                                     var rule = new StringIniRuleItem.IniRule
                                     {
@@ -133,21 +150,21 @@ namespace ContextMenuManager.Controls
                             }
                             else
                             {
-                                if(itemXE.HasAttribute("IsNumberItem"))
+                                if(itemXE.SelectSingleNode("IsNumberItem") != null)
                                 {
                                     XmlElement ruleXE = (XmlElement)itemXE.SelectSingleNode("Rule");
                                     var rule = new NumberRegRuleItem.RegRule
                                     {
                                         RegPath = GetRuleFullRegPath(ruleXE.GetAttribute("RegPath")),
                                         ValueName = ruleXE.GetAttribute("ValueName"),
-                                        ValueKind = GetValueKind(ruleXE.GetAttribute("ValueKind")),
+                                        ValueKind = XmlDicHelper.GetValueKind(ruleXE.GetAttribute("ValueKind"), RegistryValueKind.DWord),
                                         DefaultValue = defaultValue,
                                         MaxValue = maxValue,
                                         MinValue = minValue
                                     };
                                     ruleItem = new NumberRegRuleItem(rule, info);
                                 }
-                                else if(itemXE.HasAttribute("IsStringItem"))
+                                else if(itemXE.SelectSingleNode("IsStringItem") != null)
                                 {
                                     XmlElement ruleXE = (XmlElement)itemXE.SelectSingleNode("Rule");
                                     var rule = new StringRegRuleItem.RegRule
@@ -168,15 +185,15 @@ namespace ContextMenuManager.Controls
                                         {
                                             RegPath = GetRuleFullRegPath(ruleXE.GetAttribute("RegPath")),
                                             ValueName = ruleXE.GetAttribute("ValueName"),
-                                            ValueKind = GetValueKind(ruleXE.GetAttribute("ValueKind"))
+                                            ValueKind = XmlDicHelper.GetValueKind(ruleXE.GetAttribute("ValueKind"), RegistryValueKind.DWord)
                                         };
                                         string turnOn = ruleXE.HasAttribute("On") ? ruleXE.GetAttribute("On") : null;
                                         string turnOff = ruleXE.HasAttribute("Off") ? ruleXE.GetAttribute("Off") : null;
                                         switch(rules[i].ValueKind)
                                         {
                                             case RegistryValueKind.Binary:
-                                                rules[i].TurnOnValue = turnOn != null ? EnhanceMenusList.ConvertToBinary(turnOn) : null;
-                                                rules[i].TurnOffValue = turnOff != null ? EnhanceMenusList.ConvertToBinary(turnOff) : null;
+                                                rules[i].TurnOnValue = turnOn != null ? XmlDicHelper.ConvertToBinary(turnOn) : null;
+                                                rules[i].TurnOffValue = turnOff != null ? XmlDicHelper.ConvertToBinary(turnOff) : null;
                                                 break;
                                             case RegistryValueKind.DWord:
                                                 if(turnOn == null) rules[i].TurnOnValue = null;
@@ -194,37 +211,15 @@ namespace ContextMenuManager.Controls
                                 }
                             }
                             this.AddItem(ruleItem);
-                            ruleItem.FoldGroupItem = subGroupItem;
+                            ruleItem.FoldGroupItem = groupItem;
+                            ruleItem.HasImage = ruleItem.Image != null;
+                            ruleItem.Indent();
                         }
                         catch { continue; }
                     }
-                    subGroupItem.HideWhenNoSubItem();
-                    subGroupItem.FoldGroupItem = groupItem;
+                    groupItem.SetVisibleWithSubItemCount();
                 }
                 catch { continue; }
-            }
-            groupItem.IsFold = true;
-            groupItem.HideWhenNoSubItem();
-        }
-
-        private static RegistryValueKind GetValueKind(string data)
-        {
-            switch(data.ToUpper())
-            {
-                case "REG_SZ":
-                    return RegistryValueKind.String;
-                case "REG_BINARY":
-                    return RegistryValueKind.Binary;
-                case "REG_DWORD":
-                    return RegistryValueKind.DWord;
-                case "REG_QWORD":
-                    return RegistryValueKind.QWord;
-                case "REG_MULTI_SZ":
-                    return RegistryValueKind.MultiString;
-                case "REG_EXPAND_SZ":
-                    return RegistryValueKind.ExpandString;
-                default:
-                    return RegistryValueKind.DWord;
             }
         }
     }
