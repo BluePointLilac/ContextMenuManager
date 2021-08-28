@@ -111,6 +111,15 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_DWORD ImpliedSelectionModel='4' InvokeCommandOnSelection='0'/>
         </Value>
       </Item>
+      <Item KeyName='OpenNewWindow'>
+        <Value>
+          <!--在新窗口中打开-->
+          <REG_SZ MUIVerb='@windows.storage.dll,-8517'/>
+        </Value>
+        <SubKey>
+          <Command Default='explorer.exe "%v"'/>
+        </SubKey>
+      </Item>
       <Item KeyName='Windows.RecycleBin.Empty'>
         <OSVersion Compare="&gt;=">6.1</OSVersion>
         <Value>
@@ -1163,7 +1172,6 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
               <CreateFile
                 FileName='CleanThumbCache.bat'
                 Content='
-                @echo off
                 taskkill /f /im explorer.exe
                 del /f /s /q /a "%LocalAppData%\IconCache.db"
                 cd /d "%LocalAppData%\Microsoft\Windows\Explorer"
