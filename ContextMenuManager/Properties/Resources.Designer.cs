@@ -107,12 +107,11 @@ namespace ContextMenuManager.Properties {
         ///;General - TranslatorUrl 为翻译贡献者的URL地址(能用Win+R命令打开的URL链接即可)
         ///;翻译说明：暂时不翻译的值保留为空即可，字典内赋值换行使用\r\n或\n进行转义。
         ///;翻译贡献者和为多人时请使用\r\n或\n对 Translator 的值和对应的 TranslatorUrl 值换行，
-        ///;没有URL地址赋值为null，使贡献者与链接一一对应，如 Translator = Bob \r\n Jion \r\n Andi, 
-        ///;TranslatorUrl = https://example.io \r\n null \r\n https://one.blog
+        ///;没有URL地址赋值为null，使贡献者与链接一一对应，如 Translator = Bob \r\n Join \r\n Andi, 
+        ///;TranslatorUrl = https://github.com/BluePointLilac \r\n null \r\n https://gitee.com/BluePointLilac
         ///
         ///[General]
-        ///AppName = Windows右键管理
-        ///Language = [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///Ap [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string AppLanguageDic {
             get {

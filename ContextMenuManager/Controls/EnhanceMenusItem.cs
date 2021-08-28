@@ -170,6 +170,7 @@ namespace ContextMenuManager.Controls
 
     sealed class EnhanceShellExItem : FoldSubItem, IChkVisibleItem
     {
+        public string RegPath => $@"{ShellExPath}\ContextMenuHandlers\{DefaultKeyName}";
         public string ShellExPath { get; set; }
         public string DefaultKeyName { get; set; }
         public Guid Guid { get; set; }
@@ -182,8 +183,7 @@ namespace ContextMenuManager.Controls
             {
                 if(value)
                 {
-                    string regPath = ObjectPath.GetNewPathWithIndex
-                    ($@"{ShellExPath}\ContextMenuHandlers\{DefaultKeyName}", ObjectPath.PathType.Registry);
+                    string regPath = ObjectPath.GetNewPathWithIndex(this.RegPath, ObjectPath.PathType.Registry);
                     Registry.SetValue(regPath, "", this.Guid.ToString("B"));
                 }
                 else

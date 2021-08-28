@@ -113,8 +113,12 @@ namespace BluePointLilac.Controls
         {
             if(this.Controls.Count == 0) return;
             this.SuspendLayout();
-            foreach(Control control in this.Controls) BeginInvoke(new Action(control.Dispose));
-            this.Controls.Clear();
+            for(int i = this.Controls.Count - 1; i >= 0; i--)
+            {
+                Control ctr = this.Controls[i];
+                this.Controls.Remove(ctr);
+                ctr.Dispose();
+            }
             this.ResumeLayout();
         }
 
@@ -154,9 +158,9 @@ namespace BluePointLilac.Controls
             this.BackColor = Color.FromArgb(250, 250, 250);
             this.Controls.AddRange(new Control[] { lblSeparator, flpControls, lblText, picImage });
             this.Resize += (Sender, e) => pnlScrollbar.Height = this.ClientSize.Height;
-            flpControls.MouseClick += (sender, e) => this.OnMouseClick(null);
-            flpControls.MouseEnter += (sender, e) => this.OnMouseEnter(null);
-            flpControls.MouseDown += (sender, e) => this.OnMouseDown(null);
+            flpControls.MouseClick += (sender, e) => this.OnMouseClick(e);
+            flpControls.MouseEnter += (sender, e) => this.OnMouseEnter(e);
+            flpControls.MouseDown += (sender, e) => this.OnMouseDown(e);
             lblSeparator.SetEnabled(false);
             lblText.SetEnabled(false);
             CenterControl(lblText);
@@ -263,8 +267,8 @@ namespace BluePointLilac.Controls
             this.SuspendLayout();
             ctr.Parent = flpControls;
             ctr.Margin = new Padding(0, 0, space, 0);
-            ctr.MouseEnter += (sender, e) => this.OnMouseEnter(null);
-            ctr.MouseDown += (sender, e) => this.OnMouseEnter(null);
+            ctr.MouseEnter += (sender, e) => this.OnMouseEnter(e);
+            ctr.MouseDown += (sender, e) => this.OnMouseEnter(e);
             CenterControl(ctr);
             this.ResumeLayout();
         }

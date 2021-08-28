@@ -81,7 +81,10 @@ namespace ContextMenuManager.Controls
             this.Font = new Font(this.Font, FontStyle.Bold);
             this.AddCtrs(new[] { btnFold, btnOpenPath });
             this.ContextMenuStrip.Items.AddRange(new[] { tsiFoldAll, tsiUnfoldAll });
-            this.MouseDown += (sender, e) => Fold();
+            this.MouseDown += (sender, e) =>
+            {
+                if(e.Button == MouseButtons.Left) Fold();
+            };
             btnFold.MouseDown += (sender, e) =>
             {
                 Fold();

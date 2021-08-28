@@ -51,6 +51,7 @@ namespace ContextMenuManager.Controls
 
             static readonly string[] DirScenePaths = {
                 ShellList.MENUPATH_DIRECTORY,
+                ShellList.MENUPATH_BACKGROUND,
                 $@"{ShellList.SYSFILEASSPATH}\Directory."
             };
             static readonly string[] FileObjectsScenePaths = {

@@ -14,7 +14,8 @@ namespace BluePointLilac.Controls
             this.ShortcutsEnabled = false;
             this.BackColor = Color.White;
             this.ForeColor = Color.FromArgb(80, 80, 80);
-            this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
+            this.Font = SystemFonts.MenuFont;
+            this.Font = new Font(this.Font.FontFamily, this.Font.Size + 1F);
         }
 
         const int WM_SETFOCUS = 0x0007;
@@ -48,7 +49,8 @@ namespace BluePointLilac.Controls
             this.BackColor = Color.White;
             this.BorderStyle = BorderStyle.None;
             this.ForeColor = Color.FromArgb(80, 80, 80);
-            this.Font = new Font(SystemFonts.MenuFont.FontFamily, 10F);
+            this.Font = SystemFonts.MenuFont;
+            this.Font = new Font(this.Font.FontFamily, this.Font.Size + 1F);
         }
 
         const int WM_SETFOCUS = 0x0007;

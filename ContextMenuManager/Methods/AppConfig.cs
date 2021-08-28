@@ -168,8 +168,9 @@ namespace ContextMenuManager.Methods
                 }
                 catch
                 {
+                    return DateTime.MinValue;
                     //返回文件上次修改时间
-                    return new FileInfo(Application.ExecutablePath).LastWriteTime;
+                    //return new FileInfo(Application.ExecutablePath).LastWriteTime;
                 }
             }
             set => SetGeneralValue("LastCheckUpdateTime", value.ToBinary());
