@@ -60,7 +60,6 @@ namespace ContextMenuManager.Controls
                 if(value) attributes &= ~FileAttributes.Hidden;
                 else attributes |= FileAttributes.Hidden;
                 File.SetAttributes(FilePath, attributes);
-                if(value) WinXHasher.HashLnk(FilePath);
                 ExplorerRestarter.Show();
             }
         }
