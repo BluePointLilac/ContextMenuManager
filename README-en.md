@@ -7,7 +7,7 @@
 ## Download the binary
 * [Github Releases][GitHub Releases] or [Gitee Releases][Gitee Releases]
 * Download the zip file (recommended) or the exe file in the Assets list
-* About .NET versions: the .NET 3.5 and .NET 4.0 both are compatible with Windows Vista, 7, 8, 8.1, 10
+* About .NET versions: the .NET 3.5 and .NET 4.0 both are compatible with Windows Vista, 7, 8, 8.1, 10.
  Win7 comes with .NET 3.5, Win8, 8.1, 10 come with .NET 4.0 and up. Vista does not come with .NET 3.5 or 4.0. <br> You may need to install the appropriate [.NET Framework Runtime Library][.NET Framework Runtime Library].
 
 ## Key features
@@ -31,14 +31,14 @@
 * [Button icons][AppImage] from [Alibaba Iconfont][IconFont]![](Screenshot/AppImage.png)
 
 ## Updates
-* Program and dictionary updates can be installed within the program, overwritting the original files.
+* Program and dictionary updates can be installed within the program, overwriting the original files.
 * Due to limitations with Github and Gitee Raw, the program can only check for updates once a month. <br> The latest updates can always be found on [Github Releases][GitHub Releases] or [Gitee Releases][Gitee Releases].
 
 ## Notices
 * Some special menu items (Shell extensions, file encryption(&Y)) may not be displayed in the context menu, but will still show as enabled within the program; this is normal.
 * Different context menu manager programs may use different methods for disabling menu options. Using multiple managers at the same time is not recommended. While other programs may use destructive methods, this program utilizes the registry keys provided by the system to hide menu items when possible.
 <br>If you have used other context menu managers in the past, use that program to restore the menu items before using this one in order to avoid any potential issues.
-* This program is not designed to perform clean uninstalls; however, it can help you find the registry and file locations of menu items so that they can be modified. If you are not familar with such operations, it is recommended you use the enable/disable functions only.
+* This program is not designed to perform clean uninstalls; however, it can help you find the registry and file locations of menu items so that they can be modified. If you are not familiar with such operations, it is recommended you use the enable/disable functions only.
 
 ## Contact author
 * This program was developed independently by me (BluePointLilac), though I would like to thank [PcMoe][PcMoe] admin @坑晨 for answering my questions. There will inevitably be bugs, so any reports and suggestions are welcome.
