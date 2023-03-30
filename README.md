@@ -57,7 +57,7 @@
 [捐赠名单](Donate.md)<br>![][Donate]
 
 ## 项目收藏
-[![Stargazers over time](https://starchart.cc/Demo-Liu/GeekDesk.svg)](https://starchart.cc/Demo-Liu/GeekDesk)
+[![Stargazers over time](https://starchart.cc/BluePointLilac/ContextMenuManager.svg)](https://starchart.cc/BluePointLilac/ContextMenuManager)
 
   [Latest]: https://github.com/BluePointLilac/ContextMenuManager/releases/latest
   [GitHub Releases]: https://github.com/BluePointLilac/ContextMenuManager/releases
