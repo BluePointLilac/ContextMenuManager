@@ -56,6 +56,9 @@
 进行捐赠，金额请随意，谢谢你的理解和支持！更加期待你为此项目点亮Star（这对我很重要！）<br>
 [捐赠名单](Donate.md)<br>![][Donate]
 
+## 项目收藏
+[![Stargazers over time](https://starchart.cc/Demo-Liu/GeekDesk.svg)](https://starchart.cc/Demo-Liu/GeekDesk)
+
   [Latest]: https://github.com/BluePointLilac/ContextMenuManager/releases/latest
   [GitHub Releases]: https://github.com/BluePointLilac/ContextMenuManager/releases
   [Gitee Releases]: https://gitee.com/BluePointLilac/ContextMenuManager/releases
