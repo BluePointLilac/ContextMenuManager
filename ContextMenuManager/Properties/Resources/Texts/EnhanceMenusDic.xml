@@ -1215,8 +1215,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                 <SubKey>
                   <Command>
                     <ShellExecute Verb='runas' WindowStyle='0'/>
-                    <FileName>netsh.exe</FileName>
-                    <Arguments>advfirewall firewall add rule name = "%1" dir = in program = "%1" action = block</Arguments>
+                    <FileName>cmd.exe</FileName>
+                    <Arguments>/R (netsh advfirewall firewall delete rule name="_%1" dir=in program="%1" &amp; netsh advfirewall firewall add rule name="_%1" dir=in program="%1" action=block)</Arguments>
                   </Command>
                 </SubKey>
               </Item0>
@@ -1230,8 +1230,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                 <SubKey>
                   <Command>
                     <ShellExecute Verb='runas' WindowStyle='0'/>
-                    <FileName>netsh.exe</FileName>
-                    <Arguments>advfirewall firewall add rule name = "%1" dir = out program = "%1" action = block</Arguments>
+                    <FileName>cmd.exe</FileName>
+                    <Arguments>/R (netsh advfirewall firewall delete rule name="_%1" dir=out program="%1" &amp; netsh advfirewall firewall add rule name="_%1" dir=out program="%1" action=block)</Arguments>
                   </Command>
                 </SubKey>
               </Item1>
@@ -1245,8 +1245,8 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                 <SubKey>
                   <Command>
                     <ShellExecute Verb='runas' WindowStyle='0'/>
-                    <FileName>netsh.exe</FileName>
-                    <Arguments>advfirewall firewall delete rule name = "%1" dir = in program = "%1"</Arguments>
+                    <FileName>cmd.exe</FileName>
+                    <Arguments>/R (netsh advfirewall firewall delete rule name="_%1" dir=in program="%1" &amp; netsh advfirewall firewall add rule name="_%1" dir=in program="%1" action=allow)</Arguments>
                   </Command>
                 </SubKey>
               </Item2>
@@ -1260,11 +1260,26 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                 <SubKey>
                   <Command>
                     <ShellExecute Verb='runas' WindowStyle='0'/>
-                    <FileName>netsh.exe</FileName>
-                    <Arguments>advfirewall firewall delete rule name = "%1" dir = out program = "%1"</Arguments>
+                    <FileName>cmd.exe</FileName>
+                    <Arguments>/R (netsh advfirewall firewall delete rule name="_%1" dir=out program="%1" &amp; netsh advfirewall firewall add rule name="_%1" dir=out program="%1" action=allow)</Arguments>
                   </Command>
                 </SubKey>
               </Item3>
+              <Item4>
+                <Value>
+                  <REG_SZ MUIVerb='清除设置' Icon='imageres.dll,-107'/>
+                  <REG_SZ MUIVerb='Clear Settings'>
+                    <Culture>en-US</Culture>
+                  </REG_SZ>
+                </Value>
+                <SubKey>
+                  <Command>
+                    <ShellExecute Verb='runas' WindowStyle='0'/>
+                    <FileName>cmd.exe</FileName>
+                    <Arguments>/R (netsh advfirewall firewall delete rule name="_%1" program="%1")</Arguments>
+                  </Command>
+                </SubKey>
+              </Item4>
             </SubKey>
           </Shell>
         </SubKey>
