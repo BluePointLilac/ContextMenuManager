@@ -49,6 +49,12 @@ namespace ContextMenuManager.Controls
             this.Guid = guid;
             this.RegPath = regPath;
         }
+        public void ReInit(Guid guid, string regPath1)
+        {
+            // InitializeComponents();
+            this.Guid = guid;
+            this.RegPath = regPath1;
+        }
 
         private string regPath;
         public string RegPath

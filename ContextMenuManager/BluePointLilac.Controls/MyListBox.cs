@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using ContextMenuManager.Methods;
 
 namespace BluePointLilac.Controls
 {
@@ -42,7 +43,46 @@ namespace BluePointLilac.Controls
             this.DoubleBuffered = true;
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
         }
-
+        // MyList 基类 控件仓库(缓存) 
+        private Dictionary<string, MyCustomList<MyListItem>> itemRepo = new Dictionary<string, MyCustomList<MyListItem>>();
+        // 重置仓库的 Idx
+        protected void ResetRepo()
+        {
+            foreach (string className in itemRepo.Keys)
+                itemRepo[className].Idx = 0;
+        }
+        // 从仓库获取控件
+        protected bool GetFromRepo(string itemClassName,out MyListItem ret)
+        {
+            if (itemRepo.TryGetValue(itemClassName, out MyCustomList<MyListItem> itemlist))
+            {
+                for (int i = itemlist.Idx; i < itemlist.Count; i++)
+                {
+                    MyListItem ctr = itemlist[i];
+                    if (ctr.Parent == null)
+                    {
+                        ret = ctr;
+                        itemlist.Idx = i + 1;
+                        return true;
+                    }
+                }
+                itemlist.Idx = itemlist.Count;
+            }
+            ret = null;
+            return false;
+        }
+        // 保存控件到缓存
+        protected void SaveToRepo(string itemClassName,MyListItem ctr)
+        {
+            if (!itemRepo.TryGetValue(itemClassName, out MyCustomList<MyListItem> itemlist)||itemlist==null)
+            {
+                itemlist = new MyCustomList<MyListItem>();
+                itemRepo[itemClassName] = itemlist;
+            }
+            itemlist.Add(ctr);
+            // 表示控件可重用
+            ctr.Reuse = true;
+        }
         private MyListItem hoveredItem;
         public MyListItem HoveredItem
         {
@@ -117,6 +157,14 @@ namespace BluePointLilac.Controls
             {
                 Control ctr = this.Controls[i];
                 this.Controls.Remove(ctr);
+                // 不销毁 Reuse=true的控件
+                if (ctr is MyListItem myListItem)
+                {
+                    if (myListItem.Reuse)
+                    {
+                        continue;
+                    }
+                }
                 ctr.Dispose();
             }
             this.ResumeLayout();
@@ -168,7 +216,8 @@ namespace BluePointLilac.Controls
             AddCtr(pnlScrollbar, 0);
             this.ResumeLayout();
         }
-
+        // 需要重用,不能销毁(Dispose)
+        public bool Reuse { get; set; } = false;
         public Image Image
         {
             get => picImage.Image;

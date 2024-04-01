@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ContextMenuManager</RootNamespace>
     <AssemblyName>ContextMenuManager</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -196,6 +196,7 @@
     <Compile Include="BluePointLilac.Controls\UAWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Methods\MyUtils.cs" />
     <Compile Include="Methods\UwpHelper.cs" />
     <Compile Include="BluePointLilac.Methods\WinOsVersion.cs" />
     <Compile Include="BluePointLilac.Methods\ShellLink.cs" />

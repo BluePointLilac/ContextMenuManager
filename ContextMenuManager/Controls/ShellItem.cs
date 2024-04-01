@@ -36,7 +36,12 @@ namespace ContextMenuManager.Controls
             InitializeComponents();
             this.RegPath = regPath;
         }
-
+        // 重新初始化
+        public void ReInit(string regPath1)
+        {
+            // InitializeComponents();
+            this.RegPath = regPath1;
+        }
         private string regPath;
         public string RegPath
         {
