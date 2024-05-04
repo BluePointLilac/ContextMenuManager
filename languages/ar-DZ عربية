@@ -1,0 +1,637 @@
+;This file is the display text dictionary of the ContextMenuManager program, and the newline characters in the dictionary are escaped with \r\n or \n
+
+
+;If you want to help the author add other language dictionaries to this program, you can modify this text and save it in the .\config\languages folder,
+
+
+;For example, save the American English dictionary as en-US.ini, and assign en-US English to [General]\Language
+
+
+;Fork the project on Github or Gitee and submit an application to me, or send the file directly to the mailbox 1617859183@qq.com 
+
+
+
+
+
+[General]
+
+
+AppName = مدير قائمة السياق Windows
+
+
+Language = ar-DZ عربية
+
+
+Translator = بوزيد زروق
+
+
+TranslatorUrl = https://github.com/bouzidzerougdz
+
+
+
+
+
+[ToolBar]
+
+
+Home = الرئيسية
+
+Type = أنواع الملفات
+
+Rule = قواعد أخرى
+
+Refresh = تحديث
+
+About = حول
+
+
+
+
+
+[SideBar]
+
+File = ملفات
+
+Folder = مجلدات
+
+Directory = مجلدات بمحتوى
+
+Background = خلفية
+
+Desktop = سطح المكتب
+
+Drive = محركات
+
+AllObjects = كل الكائنات
+
+Computer = الكمبيوتر
+
+RecycleBin = سلة المهملات
+
+Library = المكتبات
+
+New = إنشاء
+
+SendTo = إرسال إلى
+
+OpenWith = فتح بواسطة
+
+WinX = قائمة Win+X
+
+
+
+
+
+
+
+LnkFile = روابط (.lnk)
+
+UwpLnk = روابط (.lnk) لتطبيقات UWP
+
+ExeFile = ملفات التنفيذ (.exe)
+
+CustomExtension = تمديدات الملفات
+
+PerceivedType = نوع الملف
+
+DirectoryType = نوع المجلد
+
+UnknownType = نوع الملف غير معروف
+
+MenuAnalysis = تحليل القائمة
+
+
+
+
+
+EnhanceMenu = تعزيز القائمة
+
+DetailedEdit = تحرير مفصل
+
+DragDrop = السحب والإفلات بزر الماوس الأيمن
+
+PublicReferences = المراجع العامة
+
+CustomRegPath = مسار التسجيل المخصص
+
+GuidBlocked = GUID محظور
+
+IEMenu = قائمة سياق Internet Explorer
+
+
+
+
+
+AppSetting = إعدادات التطبيق
+
+AppLanguage = لغة التطبيق
+
+CheckUpdate = التحقق من التحديث
+
+Dictionaries = مجلد البرنامج
+
+AboutApp = معلومات عن التطبيق
+
+Donate = التبرع للمؤلف
+
+
+
+
+
+[StatusBar]
+
+
+File = قائمة السياق لجميع أنواع الملفات
+
+Folder = قائمة السياق لجميع أنواع المجلدات
+
+Directory = قائمة السياق لجميع المجلدات التي تحتوي على ملفات
+
+Background = قائمة السياق لجميع المجلدات وخلفية سطح المكتب
+
+Desktop = قائمة السياق لسطح المكتب
+
+Drive = قائمة السياق لجميع الأقراص
+
+AllObjects = قائمة السياق لجميع كائنات النظام الملفاتي (بما في ذلك الملفات والمجلدات)
+
+Computer = قائمة السياق لهذا الكمبيوتر
+
+RecycleBin = قائمة السياق لسلة المحذوفات
+
+Library = قائمة السياق لجميع المكتبات وخلفية مجلد المكتبات
+
+New = قائمة "إنشاء" الفرعية لقائمة السياق للمجلدات وخلفية سطح المكتب
+
+SendTo = قائمة "إرسال إلى" الفرعية لجميع كائنات النظام الملفاتي
+
+OpenWith = قائمة "فتح بواسطة" الفرعية لجميع الملفات
+
+WinX = قائمة السياق لقائمة Win+X في Windows 8-10
+
+
+
+
+
+LnkFile = قائمة السياق للروابط
+
+UwpLnk = قائمة السياق لتطبيقات UWP في ويندوز 8-10
+
+ExeFile = قائمة السياق لملفات التنفيذ exe
+
+CustomExtension = تخصيص قائمة السياق لأي امتداد ملف
+
+PerceivedType = تخصيص قائمة السياق لأي نوع من الملفات
+
+DirectoryType = تخصيص قائمة السياق لنوع معين من المجلدات
+
+UnknownType = قائمة السياق لنوع الملفات الذي لا يرتبط بأي تطبيق
+
+MenuAnalysis = تحليل موضع قائمة السياق
+
+
+
+
+
+EnhanceMenu = إضافة بعض العناصر المفيدة إلى القائمة
+
+DetailedEdit = جزء من قواعد القائمة الداخلية لبرامج خارجية، المضمنة في الكتالوج البرمجي
+
+DragDrop = عنصر في القائمة عند سحب وإسقاط بزر الماوس الأيمن
+
+PublicReferences = تعديل عناصر قائمة السياق للروابط العامة التي أضافها المستخدم
+
+CustomRegPath = تخصيص مسار القائمة السياقية في التسجيل
+
+GuidBlocked = مناسب لمشاريع ShellEx الصعبة التي تعتمد على GUID (بعض GUID معطلة)
+
+IEMenu = قائمة السياق في متصفح الإنترنت إنترنت إكسبلورر
+
+
+
+
+
+[Menu]
+
+
+ChangeText = تغيير النص
+
+ItemIcon = أيقونة العنصر
+
+ChangeIcon = تغيير الأيقونة
+
+ShieldIcon = أيقونة الدرع
+
+AddIcon = إضافة أيقونة
+
+DeleteIcon = حذف الأيقونة
+
+ItemPosition = موقع العنصر
+
+SetDefault = تعيين كافتراضي
+
+SetTop = تعيين في الأعلى
+
+SetBottom = تعيين في الأسفل
+
+OtherAttributes = سمات أخرى
+
+OnlyWithShift = إظهار فقط عند الضغط على Shift
+
+OnlyInExplorer = إظهار فقط في مستكشف الملفات
+
+NoWorkingDirectory = عدم استخدام معلومات المجلد في قائمة السياق
+
+NeverDefault = عدم استخدام زر الفأرة الأيسر لتنفيذ الأوامر الافتراضية
+
+ShowAsDisabledIfHidden = إذا كان العنصر معطلًا، عرضه بلون رمادي بدلاً من إخفائه
+
+Details = تفاصيل
+
+WebSearch = البحث عبر الإنترنت
+
+ChangeCommand = تغيير الأمر
+
+RunAsAdministrator = تشغيل كمسؤول
+
+FileProperties = خصائص الملف
+
+FileLocation = موقع الملف
+
+RegistryLocation = موقع التسجيل
+
+ExportRegistry = تصدير التسجيل
+
+Delete = حذف العنصر
+
+DeleteReference = حذف الإشارة
+
+HandleGuid = التعامل مع GUID
+
+CopyGuid = نسخ GUID
+
+BlockGuid = حظر GUID
+
+ClsidLocation = موقع CLSID
+
+AddGuidDic = إضافة قاموس GUID
+
+InitialData = تحرير البيانات الأولية للملف
+
+BeforeSeparator = عرض فوق الفاصل
+
+ChangeGroup = تغيير المجموعة
+
+RestoreDefault = استعادة الافتراضيات
+
+Edit = تحرير
+
+Save = حفظ
+
+FoldAll = طي الكل
+
+UnfoldAll = فتح الكل
+
+
+
+
+
+[Dialog]
+
+
+Browse = استعراض
+
+Program = برنامج
+
+AllFiles = جميع الملفات
+
+RegistryFile = ملف السجل
+
+ItemText = نص العنصر
+
+ItemCommand = أمر العنصر في القائمة
+
+CommandArguments = وسائط الأمر
+
+SingleMenu = قائمة مستوى واحد
+
+MultiMenu = قائمة متعددة المستويات
+
+Public = عام
+
+Private = خاص
+
+SelectAll = تحديد الكل
+
+InputGuid = أدخل دليل GUID المحلي
+
+AddGuidDic = إضافة دليل GUID المحلي
+
+DeleteGuidDic = حذف دليل GUID
+
+NoPerceivedType = نوع غير معروف
+
+TextFile = ملف نصي
+
+DocumentFile = مستند
+
+ImageFile = ملف صورة
+
+VideoFile = ملف فيديو
+
+AudioFile = ملف صوتي
+
+CompressedFile = ملف مضغوط
+
+SystemFile = ملف نظام
+
+DocumentDirectory = مجلد المستندات
+
+ImageDirectory = مجلد الصور
+
+VideoDirectory = مجلد الفيديو
+
+AudioDirectory = مجلد الصوتيات
+
+EditSubItems = تحرير العناصر الفرعية لـ "%s"
+
+DetailedEdit = تحرير "%s" بالتفصيل
+
+CheckReference = حدد العنصر في القائمة الذي ترغب في إضافة الرابط إليه
+
+CheckCopy = حدد العنصر في القائمة الذي ترغب في نسخه
+
+SelectExtension = حدد امتداد الملف
+
+SelectPerceivedType = حدد نوع الملف
+
+SelectDirectoryType = حدد نوع المجلد
+
+SelectGroup = حدد المجموعة للحفظ
+
+SelectNewItemType = حدد نوع عنصر "إنشاء"
+
+SelectObjectType = حدد نوع الكائن للتحليل
+
+SelectDropEffect = حدد تأثير الإسقاط الافتراضي
+
+DefaultDropEffect = افتراضيًا (نفس القرص - نقل، قرص آخر - نسخ)
+
+CopyDropEffect = نسخ (Ctrl)
+
+MoveDropEffect = نقل (Shift)
+
+CreateLinkDropEffect = إنشاء ارتباطات (Alt)
+
+DownloadLanguages = تحميل ملفات اللغة
+
+TranslateTool = أداة الترجمة
+
+DefaultText = النص الافتراضي
+
+OldTranslation = الترجمة القديمة
+
+NewTranslation = الترجمة الجديدة
+
+DonateInfo = يتم تحديث هذه القائمة من وقت لآخر. آخر تحديث: %date \r\n\r\nالإجمالي: %money يوان، %count أشخاص
+
+
+
+[Message]
+
+
+TextCannotBeEmpty = نص القائمة لا يمكن أن يكون فارغًا!
+
+CommandCannotBeEmpty = أمر القائمة لا يمكن أن يكون فارغًا!
+
+StringParsingFailed = فشل تحليل السلاسل المحلية!
+
+TextLengthCannotExceed80 = لقد أدخلت نص قائمة طويل جدًا. الحد الأقصى للطول هو 80 حرفًا!
+
+ConfirmDeletePermanently = هل تريد حقًا حذف هذا العنصر نهائيًا؟\r\n تنبيه: لا يمكن التراجع عن هذه العملية!
+
+DeleteButCanRestore = هل تريد حقًا حذف هذا العنصر من سجل القائمة نهائيًا؟\r\n نظرًا لتمكين النسخ الاحتياطي التلقائي (وهو مفعل بشكل افتراضي)،\r\n يمكن استعادة هذا العنصر لاحقًا من مجلد النسخ الاحتياطي.
+
+ConfirmDeleteReference = هل تريد حقًا حذف هذا العنصر؟\r\n تنبيه: سيصبح جميع العناصر التي تشير إليها هذا العنصر غير صالحة!
+
+ConfirmDelete = هل تريد حقًا حذف هذا العنصر؟
+
+ConfirmDeleteReferenced = هل تريد حقًا حذف هذا العنصر نهائيًا؟\r\n تنبيه: سيصبح جميع العناصر التي تشير إليها غير صالحة.
+
+CannotAddNewItem = لا يمكن إضافة عنصر جديد بسبب قيود النظام. الحد الأقصى لعناصر القائمة الفرعية هو 16.
+
+VistaUnsupportedMulti = ويندوز فيستا لا يدعم القوائم متعددة المستويات!
+
+CannotHideSubItem = إصدار Windows الخاص بك لا يدعم إخفاء العناصر الفرعية!
+
+UnsupportedFilename = اسم الملف غير مدعوم. ربما يكون هناك بالفعل عنصر قائمة بنفس الاسم!
+
+NoOpenModeExtension = لا يتم ربط هذا الامتداد بأي تطبيق.\r\n انقر بزر الماوس الأيمن فوق الملف ذو هذا الامتداد لربطه بتطبيق.
+
+CannotChangePath = لا يمكن تغيير مسار الملف!
+
+CopiedToClipboard = تم نسخه إلى الحافظة:
+
+MalformedGuid = GUID بتنسيق غير صالح
+
+HasBeenAdded = تمت إضافة هذا العنصر!
+
+SelectSubMenuMode = هذه القائمة متعددة المستويات لا تحتوي على عناصر فرعية.\r\n يوجد اختياران:\r\n ① تجعل جميع عناصر القائمة الفرعية في هذه القائمة مخصصة (الخيار الموصى به)\r\n ② يمكن لهذه القائمة متعددة المستويات الربط بنفس العناصر الفرعية للقوائم المتعددة المستويات الأخرى.\r\n انتظر الاختيار...
+
+EditInitialData = يدعم هذا البرنامج حاليًا تحرير بيانات الملفات النصية العادية فقط (.txt، .bat، إلخ).\r\n للأنواع الأخرى من الملفات، قم بتحرير قيمة المفتاح "Data" في التسجيل بنفسك.\r\n هل ترغب في المتابعة؟
+
+PromptIsOpenItem = هذا العنصر يحتوي على قائمة "فتح".\r\n قد تعيق العمليات الأعمى قدرتك على فتح الملفات والمجلدات.\r\n هل تريد المتابعة؟ (غير موصى به)
+
+SelectRegPath = الخطوات:\r\n1. افتح محرر التسجيل\r\n2. انتقل إلى المسار المستهدف\r\n3. أغلق محرر التسجيل.\nهل ترغب في المتابعة؟
+
+RestartApp = سيتم إعادة تشغيل البرنامج!
+
+FileNotExists = الملف غير موجود!
+
+FolderNotExists = المجلد غير موجود!
+
+UpdateInfo = هناك إصدار جديد متاح\r\nالإصدار الحالي: %v1\r\nأحدث إصدار: %v2\r\nهل ترغب في تنفيذ عملية التحديث؟
+
+UpdateSucceeded = تم التحديث بنجاح!
+
+DicUpdateSucceeded = تم تحديث القواميس وملفات الترجمة.
+
+VersionIsLatest = لديك أحدث إصدار.
+
+WebDataReadFailed = فشل في جلب البيانات من الإنترنت.
+
+OpenWebUrl = هل ترغب في فتح رابط URL؟
+
+AuthorityProtection = ربما يتم حماية هذا العنصر في سجل القائمة بواسطة برنامج لضمان الأمان.\r\n لا يمكن تعطيله أو حذفه أو تعديله.
+
+WinXSorted = تم إعادة ترقيم بعض العناصر لتحسين الترتيب.\r\n يجب إعادة تشغيل مستكشف الملفات لتطبيق التغييرات.
+
+RestoreDefault = يرجى تأكيد استعادة العنصر إلى القيم الافتراضية.
+
+DeleteGroup = هل ترغب حقًا في حذف هذه المجموعة نهائيًا مع جميع عناصر القائمة الخاصة بها؟
+
+
+
+[Tip]
+
+
+RestartExplorer = عند إعادة تشغيل المستكشف، سيومض سطح المكتب. هذا أمر طبيعي.\r\n كما ستدخل التغييرات حيز التنفيذ أيضًا عند إعادة تشغيل الكمبيوتر وتسجيل الخروج والدخول للنظام.
+
+
+CustomFolder = إيقاف تشغيل هذا الخيار سيقوم أيضًا بإيقاف تشغيل علامة التبويب المخصصة في لوحة خصائص كائن نظام الملفات.
+
+
+SendToDrive = يعمل فقط في حالة توصيل قرص قابل للإزالة.\r\n يعرض كل أقسام القرص القابل للإزالة.
+
+
+BuildSendtoMenu = إيقاف تشغيل هذا الخيار سيسرع ظهور القائمة الرئيسية، ولكن سيبطئ ظهور قائمة "إرسال" الفرعية.
+
+
+InvalidItem = إذا كان العنصر غير صالح، سيتم إخفاء جميع عناصر القائمة تحت هذا العنصر (يُنصح بحذفه).
+
+
+EditSubItems = تحرير عناصر القائمة الفرعية
+
+
+AddReference = إضافة مرجع من مشروع الإشارات العامة
+
+
+AddFromPublic = نسخ العنصر من العام
+
+
+AddFromParentMenu = نسخ العنصر من القائمة الأم
+
+
+AddSeparator = إضافة فاصل
+
+
+DeleteGuidDic = حذف القاموس المحلي لـ GUID الذي أضافه المستخدم
+
+
+LockNewMenu = إذا تم تمكينه، فلن تتمكن البرامج الطرفية من إضافة عناصر جديدة وفرز العناصر الحالية (ويمكن إغلاقه واستعادته)
+
+
+DropOrSelectObject = إسقاط أو تحديد الكائن
+
+
+ConfigPath = بعد تغيير مسار حفظ ملف التكوين والبيانات، قد تصبح بعض القوائم المحسنة التي تم تمكينها غير صالحة.\r\n يمكن إعادة تمكينها في القائمة المحسنة.
+
+
+CommandFiles = هذا الأمر يعتمد على ملف التكوين. عند نقل ملف التكوين، سيصبح هذا العنصر من القائمة غير صالح. يجب تمكينه مرة أخرى.
+
+
+CreateGroup = إنشاء مجموعة جديدة
+
+
+ImmediatelyCheck = التحقق على الفور
+
+
+
+[Other]
+
+
+CustomFolder = تخصيص هذا المجلد...
+
+BuildSendtoMenu = إنشاء قائمة "إرسال" الفرعية
+
+NewItem = إنشاء عنصر قائمة جديد
+
+AddGuidBlockedItem = إضافة عنصر GUID محظور
+
+LockNewMenu = قفل القائمة الجديدة
+
+InvalidItem = عنصر القائمة غير صالح:
+
+Separator = >>>>>> فاصل <<<<<<
+
+SelectRegPath = حدد مسار التسجيل
+
+CurrentExtension = الملحق المحدد حاليًا للملف - %s
+
+CurrentPerceivedType = نوع الملف المحدد حاليًا - %s
+
+CurrentDirectoryType = نوع المجلد المحدد حاليًا - %s
+
+CurrentFilePath = المسار الحالي للملف:
+
+CurrentRegPath = المسار الحالي في التسجيل:
+
+WinXSortable = ترتيب قائمة Win+X
+
+ShowFilePath = إظهار مسار الملف في شريط الحالة
+
+OpenMoreRegedit = فتح محرر التسجيل في نافذة منفصلة
+
+OpenMoreExplorer = فتح المستكشف في نافذة منفصلة
+
+RestartExplorer = لجعل التغييرات سارية المفعول، يجب إعادة تشغيل مستكشف Windows.
+
+SwitchDictionaries = التبديل بين القواميس
+
+WebDictionaries = قواميس الويب
+
+UserDictionaries = القواميس الخاصة
+
+DictionaryDescription = القواميس
+
+GuidInfosDictionary = معلومات GUID
+
+UwpMode = وضع UWP
+
+Translators = المترجمون
+
+DonationList = قائمة التبرعات
+
+ConfigPath = مسار حفظ ملفات التكوين والبيانات
+
+AppDataDir = مجلد التطبيقات
+
+AppDir = مجلد البرنامج
+
+AutoBackup = نسخ احتياطي تلقائي للتسجيل عند حذف القائمة
+
+SetUpdateFrequency = تحديد تردد التحديث
+
+OnceAWeek = مرة كل أسبوع
+
+OnceAMonth = مرة شهريًا
+
+OnceASeason = مرة كل ثلاثة أشهر
+
+NeverCheck = أبدًا
+
+SetRequestRepo = طلب مستودع
+
+ProtectOpenItem = حماية عنصر القائمة "فتح"
+
+WebSearchEngine = محرك البحث على الويب
+
+CustomEngine = مخصص...
+
+SetCustomEngine = تحديد محرك البحث (استخدم %s بدلاً من الكلمات المرادة البحث عنها)
+
+HideDisabledItems = إخفاء العناصر المعطلة
+
+HideSysStoreItems = إخفاء عناصر متجر النظام
+
+SetPerceivedType = تعيين نوع %s...
+
+SetDefaultDropEffect = عند السحب والإفلات -
+
+TopMost = دائمًا في المقدمة
+
+
+
+
+
+AboutApp = [التوافق] \r\n 1 = متوافق مع ويندوز 10، 8.1، 8، 7، فيستا \r\n 2 = متوافق مع نظام التشغيل بنية 64 بت و 32 بت\r\n 3 = متوافق مع عالية الدقة (High DPI)، مثالي بنسبة 150%\r\n\r\n[المصدر المفتوح]\r\n 1 = لغات البرمجة: C#، Winform، رخصة MIT\r\n 2 = مستودع Github: https://github.com/BluePointLilac/ContextMenuManager \r\n 3 = مستودع Gitee: https://gitee.com/BluePointLilac/ContextMenuManager \r\n\r\n[تلميحات]\r\n 1 = يقوم هذا البرنامج بقراءة/كتابة كمية كبيرة من ملفات النظام وإدخالات التسجيل، وقد يتم اعتراضه من قبل Windows Defender لأن هذه العمليات حساسة للغاية، يرجى إضافة هذا البرنامج يدويًا إلى قائمة الاستثناءات\r\n\r\n 2 = قد تتأثر بعض العناصر الخاصة في القوائم بعوامل أخرى، قد لا تظهر في القائمة المنسدلة. \r\n ومع ذلك، قد تظهر لا تزال كما مفعلة في هذا البرنامج وفقًا للقواعد العامة المستخدمة من قبل البرنامج. هذا أمر طبيعي. \r\n\r\n 3 = قد يكون طريقة تعطيل القائمة لكل برنامج إدارة قائمة نصية مختلفة. لا تستخدم عدة برامج لإدارة قائمة السياق في نفس الوقت. \r\n معظم البرامج تستخدم طريقة بسيطة ومتقلبة للنسخ الاحتياطي والحذف. يستخدم هذا البرنامج القيم المقدمة من نظام التشغيل لإخفاء المفاتيح قدر الإمكان. \r\n إذا كنت قد استخدمت برنامجًا آخر لتعطيل عنصر القائمة من قبل، يرجى استخدام ذلك البرنامج لاستعادته، وإلا قد لا تتمكن من رؤيته في هذا البرنامج. \r\n\r\n 4 = لم يتم تصميم هذا البرنامج لتنظيف البرامج التي تمت إزالتها، لكن يمكن أن يساعدك في تحديد مواقع التسجيل والملفات لمثل هذه العناصر في القوائم. \r\n يمكنك فعل ما تشاء. إذا كنت مبتدئًا فقط (أو غير متأكد من بعض الخيارات)، فقم بتبديل مفتاح التمكين/التعطيل فقط (لتقليل مخاطر تلف نظام التشغيل).
+
+
+
+Dictionaries = [وصف القاموس] \r\n يحتوي هذا البرنامج على عدة ملفات قاموس، وكل قاموس يحتوي على قاموس مستخدم وقاموس شبكة. \r\n إذا كنت ترغب في إضافة قاموس إلى هذا البرنامج، يمكنك النقر بزر الماوس الأيمن لحفظ الملف واتباع التعليمات الموجودة في الملف لإضافته. \r\n أرسل قاموسك إلى بريدي الإلكتروني أو قم بتقديمه على GitHub للمساهمة في هذا المشروع. \r\n العلامة التبويب اليمنى هي محتوى القاموس الأصلي، يمكنك تبديل العلامة التبويبية لعرضها \r\n\r\n[محتوى القاموس]\n 1 = قاموس لغة عرض نص البرنامج (مجلد اللغات) \r\n 2 = قاموس أيقونات نص الدليل ShellEx (GuidInfosDic.ini) \r\n 3 = قاموس الإعدادات الداخلية لقائمة برامج الطرف الثالث (DetailedEditDic.xml) \r\n 4 = قاموس العناصر المحسّنة في القائمة (EnhanceMenusDic.xml)
+
+
+
+Donate = هذا البرنامج مجاني تمامًا. إذا وجدت هذا البرنامج مفيدًا، \r\n يمكنك التبرع عن طريق مسح الرمز الشريطي أدناه (WeChat، Alipay، Tencent QQ).\r\n يمكنك تحديد المبلغ بناءً على اختيارك. شكرًا لدعمك! كما أتمنى أن تفكر \r\n في إعطاء هذا المشروع نجمة على GitHub أو Gitee (هذا يعني الكثير بالنسبة لي!).
+
+
