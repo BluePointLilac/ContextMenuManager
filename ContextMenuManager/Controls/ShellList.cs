@@ -171,9 +171,37 @@ namespace ContextMenuManager.Controls
         private static string GetPerceivedType(string extension) => Registry.GetValue($@"{RegistryEx.CLASSES_ROOT}\{extension}", "PerceivedType", null)?.ToString();
 
         public Scenes Scene { get; set; }
-
+        // 获取一个实例,可能是新建的或重用的; 先从仓库(缓存)中获取,没有则新建
+        private void Gen_ShellItem(out ShellItem ret,string regPath)
+        {
+            if (this.GetFromRepo("ShellItem",out MyListItem myListItem))
+            {
+                ret = (ShellItem)myListItem;
+                // 更新控件信息
+                ret.ReInit(regPath);
+            }
+            else
+            {
+                ret = new ShellItem(regPath);
+                this.SaveToRepo("ShellItem", ret);
+            }
+        }
+        private void Gen_ShellExItem(out ShellExItem ret,Guid guid, string regPath)
+        {
+            if (this.GetFromRepo("ShellExItem",out MyListItem myListItem))
+            {
+                ret = (ShellExItem)myListItem;
+                ret.ReInit(guid,regPath);
+            }
+            else
+            {
+                ret = new ShellExItem(guid,regPath);
+                this.SaveToRepo( "ShellExItem", ret);
+            }
+        }
         public void LoadItems()
         {
+            ResetRepo();
             string scenePath = null;
             switch(Scene)
             {
@@ -296,7 +324,9 @@ namespace ContextMenuManager.Controls
                 RegTrustedInstaller.TakeRegTreeOwnerShip(shellKey.Name);
                 foreach(string keyName in shellKey.GetSubKeyNames())
                 {
-                    this.AddItem(new ShellItem($@"{shellPath}\{keyName}"));
+                    // this.AddItem(new ShellItem($@"{shellPath}\{keyName}"));
+                    this.Gen_ShellItem(out ShellItem shellItem,$@"{shellPath}\{keyName}");
+                    this.AddItem(shellItem);
                 }
             }
         }
@@ -321,7 +351,8 @@ namespace ContextMenuManager.Controls
                     string keyName = RegistryEx.GetKeyName(path);
                     if(!names.Contains(keyName))
                     {
-                        ShellExItem item = new ShellExItem(dic[path], path);
+                        // ShellExItem item = new ShellExItem(dic[path], path);
+                        this.Gen_ShellExItem(out ShellExItem item, dic[path], path);
                         if(groupItem != null)
                         {
                             item.FoldGroupItem = groupItem;
