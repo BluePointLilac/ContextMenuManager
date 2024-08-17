@@ -36,7 +36,14 @@ namespace ContextMenuManager.Methods
                     if(File.Exists(fullPath)) return true;
                 }
 
-                fullPath = Registry.GetValue($@"{RegAppPath}\{name}", "", null)?.ToString();
+                try
+                {
+                    fullPath = Registry.GetValue($@"{RegAppPath}\{name}", "", null)?.ToString();
+                }
+                catch (System.ArgumentException) // Prevent name errors exceeding 255 characters
+                {
+                    return false;
+                }
                 if(File.Exists(fullPath)) return true;
             }
             fullPath = null;
