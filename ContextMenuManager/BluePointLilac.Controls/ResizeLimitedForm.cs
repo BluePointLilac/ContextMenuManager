@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace BluePointLilac.Controls
 {
-    /// <summary>限制水平、竖直方向调整大小的窗体</summary>
+    /// <summary>限制水平, 竖直方向调整大小的窗体</summary>
     public class ResizeLimitedForm : Form
     {
         /// <summary>水平方向可调整大小</summary>
@@ -38,7 +38,7 @@ namespace BluePointLilac.Controls
             }
         }
 
-        const int WM_NCHITTEST = 0x84;//光标移动或鼠标按下、释放时的消息
+        const int WM_NCHITTEST = 0x84;//光标移动或鼠标按下, 释放时的消息
         /// <summary>鼠标击中位置</summary>
         enum HitTest : int
         {

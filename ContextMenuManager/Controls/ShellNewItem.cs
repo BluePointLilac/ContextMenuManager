@@ -19,7 +19,7 @@ namespace ContextMenuManager.Controls
      * 
      * 2.① [DefaultOpenMode]不能为空，[DefaultOpenModePath]必须存在
      *   ② 菜单文本也不可为空
-     *   ③ ShellNew项中必须存在 NullFile、Data、FileName、Directory、Command 中的一个或多个键值
+     *   ③ ShellNew项中必须存在 NullFile, Data, FileName, Directory, Command 中的一个或多个键值
      *   以上三个条件缺一不可，否则菜单不成立
      *   
      * 3.菜单名称取值优先级:

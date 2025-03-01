@@ -62,7 +62,7 @@ namespace BluePointLilac.Controls
                         //解决控件过多调整窗体大小时延迟问题
                         case SC_SIZE:
                             suspend = this.SuspendMainBodyWhenMove; break;
-                        //解决控件过多最大化、最小化、还原重绘卡顿问题
+                        //解决控件过多最大化, 最小化, 还原重绘卡顿问题
                         case SC_RESTORE:
                         case SC_MINIMIZE:
                         case SC_MAXIMIZE:

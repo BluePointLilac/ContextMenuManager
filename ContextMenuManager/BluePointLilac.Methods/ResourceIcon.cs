@@ -71,7 +71,7 @@ namespace BluePointLilac.Methods
             return GetIcon(extension, flags);
         }
 
-        /// <summary>获取文件夹、磁盘驱动器的图标</summary>
+        /// <summary>获取文件夹, 磁盘驱动器的图标</summary>
         /// <param name="folderPath">文件夹或磁盘驱动器路径</param>
         /// <returns>获取到的图标</returns>
         public static Icon GetFolderIcon(string folderPath)

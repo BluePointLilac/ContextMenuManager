@@ -65,7 +65,7 @@ namespace ContextMenuManager.Methods
                     XmlNode bodyXN = root.SelectSingleNode("body");
                     string info = AppString.Message.UpdateInfo.Replace("%v1", appVer.ToString()).Replace("%v2", webVer.ToString());
                     info += "\r\n\r\n" + MachinedInfo(bodyXN.InnerText);
-                    if(MessageBox.Show(info, AppString.General.AppName, 
+                    if(MessageBox.Show(info, AppString.General.AppName,
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         string netVer = Environment.Version > new Version(4, 0) ? "4.0" : "3.5";

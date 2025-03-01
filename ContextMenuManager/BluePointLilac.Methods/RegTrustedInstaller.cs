@@ -7,7 +7,7 @@ using System.Security.Principal;
 namespace BluePointLilac.Methods
 {
     /// 获取TrustedInstaller权限注册表项的所有权
-    /// 代码作者：JPBlanc（原作者）、蓝点lilac（转载、修改）
+    /// 代码作者：JPBlanc（原作者）, 蓝点lilac（转载, 修改）
     /// 代码原文：https://gist.github.com/JPBlanc/ca0e4f1830e4ca18a526#file-write_a_registry_own_by_trustedinstaller-cs
     public class RegTrustedInstaller
     {
@@ -70,7 +70,7 @@ namespace BluePointLilac.Methods
                 AdjustPrivileges = 32,
                 /// <summary>调整访问令牌中的组属性的权限.</summary>
                 AdjustGroups = 64,
-                /// <summary>更改访问令牌的默认所有者、主组或DACL的权限.</summary>
+                /// <summary>更改访问令牌的默认所有者, 主组或DACL的权限.</summary>
                 AdjustDefault = 128,
                 /// <summary>正确调整访问令牌的会话ID.</summary>
                 AdjustSessionId = 256,
@@ -198,7 +198,7 @@ namespace BluePointLilac.Methods
                     security.AddAccessRule(fullAccess);
                     key.SetAccessControl(security);
 
-                    //注册表操作（写入、删除）
+                    //注册表操作（写入, 删除）
                     //key.SetValue("temp", "");//示例
 
                     //恢复原有所有者
@@ -209,7 +209,7 @@ namespace BluePointLilac.Methods
                     //security.RemoveAccessRule(fullAccess);
                     //key.SetAccessControl(security);
 
-                    ///得到真正所有者、注册表操作、恢复原有所有者、收回原有权利，这四部分在原文中没有被注释掉
+                    ///得到真正所有者, 注册表操作, 恢复原有所有者, 收回原有权利，这四部分在原文中没有被注释掉
                     ///但是如果保留这四部分，会在恢复原有所有者这一步抛出异常，提示没有权限，
                     ///不过我发现经过上面的操作，虽然无法还原所有者权限，但是已经获取了注册表权限
                     ///即已经将TrustedInstaller权限更改为当前管理员用户权限，我要的目的已经达到了
@@ -219,7 +219,7 @@ namespace BluePointLilac.Methods
             finally { key?.Close(); id?.Dispose(); }
         }
 
-        /// <summary>获取注册表项及其子项、递归子级子项权限</summary>
+        /// <summary>获取注册表项及其子项, 递归子级子项权限</summary>
         /// <remarks>将注册表项所有者改为当前管理员用户</remarks>
         /// <param name="regPath">要获取权限的注册表完整路径</param>
         public static void TakeRegTreeOwnerShip(string regPath)

@@ -10,7 +10,7 @@ namespace BluePointLilac.Methods
     /// 代码用途：管理员UAC进程窗口拖放文件
     /// 代码来源1：https://zhuanlan.zhihu.com/p/48735364
     /// 代码来源2：https://github.com/volschin/sdimager/blob/master/ElevatedDragDropManager.cs
-    /// 代码作者：雨少主（知乎）、volschin（Github）、蓝点lilac（转载、修改）
+    /// 代码作者：雨少主（知乎）, volschin（Github）, 蓝点lilac（转载, 修改）
     /// 调用方法：var droper = new ElevatedFileDroper(control);
     /// droper.DragDrop += (sender, e) => MessageBox.Show(droper.DropFilePaths[0]);
     /// 备注：此类只能生效一个实例，不能将control.AllowDrop设为true，droper.DragDrop与control.DragDrop不共存

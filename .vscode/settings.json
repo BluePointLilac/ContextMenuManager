@@ -1,0 +1,6 @@
+{
+    "dotnet.preferCSharpExtension": true,
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "master"
+    ]
+}

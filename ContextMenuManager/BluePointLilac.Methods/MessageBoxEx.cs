@@ -242,7 +242,7 @@ namespace BluePointLilac.Methods
 
     public static class MessageBoxImage
     {
-        // SystemIcons 里面的图标不是扁平的,❌、⚠️、❔、ℹ️
+        // SystemIcons 里面的图标不是扁平的,❌, ⚠️, ❔, ℹ️
         public static readonly Image Error = GetImage(-98);
         public static readonly Image Warning = GetImage(-84);
         public static readonly Image Question = GetImage(-99);

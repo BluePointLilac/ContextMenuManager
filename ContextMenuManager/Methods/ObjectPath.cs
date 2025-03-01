@@ -18,7 +18,7 @@ namespace ContextMenuManager.Methods
         private static readonly List<string> IgnoreCommandParts = new List<string> { "", "%1", "%v" };
 
         /// <summary>根据文件名获取完整的文件路径</summary>
-        /// <remarks>fileName为Win+R、注册表等可直接使用的文件名</remarks>
+        /// <remarks>fileName为Win+R, 注册表等可直接使用的文件名</remarks>
         /// <param name="fileName">文件名</param>
         /// <returns>成功提取返回true, fullPath为现有文件路径; 否则返回false, fullPath为null</returns>
         public static bool GetFullFilePath(string fileName, out string fullPath)

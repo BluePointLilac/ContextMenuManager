@@ -20,7 +20,7 @@ namespace BluePointLilac.Methods
             //还有一种方法，修改HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit
             //中的LastKey键值（记录上次关闭注册表编辑器时的注册表路径）为要跳转的注册表项路径regPath，
             //再使用Process.Start("regedit.exe", "-m")打开注册表编辑器
-            //优点：代码少、不会有Bug。缺点：不能定位具体键，没有逐步展开效果
+            //优点：代码少, 不会有Bug。缺点：不能定位具体键，没有逐步展开效果
             if(regPath == null) return;
             Process process;
             IntPtr hMain = FindWindow("RegEdit_RegEdit", null);
