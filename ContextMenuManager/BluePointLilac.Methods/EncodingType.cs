@@ -44,7 +44,7 @@ namespace BluePointLilac.Methods
             int count = 1; //计算当前正分析的字符应还有的字节数 
             for(int i = 0; i < bytes.Length; i++)
             {
-                byte curByte = bytes[i];//当前分析的字节. 
+                int curByte = bytes[i];//当前分析的字节.
                 if(count == 1)
                 {
                     if(curByte >= 0x80)
