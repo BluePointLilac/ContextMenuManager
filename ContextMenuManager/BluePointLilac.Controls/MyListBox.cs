@@ -11,7 +11,7 @@ namespace BluePointLilac.Controls
         public MyListBox()
         {
             this.AutoScroll = true;
-            this.BackColor = Color.FromArgb(250, 250, 250);
+            this.BackColor = ContextMenuManager.Methods.AppTheme.FormBack;
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -52,14 +52,14 @@ namespace BluePointLilac.Controls
                 if(hoveredItem == value) return;
                 if(hoveredItem != null)
                 {
-                    hoveredItem.ForeColor = Color.FromArgb(90, 90, 90);
+                    hoveredItem.ForeColor = ContextMenuManager.Methods.AppTheme.PanelFore;
                     //hoveredItem.BackColor = Color.FromArgb(250, 250, 250);
                     //hoveredItem.Font = new Font(hoveredItem.Font, FontStyle.Regular);
                 }
                 hoveredItem = value;
                 if(hoveredItem != null)
                 {
-                    value.ForeColor = Color.FromArgb(0, 138, 217);
+                    value.ForeColor = ContextMenuManager.Methods.AppTheme.ItemSelected;
                     //value.BackColor = Color.FromArgb(200, 230, 250);
                     //value.Font = new Font(hoveredItem.Font, FontStyle.Bold);
                     value.Focus();
@@ -154,8 +154,8 @@ namespace BluePointLilac.Controls
             this.Height = 50.DpiZoom();
             this.Margin = new Padding(0);
             this.Font = SystemFonts.IconTitleFont;
-            this.ForeColor = Color.FromArgb(80, 80, 80);
-            this.BackColor = Color.FromArgb(250, 250, 250);
+            this.ForeColor = ContextMenuManager.Methods.AppTheme.Text;
+            this.BackColor = ContextMenuManager.Methods.AppTheme.FormBack;
             this.Controls.AddRange(new Control[] { lblSeparator, flpControls, lblText, picImage });
             this.Resize += (Sender, e) => pnlScrollbar.Height = this.ClientSize.Height;
             flpControls.MouseClick += (sender, e) => this.OnMouseClick(e);
@@ -224,7 +224,7 @@ namespace BluePointLilac.Controls
         };
         private readonly Label lblSeparator = new Label
         {
-            BackColor = Color.FromArgb(220, 220, 220),
+            BackColor = ContextMenuManager.Methods.AppTheme.Separator,
             Dock = DockStyle.Bottom,
             Name = "Separator",
             Height = 1

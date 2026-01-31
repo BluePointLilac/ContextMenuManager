@@ -28,6 +28,7 @@ namespace ContextMenuManager.Controls
             mliOpenMoreExplorer.AddCtr(chkOpenMoreExplorer);
             mliHideDisabledItems.AddCtr(chkHideDisabledItems);
             mliHideSysStoreItems.AddCtr(chkHideSysStoreItems);
+            mliDarkTheme.AddCtr(chkDarkTheme);
 
             ToolTipBox.SetToolTip(btnUpdate, AppString.Tip.ImmediatelyCheck);
             ToolTipBox.SetToolTip(cmbConfigDir, AppString.Tip.ConfigPath);
@@ -70,8 +71,22 @@ namespace ContextMenuManager.Controls
             cmbUpdate.SelectionChangeCommitted += (sender, e) => ChangeUpdateFrequency();
             cmbConfigDir.SelectionChangeCommitted += (sender, e) => ChangeConfigDir();
             cmbEngine.SelectionChangeCommitted += (sender, e) => ChangeEngineUrl();
+            chkDarkTheme.CheckChanged += () =>
+            {
+               AppConfig.DarkTheme = chkDarkTheme.Checked;
+               if (AppMessageBox.Show(AppString.Message.RestartApp, MessageBoxButtons.OKCancel) == DialogResult.OK)
+               {
+                   SingleInstance.Restart();
+               }
+            };
             this.ResumeLayout();
         }
+
+        readonly MyListItem mliDarkTheme = new MyListItem
+        {
+            Text = "Dark Theme (Dark Mode)" // Using hardcoded string as AppString is not updated yet for this demo
+        };
+        readonly MyCheckBox chkDarkTheme = new MyCheckBox();
 
         readonly MyListItem mliConfigDir = new MyListItem
         {
@@ -163,7 +178,7 @@ namespace ContextMenuManager.Controls
 
         public void LoadItems()
         {
-            this.AddItems(new[] { mliConfigDir, mliUpdate, mliRepo, mliEngine, mliBackup, mliTopMost, mliProtect, mliShowFilePath,
+            this.AddItems(new[] { mliConfigDir, mliUpdate, mliRepo, mliEngine, mliBackup, mliDarkTheme, mliTopMost, mliProtect, mliShowFilePath,
                 mliHideDisabledItems, mliHideSysStoreItems, mliOpenMoreRegedit, mliOpenMoreExplorer, mliWinXSortable });
             foreach(MyListItem item in this.Controls) item.HasImage = false;
             cmbConfigDir.SelectedIndex = AppConfig.SaveToAppDir ? 1 : 0;
@@ -179,6 +194,7 @@ namespace ContextMenuManager.Controls
             chkOpenMoreExplorer.Checked = AppConfig.OpenMoreExplorer;
             chkHideDisabledItems.Checked = AppConfig.HideDisabledItems;
             chkHideSysStoreItems.Checked = AppConfig.HideSysStoreItems;
+            chkDarkTheme.Checked = AppConfig.DarkTheme;
         }
 
         private void ChangeConfigDir()

@@ -261,6 +261,12 @@ namespace ContextMenuManager.Methods
             set => SetWindowValue("TopMost", value ? 1 : 0);
         }
 
+        public static bool DarkTheme
+        {
+            get => GetGeneralValue("DarkTheme") == "1";
+            set => SetGeneralValue("DarkTheme", value ? 1 : 0);
+        }
+
         public static Size MainFormSize
         {
             get
@@ -274,6 +280,49 @@ namespace ContextMenuManager.Methods
                 return Size.Empty;
             }
             set => SetWindowValue("MainFormSize", value.Width + "," + value.Height);
+        }
+    }
+
+    public static class AppTheme
+    {
+        public static Color FormBack { get; private set; }
+        public static Color FormFore { get; private set; }
+        public static Color PanelBack { get; private set; }
+        public static Color PanelFore { get; private set; }
+        public static Color ItemHover { get; private set; }
+        public static Color ItemSelected { get; private set; }
+        public static Color Separator { get; private set; }
+        public static Color Text { get; private set; }
+
+        static AppTheme()
+        {
+            Load();
+        }
+
+        public static void Load()
+        {
+            if (AppConfig.DarkTheme)
+            {
+                FormBack = Color.FromArgb(30, 30, 30);
+                FormFore = Color.FromArgb(240, 240, 240);
+                PanelBack = Color.FromArgb(45, 45, 48);
+                PanelFore = Color.FromArgb(240, 240, 240);
+                ItemHover = Color.FromArgb(60, 60, 60);
+                ItemSelected = Color.FromArgb(0, 122, 204);
+                Separator = Color.FromArgb(80, 80, 80);
+                Text = Color.FromArgb(220, 220, 220);
+            }
+            else
+            {
+                FormBack = Color.FromArgb(250, 250, 250);
+                FormFore = Color.FromArgb(80, 80, 80);
+                PanelBack = Color.FromArgb(245, 245, 245);
+                PanelFore = Color.FromArgb(80, 80, 80);
+                ItemHover = Color.FromArgb(80, 180, 250);
+                ItemSelected = Color.FromArgb(40, 140, 210);
+                Separator = Color.FromArgb(220, 220, 220);
+                Text = Color.FromArgb(80, 80, 80);
+            }
         }
     }
 }
