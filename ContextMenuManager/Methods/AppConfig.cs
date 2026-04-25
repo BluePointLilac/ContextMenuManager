@@ -1,4 +1,4 @@
-﻿using BluePointLilac.Methods;
+using BluePointLilac.Methods;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -261,10 +261,42 @@ namespace ContextMenuManager.Methods
             set => SetWindowValue("TopMost", value ? 1 : 0);
         }
 
+        public static int ThemeMode
+        {
+            get
+            {
+                string value = GetGeneralValue("ThemeMode");
+                if(int.TryParse(value, out int mode) && mode >= 0 && mode <= 2) return mode;
+                return GetGeneralValue("DarkTheme") == "1" ? 1 : 0;
+            }
+            set => SetGeneralValue("ThemeMode", value);
+        }
+
         public static bool DarkTheme
         {
-            get => GetGeneralValue("DarkTheme") == "1";
-            set => SetGeneralValue("DarkTheme", value ? 1 : 0);
+            get
+            {
+                if(ThemeMode == 1) return true;
+                if(ThemeMode == 0) return false;
+                return IsSystemDarkTheme();
+            }
+        }
+
+        public static bool IsSystemDarkTheme()
+        {
+            try
+            {
+                using(var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
+                {
+                    if(key != null)
+                    {
+                        object value = key.GetValue("AppsUseLightTheme");
+                        if(value is int v) return v == 0;
+                    }
+                }
+            }
+            catch { }
+            return false;
         }
 
         public static Size MainFormSize
@@ -299,6 +331,8 @@ namespace ContextMenuManager.Methods
             Load();
         }
 
+        public static event Action ThemeChanged;
+
         public static void Load()
         {
             if (AppConfig.DarkTheme)
@@ -323,6 +357,12 @@ namespace ContextMenuManager.Methods
                 Separator = Color.FromArgb(220, 220, 220);
                 Text = Color.FromArgb(80, 80, 80);
             }
+        }
+
+        public static void OnThemeChanged()
+        {
+            Load();
+            ThemeChanged?.Invoke();
         }
     }
 }

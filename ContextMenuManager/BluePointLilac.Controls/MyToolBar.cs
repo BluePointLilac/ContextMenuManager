@@ -1,4 +1,4 @@
-﻿using BluePointLilac.Methods;
+using BluePointLilac.Methods;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -81,6 +81,14 @@ namespace BluePointLilac.Controls
             int maxWidth = 72.DpiZoom();
             Array.ForEach(buttons, button => maxWidth = Math.Max(maxWidth, TextRenderer.MeasureText(button.Text, button.Font).Width));
             Array.ForEach(buttons, button => { button.Width = maxWidth; AddButton(button); });
+        }
+
+        public void UpdateTheme()
+        {
+            if (ContextMenuManager.Methods.AppConfig.DarkTheme)
+                this.BackColor = Color.FromArgb(45, 45, 48);
+            else
+                this.BackColor = Color.FromArgb(85, 145, 215);
         }
     }
 

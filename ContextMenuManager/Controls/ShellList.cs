@@ -1,4 +1,4 @@
-﻿using BluePointLilac.Controls;
+using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Methods;
 using Microsoft.Win32;
@@ -230,7 +230,7 @@ namespace ContextMenuManager.Controls
                 case Scenes.CommandStore:
                     //Vista系统没有这一项
                     if(WinOsVersion.Current == WinOsVersion.Vista) return;
-                    this.AddNewItem(RegistryEx.GetParentPath(ShellItem.CommandStorePath));
+                    this.AddNewItem(RegistryEx.GetParentPath(ObjectPath.CommandStorePath));
                     this.LoadStoreItems();
                     return;
                 case Scenes.DragDrop:
@@ -241,6 +241,7 @@ namespace ContextMenuManager.Controls
                     this.LoadShellExItems(GetShellExPath(MENUPATH_DRIVE));
                     this.LoadShellExItems(GetShellExPath(MENUPATH_ALLOBJECTS));
                     return;
+
             }
             this.AddNewItem(scenePath);
             this.LoadItems(scenePath);
@@ -371,11 +372,12 @@ namespace ContextMenuManager.Controls
             PictureButton btnEnhanceMenu = new PictureButton(AppImage.Enhance);
             ToolTipBox.SetToolTip(btnAddExisting, AppString.Tip.AddFromPublic);
             ToolTipBox.SetToolTip(btnEnhanceMenu, AppString.StatusBar.EnhanceMenu);
-            if(Scene == Scenes.DragDrop || ShellItem.CommandStorePath.Equals(shellPath,
+            if(Scene == Scenes.DragDrop || ObjectPath.CommandStorePath.Equals(shellPath,
+                StringComparison.OrdinalIgnoreCase) || ObjectPath.CommandStorePathCU.Equals(shellPath,
                 StringComparison.OrdinalIgnoreCase)) btnAddExisting.Visible = false;
             else
             {
-                using(RegistryKey key = RegistryEx.GetRegistryKey(ShellItem.CommandStorePath))
+                using(RegistryKey key = RegistryEx.GetRegistryKey(ObjectPath.CommandStorePath))
                 {
                     List<string> subKeyNames = key.GetSubKeyNames().ToList();
                     if(AppConfig.HideSysStoreItems) subKeyNames.RemoveAll(name => name.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase));
@@ -410,7 +412,7 @@ namespace ContextMenuManager.Controls
                 using(ShellStoreDialog dlg = new ShellStoreDialog())
                 {
                     dlg.IsReference = false;
-                    dlg.ShellPath = ShellItem.CommandStorePath;
+                    dlg.ShellPath = ObjectPath.CommandStorePath;
                     dlg.Filter = new Func<string, bool>(itemName => !(AppConfig.HideSysStoreItems
                         && itemName.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase)));
                     if(dlg.ShowDialog() != DialogResult.OK) return;
@@ -548,15 +550,20 @@ namespace ContextMenuManager.Controls
 
         private void LoadStoreItems()
         {
-            using(RegistryKey shellKey = RegistryEx.GetRegistryKey(ShellItem.CommandStorePath))
+            foreach(string path in new[] { ObjectPath.CommandStorePath, ObjectPath.CommandStorePathCU })
             {
-                foreach(string itemName in shellKey.GetSubKeyNames())
+                using(RegistryKey shellKey = RegistryEx.GetRegistryKey(path))
                 {
-                    if(AppConfig.HideSysStoreItems && itemName.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase)) continue;
-                    this.AddItem(new StoreShellItem($@"{ShellItem.CommandStorePath}\{itemName}", true, false));
+                    if(shellKey == null) continue;
+                    foreach(string itemName in shellKey.GetSubKeyNames())
+                    {
+                        if(AppConfig.HideSysStoreItems && itemName.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase)) continue;
+                        this.AddItem(new StoreShellItem($@"{path}\{itemName}", true, false));
+                    }
                 }
             }
         }
+
 
         private void LoadUwpModeItem()
         {

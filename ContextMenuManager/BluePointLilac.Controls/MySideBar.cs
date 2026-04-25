@@ -1,4 +1,4 @@
-﻿using BluePointLilac.Methods;
+using BluePointLilac.Methods;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -211,6 +211,18 @@ namespace BluePointLilac.Controls
                 hoverIndex = value;
                 HoverIndexChanged?.Invoke(this, null);
             }
+        }
+
+        public void UpdateTheme()
+        {
+            this.ForeColor = ContextMenuManager.Methods.AppTheme.PanelFore;
+            this.BackColor = ContextMenuManager.Methods.AppTheme.PanelBack;
+            PnlSelected.BackColor = ContextMenuManager.Methods.AppTheme.ItemSelected;
+            PnlHovered.BackColor = ContextMenuManager.Methods.AppTheme.ItemHover;
+            LblSeparator.BackColor = ContextMenuManager.Methods.AppTheme.Separator;
+            PaintItems();
+            RefreshItem(PnlSelected, SelectedIndex);
+            RefreshItem(PnlHovered, HoveredIndex);
         }
     }
 }
