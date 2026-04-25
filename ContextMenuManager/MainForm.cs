@@ -1,4 +1,4 @@
-﻿using BluePointLilac.Controls;
+using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Controls;
 using ContextMenuManager.Methods;
@@ -32,6 +32,54 @@ namespace ContextMenuManager
             AddContextMenus();
             ResizeSideBar();
             JumpItem(0, 0);
+
+            AppTheme.ThemeChanged += () => ApplyThemeToControls(this);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            const int WM_SETTINGCHANGE = 0x001A;
+            if(m.Msg == WM_SETTINGCHANGE && AppConfig.ThemeMode == 2)
+            {
+                AppTheme.OnThemeChanged();
+            }
+        }
+
+        private void ApplyThemeToControls(Control control)
+        {
+            if(control is Form form)
+            {
+                form.BackColor = AppTheme.FormBack;
+                form.ForeColor = AppTheme.FormFore;
+            }
+            else if(control is BluePointLilac.Controls.MySideBar sideBar)
+            {
+                sideBar.UpdateTheme();
+            }
+            else if(control is BluePointLilac.Controls.MyToolBar toolBar)
+            {
+                toolBar.UpdateTheme();
+            }
+            else if(control is MyListBox myListBox)
+            {
+                myListBox.BackColor = AppTheme.FormBack;
+            }
+            else if(control is MyListItem myListItem)
+            {
+                myListItem.BackColor = AppTheme.FormBack;
+                myListItem.ForeColor = AppTheme.Text;
+                if(myListItem.Controls.ContainsKey("Separator"))
+                {
+                    myListItem.Controls["Separator"].BackColor = AppTheme.Separator;
+                }
+            }
+
+            foreach(Control child in control.Controls)
+            {
+                ApplyThemeToControls(child);
+            }
+            control.Invalidate(true);
         }
 
         readonly MyToolBarButton[] ToolBarButtons =

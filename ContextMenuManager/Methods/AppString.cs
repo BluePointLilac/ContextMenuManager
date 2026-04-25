@@ -328,6 +328,7 @@ namespace ContextMenuManager.Methods
             public static string SetPerceivedType { get; set; }
             public static string SetDefaultDropEffect { get; set; }
             public static string TopMost { get; set; }
+            public static string Win11ClassicMenu { get; set; }
         }
     }
 }

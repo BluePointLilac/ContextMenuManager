@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -49,8 +49,8 @@ namespace BluePointLilac.Methods
                 {
                     if(curByte >= 0x80)
                     {
-                        //判断当前 
-                        while(((curByte <<= 1) & 0x80) != 0) count++;
+                        int tempByte = curByte;
+                        while(((tempByte <<= 1) & 0x80) != 0) count++;
                         //标记位首位若为非0 则至少以2个1开始 如:110XXXXX...........1111110X 
                         if(count == 1 || count > 6) return false;
                     }

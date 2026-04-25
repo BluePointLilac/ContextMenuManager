@@ -11,8 +11,8 @@ namespace BluePointLilac.Controls
         {
             this.SuspendLayout();
             this.Text = Application.ProductName;
-            this.ForeColor = Color.FromArgb(80, 80, 80);
-            this.BackColor = Color.FromArgb(250, 250, 250);
+            this.ForeColor = ContextMenuManager.Methods.AppTheme.FormFore;
+            this.BackColor = ContextMenuManager.Methods.AppTheme.FormBack;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             this.Controls.AddRange(new Control[] { MainBody, SideBar, StatusBar, ToolBar });

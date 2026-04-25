@@ -1,4 +1,4 @@
-﻿using BluePointLilac.Methods;
+using BluePointLilac.Methods;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,7 +12,10 @@ namespace BluePointLilac.Controls
             this.Height = 80.DpiZoom();
             this.Dock = DockStyle.Top;
             this.DoubleBuffered = true;
-            this.BackColor = Color.FromArgb(85, 145, 215);
+            if (ContextMenuManager.Methods.AppConfig.DarkTheme)
+                this.BackColor = Color.FromArgb(45, 45, 48); // Darker blue/grey for dark theme
+            else
+                this.BackColor = Color.FromArgb(85, 145, 215);
         }
 
         private MyToolBarButton selectedButton;
@@ -78,6 +81,14 @@ namespace BluePointLilac.Controls
             int maxWidth = 72.DpiZoom();
             Array.ForEach(buttons, button => maxWidth = Math.Max(maxWidth, TextRenderer.MeasureText(button.Text, button.Font).Width));
             Array.ForEach(buttons, button => { button.Width = maxWidth; AddButton(button); });
+        }
+
+        public void UpdateTheme()
+        {
+            if (ContextMenuManager.Methods.AppConfig.DarkTheme)
+                this.BackColor = Color.FromArgb(45, 45, 48);
+            else
+                this.BackColor = Color.FromArgb(85, 145, 215);
         }
     }
 

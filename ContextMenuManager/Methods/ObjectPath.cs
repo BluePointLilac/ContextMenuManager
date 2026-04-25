@@ -1,4 +1,4 @@
-﻿using BluePointLilac.Methods;
+using BluePointLilac.Methods;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,8 @@ namespace ContextMenuManager.Methods
         /// <summary>路径类型</summary>
         public enum PathType { File, Directory, Registry }
         private const string RegAppPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
+        public const string CommandStorePath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell";
+        public const string CommandStorePathCU = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell";
         private const string ShellExecuteCommand = "mshta vbscript:createobject(\"shell.application\").shellexecute(\"";
 
         private static readonly char[] IllegalChars = { '/', '*', '?', '\"', '<', '>', '|' };

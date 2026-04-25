@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace BluePointLilac.Methods
 {
@@ -25,5 +25,8 @@ namespace BluePointLilac.Methods
         public static readonly Version Win10_1909 = new Version(10, 0, 18363);
         public static readonly Version Win10_2004 = new Version(10, 0, 19041);
         public static readonly Version Win10_20H2 = new Version(10, 0, 19042);
+        public static readonly Version Win11 = new Version(10, 0, 22000);
+
+        public static bool IsWin11 => Current >= Win11;
     }
 }

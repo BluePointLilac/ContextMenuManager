@@ -1,4 +1,4 @@
-﻿using BluePointLilac.Controls;
+using BluePointLilac.Controls;
 using BluePointLilac.Methods;
 using ContextMenuManager.Methods;
 using System.Drawing;
@@ -28,6 +28,8 @@ namespace ContextMenuManager.Controls
             mliOpenMoreExplorer.AddCtr(chkOpenMoreExplorer);
             mliHideDisabledItems.AddCtr(chkHideDisabledItems);
             mliHideSysStoreItems.AddCtr(chkHideSysStoreItems);
+            mliAppTheme.AddCtr(cmbAppTheme);
+            mliWin11ClassicMenu.AddCtr(chkWin11ClassicMenu);
 
             ToolTipBox.SetToolTip(btnUpdate, AppString.Tip.ImmediatelyCheck);
             ToolTipBox.SetToolTip(cmbConfigDir, AppString.Tip.ConfigPath);
@@ -41,13 +43,16 @@ namespace ContextMenuManager.Controls
             cmbUpdate.Items.AddRange(new[] { AppString.Other.OnceAWeek, AppString.Other.OnceAMonth,
                 AppString.Other.OnceASeason, AppString.Other.NeverCheck });
 
-            cmbConfigDir.Width = cmbEngine.Width = cmbUpdate.Width = cmbRepo.Width = 120.DpiZoom();
+            cmbAppTheme.Items.AddRange(new[] { "Light", "Dark", "Auto" });
+
+            cmbConfigDir.Width = cmbEngine.Width = cmbUpdate.Width = cmbRepo.Width = cmbAppTheme.Width = 120.DpiZoom();
             cmbConfigDir.DropDownStyle = cmbEngine.DropDownStyle = cmbUpdate.DropDownStyle
-                = cmbRepo.DropDownStyle = ComboBoxStyle.DropDownList;
+                = cmbRepo.DropDownStyle = cmbAppTheme.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbConfigDir.AutosizeDropDownWidth();
             cmbEngine.AutosizeDropDownWidth();
             cmbUpdate.AutosizeDropDownWidth();
             cmbRepo.AutosizeDropDownWidth();
+            cmbAppTheme.AutosizeDropDownWidth();
 
             btnUpdate.MouseDown += (sender, e) =>
             {
@@ -70,8 +75,32 @@ namespace ContextMenuManager.Controls
             cmbUpdate.SelectionChangeCommitted += (sender, e) => ChangeUpdateFrequency();
             cmbConfigDir.SelectionChangeCommitted += (sender, e) => ChangeConfigDir();
             cmbEngine.SelectionChangeCommitted += (sender, e) => ChangeEngineUrl();
+            cmbAppTheme.SelectionChangeCommitted += (sender, e) =>
+            {
+               if(AppConfig.ThemeMode == cmbAppTheme.SelectedIndex) return;
+               AppConfig.ThemeMode = cmbAppTheme.SelectedIndex;
+               AppTheme.OnThemeChanged();
+            };
+            chkWin11ClassicMenu.CheckChanged += () =>
+            {
+                Win11Helper.IsClassicMenuEnabled = chkWin11ClassicMenu.Checked;
+                ExplorerRestarter.Show();
+            };
             this.ResumeLayout();
         }
+
+        readonly MyListItem mliAppTheme = new MyListItem
+        {
+            Text = "App Theme"
+        };
+        readonly ComboBox cmbAppTheme = new ComboBox();
+
+        readonly MyListItem mliWin11ClassicMenu = new MyListItem
+        {
+            Text = AppString.Other.Win11ClassicMenu,
+            Visible = WinOsVersion.IsWin11
+        };
+        readonly MyCheckBox chkWin11ClassicMenu = new MyCheckBox();
 
         readonly MyListItem mliConfigDir = new MyListItem
         {
@@ -163,7 +192,7 @@ namespace ContextMenuManager.Controls
 
         public void LoadItems()
         {
-            this.AddItems(new[] { mliConfigDir, mliUpdate, mliRepo, mliEngine, mliBackup, mliTopMost, mliProtect, mliShowFilePath,
+            this.AddItems(new[] { mliConfigDir, mliUpdate, mliRepo, mliEngine, mliBackup, mliAppTheme, mliWin11ClassicMenu, mliTopMost, mliProtect, mliShowFilePath,
                 mliHideDisabledItems, mliHideSysStoreItems, mliOpenMoreRegedit, mliOpenMoreExplorer, mliWinXSortable });
             foreach(MyListItem item in this.Controls) item.HasImage = false;
             cmbConfigDir.SelectedIndex = AppConfig.SaveToAppDir ? 1 : 0;
@@ -179,6 +208,8 @@ namespace ContextMenuManager.Controls
             chkOpenMoreExplorer.Checked = AppConfig.OpenMoreExplorer;
             chkHideDisabledItems.Checked = AppConfig.HideDisabledItems;
             chkHideSysStoreItems.Checked = AppConfig.HideSysStoreItems;
+            cmbAppTheme.SelectedIndex = AppConfig.ThemeMode;
+            chkWin11ClassicMenu.Checked = Win11Helper.IsClassicMenuEnabled;
         }
 
         private void ChangeConfigDir()

@@ -1,4 +1,4 @@
-﻿using BluePointLilac.Methods;
+using BluePointLilac.Methods;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -261,6 +261,44 @@ namespace ContextMenuManager.Methods
             set => SetWindowValue("TopMost", value ? 1 : 0);
         }
 
+        public static int ThemeMode
+        {
+            get
+            {
+                string value = GetGeneralValue("ThemeMode");
+                if(int.TryParse(value, out int mode) && mode >= 0 && mode <= 2) return mode;
+                return GetGeneralValue("DarkTheme") == "1" ? 1 : 0;
+            }
+            set => SetGeneralValue("ThemeMode", value);
+        }
+
+        public static bool DarkTheme
+        {
+            get
+            {
+                if(ThemeMode == 1) return true;
+                if(ThemeMode == 0) return false;
+                return IsSystemDarkTheme();
+            }
+        }
+
+        public static bool IsSystemDarkTheme()
+        {
+            try
+            {
+                using(var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
+                {
+                    if(key != null)
+                    {
+                        object value = key.GetValue("AppsUseLightTheme");
+                        if(value is int v) return v == 0;
+                    }
+                }
+            }
+            catch { }
+            return false;
+        }
+
         public static Size MainFormSize
         {
             get
@@ -274,6 +312,57 @@ namespace ContextMenuManager.Methods
                 return Size.Empty;
             }
             set => SetWindowValue("MainFormSize", value.Width + "," + value.Height);
+        }
+    }
+
+    public static class AppTheme
+    {
+        public static Color FormBack { get; private set; }
+        public static Color FormFore { get; private set; }
+        public static Color PanelBack { get; private set; }
+        public static Color PanelFore { get; private set; }
+        public static Color ItemHover { get; private set; }
+        public static Color ItemSelected { get; private set; }
+        public static Color Separator { get; private set; }
+        public static Color Text { get; private set; }
+
+        static AppTheme()
+        {
+            Load();
+        }
+
+        public static event Action ThemeChanged;
+
+        public static void Load()
+        {
+            if (AppConfig.DarkTheme)
+            {
+                FormBack = Color.FromArgb(30, 30, 30);
+                FormFore = Color.FromArgb(240, 240, 240);
+                PanelBack = Color.FromArgb(45, 45, 48);
+                PanelFore = Color.FromArgb(240, 240, 240);
+                ItemHover = Color.FromArgb(60, 60, 60);
+                ItemSelected = Color.FromArgb(0, 122, 204);
+                Separator = Color.FromArgb(80, 80, 80);
+                Text = Color.FromArgb(220, 220, 220);
+            }
+            else
+            {
+                FormBack = Color.FromArgb(250, 250, 250);
+                FormFore = Color.FromArgb(80, 80, 80);
+                PanelBack = Color.FromArgb(245, 245, 245);
+                PanelFore = Color.FromArgb(80, 80, 80);
+                ItemHover = Color.FromArgb(80, 180, 250);
+                ItemSelected = Color.FromArgb(40, 140, 210);
+                Separator = Color.FromArgb(220, 220, 220);
+                Text = Color.FromArgb(80, 80, 80);
+            }
+        }
+
+        public static void OnThemeChanged()
+        {
+            Load();
+            ThemeChanged?.Invoke();
         }
     }
 }
