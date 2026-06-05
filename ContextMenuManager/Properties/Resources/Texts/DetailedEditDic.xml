@@ -23,6 +23,9 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item>
       <Text Value='使用经典紧凑右键菜单'/>
+      <Text Value='Use classic compact context menu'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <OSVersion Compare='&gt;='>10.0.14393</OSVersion>
       <OSVersion Compare='&lt;'>10.0.17763</OSVersion>
@@ -30,19 +33,34 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item>
       <Text Value='右键菜单在左侧弹出'/>
+      <Text Value='Context menu pops up on the left side'>
+        <Culture>en-US</Culture>
+      </Text>
       <Tip Value='更改后需要重新登录账户生效'/>
+      <Tip Value='Takes effect after signing out and back in'>
+        <Culture>en-US</Culture>
+      </Tip>
       <OSVersion Compare='&gt;='>10.0</OSVersion>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows' ValueName='MenuDropAlignment' On='1'/>
       <Process FileName='explorer.exe' Arguments='shell:::{80F3F1D5-FECA-45F3-BC32-752C152E456E}'/>
     </Item>
     <Item>
       <Text Value='Shell类型菜单同时操作文件对象数量限制'/>
+      <Text Value='Limit on file objects handled at once by Shell-type menus'>
+        <Culture>en-US</Culture>
+      </Text>
       <Tip Value='系统默认值为15，超过15为无限制'/>
+      <Tip Value='System default is 15; greater than 15 means no limit'>
+        <Culture>en-US</Culture>
+      </Tip>
       <IsNumberItem/>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer' ValueName='MultipleInvokePromptMinimum' Max='32767' Min='1' Default='15'/>
     </Item>
     <Item>
       <Text Value='创建快捷方式时去除 "快捷方式" 后缀'/>
+      <Text Value='Remove "- Shortcut" suffix when creating shortcuts'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <Rule RegPath='\NamingTemplates' ValueName='ShortcutNameTemplate' On='%s' ValueKind='REG_SZ'/>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates' ValueName='ShortcutNameTemplate' On='%s' ValueKind='REG_SZ'/>
@@ -50,12 +68,21 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item>
       <Text Value='文件(夹) 复制粘贴去除 "副本" 后缀'/>
+      <Text Value='Remove "- Copy" suffix when copying and pasting files (folders)'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule RegPath='\NamingTemplates' ValueName='CopyNameTemplate' On='%s' ValueKind='REG_SZ'/>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates' ValueName='CopyNameTemplate' On='%s' ValueKind='REG_SZ'/>
     </Item>
     <Item>
       <Text Value='文件(夹) 加密 解密'/>
+      <Text Value='Encrypt / decrypt files (folders)'>
+        <Culture>en-US</Culture>
+      </Text>
       <Tip Value='当前账户加密后的文件需解密后才能在其他账户中打开'/>
+      <Tip Value='Files encrypted by the current account must be decrypted before they can be opened by other accounts'>
+        <Culture>en-US</Culture>
+      </Tip>
       <Rule RegPath='\Advanced' ValueName='EncryptionContextMenu' On='1'/>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='EncryptionContextMenu' On='1'/>
     </Item>
@@ -70,19 +97,31 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <RegPath>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer</RegPath>
     <Item>
       <Text Value='右键菜单'/>
+      <Text Value='Context menu'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <Rule ValueName='NoTrayContextMenu' Off='1'/>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoTrayContextMenu' Off='1'/>
     </Item>
     <Item>
       <Text Value='任务栏设置 锁定任务栏'/>
+      <Text Value='Taskbar settings / Lock the taskbar'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <Rule ValueName='TaskbarLockAll' Off='1'/>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='TaskbarLockAll' Off='1'/>
     </Item>
     <Item>
       <Text Value='工具栏'/>
+      <Text Value='Toolbars'>
+        <Culture>en-US</Culture>
+      </Text>
       <Tip Value='禁用后已启用工具栏将被禁用, 请谨慎操作'/>
+      <Tip Value='When disabled, currently enabled toolbars will be turned off; proceed with caution'>
+        <Culture>en-US</Culture>
+      </Tip>
       <RestartExplorer/>
       <Rule ValueName='NoToolbarsOnTaskbar' Off='1'/>
       <Rule ValueName='NoCloseDragDropBands' Off='1'/>
@@ -91,13 +130,22 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item>
       <Text Value='固定到任务栏'/>
+      <Text Value='Pin to taskbar'>
+        <Culture>en-US</Culture>
+      </Text>
       <Tip Value='禁用时已固定图标会被隐藏，重新启用会重现&#x000A;文件右键菜单“固定到任务栏”会同时消失&#x000A;且无法拖拽文件到任务栏进行固定'/>
+      <Tip Value='When disabled, pinned icons are hidden and reappear when re-enabled&#x000A;The "Pin to taskbar" item in the file context menu also disappears&#x000A;and files can no longer be dragged onto the taskbar to pin them'>
+        <Culture>en-US</Culture>
+      </Tip>
       <RestartExplorer/>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='TaskbarNoPinnedList' Off='1'/>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer' ValueName='TaskbarNoPinnedList' Off='1'/>
     </Item>
     <Item>
       <Text Value='人脉'/>
+      <Text Value='People'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <OSVersion Compare='&gt;='>10.0.16199</OSVersion>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People' ValueName='PeopleBand' Off='0'/>
@@ -105,12 +153,18 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item>
       <Text Value='资讯和兴趣'/>
+      <Text Value='News and interests'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <OSVersion Compare='&gt;='>10.0.19043</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds' ValueName='EnableFeeds' Off='0'/>
     </Item>
     <Item>
       <Text Value='Windows lnk 工作区(Win+W)'/>
+      <Text Value='Windows Ink Workspace (Win+W)'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <OSVersion Compare='&gt;='>10.0</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsInkWorkspace' ValueName='AllowWindowsInkWorkspace' Off='0'/>
@@ -126,6 +180,9 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <RegPath>HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer</RegPath>
     <Item>
       <Text Value='程序右键菜单'/>
+      <Text Value='Program context menu'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <OSVersion Compare='&gt;='>10.0.17134</OSVersion>
       <Rule ValueName='DisableContextMenusInStart' Off='1'/>
@@ -133,6 +190,9 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item>
       <Text Value='卸载'/>
+      <Text Value='Uninstall'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <OSVersion Compare='&gt;='>6.2</OSVersion>
       <Rule ValueName='NoUninstallFromStart' Off='1'/>
@@ -140,6 +200,9 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item>
       <Text Value='以其他用户身份运行'/>
+      <Text Value='Run as a different user'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <OSVersion Compare='&gt;='>10.0</OSVersion>
       <Rule ValueName='ShowRunAsDifferentUserInStart' On='1'/>
@@ -147,6 +210,9 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item>
       <Text Value='磁贴调整大小、布局、固定、卸载'/>
+      <Text Value='Tile resize, layout, pin, and uninstall'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <OSVersion Compare='&gt;='>6.2</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer' ValueName='NoChangeStartMenu' Off='1'/>
@@ -154,18 +220,27 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     </Item>
     <Item>
       <Text Value='最近打开文件跳转列表'/>
+      <Text Value='Recently opened files Jump List'>
+        <Culture>en-US</Culture>
+      </Text>
       <OSVersion Compare='&gt;='>10.0</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='Start_TrackDocs' Off='0'/>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='Start_TrackDocs' Off='0'/>
     </Item>
     <Item>
       <Text Value='最近打开文件跳转列表数量限制'/>
+      <Text Value='Limit on recently opened files Jump List'>
+        <Culture>en-US</Culture>
+      </Text>
       <IsNumberItem/>
       <OSVersion Compare='&gt;='>10.0</OSVersion>
       <Rule RegPath='HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='JumpListItems_Maximum' Max='60' Min='0' Default='13'/>
     </Item>
     <Item>
       <Text Value='开始按钮右键菜单(Win+X) 命令提示符 替换为 PowerShell'/>
+      <Text Value='Replace Command Prompt with PowerShell in Start button menu (Win+X)'>
+        <Culture>en-US</Culture>
+      </Text>
       <RestartExplorer/>
       <OSVersion Compare='&gt;='>10.0</OSVersion>
       <Rule RegPath='HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ValueName='DontUsePowerShellOnWinX' Off='1'/>
@@ -492,14 +567,23 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <RegPath>HKEY_CURRENT_USER\SOFTWARE\7-zip</RegPath>
     <Item>
       <Text Value='层叠右键菜单'/>
+      <Text Value='Cascaded context menu'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule RegPath='\Options' ValueName='CascadedMenu' On='1' Off='0'/>
     </Item>
     <Item>
       <Text Value='右键菜单显示图标'/>
+      <Text Value='Show icons in context menu'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule RegPath='\Options' ValueName='MenuIcons' On='1' Off='0'/>
     </Item>
     <Item>
       <Text Value='排除重复的根文件夹'/>
+      <Text Value='Eliminate duplication of root folder'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule RegPath='\Options' ValueName='ElimDupExtract' On='1' Off='0'/>
     </Item>
   </Group>
@@ -510,24 +594,39 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <RegPath>HKEY_CURRENT_USER\SOFTWARE\NVIDIA Corporation</RegPath>
     <Item>
       <Text Value='显示桌面上下文菜单'/>
+      <Text Value='Show desktop context menu'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule RegPath='\Global\NvCplApi\Policies' ValueName='ContextUIPolicy' On='1' Off='0'/>
     </Item>
     <Item>
       <Text Value='用图形处理器运行'/>
+      <Text Value='Run with graphics processor'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule RegPath='\Global\CoProcManager' ValueName='ShowContextMenu' On='1' Off='0'/>
     </Item>
     <Item>
       <Text Value='显示托盘图标'/>
+      <Text Value='Show tray icon'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule RegPath='\Global\CoProcManager' ValueName='ShowTrayIcon' On='1' Off='0'/>
     </Item>
   </Group>
 
   <Group>
     <Text Value='ACD看图'/>
+    <Text Value='ACDSee Photo Viewer'>
+      <Culture>en-US</Culture>
+    </Text>
     <Guid>c2396f1e-4ba2-4b7d-857a-f764761c012b</Guid>
     <RegPath>HKEY_CURRENT_USER\SOFTWARE\acdkantu</RegPath>
     <Item>
       <Text Value='显示桌面右键菜单'/>
+      <Text Value='Show desktop context menu'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule ValueName='menu' On='1' Off='0' ValueKind='REG_SZ'/>
     </Item>
   </Group>
@@ -538,11 +637,17 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <RegPath>HKEY_CLASSES_ROOT\CLSID\{b298d29a-a6ed-11de-ba8c-a68e55d89593}</RegPath>
     <Item>
       <Text Value='菜单显示文本'/>
+      <Text Value='Menu display text'>
+        <Culture>en-US</Culture>
+      </Text>
       <IsStringItem/>
       <Rule RegPath='\Settings' ValueName='Title'/>
     </Item>
     <Item>
       <Text Value='显示菜单图标'/>
+      <Text Value='Show menu icon'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule RegPath='\Settings' ValueName='ShowIcon' On='1' Off='0'/>
     </Item>
   </Group>
@@ -554,44 +659,74 @@ ValueKind为键值类型，默认键值类型ValueKind为REG_DWORD，为默认�
     <IsIniGroup/>
     <Item>
       <Text Value='层叠右键菜单'/>
+      <Text Value='Cascaded context menu'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule Section='General' KeyName='CascadedMenu' On='1' Off='0'/>
     </Item>
     <Item>
       <Text Value='智慧右键菜单'/>
+      <Text Value='Smart context menu'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule Section='General' KeyName='CoolMenu' On='1' Off='0'/>
     </Item>
     <Item>
       <Text Value='解压完成后打开目标文件夹'/>
+      <Text Value='Open destination folder after extraction'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule Section='Profile.Extract.0' KeyName='OpenAfterExtract' On='1' Off='0'/>
     </Item>
     <Item>
       <Text Value='解压完成后删除源文件'/>
+      <Text Value='Delete source files after extraction'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule Section='Profile.Extract.0' KeyName='DeleteSource' On='1' Off='0'/>
     </Item>
     <Item>
       <Text Value='一键解压完成后自动关闭360压缩'/>
+      <Text Value='Automatically close 360zip after one-click extraction'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule Section='General' KeyName='WiseExtract' On='1' Off='0'/>
     </Item>
   </Group>
 
   <Group>
     <Text Value='WPS云文档'/>
+    <Text Value='WPS Cloud Docs'>
+      <Culture>en-US</Culture>
+    </Text>
     <Guid>67f4d210-bfc2-4add-9a2a-c9b9e1f42c4f</Guid>
     <RegPath>HKEY_CURRENT_USER\SOFTWARE\Kingsoft\WPSCloud</RegPath>
     <Item>
       <Text Value='上传到"WPS云文档"'/>
+      <Text Value='Upload to "WPS Cloud Docs"'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule ValueName='uploadFile' On='true' Off='false' ValueKind='REG_SZ'/>
     </Item>
     <Item>
       <Text Value='发送到"WPS云文档传输助手"'/>
+      <Text Value='Send to "WPS Cloud Docs Transfer Assistant"'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule ValueName='fileTransfer' On='true' Off='false' ValueKind='REG_SZ'/>
     </Item>
     <Item>
       <Text Value='通过"WPS云文档"分享和协作'/>
+      <Text Value='Share and collaborate via "WPS Cloud Docs"'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule ValueName='shareFile' On='true' Off='false' ValueKind='REG_SZ'/>
     </Item>
     <Item>
       <Text Value='同步桌面所有文件'/>
+      <Text Value='Sync all desktop files'>
+        <Culture>en-US</Culture>
+      </Text>
       <Rule ValueName='DesktopSync' On='true' Off='false' ValueKind='REG_SZ'/>
     </Item>
   </Group>
