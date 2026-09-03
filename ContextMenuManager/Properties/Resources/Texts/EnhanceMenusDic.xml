@@ -10,6 +10,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='File'>
       <Culture>en-US</Culture>
     </Text>
+    <Text Value='File'>
+      <Culture>it-IT</Culture>
+    </Text>
     <Icon>imageres.dll,-19</Icon>
     <RegPath>HKEY_CLASSES_ROOT\*</RegPath>
     <Shell>
@@ -18,10 +21,16 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         <Tip Value='You do not need to open the file directly copy the file text content, not Unicode encoding may be garbled'>
           <Culture>en-US</Culture>
         </Tip>
+        <Tip Value='Copia il contenuto testuale del file senza aprirlo; i file non Unicode potrebbero risultare illeggibili'>
+          <Culture>it-IT</Culture>
+        </Tip>
         <Value>
           <REG_SZ MUIVerb='复制内容到剪切板' Icon='DxpTaskSync.dll,-52'/>
           <REG_SZ MUIVerb='Copy Content to Clipboard'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Copia contenuto negli appunti'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -38,6 +47,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Take Ownership'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Diventa proprietario'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command>
@@ -53,6 +65,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='获取哈希值' Icon='imageres.dll,-5372'/>
           <REG_SZ MUIVerb='Get Hash'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Calcola hash'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -71,6 +86,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='Directory'>
       <Culture>en-US</Culture>
     </Text>
+    <Text Value='Cartella'>
+      <Culture>it-IT</Culture>
+    </Text>
     <Icon>imageres.dll,-162</Icon>
     <RegPath>HKEY_CLASSES_ROOT\Directory</RegPath>
     <Shell>
@@ -81,6 +99,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   AppliesTo='System.ParsingName:&lt;>"::{645FF040-5081-101B-9F08-00AA002F954E}"'/>
           <REG_SZ MUIVerb='Take Ownership'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Diventa proprietario'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -98,6 +119,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='目录背景'/>
     <Text Value='Background'>
       <Culture>en-US</Culture>
+    </Text>
+    <Text Value='Sfondo'>
+      <Culture>it-IT</Culture>
     </Text>
     <Icon>imageres.dll,0</Icon>
     <RegPath>HKEY_CLASSES_ROOT\Directory\Background</RegPath>
@@ -140,6 +164,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Super Hidden'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='File super nascosti'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
           <REG_SZ Icon='imageres.dll,-5314'>
             <OSVersion Compare="&gt;=">6.2</OSVersion>
           </REG_SZ>
@@ -155,6 +182,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Show or Hide File Extensions'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Mostra o nascondi le estensioni dei file'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
               </Item0>
               <Item1>
@@ -165,6 +195,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Show or Hide Hidden Files'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Mostra o nascondi i file nascosti'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
               </Item1>
               <Item0>
@@ -173,6 +206,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='显示/隐藏 扩展名'/>
                   <REG_SZ MUIVerb='Show or Hide File Extensions'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Mostra o nascondi le estensioni dei file'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -202,6 +238,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Show or Hide Hidden Files'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Mostra o nascondi i file nascosti'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
                 <SubKey>
                   <Command>
@@ -228,6 +267,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='显示/隐藏 系统隐藏文件'/>
                   <REG_SZ MUIVerb='Show or Hide Hidden System Files'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Mostra o nascondi i file di sistema nascosti'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -282,6 +324,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Explorer UWP'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Esplora file UWP'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command Default='explorer shell:AppsFolder\c5e2524a-ea46-4f67-841f-6a9465d9d515_cw5n1h2txyewy!App'/>
@@ -303,6 +348,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='桌面背景'/>
     <Text Value='Desktop Background'>
       <Culture>en-US</Culture>
+    </Text>
+    <Text Value='Sfondo del desktop'>
+      <Culture>it-IT</Culture>
     </Text>
     <Icon>imageres.dll,-183</Icon>
     <RegPath>HKEY_CLASSES_ROOT\DesktopBackground</RegPath>
@@ -331,6 +379,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Restart Explorer'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Riavvia Esplora file'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command>
@@ -352,6 +403,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Open Multiple Regedit'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Apri più istanze dell&#x2019;Editor del Registro'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command Default='regedit -m'/>
@@ -364,6 +418,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Snipping Tool'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Strumento di cattura'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command Default='snippingTool.exe'/>
@@ -374,11 +431,17 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         <Tip Value='After taking a screenshot, you can directly press Ctrl+V to paste the picture.&#x000A;It is suitable for Word, PS and other programs. The shortcut key is Win+Shift+S'>
           <Culture>en-US</Culture>
         </Tip>
+        <Tip Value='Dopo la cattura puoi premere Ctrl+V per incollare l&#x2019;immagine.&#x000A;Adatto a Word, PS e altri programmi. Scorciatoia: Win+Shift+S'>
+          <Culture>it-IT</Culture>
+        </Tip>
         <OSVersion Compare="&gt;=">10.0</OSVersion>
         <Value>
           <REG_SZ MUIVerb='截屏到剪贴板' Icon='snippingTool.exe,0'/>
           <REG_SZ MUIVerb='Snip to Clipboard'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Cattura negli appunti'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -391,6 +454,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Screen Keyboard'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Tastiera su schermo'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command Default='osk.exe'/>
@@ -402,6 +468,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Shutdown Options'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Opzioni di spegnimento'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Shell>
@@ -411,6 +480,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='锁定'/>
                   <REG_SZ MUIVerb='Lock'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Blocca'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -423,6 +495,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Log off'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Disconnetti'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
                 <SubKey>
                   <Command Default='shutdown -l'/>
@@ -433,6 +508,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='切换账户'/>
                   <REG_SZ MUIVerb='Switch account'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Cambia utente'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -445,6 +523,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Sleep'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Sospendi'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
                 <SubKey>
                   <Command Default='rundll32 powrprof.dll,SetSuspendState Sleep'/>
@@ -455,6 +536,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='休眠'/>
                   <REG_SZ MUIVerb='Hibernate'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Ibernazione'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -467,6 +551,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Restart'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Riavvia'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
                 <SubKey>
                   <Command Default='shutdown -r -f -t 00'/>
@@ -477,6 +564,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='关机'/>
                   <REG_SZ MUIVerb='Shutdown'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Arresta il sistema'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -494,6 +584,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Slide to ShutDown'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Spegnimento con scorrimento'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command Default='SlideToShutDown.exe'/>
@@ -505,6 +598,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Power Plan'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Combinazione risparmio energia'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Shell>
@@ -514,6 +610,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='节能'/>
                   <REG_SZ MUIVerb='Power saver'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Risparmio di energia'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -530,6 +629,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Balanced'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Bilanciato'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
                 <SubKey>
                   <Command>
@@ -544,6 +646,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='高性能'/>
                   <REG_SZ MUIVerb='High performance'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Prestazioni elevate'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -565,6 +670,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='App Color Mode'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Modalità colore delle app'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Shell>
@@ -574,6 +682,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='浅色应用' Icon='imageres.dll,-5411'/>
                   <REG_SZ MUIVerb='Light Mode'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Modalità chiara'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -585,6 +696,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='深色应用' Icon='imageres.dll,-5412'/>
                   <REG_SZ MUIVerb='Dark Mode'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Modalità scura'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -600,6 +714,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='壁纸位置' Icon='imageres.dll,-5346' Position='bottom'/>
           <REG_SZ MUIVerb='WallPaper Location'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Percorso dello sfondo'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -625,6 +742,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Desktop Icon Settings'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Impostazioni icone del desktop'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command Default='control desk.cpl,,0'/>
@@ -636,6 +756,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Screen saver Settings'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Impostazioni screen saver'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command Default='control desk.cpl,,1'/>
@@ -646,6 +769,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='网页搜索' Icon='Windows.Storage.Search.dll,0' SubCommands=''/>
           <REG_SZ MUIVerb='Web Search'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Ricerca sul web'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -695,6 +821,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='Drive'>
       <Culture>en-US</Culture>
     </Text>
+    <Text Value='Unità'>
+      <Culture>it-IT</Culture>
+    </Text>
     <Icon>imageres.dll,-30</Icon>
     <RegPath>HKEY_CLASSES_ROOT\Drive</RegPath>
     <Shell>
@@ -720,6 +849,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='显示/隐藏 盘符' Position='bottom'/>
           <REG_SZ MUIVerb='Show or hide Drive Letters'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Mostra o nascondi le lettere di unità'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -747,6 +879,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='显示/隐藏 容量条' Position='bottom'/>
           <REG_SZ MUIVerb='Show or hide Drive Volume'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Mostra o nascondi l&#x2019;etichetta di volume'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -780,6 +915,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='All File system Objects'>
       <Culture>en-US</Culture>
     </Text>
+    <Text Value='Tutti gli oggetti del file system'>
+      <Culture>it-IT</Culture>
+    </Text>
     <Icon>imageres.dll,-117</Icon>
     <RegPath>HKEY_CLASSES_ROOT\AllFilesystemObjects</RegPath>
     <Shell>
@@ -796,6 +934,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         <Tip Value='The system raw lettuce item needs to hold down Shift display,&#x000A;this item can be displayed directly, path without double quotation marks'>
           <Culture>en-US</Culture>
         </Tip>
+        <Tip Value='La voce nativa di sistema richiede Shift premuto;&#x000A;questa voce si mostra direttamente, percorso senza virgolette doppie'>
+          <Culture>it-IT</Culture>
+        </Tip>
         <Value>
           <!--复制路径-->
           <REG_SZ MUIVerb='@shell32.dll,-30329' Icon='imageres.dll,-5302'/>
@@ -809,6 +950,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         <Tip Value='系统原生菜单项需按住Shift显示,&#x000A;此项可以直接显示, 路径带双引号'/>
         <Tip Value='The system raw lettuce item needs to hold down Shift display,&#x000A;this item can be displayed directly, path with double quotation marks'>
           <Culture>en-US</Culture>
+        </Tip>
+        <Tip Value='La voce nativa di sistema richiede Shift premuto;&#x000A;questa voce si mostra direttamente, percorso con virgolette doppie'>
+          <Culture>it-IT</Culture>
         </Tip>
         <Value>
           <!--复制路径-->
@@ -839,6 +983,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='File Visibility'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Visibilità del file'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
           <REG_SZ Icon='imageres.dll,-5314'>
             <OSVersion Compare="&gt;=">6.2</OSVersion>
           </REG_SZ>
@@ -852,6 +999,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Normal'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Normale'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
                 <SubKey>
                   <Command Default='attrib -s -h "%1"'/>
@@ -863,6 +1013,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Hidden'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Nascosto'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
                 <SubKey>
                   <Command Default='attrib -s +h "%1"'/>
@@ -873,6 +1026,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='系统隐藏'/>
                   <REG_SZ MUIVerb='System Hidden'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Nascosto di sistema'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -888,6 +1044,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='创建桌面快捷方式' Icon='imageres.dll,-110' Position='bottom'/>
           <REG_SZ MUIVerb='Create a Desktop Shortcut'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Crea collegamento sul desktop'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -953,6 +1112,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='This PC'>
       <Culture>en-US</Culture>
     </Text>
+    <Text Value='Questo PC'>
+      <Culture>it-IT</Culture>
+    </Text>
     <Icon>imageres.dll,-109</Icon>
     <RegPath>HKEY_CLASSES_ROOT\CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}</RegPath>
     <Shell>
@@ -961,6 +1123,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='系统信息' Icon='msinfo32.exe,0'/>
           <REG_SZ MUIVerb='System Info'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Informazioni di sistema'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -972,6 +1137,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='用户账户控制设置'/>
           <REG_SZ MUIVerb='User Account Control Settings'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Impostazioni Controllo account utente'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -985,6 +1153,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Group Policy Editor'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Editor Criteri di gruppo'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command Default='mmc.exe gpedit.msc'/>
@@ -995,11 +1166,17 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
         <Tip Value='Fixed an issue where Hyper-V and VirtualBox could not coexist'>
           <Culture>en-US</Culture>
         </Tip>
+        <Tip Value='Risolve l&#x2019;incompatibilità tra Hyper-V e VirtualBox'>
+          <Culture>it-IT</Culture>
+        </Tip>
         <OSVersion Compare="&gt;=">10.0</OSVersion>
         <Value>
           <REG_SZ MUIVerb='虚拟模式' Icon='imageres.dll,-109' SubCommands='' Position='bottom'/>
           <REG_SZ MUIVerb='Virtual Mode'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Modalità virtuale'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -1111,6 +1288,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Edit Hosts'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Modifica file hosts'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command>
@@ -1126,6 +1306,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='Flush DNS'>
             <Culture>en-US</Culture>
           </REG_SZ>
+          <REG_SZ MUIVerb='Svuota cache DNS'>
+            <Culture>it-IT</Culture>
+          </REG_SZ>
         </Value>
         <SubKey>
           <Command Default='ipconfig /flushdns'/>
@@ -1137,6 +1320,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='电池使用报告' Icon='powercpl.dll,0'/>
           <REG_SZ MUIVerb='Battery Report'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Report batteria'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -1155,6 +1341,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='RecycleBin'>
       <Culture>en-US</Culture>
     </Text>
+    <Text Value='Cestino'>
+      <Culture>it-IT</Culture>
+    </Text>
     <Icon>imageres.dll,-55</Icon>
     <RegPath>HKEY_CLASSES_ROOT\CLSID\{645FF040-5081-101B-9F08-00AA002F954E}</RegPath>
     <Shell>
@@ -1163,6 +1352,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='清理缩略图缓存'/>
           <REG_SZ MUIVerb='Clean Thumb Cache'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Pulisci cache miniature'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -1192,6 +1384,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='Exe Files'>
       <Culture>en-US</Culture>
     </Text>
+    <Text Value='File EXE'>
+      <Culture>it-IT</Culture>
+    </Text>
     <Icon>imageres.dll,-15</Icon>
     <RegPath>HKEY_CLASSES_ROOT\SystemFileAssociations\.exe</RegPath>
     <Shell>
@@ -1200,6 +1395,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='防火墙规则' Icon='FirewallControlPanel.dll,0' SubCommands=''/>
           <REG_SZ MUIVerb='Firewall Rules'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Regole firewall'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -1210,6 +1408,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='禁止入站' Icon='imageres.dll,-105'/>
                   <REG_SZ MUIVerb='Not Allow In'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Blocca in entrata'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -1226,6 +1427,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Not Allow Out'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Blocca in uscita'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
                 <SubKey>
                   <Command>
@@ -1240,6 +1444,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='允许入站' Icon='imageres.dll,-106'/>
                   <REG_SZ MUIVerb='Allow In'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Consenti in entrata'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -1256,6 +1463,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='Allow Out'>
                     <Culture>en-US</Culture>
                   </REG_SZ>
+                  <REG_SZ MUIVerb='Consenti in uscita'>
+                    <Culture>it-IT</Culture>
+                  </REG_SZ>
                 </Value>
                 <SubKey>
                   <Command>
@@ -1270,6 +1480,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
                   <REG_SZ MUIVerb='清除设置' Icon='imageres.dll,-107'/>
                   <REG_SZ MUIVerb='Clear Settings'>
                     <Culture>en-US</Culture>
+                  </REG_SZ>
+                  <REG_SZ MUIVerb='Azzera regole'>
+                    <Culture>it-IT</Culture>
                   </REG_SZ>
                 </Value>
                 <SubKey>
@@ -1292,6 +1505,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='DLL Files'>
       <Culture>en-US</Culture>
     </Text>
+    <Text Value='File DLL'>
+      <Culture>it-IT</Culture>
+    </Text>
     <Icon>imageres.dll,-67</Icon>
     <RegPath>HKEY_CLASSES_ROOT\SystemFileAssociations\.dll</RegPath>
     <Shell>
@@ -1300,6 +1516,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='注册 DLL'/>
           <REG_SZ MUIVerb='Register the DLL'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Registra la DLL'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -1315,6 +1534,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='注销 DLL'/>
           <REG_SZ MUIVerb='UnRegister the DLL'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Annulla registrazione DLL'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -1333,6 +1555,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
     <Text Value='OCX Files'>
       <Culture>en-US</Culture>
     </Text>
+    <Text Value='File OCX'>
+      <Culture>it-IT</Culture>
+    </Text>
     <Icon>imageres.dll,-67</Icon>
     <RegPath>HKEY_CLASSES_ROOT\SystemFileAssociations\.ocx</RegPath>
     <Shell>
@@ -1341,6 +1566,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='注册 OCX'/>
           <REG_SZ MUIVerb='Register the OCX'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Registra l&#x2019;OCX'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
@@ -1356,6 +1584,9 @@ Tip属性为鼠标悬浮在开关上时的提示信息，从每个Item节点开�
           <REG_SZ MUIVerb='注销 OCX'/>
           <REG_SZ MUIVerb='UnRegister the OCX'>
             <Culture>en-US</Culture>
+          </REG_SZ>
+          <REG_SZ MUIVerb='Annulla registrazione OCX'>
+            <Culture>it-IT</Culture>
           </REG_SZ>
         </Value>
         <SubKey>
