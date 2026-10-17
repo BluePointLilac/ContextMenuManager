@@ -21,6 +21,15 @@ namespace ContextMenuManager.Controls
             this.Text = this.ItemText;
         }
 
+        public UwpModeItem(UwpHelper.ContextMenuRegistration registration)
+            : this(registration.PackageName, registration.Guid)
+        {
+            this.Registration = registration;
+            this.Text = this.ItemText;
+        }
+
+        private UwpHelper.ContextMenuRegistration Registration { get; set; }
+
         public Guid Guid { get; set; }
         public string UwpName { get; set; }
 
@@ -55,8 +64,8 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        public string ItemText => GuidInfo.GetText(Guid);
-        public string RegPath => UwpHelper.GetRegPath(UwpName, Guid);
+        public string ItemText => GuidInfo.GetText(Guid) ?? Registration?.Text;
+        public string RegPath => Registration?.RegPath ?? UwpHelper.GetRegPath(UwpName, Guid);
         public string ItemFilePath => UwpHelper.GetFilePath(UwpName, Guid);
 
         public string SearchText => Text;

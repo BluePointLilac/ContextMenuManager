@@ -246,7 +246,7 @@ namespace ContextMenuManager.Controls
             this.LoadItems(scenePath);
             if(WinOsVersion.Current >= WinOsVersion.Win10)
             {
-                this.LoadUwpModeItem();
+                this.LoadUwpModeItem(scenePath);
             }
             switch(Scene)
             {
@@ -558,7 +558,7 @@ namespace ContextMenuManager.Controls
             }
         }
 
-        private void LoadUwpModeItem()
+        private void LoadUwpModeItem(string scenePath)
         {
             foreach(XmlDocument doc in XmlDicHelper.UwpModeItemsDic)
             {
@@ -584,6 +584,16 @@ namespace ContextMenuManager.Controls
                         }
                     }
                 }
+            }
+            foreach(UwpHelper.ContextMenuRegistration registration in UwpHelper.GetContextMenus())
+            {
+                if(!UwpHelper.MatchesScene(registration.ItemType, scenePath)) continue;
+                bool isAdded = false;
+                foreach(Control ctr in this.Controls)
+                {
+                    if(ctr is UwpModeItem item && item.Guid == registration.Guid) { isAdded = true; break; }
+                }
+                if(!isAdded) this.AddItem(new UwpModeItem(registration));
             }
         }
 
